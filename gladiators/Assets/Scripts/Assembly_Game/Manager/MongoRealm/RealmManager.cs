@@ -44,6 +44,8 @@ namespace Service.Realms {
 
         public static App MyApp { get; private set; }
         public static Realm MyRealm { get; private set; }
+        public static MongoClient MyClient { get; private set; }
+        public static MongoClient.Database MyDB { get; private set; }
 
 
         public static void ClearApp() {
@@ -73,6 +75,13 @@ namespace Service.Realms {
                 WriteLog.LogErrorFormat("ClearApp發生錯誤: ", _e);
                 return null;
             }
+        }
+        /// <summary>
+        /// 初始化DB後才能直接對DB下Query
+        /// </summary>
+        public static void InitDB() {
+            MyClient = MyApp.CurrentUser.GetMongoClient("mongodb-atlas");
+            MyDB = MyClient.GetDatabase("herofishing");
         }
 
 

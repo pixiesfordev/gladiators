@@ -7,6 +7,7 @@ using System.Linq;
 using Service.Realms;
 using Realms;
 using System.Data.SqlTypes;
+using Cysharp.Threading.Tasks;
 
 namespace Gladiators.Main {
 
@@ -92,10 +93,12 @@ namespace Gladiators.Main {
         /// <summary>
         /// 取得目前所在遊戲房資料，沒在遊戲房中就返回null
         /// </summary>
-        public DBMatchgame GetMatchGame() {
+        public async UniTask<DBMatchgame> GetMatchGame() {
             var dbPlayer = GetDBPlayerDoc<DBPlayer>(DBPlayerCol.player);
             if (string.IsNullOrEmpty(dbPlayer.InMatchgameID)) return null;
-            var dbMatchgame = RealmManager.MyRealm.Find<DBMatchgame>(dbPlayer.InMatchgameID);
+            var bsonDoc = await RealmManager.Query_GetDoc(DBGameCol.matchgame.ToString(), dbPlayer.InMatchgameID);
+            if (bsonDoc == null) return null;
+            var dbMatchgame = new DBMatchgame(bsonDoc);
             return dbMatchgame;
         }
 

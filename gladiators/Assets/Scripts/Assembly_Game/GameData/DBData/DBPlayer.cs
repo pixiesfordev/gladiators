@@ -46,11 +46,6 @@ public partial class DBPlayer : IRealmObject {
         await RealmManager.MyRealm.WriteAsync(() => {
             InMatchgameID = _matchgameID;
         });
-        if (!string.IsNullOrEmpty(InMatchgameID)) {
-            await RealmManager.Subscribe_Matchgame();
-        } else {
-            RealmManager.Unsubscribe_Matchgame();
-        }
     }
 
 
