@@ -34,5 +34,14 @@ namespace Gladiators.Battle {
             if (cameraData == null) return;
             cameraData.cameraStack.Add(_cam);
         }
+
+        //TODO:
+        //技能施放
+        //賄賂牌施放
+        //體力條計算
+        //對撞計算
+        //扣血計算
+        //戰鬥結算        
+        
     }
 }
