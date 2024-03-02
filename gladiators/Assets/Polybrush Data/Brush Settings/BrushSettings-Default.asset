@@ -12,19 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c229c73eab51b9478029375e5ca314a, type: 3}
   m_Name: BrushSettings-Default
   m_EditorClassIdentifier: 
-  brushRadiusMin: 0.001
+  brushRadiusMin: 1
   brushRadiusMax: 5
-  _radius: 1
-  _falloff: 0.5
-  _strength: 1
+  _radius: 1.001
+  _falloff: 0.459
+  _strength: 0.019
   _curve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
       value: 1
-      inSlope: 0
-      outSlope: 0
+      inSlope: -0
+      outSlope: -0
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
@@ -32,8 +32,8 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 1
       value: 0
-      inSlope: -3
-      outSlope: -3
+      inSlope: -2
+      outSlope: -2
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
@@ -41,4 +41,4 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  allowNonNormalizedFalloff: 0
+  allowNonNormalizedFalloff: 1
