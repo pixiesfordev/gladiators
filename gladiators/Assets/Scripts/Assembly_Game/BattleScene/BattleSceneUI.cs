@@ -11,6 +11,7 @@ public class BattleSceneUI : BaseUI {
     [HeaderAttribute("==============AddressableAssets==============")]
     [SerializeField] AssetReference BattleManagerAsset;
 
+    [HeaderAttribute("==============UI==============")]
     //TODO:考慮是否之後改腳本產生物件
     //上方角鬥士資訊
     [SerializeField] BattleGladiatorInfo PlayerGladiatorInfo;
@@ -39,7 +40,7 @@ public class BattleSceneUI : BaseUI {
     [Header("Settings")]
     private bool _isSpellTest;
 
-    //[HeaderAttribute("==============UI==============")]
+    public static BattleSceneUI Instance;
 
     private void Start() {
         Init();
@@ -47,6 +48,7 @@ public class BattleSceneUI : BaseUI {
     public override void Init() {
         base.Init();
         SpawnBattleManager();
+        Instance = this;
     }
 
     void SpawnBattleManager() {
@@ -67,4 +69,10 @@ public class BattleSceneUI : BaseUI {
     //3.衝刺操作與演出 做兩種 一種為長壓操作方式 另一種為ON/OFF方式 設參數切換模式
     //4.前端暫時計算邏輯預計先寫在BattleManager
     //5.設定按鈕點擊開啟設定介面製作
+
+    //更新剩餘秒數
+    public void SetTimeText(int num)
+    {
+        BattleLeftTime.text = num.ToString();
+    }
 }
