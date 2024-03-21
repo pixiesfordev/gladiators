@@ -36,8 +36,7 @@ namespace Scoz.Func {
         protected override void ResetStaticData() {
             SettingDic.Clear();
         }
-        protected override void GetDataFromJson(JsonData _item, string _dataName) {
-            DataName = _dataName;
+        protected override void SetDataFromJson(JsonData _item) {
             JsonData item = _item;
             if (item.Keys.Contains("ID") && item.Keys.Contains("Value")) {
                 string id = item["ID"].ToString();

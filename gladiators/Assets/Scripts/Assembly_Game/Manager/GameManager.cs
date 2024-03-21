@@ -10,6 +10,7 @@ using Cysharp.Threading.Tasks;
 using Service.Realms;
 using Gladiators.Main;
 using Gladiators.Socket;
+using UnityEditor.Playables;
 
 namespace Scoz.Func {
     public enum DataLoad {
@@ -105,6 +106,12 @@ namespace Scoz.Func {
             if (IsInit) return;
             Instance = this;
             IsInit = true;
+
+            //// 修改JsonMapper預設的反射數值類型是float而不是double
+            //JsonMapper.RegisterImporter((double _value) => {
+            //    return (float)_value;
+            //});
+
             DontDestroyOnLoad(gameObject);
             //設定FPS與垂直同步
 #if Dev
@@ -206,7 +213,12 @@ namespace Scoz.Func {
                                 Instance.CreateAddressableObjs();
                                 IsFinishedLoadAsset = true;
                                 SpawnSceneUI();
-
+                                var data= GameDictionary.GetJsonData<GladiatorJsonData>(1);
+                                WriteLog.WriteObj(data);
+                                var data2 = GameDictionary.GetJsonData<SkillJsonData>(1);
+                                WriteLog.WriteObj(data2);
+                                var data3 = GameDictionary.GetJsonData<SkillEffectJsonData>("1");
+                                WriteLog.WriteObj(data3);
                             });
                         });
                     });

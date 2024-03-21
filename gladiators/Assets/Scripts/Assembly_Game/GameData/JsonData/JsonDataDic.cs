@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System;
 using Gladiators.Main;
 using System.Linq;
+using System.Reflection;
 
 namespace Scoz.Func {
 
@@ -39,17 +40,18 @@ namespace Scoz.Func {
             });
 
             //Addressables版本
-            StringJsonData.GetStringDic_Remote("String", dic => {
+            AddLoadingKey("String");
+            StringJsonData.SetStringDic_Remote(dic => {
                 StringDic = dic;
                 //完成MyLoadingProgress進度，全部都載完就會回傳LoadJsonDataToDic傳入的Action
                 MyLoadingProgress.FinishProgress("String");
             });
 
-            GameSettingJsonData.DataName = "GameSetting";
-            MyJsonData.SetDataStringKey_Remote<GameSettingJsonData>(GameSettingJsonData.DataName, SetDic);
-
-            SceneTransitionJsonData.DataName = "SceneTransition";
-            MyJsonData.SetData_Remote<SceneTransitionJsonData>(SceneTransitionJsonData.DataName, SetDic);
+            MyJsonData.SetDataStringKey_Remote<GameSettingJsonData>(SetDic);
+            MyJsonData.SetData_Remote<SceneTransitionJsonData>(SetDic);
+            MyJsonData.SetData_Remote<GladiatorJsonData>(SetDic);
+            MyJsonData.SetData_Remote<SkillJsonData>(SetDic);
+            MyJsonData.SetDataStringKey_Remote<SkillEffectJsonData>(SetDic);
 
             //設定X秒會顯示尚未載入的JsonData
             CoroutineJob.Instance.StartNewAction(ShowUnLoadedJsondata, 5);
@@ -72,11 +74,12 @@ namespace Scoz.Func {
         /// <summary>
         /// 取得T類型的JsonData Dic
         /// </summary>
-        public static Dictionary<int, T> GetIntKeyJsonDic<T>(string _name) where T : MyJsonData {
-            if (IntKeyJsonDic.ContainsKey(_name)) {
-                return IntKeyJsonDic[_name].ToDictionary(a => a.Key, a => a.Value as T);
+        public static Dictionary<int, T> GetIntKeyJsonDic<T>() where T : MyJsonData {
+            string dataName = GetDataName<T>();
+            if (IntKeyJsonDic.ContainsKey(dataName)) {
+                return IntKeyJsonDic[dataName].ToDictionary(a => a.Key, a => a.Value as T);
             } else {
-                string log = string.Format("{0}表不存IntKeyJsonDic中", _name);
+                string log = string.Format("{0}表不存IntKeyJsonDic中", dataName);
                 PopupUI.ShowClickCancel(log, null);
                 WriteLog.LogErrorFormat(log);
                 return null;
@@ -85,26 +88,39 @@ namespace Scoz.Func {
         /// <summary>
         /// 取得T類型的JsonData Dic
         /// </summary>
-        public static Dictionary<string, T> GetStrKeyJsonDic<T>(string _name) where T : MyJsonData {
-            if (StrKeyJsonDic.ContainsKey(_name)) {
-                return StrKeyJsonDic[_name].ToDictionary(a => a.Key, a => a.Value as T);
+        public static Dictionary<string, T> GetStrKeyJsonDic<T>() where T : MyJsonData {
+            string dataName = GetDataName<T>();
+            if (StrKeyJsonDic.ContainsKey(dataName)) {
+                return StrKeyJsonDic[dataName].ToDictionary(a => a.Key, a => a.Value as T);
             } else {
-                string log = string.Format("{0}表不存StrKeyJsonDic中", _name);
+                string log = string.Format("{0}表不存StrKeyJsonDic中", dataName);
                 PopupUI.ShowClickCancel(log, null);
                 WriteLog.LogErrorFormat(log);
                 return null;
             }
         }
+        static string GetDataName<T>() {
+            // 獲得T類型的Type對象
+            Type type = typeof(T);
+            // 使用反射查找名為"DataName"的靜態屬性(每個繼承自MyJsonData的類都應該有DataName這個靜態屬性
+            PropertyInfo dataNameProp = type.GetProperty("DataName", BindingFlags.Public | BindingFlags.Static);
+            if (dataNameProp != null)return dataNameProp.GetValue(null, null) as string;
+            else {
+                WriteLog.LogErrorFormat("GetJsonData傳入的T類沒有DataName這個屬性");
+                return "";
+            }
+        }
         /// <summary>
         /// 取得T類型的JsonData
         /// </summary>
-        public static T GetJsonData<T>(string _name, int _id, bool showErrorMsg = true) where T : MyJsonData {
+        public static T GetJsonData<T>(int _id, bool showErrorMsg = true) where T : MyJsonData {
             if (IntKeyJsonDic == null)
                 return null;
-            if (IntKeyJsonDic.ContainsKey(_name) && IntKeyJsonDic[_name] != null && IntKeyJsonDic[_name].ContainsKey(_id))
-                return IntKeyJsonDic[_name][_id] as T;
+            string dataName = GetDataName<T>();
+            if (IntKeyJsonDic.ContainsKey(dataName) && IntKeyJsonDic[dataName] != null && IntKeyJsonDic[dataName].ContainsKey(_id))
+                return IntKeyJsonDic[dataName][_id] as T;
             else {
-                string log = string.Format("{0}表不存在ID:{1}的資料", _name, _id);
+                string log = string.Format("{0}表不存在ID:{1}的資料", dataName, _id);
                 if (showErrorMsg) {
                     PopupUI.ShowClickCancel(log, null);
                 }
@@ -115,13 +131,14 @@ namespace Scoz.Func {
         /// <summary>
         /// 取得T類型的JsonData
         /// </summary>
-        public static T GetJsonData<T>(string _name, string _id) where T : MyJsonData {
+        public static T GetJsonData<T>(string _id) where T : MyJsonData {
             if (StrKeyJsonDic == null)
                 return null;
-            if (StrKeyJsonDic.ContainsKey(_name) && StrKeyJsonDic[_name] != null && StrKeyJsonDic[_name].ContainsKey(_id))
-                return StrKeyJsonDic[_name][_id] as T;
+            string dataName = GetDataName<T>();
+            if (StrKeyJsonDic.ContainsKey(dataName) && StrKeyJsonDic[dataName] != null && StrKeyJsonDic[dataName].ContainsKey(_id))
+                return StrKeyJsonDic[dataName][_id] as T;
             else {
-                string log = string.Format("{0}表不存在ID:{1}的資料", _name, _id);
+                string log = string.Format("{0}表不存在ID:{1}的資料", dataName, _id);
                 PopupUI.ShowClickCancel(log, null);
                 WriteLog.LogErrorFormat(log);
                 return null;

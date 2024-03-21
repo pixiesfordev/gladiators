@@ -1,3 +1,4 @@
+using LitJson;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -66,8 +67,8 @@ namespace Scoz.Func {
         /// 讀取本機的String表
         /// </summary>
         void LoadLocalJson() {
-            StringDic = StringJsonData_UnityAssembly.GetStringDic("String");
-            StrKeyJsonDic["GameSetting"] = MyJsonData_UnityAssembly.GetDataStringKey<GameSettingJsonData_UnityAssembly>("GameSetting");
+            StringDic = StringJsonData_UnityAssembly.SetStringDic();
+            StrKeyJsonDic["GameSetting"] = MyJsonData_UnityAssembly.SetDataStringKey<GameSettingJsonData_UnityAssembly>();
         }
     }
 }

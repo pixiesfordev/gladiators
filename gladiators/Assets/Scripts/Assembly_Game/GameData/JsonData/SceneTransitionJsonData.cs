@@ -16,8 +16,7 @@ namespace Gladiators.Main {
         }
         public string RefPic { get; private set; }
         public int Weight { get; private set; }
-        protected override void GetDataFromJson(JsonData _item, string _dataName) {
-            DataName = _dataName;
+        protected override void SetDataFromJson(JsonData _item) {
             JsonData item = _item;
             foreach (string key in item.Keys) {
                 switch (key) {
@@ -37,7 +36,7 @@ namespace Gladiators.Main {
             }
         }
         public static SceneTransitionJsonData GetRandomData() {
-            var dic = GameDictionary.GetIntKeyJsonDic<SceneTransitionJsonData>(DataName);
+            var dic = GameDictionary.GetIntKeyJsonDic<SceneTransitionJsonData>();
             if (dic == null)
                 return null;
             List<SceneTransitionJsonData> dataList = dic.Values.ToList();

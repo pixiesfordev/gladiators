@@ -14,6 +14,8 @@ using System.Linq;
 using UnityEngine.ResourceManagement.ResourceLocations;
 using Unity.VisualScripting;
 using Cysharp.Threading.Tasks;
+using Gladiators.Main;
+using LitJson;
 
 namespace Scoz.Func {
 
