@@ -8,12 +8,15 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: CartoonGrass_Plant_01_LOD2
-  m_Shader: {fileID: -6465566751694194690, guid: 7b362e08bbd7e1f4788925ef1cfe79fc,
+  m_Shader: {fileID: -6465566751694194690, guid: 5a705497ca231b84ab54837f7362b9de,
     type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
-  m_InvalidKeywords: []
+  m_InvalidKeywords:
+  - _ALPHAPREMULTIPLY_ON
+  - _RECEIVE_SHADOWS_OFF
+  - _SURFACE_TYPE_TRANSPARENT
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -68,12 +71,32 @@ Material:
         m_Texture: {fileID: 2800000, guid: f13565e5fcf0ab84293e6b60cab428e3, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_a55f074ae3454060860886311a9f0ad9_Texture_1_Texture2D:
+        m_Texture: {fileID: 2800000, guid: f7a1f90d1fb05cc4da2108eb797e81c8, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_ccf8ab8ee81a4965a4644df9832e8410_Texture_1_Texture2D:
+        m_Texture: {fileID: 2800000, guid: f7a1f90d1fb05cc4da2108eb797e81c8, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _Texture2DAsset_5112ed5045954a87adbe8c24d65b293a_Out_0_Texture2D:
+    - _Texture2DAsset_1793293fe3ee4b13a22ae97b00890889_Out_0_Texture2D:
         m_Texture: {fileID: 2800000, guid: bd3487482d246344f9ccbcb9d9eeea39, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Texture2DAsset_3b39fa45203f41c4aa9db54d73b30df8_Out_0_Texture2D:
+        m_Texture: {fileID: 2800000, guid: bd3487482d246344f9ccbcb9d9eeea39, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Texture2DAsset_5112ed5045954a87adbe8c24d65b293a_Out_0_Texture2D:
+        m_Texture: {fileID: 2800000, guid: 1167e81774d223946b4e02d1c0af4d05, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Texture2DAsset_87baafde05864af3b3674f2418a5a936_Out_0_Texture2D:
+        m_Texture: {fileID: 2800000, guid: ad3f61311ba2387418cdd5e831f5d1f3, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
@@ -94,20 +117,21 @@ Material:
     - Vector1_387E92A5: 0
     - WindSpeed: 1
     - WindStrength: 1
-    - _AlphaClip: 0
+    - _AlphaClip: 1
     - _AlphaToMask: 0
     - _BUILTIN_QueueControl: 0
     - _BUILTIN_QueueOffset: 0
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
     - _BumpScale: 1
+    - _CastShadows: 0
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
-    - _Cull: 2
+    - _Cull: 0
     - _Cutoff: 0.5
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
-    - _DstBlend: 0
+    - _DstBlend: 10
     - _DstBlendAlpha: 0
     - _Emission_multiply: 0
     - _EnvironmentReflections: 1
@@ -123,18 +147,20 @@ Material:
     - _Parallax: 0.005
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _ReceiveShadows: 1
+    - _ReceiveShadows: 0
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
-    - _Surface: 0
+    - _Surface: 1
     - _UVSec: 0
     - _WindSpeed: 1
     - _WindStrength: 1
     - _WorkflowMode: 1
-    - _ZWrite: 1
+    - _ZTest: 4
+    - _ZWrite: 0
+    - _ZWriteControl: 0
     m_Colors:
     - BottomColor: {r: 0.5411765, g: 0.74509805, b: 0.18039216, a: 0}
     - TopColor: {r: 0.34117648, g: 0.5019608, b: 0.11764706, a: 0}
