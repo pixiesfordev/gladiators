@@ -516,17 +516,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HeroName: {fileID: 3041008848390759526}
   HeroIcon: {fileID: 8620735282352863230}
-  HPReduceBar: {fileID: 0}
+  HPChangeBar: {fileID: 4414494641725837817}
   HPBar: {fileID: 7519478493937810350}
-  HPRecoveryBar: {fileID: 4414494641725837817}
-  HPVal: {fileID: 0}
   BuffIconTrans: {fileID: 1409902349693763964}
   PerformHPReduce: 0
   BarStartVal: 0
   BarFinalVal: 0
   BarChangeSecDelay: 0
   BarChangeSecNeed: 0
-  HitCount: 1
+  BarChangeFrame: 60
 --- !u!1 &1105435031274134201
 GameObject:
   m_ObjectHideFlags: 0
@@ -4037,8 +4035,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -34.699913, y: -1.8999996}
-  m_SizeDelta: {x: -68.400185, y: 40}
+  m_AnchoredPosition: {x: 0, y: -1.8999996}
+  m_SizeDelta: {x: 0, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5407782079074390298
 CanvasRenderer:
@@ -5862,8 +5860,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -32.42491, y: -1.8999996}
-  m_SizeDelta: {x: -63.85018, y: 40}
+  m_AnchoredPosition: {x: -0.12490845, y: -1.8999996}
+  m_SizeDelta: {x: 0.2498169, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7951836678914074148
 CanvasRenderer:
@@ -6200,17 +6198,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HeroName: {fileID: 6499855904286944094}
   HeroIcon: {fileID: 1719434764115198903}
-  HPReduceBar: {fileID: 0}
+  HPChangeBar: {fileID: 2570103201013001209}
   HPBar: {fileID: 2286760010566528479}
-  HPRecoveryBar: {fileID: 2570103201013001209}
-  HPVal: {fileID: 0}
   BuffIconTrans: {fileID: 1798829969934345638}
   PerformHPReduce: 0
   BarStartVal: 0
   BarFinalVal: 0
   BarChangeSecDelay: 0
   BarChangeSecNeed: 0
-  HitCount: 1
+  BarChangeFrame: 60
 --- !u!1 &8763123108341908231
 GameObject:
   m_ObjectHideFlags: 0
