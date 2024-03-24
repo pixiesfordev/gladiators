@@ -107,7 +107,7 @@ namespace Gladiators.Socket {
             SocketCMD<AUTH_TOCLIENT> packet = LitJson.JsonMapper.ToObject<SocketCMD<AUTH_TOCLIENT>>(msg);
             if (packet.Content.IsAuth) {
                 try {
-                    ConnectUDPMatchgame(packet.Content.ConnToken, packet.Content.Index);
+                    ConnectUDPMatchgame(packet.Content.ConnToken);
 
                     JoinRoomSubject?.OnNext(Unit.Default);
                 } catch (Exception e) {
@@ -122,11 +122,10 @@ namespace Gladiators.Socket {
             }
         }
 
-        private void ConnectUDPMatchgame(string connToken, int index) {
+        private void ConnectUDPMatchgame(string connToken) {
             //取得Matchgame Auth的回傳結果 UDP socket的ConnToken與遊戲房間的座位索引
             WriteLog.LogColor($"Matchgame auth success! UDP_MatchgameConnToken: {UDP_MatchgameConnToken}", WriteLog.LogType.Connection);
             UDP_MatchgameConnToken = connToken;
-            AllocatedRoom.Instance.SetPlayerIndex(index);
 
             //取得ConnToken後就能進行UDP socket連線
             UDP_MatchgameClient.StartConnect(UDP_MatchgameConnToken, (bool connected) => {
@@ -174,9 +173,9 @@ namespace Gladiators.Socket {
                     //if (cmdType != SocketContent.MatchgameCMD_TCP.ATTACK_TOCLIENT)
                     WriteLog.LogColorFormat("(TCP)接收: {0}", WriteLog.LogType.Connection, _msg);
                     switch (cmdType) {
-                        case SocketContent.MatchgameCMD_TCP.SPAWN_TOCLIENT:
-                            var spawnPacket = LitJson.JsonMapper.ToObject<SocketCMD<SPAWN_TOCLIENT>>(_msg);
-                            HandleSPAWN(spawnPacket);
+                        case SocketContent.MatchgameCMD_TCP.READY_TOCLIENT:
+                            var packet = LitJson.JsonMapper.ToObject<SocketCMD<READY_TOCLIENT>>(_msg);
+                            HandleReady(packet);
                             break;
                         default:
                             WriteLog.LogErrorFormat("收到尚未定義的命令類型: {0}", cmdType);
@@ -192,7 +191,7 @@ namespace Gladiators.Socket {
             }
         }
 
-        void HandleSPAWN(SocketCMD<SPAWN_TOCLIENT> _packet) {
+        void HandleReady(SocketCMD<READY_TOCLIENT> _packet) {
             //if (SceneManager.GetActiveScene().name != MyScene.BattleScene.ToString()) return;
             //if (BattleManager.Instance == null || BattleManager.Instance.MyMonsterScheduler == null) return;
             //BattleManager.Instance.MyMonsterScheduler.EnqueueMonster(_packet.Content.MonsterIDs, _packet.Content.MonsterIdxs, _packet.Content.RouteID, _packet.Content.IsBoss, (float)_packet.Content.SpawnTime, BattleManager.Instance.Index);

@@ -57,10 +57,6 @@ namespace Gladiators.Main {
         /// 玩家自己使用英雄Skin的ID
         /// </summary>
         public string MyHeroSkinID { get; private set; }
-        /// <summary>
-        /// 玩家自己在房間的索引(座位))
-        /// </summary>
-        public int Index { get; private set; }
 
         public bool InGame { get; private set; } = false; //是否已經在遊戲房間中
         public static void Init() {
@@ -83,12 +79,6 @@ namespace Gladiators.Main {
             var dbPlayer = GamePlayer.Instance.GetDBPlayerDoc<DBPlayer>(DBPlayerCol.player);
             if (dbPlayer == null) return;
             dbPlayer.SetInMatchgameID(DBMatchgameID).Forget();
-        }
-        /// <summary>
-        /// 設定房間內玩家的索引, 也就是玩家的座位, 一進房間後就不會更動
-        /// </summary>
-        public void SetPlayerIndex(int _playerIndex) {
-            Index = _playerIndex;
         }
 
         /// <summary>

@@ -213,12 +213,6 @@ namespace Scoz.Func {
                                 Instance.CreateAddressableObjs();
                                 IsFinishedLoadAsset = true;
                                 SpawnSceneUI();
-                                var data= GameDictionary.GetJsonData<GladiatorJsonData>(1);
-                                WriteLog.WriteObj(data);
-                                var data2 = GameDictionary.GetJsonData<SkillJsonData>(1);
-                                WriteLog.WriteObj(data2);
-                                var data3 = GameDictionary.GetJsonData<SkillEffectJsonData>("1");
-                                WriteLog.WriteObj(data3);
                             });
                         });
                     });

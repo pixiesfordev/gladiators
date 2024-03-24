@@ -41,22 +41,15 @@ namespace Gladiators.Socket {
             CREATEROOM_TOCLIENT,//加房間or開房
         }
         public enum MatchgameCMD_TCP {
-            AUTH_TOCLIENT, //身分驗證
-            SETHERO_TOCLIENT,//設定玩家英雄
-            ATTACK_TOCLIENT,//攻擊
-            HIT_TOCLIENT,//擊中
-            UPDATEPLAYER_TOCLIENT,//更新玩家
-            SPAWN_TOCLIENT,//生怪
-            UPDATESCENE_TOCLIENT,//場景狀態更新
-            MONSTERDIE_TOCLIENT,//怪物死亡時送Client
-            AUTO_TOCLIENT,//Auto模式
-            LEAVE_TOCLIENT,//離開遊戲
+            AUTH_TOCLIENT,// (TCP)身分驗證-送Client
+            SETPLAYER_TOCLIENT,// (TCP)設定玩家資料-送Client
+            READY_TOCLIENT,// (TCP)遊戲準備就緒-送Client
+            BRIBE_TOCLIENT,// (TCP)賄賂選擇-送Client
+            PLAYERACTION_TOCLIENT,// (TCP)玩家指令-送Client
+            BATTLESTATE_TOCLIENT,// (TCP)狀態更新-送Client
+            ENDGAME_TOCLIENT,// (TCP)遊戲結算-送Client
         }
         public enum MatchgameCMD_UDP {
-            //ATTACK_TOCLIENT,//攻擊
-            UPDATEGAME_TOCLIENT,//遊戲狀態更新
-            UPDATEPLAYER_TOCLIENT,//更新玩家
-            UPDATESCENE_TOCLIENT,//場景狀態更新
         }
     }
 }
