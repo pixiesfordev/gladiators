@@ -77,18 +77,17 @@ namespace Gladiators.Battle {
 
         //TODO:
         //技能施放
-        //賄賂牌施放
         //體力條計算
         //對撞計算
         //扣血計算
-        //戰鬥結算        
+        //戰鬥結算
         //buff設定
 
         //戰鬥剩餘秒數計算
         async UniTaskVoid CountDownBattleTime()
         {
             ReCount:
-            Debug.Log("測試倒數秒數.現在秒數: " + BattleLeftTime);
+            //Debug.Log("測試倒數秒數.現在秒數: " + BattleLeftTime);
             await UniTask.Delay(TimeSpan.FromSeconds(1f));
             //有可能會發生剩下一秒的時候分出勝負 所以一秒數完還是要再次確認是否已經分出勝負 沒有才繼續數秒
             if (!BattleIsEnd)
@@ -100,7 +99,7 @@ namespace Gladiators.Battle {
                 else
                     goto ReCount;
             }
-            Debug.Log("結束時間倒數計算!");
+            //Debug.Log("結束時間倒數計算!");
         }
 
         //戰鬥結束
