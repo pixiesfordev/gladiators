@@ -65,27 +65,27 @@ public class BattleSprintButton : MonoBehaviour
         }
     }
 
-    public void OnText()
+    void OnText()
     {
         StateText.text = "衝刺中";
     }
 
-    public void OffText()
+    void OffText()
     {
         StateText.text = "行走中";
     }
 
-    public void HideText()
+    void HideText()
     {
         StateText.text = "";
     }
 
-    public void Run()
+    void Run()
     {
         Debug.Log("衝刺中~~~");
     }
 
-    public void StopRun()
+    void StopRun()
     {
         Debug.Log("停止衝刺~~~~");
     }
