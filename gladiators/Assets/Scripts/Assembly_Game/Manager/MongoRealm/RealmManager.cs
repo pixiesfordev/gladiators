@@ -31,8 +31,9 @@ namespace Service.Realms {
     public enum DBGameSettingDoc {
         Timer,
         Address,
+        GameSetting,
         GameState,
-        ScheduledInGameNotification,
+        GameConfig,
     }
     public static partial class RealmManager {
         //環境版本對應Realm App ID

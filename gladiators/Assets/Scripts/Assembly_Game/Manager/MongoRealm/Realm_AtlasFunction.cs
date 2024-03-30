@@ -78,7 +78,7 @@ namespace Service.Realms {
             }
         }
         /// <summary>
-        /// 呼叫MonsgoDB Atlas，且不在乎回傳時使用此方法，傳入方法名稱與參數 
+        /// 呼叫MonsgoDB Atlas，且不在乎回傳結果，傳入方法名稱與參數 
         /// </summary>
         /// <param name="_func">方法名稱</param>
         /// <param name="_data">傳入參數字典</param>
