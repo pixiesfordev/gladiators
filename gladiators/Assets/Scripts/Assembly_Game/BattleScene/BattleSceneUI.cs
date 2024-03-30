@@ -25,14 +25,9 @@ public class BattleSceneUI : BaseUI {
     [SerializeField] BattleSkillButton SkillBtn3;
     [SerializeField] BattleSkillButton NextSkillBtn;
 
-    //賄賂牌
-    [SerializeField] BattleBribeButton BribeBtn1;
-    [SerializeField] BattleBribeButton BribeBtn2;
-
     [SerializeField] Image StaminaBar;//使用技能體力條
-    [SerializeField] Image StaminaReduceBar;//扣除體力條
 
-    [SerializeField] GameObject SprintBtn;//衝刺按鈕
+    [SerializeField] BattleSprintButton SprintBtn;//衝刺按鈕
 
     [SerializeField] GameObject SettingBtn;//設定按鈕
 

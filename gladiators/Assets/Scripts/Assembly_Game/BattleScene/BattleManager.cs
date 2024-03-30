@@ -25,8 +25,10 @@ namespace Gladiators.Battle {
         [SerializeField] bool BattleIsEnd = false;//控制戰鬥是否結束 先序列化出來供測試用
         int BattleLeftTime;
 
+
+        [HeaderAttribute("==============TEST==============")]
         //測試參數區塊
-        [SerializeField] bool bResetBattle = false;
+        [Tooltip("重置戰鬥")][SerializeField] bool bResetBattle = false;
         
         void Update()
         {
