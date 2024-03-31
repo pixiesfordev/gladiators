@@ -22,18 +22,6 @@ namespace Gladiators.Main {
             Instance = this;
         }
         /// <summary>
-        /// 檢查是否要顯示遊戲內推播通知
-        /// </summary>
-        public void InGameCheckScheduledInGameNotification() {
-            if (SceneManager.GetActiveScene().name == MyScene.StartScene.ToString()) return;
-            var notification = RealmManager.MyRealm.Find<DBGameSetting>(DBGameSettingDoc.ScheduledInGameNotification.ToString());
-            if (notification.Enable == false) return;
-            if (notification.Index <= ScheduledInGameNotificationIndex) return;
-            if (notification.EndAt < GameManager.Instance.NowTime) return;
-            ScheduledInGameNotificationIndex = notification.Index.GetValueOrDefault();
-            PopupUI.ShowClickCancel(notification.ScheduledNoticication_Content, null);
-        }
-        /// <summary>
         /// ※登入並載完資源包後會依序執行
         /// 1. 判斷玩家版本，若版本低於最低遊戲版本則會跳強制更新(在MaintainExemptPlayerUIDs中的玩家不會跳更新)
         /// 2. 判斷玩家版本，若版本低於目前遊戲版本則會跳更新建議(在MaintainExemptPlayerUIDs中的玩家不會跳更新)
@@ -44,9 +32,9 @@ namespace Gladiators.Main {
 
             WriteLog.LogFormat("LocoVer: {0}", Application.version);
             WriteLog.LogFormat("GameVersion: {0}", _gameState.GameVersion);
-            WriteLog.LogFormat("MinimumGameVersion: {0}", _gameState.MinimumGameVersion);
+            WriteLog.LogFormat("MinimumGameVersion: {0}", _gameState.MinGameVersion);
 
-            var playerDoc = GamePlayer.Instance.GetDBPlayerDoc<DBPlayer>(DBPlayerCol.player);
+            var playerDoc = GamePlayer.Instance.GetDBPlayerDoc<DBPlayer>();
 
             //黑名單檢查
             if (playerDoc.Ban ?? false) return CanPlayGameState.Ban;
@@ -58,7 +46,7 @@ namespace Gladiators.Main {
             }
 
             //強制版本更新檢查
-            if (!TextManager.AVersionGreaterEqualToBVersion(Application.version, _gameState.MinimumGameVersion)) {
+            if (!TextManager.AVersionGreaterEqualToBVersion(Application.version, _gameState.MinGameVersion)) {
                 if (!_gameState.MaintainExemptPlayerIDs.Contains(playerDoc.ID))//白名單中的玩家不會跳強制更新
                     return CanPlayGameState.NeedGetNewVersion;
             }

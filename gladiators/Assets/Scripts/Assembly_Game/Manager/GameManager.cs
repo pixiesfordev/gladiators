@@ -149,6 +149,8 @@ namespace Scoz.Func {
 #endif
             //初始化文字取代工具
             StringReplacer.Init();
+            //初始化遊戲房間
+            AllocatedRoom.Init();
 
             // 建立AddressableManage並開始載包
             StartDownloadAddressable();
@@ -213,12 +215,6 @@ namespace Scoz.Func {
                                 Instance.CreateAddressableObjs();
                                 IsFinishedLoadAsset = true;
                                 SpawnSceneUI();
-                                var data= GameDictionary.GetJsonData<GladiatorJsonData>(1);
-                                WriteLog.WriteObj(data);
-                                var data2 = GameDictionary.GetJsonData<SkillJsonData>(1);
-                                WriteLog.WriteObj(data2);
-                                var data3 = GameDictionary.GetJsonData<SkillEffectJsonData>("1");
-                                WriteLog.WriteObj(data3);
                             });
                         });
                     });

@@ -16,11 +16,4 @@ public partial class DBPlayerState : IRealmObject {
     [MapTo("lastUpdatedAt")]
     public DateTimeOffset? LastUpdatedAt { get; private set; }
 
-
-    public void SetLastUpdatedAt(DateTimeOffset _lastUpdatedAt) {
-        RealmManager.MyRealm.WriteAsync(() => {
-            LastUpdatedAt = _lastUpdatedAt;
-        });
-    }
-
 }

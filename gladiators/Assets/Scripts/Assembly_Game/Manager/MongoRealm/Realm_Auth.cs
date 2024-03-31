@@ -67,7 +67,6 @@ namespace Service.Realms {
             try {
                 RealmManager.InitDB();//初始化RealmDB
                 await GetServerTime();
-                await GameConnector.SendRestfulAPI("player/syncredischeck", null); //檢查是否需要同步Redis資料回玩家資料
 
             } catch (Exception _e) {
                 WriteLog.LogError(_e);

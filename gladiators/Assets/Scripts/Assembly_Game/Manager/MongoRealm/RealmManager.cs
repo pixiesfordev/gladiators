@@ -13,10 +13,9 @@ namespace Service.Realms {
     /// DB玩家資料集合
     /// </summary>
     public enum DBPlayerCol {
-        player,
-        playerHistory,
-        playerState,
-        playerMatchgame,//遊戲房
+        DBPlayer,
+        DBPlayerHistory,
+        DBPlayerState,
     }
 
     /// <summary>
@@ -31,8 +30,9 @@ namespace Service.Realms {
     public enum DBGameSettingDoc {
         Timer,
         Address,
+        GameSetting,
         GameState,
-        ScheduledInGameNotification,
+        GameConfig,
     }
     public static partial class RealmManager {
         //環境版本對應Realm App ID

@@ -12,7 +12,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace Gladiators.Socket {
-    public partial class HeroFishingSocket {
+    public partial class GladiatorsSocket {
 
         TcpClient TCP_MatchmakerClient;
 

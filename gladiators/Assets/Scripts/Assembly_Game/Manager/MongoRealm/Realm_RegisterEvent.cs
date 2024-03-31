@@ -97,7 +97,7 @@ namespace Service.Realms {
         /// </summary>
         static void RegisterPropertyChanges_MyPlayer() {
             //玩家資料
-            var player = GamePlayer.Instance.GetDBPlayerDoc<DBPlayer>(DBPlayerCol.player);
+            var player = GamePlayer.Instance.GetDBPlayerDoc<DBPlayer>();
             if (player != null) {
                 player.PropertyChanged += (sender, e) => {
                     var propertyName = e.PropertyName;
@@ -113,7 +113,7 @@ namespace Service.Realms {
         /// 註冊遊戲設定通知
         /// </summary>
         static void RegisterPropertyChanges_GameSetting() {
-            var gameState = GamePlayer.Instance.GetDBGameSettingDoc<DBGameSetting>(DBGameSettingDoc.GameState);
+            var gameState = GamePlayer.Instance.GetDBGameSettingDoc(DBGameSettingDoc.GameState);
             if (gameState != null) {
                 gameState.PropertyChanged += (sender, e) => {
                     var propertyName = e.PropertyName;
