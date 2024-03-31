@@ -14,12 +14,12 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace Gladiators.Socket {
-    public partial class HeroFishingSocket {
+    public partial class GladiatorsSocket {
 
-        protected static HeroFishingSocket Instance = null;
-        public static HeroFishingSocket GetInstance() {
+        protected static GladiatorsSocket Instance = null;
+        public static GladiatorsSocket GetInstance() {
             if (Instance == null) {
-                Instance = new HeroFishingSocket();
+                Instance = new GladiatorsSocket();
                 Instance.Init();
             }
             return Instance;

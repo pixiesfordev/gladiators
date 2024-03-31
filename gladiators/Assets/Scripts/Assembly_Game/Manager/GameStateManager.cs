@@ -34,7 +34,7 @@ namespace Gladiators.Main {
             WriteLog.LogFormat("GameVersion: {0}", _gameState.GameVersion);
             WriteLog.LogFormat("MinimumGameVersion: {0}", _gameState.MinGameVersion);
 
-            var playerDoc = GamePlayer.Instance.GetDBPlayerDoc<DBPlayer>(DBPlayerCol.player);
+            var playerDoc = GamePlayer.Instance.GetDBPlayerDoc<DBPlayer>();
 
             //黑名單檢查
             if (playerDoc.Ban ?? false) return CanPlayGameState.Ban;

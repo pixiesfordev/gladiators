@@ -13,10 +13,9 @@ namespace Service.Realms {
     /// DB玩家資料集合
     /// </summary>
     public enum DBPlayerCol {
-        player,
-        playerHistory,
-        playerState,
-        playerMatchgame,//遊戲房
+        DBPlayer,
+        DBPlayerHistory,
+        DBPlayerState,
     }
 
     /// <summary>

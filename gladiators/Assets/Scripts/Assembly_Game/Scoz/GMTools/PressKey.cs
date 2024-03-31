@@ -3,6 +3,9 @@ using Service.Realms;
 using System.Linq;
 using Gladiators.Socket;
 using Gladiators.Main;
+using UnityEngine.SceneManagement;
+using System;
+using Cysharp.Threading.Tasks;
 
 namespace Scoz.Func {
     public partial class TestTool : MonoBehaviour {
@@ -24,13 +27,32 @@ namespace Scoz.Func {
                 WriteLog.WriteObj(data3);
 
             } else if (Input.GetKeyDown(KeyCode.W)) {
+                UniTask.Void(async () => {
+                    var bsonDoc = await RealmManager.Query_GetDoc("player", GamePlayer.Instance.GetDBPlayerDoc<DBPlayer>().ID);
+                    WriteLog.LogError("bsonDoc=" + bsonDoc);
+                });
+
 
             } else if (Input.GetKeyDown(KeyCode.E)) {
             } else if (Input.GetKeyDown(KeyCode.R)) {
 
             } else if (Input.GetKeyDown(KeyCode.P)) {
             } else if (Input.GetKeyDown(KeyCode.O)) {
-
+                Action connFunc = null;
+                if (SceneManager.GetActiveScene().name != MyScene.BattleScene.ToString())
+                    PopupUI.CallSceneTransition(MyScene.BattleScene);//跳轉到BattleScene
+                PopupUI.ShowLoading(StringJsonData.GetUIString("Loading"));
+                connFunc = () => GameConnector.Instance.ConnectToMatchgameTestVer(() => {
+                    PopupUI.HideLoading();
+                }, () => {
+                    WriteLog.LogError("連線遊戲房失敗");
+                }, () => {
+                    if (AllocatedRoom.Instance.CurGameState == AllocatedRoom.GameState.Playing) {
+                        WriteLog.LogError("需要斷線重連");
+                        connFunc();
+                    }
+                });
+                connFunc();
             } else if (Input.GetKeyDown(KeyCode.I)) {
 
             } else if (Input.GetKeyDown(KeyCode.L)) {

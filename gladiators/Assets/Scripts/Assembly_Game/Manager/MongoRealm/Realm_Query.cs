@@ -15,9 +15,16 @@ namespace Service.Realms {
     public static partial class RealmManager {
 
         public static async UniTask<BsonDocument> Query_GetDoc(string _dbCol, string _id) {
+            WriteLog.LogError("_dbCol=" + _dbCol);
+            WriteLog.LogError("_id=" + _id);
             var col = MyDB.GetCollection<BsonDocument>(_dbCol);
-            var dbMatchgame = await col.FindOneAsync(new { _id = _id });
-            return dbMatchgame;
+            try {
+                var doc = await col.FindOneAsync(new BsonDocument { { "_id", _id } });
+                return doc;
+            } catch (Exception _e) {
+                WriteLog.LogError("Query_GetDoc錯誤:" + _e);
+                return null;
+            }
         }
     }
 }

@@ -29,10 +29,9 @@ namespace Gladiators.Battle {
         [HeaderAttribute("==============TEST==============")]
         //測試參數區塊
         [Tooltip("重置戰鬥")][SerializeField] bool bResetBattle = false;
-        
-        void Update()
-        {
-            if (bResetBattle){
+
+        void Update() {
+            if (bResetBattle) {
                 ResetBattle();
                 bResetBattle = false;
             }
@@ -42,7 +41,27 @@ namespace Gladiators.Battle {
             Instance = this;
             SetCam();//設定攝影機模式
             ResetBattle();
+            CheckGameState();
         }
+        void CheckGameState() {
+            switch (AllocatedRoom.Instance.CurGameState) {
+                case AllocatedRoom.GameState.NotInGame://本地測試
+                    break;
+                case AllocatedRoom.GameState.UnAuth://需要等待Matchgame Server回傳Auth成功
+                    PopupUI.ShowLoading(StringJsonData.GetUIString("Loading"));
+                    break;
+                case AllocatedRoom.GameState.GotPlayer://如果已經收到雙方玩家資料就送Ready
+                    GameConnector.Instance.SetReady();
+                    break;
+            }
+        }
+        public void GotEnemy() {
+            GameConnector.Instance.SetReady();
+        }
+        public void GoBribe() {
+            WriteLog.LogError("開始賄賂");
+        }
+
         void SetCam() {
             //因為戰鬥場景的攝影機有分為場景與UI, 要把場景攝影機設定為Base, UI設定為Overlay, 並在BaseCamera中加入Camera stack
             UICam.Instance.SetRendererMode(CameraRenderType.Overlay);
@@ -59,8 +78,7 @@ namespace Gladiators.Battle {
         }
 
         //重啟戰鬥
-        void ResetBattle()
-        {
+        void ResetBattle() {
             //相關參數在此重設 設定完才去更新UI
             BattleIsEnd = false;
             BattleLeftTime = BattleDefaultTime;
@@ -70,8 +88,7 @@ namespace Gladiators.Battle {
         }
 
         //重設戰鬥UI
-        void ResetBattleSceneUI()
-        {
+        void ResetBattleSceneUI() {
             if (BattleSceneUI.Instance == null)
                 return;
             BattleSceneUI.Instance.SetTimeText(BattleLeftTime);
@@ -86,17 +103,15 @@ namespace Gladiators.Battle {
         //buff設定
 
         //戰鬥剩餘秒數計算
-        async UniTaskVoid CountDownBattleTime()
-        {
+        async UniTaskVoid CountDownBattleTime() {
             ReCount:
             //Debug.Log("測試倒數秒數.現在秒數: " + BattleLeftTime);
             await UniTask.Delay(TimeSpan.FromSeconds(1f));
             //有可能會發生剩下一秒的時候分出勝負 所以一秒數完還是要再次確認是否已經分出勝負 沒有才繼續數秒
-            if (!BattleIsEnd)
-            {
+            if (!BattleIsEnd) {
                 BattleLeftTime -= 1;
                 BattleSceneUI.Instance.SetTimeText(BattleLeftTime);
-                if(BattleLeftTime <= 0)
+                if (BattleLeftTime <= 0)
                     BattleEnd();
                 else
                     goto ReCount;
@@ -105,13 +120,12 @@ namespace Gladiators.Battle {
         }
 
         //戰鬥結束
-        void BattleEnd()
-        {
+        void BattleEnd() {
             //進入結算環節 避免出bug 如果已經開始結算就不要重複執行
             if (BattleIsEnd) return;
             BattleIsEnd = true;
             Debug.Log("戰鬥結束");
         }
-        
+
     }
 }
