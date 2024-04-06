@@ -1,29 +1,21 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using Scoz.Func;
 using LitJson;
-using System;
-using System.Linq;
-using SimpleJSON;
 using System.Reflection;
 
 namespace Gladiators.Main {
-    public class SkillJsonData : MyJsonData {
+    public class JsonBribe : JsonBase {
         public static string DataName { get; set; }
         public string Name {
             get {
-                return StringJsonData.GetString_static(DataName + "_" + ID, "Name");
+                return JsonString.GetString_static(DataName + "_" + ID, "Name");
             }
         }
-        public string Activation { get; private set; }
-        public int Initiative { get; private set; }
-        public int Vigor { get; private set; }
+        public int Cost { get; private set; }
 
         protected override void SetDataFromJson(JsonData _item) {
             JsonData item = _item;
             //反射屬性
-            var myData = JsonMapper.ToObject<SkillJsonData>(item.ToJson());
+            var myData = JsonMapper.ToObject<JsonBribe>(item.ToJson());
             foreach (PropertyInfo propertyInfo in this.GetType().GetProperties()) {
                 if (propertyInfo.CanRead && propertyInfo.CanWrite) {
                     //下面這行如果報錯誤代表上方的sonMapper.ToObject<XXXXX>(item.ToJson());<---XXXXX忘了改目前Class名稱

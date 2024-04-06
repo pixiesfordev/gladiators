@@ -6,7 +6,7 @@ using LitJson;
 using SimpleJSON;
 
 namespace Scoz.Func {
-    public class GameSettingJsonData : MyJsonData {
+    public class JsonGameSetting : JsonBase {
         public static string DataName { get; set; }
         public new string ID;
         //一般

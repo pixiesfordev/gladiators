@@ -14,6 +14,6 @@ namespace Gladiators.Socket.Matchgame {
     }
     public class PackPlayer {
         public string DBPlayerID { get; private set; }
-        public string DBGladiatorID { get; private set; }
+        public PackGladiator Gladiator { get; private set; }
     }
 }

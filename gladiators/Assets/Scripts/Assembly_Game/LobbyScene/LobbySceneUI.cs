@@ -52,7 +52,7 @@ namespace Gladiators.Main {
                 return;
             } else {//已經有Realm帳戶，就登入Realm
                 if (RealmManager.MyRealm == null) {// 還沒有設定Realm Config就先設定
-                    PopupUI.ShowLoading(StringJsonData.GetUIString("DataLoading"));
+                    PopupUI.ShowLoading(JsonString.GetUIString("DataLoading"));
                     UniTask.Void(async () => {
                         await RealmManager.OnSignin();
                         RealmManager.OnDataLoaded();

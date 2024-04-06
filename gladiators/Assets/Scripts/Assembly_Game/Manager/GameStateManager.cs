@@ -74,7 +74,7 @@ namespace Gladiators.Main {
                     string url = address.StoreURL_Apple;
                     if (Application.platform == RuntimePlatform.Android)
                         url = address.StoreURL_Google;
-                    PopupUI.ShowConfirmCancel(StringJsonData.GetUIString(state.ToString()), () => {
+                    PopupUI.ShowConfirmCancel(JsonString.GetUIString(state.ToString()), () => {
                         //點確認就去商店更新並關閉遊戲
                         Application.OpenURL(url);
                         Application.Quit();
@@ -87,7 +87,7 @@ namespace Gladiators.Main {
                     string url2 = address.StoreURL_Apple;
                     if (Application.platform == RuntimePlatform.Android)
                         url2 = address.StoreURL_Google;
-                    PopupUI.ShowClickCancel(StringJsonData.GetUIString(state.ToString()), () => {
+                    PopupUI.ShowClickCancel(JsonString.GetUIString(state.ToString()), () => {
                         //點擊後就去商店更新並關閉遊戲
                         Application.OpenURL(url2);
                         Application.Quit();
@@ -95,19 +95,19 @@ namespace Gladiators.Main {
                     break;
                 case GameStateManager.CanPlayGameState.Maintain://維護中
                     if (GameManager.Instance.NowTime < gameState.MaintainEndAt) {
-                        PopupUI.ShowClickCancel(string.Format(StringJsonData.GetUIString("MaintainWithTime"), gameState.MaintainEndAt), () => {
+                        PopupUI.ShowClickCancel(string.Format(JsonString.GetUIString("MaintainWithTime"), gameState.MaintainEndAt), () => {
                             //點擊後關閉遊戲
                             Application.Quit();
                         });
                     } else {
-                        PopupUI.ShowClickCancel(StringJsonData.GetUIString("Maintain"), () => {
+                        PopupUI.ShowClickCancel(JsonString.GetUIString("Maintain"), () => {
                             //點擊後關閉遊戲
                             Application.Quit();
                         });
                     }
                     break;
                 case GameStateManager.CanPlayGameState.Ban://玩家被Ban
-                    PopupUI.ShowClickCancel(StringJsonData.GetUIString(state.ToString()), () => {
+                    PopupUI.ShowClickCancel(JsonString.GetUIString(state.ToString()), () => {
                         //點擊後就跳至官方客服網頁並關閉遊戲
                         Application.OpenURL(address.CustomerServiceURL);
                         Application.Quit();
@@ -139,7 +139,7 @@ namespace Gladiators.Main {
                     string url = address.StoreURL_Apple;
                     if (Application.platform == RuntimePlatform.Android)
                         url = address.StoreURL_Google;
-                    PopupUI.ShowClickCancel(StringJsonData.GetUIString(state.ToString()), () => {
+                    PopupUI.ShowClickCancel(JsonString.GetUIString(state.ToString()), () => {
                         //點擊後就去商店更新並關閉遊戲
                         Application.OpenURL(url);
                         Application.Quit();
@@ -147,19 +147,19 @@ namespace Gladiators.Main {
                     break;
                 case GameStateManager.CanPlayGameState.Maintain://維護中
                     if (GameManager.Instance.NowTime < gameState.MaintainEndAt) {
-                        PopupUI.ShowClickCancel(string.Format(StringJsonData.GetUIString("MaintainWithTime"), gameState.MaintainEndAt), () => {
+                        PopupUI.ShowClickCancel(string.Format(JsonString.GetUIString("MaintainWithTime"), gameState.MaintainEndAt), () => {
                             //點擊後關閉遊戲
                             Application.Quit();
                         });
                     } else {
-                        PopupUI.ShowClickCancel(StringJsonData.GetUIString("Maintain"), () => {
+                        PopupUI.ShowClickCancel(JsonString.GetUIString("Maintain"), () => {
                             //點擊後關閉遊戲
                             Application.Quit();
                         });
                     }
                     break;
                 case GameStateManager.CanPlayGameState.Ban://玩家被Ban
-                    PopupUI.ShowClickCancel(StringJsonData.GetUIString(state.ToString()), () => {
+                    PopupUI.ShowClickCancel(JsonString.GetUIString(state.ToString()), () => {
                         //點擊後就跳至官方客服網頁並關閉遊戲
                         Application.OpenURL(address.CustomerServiceURL);
                         Application.Quit();

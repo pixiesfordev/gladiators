@@ -6,13 +6,13 @@ using LitJson;
 using Gladiators.Main;
 
 namespace Scoz.Func {
-    public partial class StringJsonData {
+    public partial class JsonString {
         public static bool ShowLoadTime = true;
         public string ID { get; private set; }
         public Dictionary<Language, Dictionary<string, string>> StringDic = new Dictionary<Language, Dictionary<string, string>>();
         public string StringType { get; protected set; }
 
-        public StringJsonData(JsonData _item, string _stringType) {
+        public JsonString(JsonData _item, string _stringType) {
             try {
                 JsonData item = _item;
                 StringType = _stringType;
@@ -52,15 +52,15 @@ namespace Scoz.Func {
         /// <summary>
         /// 傳入String表名稱，並依string表資料回傳字典
         /// </summary>
-        public static Dictionary<string, StringJsonData> SetStringDic() {
+        public static Dictionary<string, JsonString> SetStringDic() {
             string dataName = "String";
             DateTime startTime = DateTime.Now;
             string jsonStr = Resources.Load<TextAsset>(string.Format("Jsons/{0}", dataName)).ToString();
             JsonData jd = JsonMapper.ToObject(jsonStr);
             JsonData items = jd[dataName];
-            Dictionary<string, StringJsonData> dic = new Dictionary<string, StringJsonData>();
+            Dictionary<string, JsonString> dic = new Dictionary<string, JsonString>();
             for (int i = 0; i < items.Count; i++) {
-                StringJsonData data = new StringJsonData(items[i], dataName);
+                JsonString data = new JsonString(items[i], dataName);
                 string name = items[i]["ID"].ToString();
                 if (dic.ContainsKey(name)) {
                     WriteLog.LogError(string.Format("{0}的名稱{1}已重複", dataName, name));
@@ -114,7 +114,7 @@ namespace Scoz.Func {
             if (GamePlayer.Instance != null)
                 return GetString_static(_id, GamePlayer.Instance.UsingLanguage.ToString());
             else {
-                string defaultLangualge = GameSettingJsonData.GetStr(GameSetting.DefaultLanguage);
+                string defaultLangualge = JsonGameSetting.GetStr(GameSetting.DefaultLanguage);
                 Debug.Log("defaultLangualge=" + defaultLangualge);
                 return GetString_static(_id, defaultLangualge);
             }

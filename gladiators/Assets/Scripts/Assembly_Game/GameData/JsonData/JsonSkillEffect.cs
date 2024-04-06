@@ -7,7 +7,7 @@ using Unity.Entities.UniversalDelegates;
 
 namespace Gladiators.Main {
     public enum EffectType {
-        Attack ,//傷害
+        Attack,//傷害
         RestoreHP,//生命
         RestoreVigor,//體力
         Dizzy,//暈眩
@@ -25,24 +25,24 @@ namespace Gladiators.Main {
         Knockback,//擊退
         Enraged,//激怒
     }
-    public class SkillEffectJsonData : MyJsonData {
+    public class JsonSkillEffect : JsonBase {
         public static string DataName { get; set; }
         public new string ID { get; private set; }
         public string Name {
             get {
-                return StringJsonData.GetString_static(DataName + "_" + ID, "Name");
+                return JsonString.GetString_static(DataName + "_" + ID, "Name");
             }
         }
         public string Description {
             get {
-                return StringJsonData.GetString_static(DataName + "_" + ID, "Description");
+                return JsonString.GetString_static(DataName + "_" + ID, "Description");
             }
         }
         public int SkillID { get; private set; }
         public Target MyTarget { get; private set; }
         public List<SkillEffect> EnemyEffects = new List<SkillEffect>();
         public List<SkillEffect> MySelfEffects = new List<SkillEffect>();
-        static Dictionary<int, List<SkillEffectJsonData>> SkillEffectDataDic = new Dictionary<int, List<SkillEffectJsonData>>();
+        static Dictionary<int, List<JsonSkillEffect>> SkillEffectDataDic = new Dictionary<int, List<JsonSkillEffect>>();
         protected override void SetDataFromJson(JsonData _item) {
             JsonData item = _item;
 
@@ -66,7 +66,7 @@ namespace Gladiators.Main {
                         ID = (string)item[key];
                         break;
                     case "SkillID":
-                        SkillID= (int)item[key];
+                        SkillID = (int)item[key];
                         break;
                     case "Target":
                         MyTarget = MyEnum.ParseEnum<Target>(item[key].ToString());
@@ -92,11 +92,11 @@ namespace Gladiators.Main {
         }
         protected override void ResetStaticData() {
         }
-        void AddToSkillEffectDic(SkillEffectJsonData _data) {
+        void AddToSkillEffectDic(JsonSkillEffect _data) {
             if (SkillEffectDataDic.ContainsKey(_data.SkillID)) SkillEffectDataDic[_data.SkillID].Add(_data);
-             else SkillEffectDataDic.Add(_data.SkillID, new List<SkillEffectJsonData> { _data }); 
+            else SkillEffectDataDic.Add(_data.SkillID, new List<JsonSkillEffect> { _data });
         }
-        public static List<SkillEffectJsonData> GetSkillEffectDatas(int _id) {
+        public static List<JsonSkillEffect> GetSkillEffectDatas(int _id) {
             if (SkillEffectDataDic.ContainsKey(_id)) return SkillEffectDataDic[_id];
             return null;
         }
@@ -110,7 +110,7 @@ namespace Gladiators.Main {
             EffectType = _type;
             Prob = _prob;
             Value = _value;
-         }
+        }
     }
 
 }

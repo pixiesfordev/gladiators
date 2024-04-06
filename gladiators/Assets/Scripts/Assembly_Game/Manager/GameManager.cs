@@ -83,7 +83,7 @@ namespace Scoz.Func {
         }
 
         public static void UnloadUnusedAssets() {
-            if (!CDChecker.DoneCD("UnloadUnusedAssets", GameSettingJsonData.GetFloat(GameSetting.UnloadUnusedAssetsCD)))
+            if (!CDChecker.DoneCD("UnloadUnusedAssets", JsonGameSetting.GetFloat(GameSetting.UnloadUnusedAssetsCD)))
                 return;
             Resources.UnloadUnusedAssets();
         }

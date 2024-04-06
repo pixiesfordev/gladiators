@@ -47,7 +47,7 @@ namespace Scoz.Func {
             }
             if (string.IsNullOrEmpty(UIString) || !GameDictionary.IsInit)
                 return;
-            text = StringJsonData.GetUIString(UIString);
+            text = JsonString.GetUIString(UIString);
         }
         public static void RefreshActivityTextsAndFunctions() {
             RefreshActiveTexts();

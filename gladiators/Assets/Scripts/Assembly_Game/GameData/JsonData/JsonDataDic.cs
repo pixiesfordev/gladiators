@@ -12,13 +12,13 @@ namespace Scoz.Func {
 
 
         //字典
-        public static Dictionary<ItemType, Dictionary<int, MyJsonData>> ItemJsonDic = new Dictionary<ItemType, Dictionary<int, MyJsonData>>();
-        public static Dictionary<string, Dictionary<int, MyJsonData>> IntKeyJsonDic = new Dictionary<string, Dictionary<int, MyJsonData>>();
-        public static Dictionary<string, Dictionary<string, MyJsonData>> StrKeyJsonDic = new Dictionary<string, Dictionary<string, MyJsonData>>();
+        public static Dictionary<ItemType, Dictionary<int, JsonBase>> ItemJsonDic = new Dictionary<ItemType, Dictionary<int, JsonBase>>();
+        public static Dictionary<string, Dictionary<int, JsonBase>> IntKeyJsonDic = new Dictionary<string, Dictionary<int, JsonBase>>();
+        public static Dictionary<string, Dictionary<string, JsonBase>> StrKeyJsonDic = new Dictionary<string, Dictionary<string, JsonBase>>();
 
 
         //String
-        public static Dictionary<string, StringJsonData> StringDic = new Dictionary<string, StringJsonData>();
+        public static Dictionary<string, JsonString> StringDic = new Dictionary<string, JsonString>();
         static LoadingProgress MyLoadingProgress;//載入JsonData進度
         public static bool IsFinishLoadAddressableJson {
             get {
@@ -41,17 +41,18 @@ namespace Scoz.Func {
 
             //Addressables版本
             AddLoadingKey("String");
-            StringJsonData.SetStringDic_Remote(dic => {
+            JsonString.SetStringDic_Remote(dic => {
                 StringDic = dic;
                 //完成MyLoadingProgress進度，全部都載完就會回傳LoadJsonDataToDic傳入的Action
                 MyLoadingProgress.FinishProgress("String");
             });
 
-            MyJsonData.SetDataStringKey_Remote<GameSettingJsonData>(SetDic);
-            MyJsonData.SetData_Remote<SceneTransitionJsonData>(SetDic);
-            MyJsonData.SetData_Remote<GladiatorJsonData>(SetDic);
-            MyJsonData.SetData_Remote<SkillJsonData>(SetDic);
-            MyJsonData.SetDataStringKey_Remote<SkillEffectJsonData>(SetDic);
+            JsonBase.SetDataStringKey_Remote<JsonGameSetting>(SetDic);
+            JsonBase.SetData_Remote<JsonSceneTransition>(SetDic);
+            JsonBase.SetData_Remote<JsonGladiator>(SetDic);
+            JsonBase.SetData_Remote<JsonSkill>(SetDic);
+            JsonBase.SetData_Remote<JsonBribe>(SetDic);
+            JsonBase.SetDataStringKey_Remote<JsonSkillEffect>(SetDic);
 
             //設定X秒會顯示尚未載入的JsonData
             CoroutineJob.Instance.StartNewAction(ShowUnLoadedJsondata, 5);
@@ -74,7 +75,7 @@ namespace Scoz.Func {
         /// <summary>
         /// 取得T類型的JsonData Dic
         /// </summary>
-        public static Dictionary<int, T> GetIntKeyJsonDic<T>() where T : MyJsonData {
+        public static Dictionary<int, T> GetIntKeyJsonDic<T>() where T : JsonBase {
             string dataName = GetDataName<T>();
             if (IntKeyJsonDic.ContainsKey(dataName)) {
                 return IntKeyJsonDic[dataName].ToDictionary(a => a.Key, a => a.Value as T);
@@ -88,7 +89,7 @@ namespace Scoz.Func {
         /// <summary>
         /// 取得T類型的JsonData Dic
         /// </summary>
-        public static Dictionary<string, T> GetStrKeyJsonDic<T>() where T : MyJsonData {
+        public static Dictionary<string, T> GetStrKeyJsonDic<T>() where T : JsonBase {
             string dataName = GetDataName<T>();
             if (StrKeyJsonDic.ContainsKey(dataName)) {
                 return StrKeyJsonDic[dataName].ToDictionary(a => a.Key, a => a.Value as T);
@@ -104,7 +105,7 @@ namespace Scoz.Func {
             Type type = typeof(T);
             // 使用反射查找名為"DataName"的靜態屬性(每個繼承自MyJsonData的類都應該有DataName這個靜態屬性
             PropertyInfo dataNameProp = type.GetProperty("DataName", BindingFlags.Public | BindingFlags.Static);
-            if (dataNameProp != null)return dataNameProp.GetValue(null, null) as string;
+            if (dataNameProp != null) return dataNameProp.GetValue(null, null) as string;
             else {
                 WriteLog.LogErrorFormat("GetJsonData傳入的T類沒有DataName這個屬性");
                 return "";
@@ -113,7 +114,7 @@ namespace Scoz.Func {
         /// <summary>
         /// 取得T類型的JsonData
         /// </summary>
-        public static T GetJsonData<T>(int _id, bool showErrorMsg = true) where T : MyJsonData {
+        public static T GetJsonData<T>(int _id, bool showErrorMsg = true) where T : JsonBase {
             if (IntKeyJsonDic == null)
                 return null;
             string dataName = GetDataName<T>();
@@ -131,7 +132,7 @@ namespace Scoz.Func {
         /// <summary>
         /// 取得T類型的JsonData
         /// </summary>
-        public static T GetJsonData<T>(string _id) where T : MyJsonData {
+        public static T GetJsonData<T>(string _id) where T : JsonBase {
             if (StrKeyJsonDic == null)
                 return null;
             string dataName = GetDataName<T>();
@@ -180,7 +181,7 @@ namespace Scoz.Func {
         /// <summary>
         /// 設定已int作為Key值得 JsonData Dictionary
         /// </summary>
-        static void SetDic(string _name, Dictionary<int, MyJsonData> _dic) {
+        static void SetDic(string _name, Dictionary<int, JsonBase> _dic) {
 
             if (_dic != null && _dic.Values.Count > 0) {
                 //將JsonDataDic加到字典中
@@ -200,7 +201,7 @@ namespace Scoz.Func {
         /// <summary>
         /// 設定已string作為Key值得 JsonData Dictionary
         /// </summary>
-        static void SetDic(string _name, Dictionary<string, MyJsonData> _dic) {
+        static void SetDic(string _name, Dictionary<string, JsonBase> _dic) {
 
             if (_dic != null && _dic.Values.Count > 0) {
                 StrKeyJsonDic[_name] = _dic;

@@ -28,7 +28,7 @@ namespace Gladiators.Main {
                 switch (Type) {
                     case ItemType.Gold:
                     case ItemType.Point:
-                        name = string.Format("{0}{1}", Value, StringJsonData.GetUIString(Type.ToString()));
+                        name = string.Format("{0}{1}", Value, JsonString.GetUIString(Type.ToString()));
                         break;
                     default:
                         var itemJsonData = GameDictionary.GetItemJsonData(Type, (int)Value);

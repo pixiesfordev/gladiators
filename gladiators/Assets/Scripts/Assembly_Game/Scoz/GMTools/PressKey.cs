@@ -19,11 +19,11 @@ namespace Scoz.Func {
 
 
             if (Input.GetKeyDown(KeyCode.Q)) {
-                var data = GameDictionary.GetJsonData<GladiatorJsonData>(1);
+                var data = GameDictionary.GetJsonData<JsonGladiator>(1);
                 WriteLog.WriteObj(data);
-                var data2 = GameDictionary.GetJsonData<SkillJsonData>(1);
+                var data2 = GameDictionary.GetJsonData<JsonSkill>(1);
                 WriteLog.WriteObj(data2);
-                var data3 = GameDictionary.GetJsonData<SkillEffectJsonData>("1");
+                var data3 = GameDictionary.GetJsonData<JsonSkillEffect>("1");
                 WriteLog.WriteObj(data3);
 
             } else if (Input.GetKeyDown(KeyCode.W)) {
@@ -41,7 +41,7 @@ namespace Scoz.Func {
                 Action connFunc = null;
                 if (SceneManager.GetActiveScene().name != MyScene.BattleScene.ToString())
                     PopupUI.CallSceneTransition(MyScene.BattleScene);//跳轉到BattleScene
-                PopupUI.ShowLoading(StringJsonData.GetUIString("Loading"));
+                PopupUI.ShowLoading(JsonString.GetUIString("Loading"));
                 connFunc = () => GameConnector.Instance.ConnectToMatchgameTestVer(() => {
                     PopupUI.HideLoading();
                 }, () => {

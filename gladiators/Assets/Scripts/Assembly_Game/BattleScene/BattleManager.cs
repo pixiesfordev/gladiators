@@ -48,7 +48,7 @@ namespace Gladiators.Battle {
                 case AllocatedRoom.GameState.NotInGame://本地測試
                     break;
                 case AllocatedRoom.GameState.UnAuth://需要等待Matchgame Server回傳Auth成功
-                    PopupUI.ShowLoading(StringJsonData.GetUIString("Loading"));
+                    PopupUI.ShowLoading(JsonString.GetUIString("Loading"));
                     break;
                 case AllocatedRoom.GameState.GotPlayer://如果已經收到雙方玩家資料就送Ready
                     GameConnector.Instance.SetReady();

@@ -9,11 +9,11 @@ using SimpleJSON;
 using System.Reflection;
 
 namespace Gladiators.Main {
-    public class GladiatorJsonData : MyJsonData {
+    public class JsonGladiator : JsonBase {
         public static string DataName { get; set; }
         public string Name {
             get {
-                return StringJsonData.GetString_static(DataName + "_" + ID, "Name");
+                return JsonString.GetString_static(DataName + "_" + ID, "Name");
             }
         }
         public int HP { get; private set; }
@@ -22,12 +22,12 @@ namespace Gladiators.Main {
         public int MDEF { get; private set; }
         public double CRIT { get; private set; }
         public int INIT { get; private set; }
-        public int VigorRegen { get; private set; }
+        public double VigorRegen { get; private set; }
 
         protected override void SetDataFromJson(JsonData _item) {
             JsonData item = _item;
             //反射屬性
-            var myData = JsonMapper.ToObject<GladiatorJsonData>(item.ToJson());
+            var myData = JsonMapper.ToObject<JsonGladiator>(item.ToJson());
             foreach (PropertyInfo propertyInfo in this.GetType().GetProperties()) {
                 if (propertyInfo.CanRead && propertyInfo.CanWrite) {
                     //下面這行如果報錯誤代表上方的sonMapper.ToObject<XXXXX>(item.ToJson());<---XXXXX忘了改目前Class名稱

@@ -7,11 +7,11 @@ using System;
 using System.Linq;
 
 namespace Gladiators.Main {
-    public class SceneTransitionJsonData : MyJsonData {
+    public class JsonSceneTransition : JsonBase {
         public static string DataName { get; set; }
         public string Description {
             get {
-                return StringJsonData.GetString_static(DataName + "_" + ID, "Description");
+                return JsonString.GetString_static(DataName + "_" + ID, "Description");
             }
         }
         public string RefPic { get; private set; }
@@ -35,11 +35,11 @@ namespace Gladiators.Main {
                 }
             }
         }
-        public static SceneTransitionJsonData GetRandomData() {
-            var dic = GameDictionary.GetIntKeyJsonDic<SceneTransitionJsonData>();
+        public static JsonSceneTransition GetRandomData() {
+            var dic = GameDictionary.GetIntKeyJsonDic<JsonSceneTransition>();
             if (dic == null)
                 return null;
-            List<SceneTransitionJsonData> dataList = dic.Values.ToList();
+            List<JsonSceneTransition> dataList = dic.Values.ToList();
             if (dataList == null || dataList.Count == 0)
                 return null;
             List<int> weights = new List<int>();

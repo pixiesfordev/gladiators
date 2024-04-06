@@ -12,7 +12,7 @@ namespace Scoz.Func {
     /// <summary>
     /// 這是Excel輸出的Json資料父類別，繼承自這個類的都是Excel表輸出的資料
     /// </summary>
-    public abstract partial class MyJsonData {
+    public abstract partial class JsonBase {
 
         /// <summary>
         /// 重置靜態資料，當Addressable重載json資料時需要先呼叫這個方法來重置靜態資料
@@ -22,16 +22,16 @@ namespace Scoz.Func {
         /// <summary>
         /// 依json表設定資料(Key為int)
         /// </summary>
-        public static void SetData_Remote<T>(Action<string, Dictionary<int, MyJsonData>> _cb) where T : MyJsonData, new() {
+        public static void SetData_Remote<T>(Action<string, Dictionary<int, JsonBase>> _cb) where T : JsonBase, new() {
             // 繼承自MyJsonData的類的屬性DataName都是該類名稱去掉"JsonData", 例如RoleJsonData類的DataName就是"Role"
-            string dataName = typeof(T).Name.Replace("JsonData", "");
+            string dataName = typeof(T).Name.Replace("Json", "");
             GameDictionary.AddLoadingKey(dataName);
             try {
                 Addressables.LoadAssetAsync<TextAsset>(string.Format("Assets/AddressableAssets/Jsons/{0}.json", dataName)).Completed += handle => {
                     string jsonStr = handle.Result.text;
                     JsonData jd = JsonMapper.ToObject(jsonStr);
                     JsonData items = jd[dataName];
-                    Dictionary<int, MyJsonData> dic = new Dictionary<int, MyJsonData>();
+                    Dictionary<int, JsonBase> dic = new Dictionary<int, JsonBase>();
                     for (int i = 0; i < items.Count; i++) {
 
                         // 使用反射查找T類的靜態屬性"DataName"並設定值
@@ -70,16 +70,16 @@ namespace Scoz.Func {
         /// <summary>
         /// 依json表設定資料(Key為String)
         /// </summary>
-        public static void SetDataStringKey_Remote<T>(Action<string, Dictionary<string, MyJsonData>> _cb) where T : MyJsonData, new() {
+        public static void SetDataStringKey_Remote<T>(Action<string, Dictionary<string, JsonBase>> _cb) where T : JsonBase, new() {
             // 繼承自MyJsonData的類的屬性DataName都是該類名稱去掉"JsonData", 例如RoleJsonData類的DataName就是"Role"
-            string dataName = typeof(T).Name.Replace("JsonData", "");
+            string dataName = typeof(T).Name.Replace("Json", "");
             GameDictionary.AddLoadingKey(dataName);
             try {
                 Addressables.LoadAssetAsync<TextAsset>(string.Format("Assets/AddressableAssets/Jsons/{0}.json", dataName)).Completed += handle => {
                     string jsonStr = handle.Result.text;
                     JsonData jd = JsonMapper.ToObject(jsonStr);
                     JsonData items = jd[dataName];
-                    Dictionary<string, MyJsonData> dic = new Dictionary<string, MyJsonData>();
+                    Dictionary<string, JsonBase> dic = new Dictionary<string, JsonBase>();
                     for (int i = 0; i < items.Count; i++) {
 
                         // 使用反射查找T類的靜態屬性"DataName"並設定值

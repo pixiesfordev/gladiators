@@ -22,10 +22,22 @@ namespace Gladiators.Socket.Matchgame {
         public bool Used { get; private set; }
     }
     public class PackGladiator {
+        public int JsonGladiatorID { get; private set; }
+        public int[] JsonSkillIDs { get; private set; }
+        public int[] JsonTraitIDs { get; private set; }
+        public int[] JsonEquipIDs { get; private set; }
         public int HP { get; private set; }
-        public int Vigor { get; private set; }
+        public int CurHP { get; private set; }
+        public double CurVigor { get; private set; }
+        public double VigorRegen { get; private set; }
+        public int STR { get; private set; }
+        public int DEF { get; private set; }
+        public int MDEF { get; private set; }
+        public double CRIT { get; private set; }
+        public int INIT { get; private set; }
+        public int Knockback { get; private set; }
         public int BattlePos { get; private set; }
-        public Vector2 StagePos { get; private set; }
+        public double[] StagePos { get; private set; }
         public PackBuffer[] Buffers { get; private set; }
     }
     public class PackBuffer {
