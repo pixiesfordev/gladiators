@@ -25,10 +25,13 @@ namespace Gladiators.Battle {
         [SerializeField] bool BattleIsEnd = false;//控制戰鬥是否結束 先序列化出來供測試用
         int BattleLeftTime;
 
+        JsonSkill SelectedMeleeSkill;
+
 
         [HeaderAttribute("==============TEST==============")]
         //測試參數區塊
         [Tooltip("重置戰鬥")][SerializeField] bool bResetBattle = false;
+        [Tooltip("前端演示測試 打勾表示只使用純前端邏輯模擬")][SerializeField] bool bFrontEndTest = true;
 
         void Update() {
             if (bResetBattle) {
@@ -94,11 +97,76 @@ namespace Gladiators.Battle {
             BattleSceneUI.Instance.SetTimeText(BattleLeftTime);
         }
 
+        #region 技能施放
+        /// <summary>
+        /// 施放直接觸發技能
+        /// </summary>
+        /// <param name="_skill">技能Data</param>
+        public void CastInstantSKill(JsonSkill _skill)
+        {
+            //TODO:在這裡做演出
+            if (bFrontEndTest)
+            {
+                //走前端流程 直接演出
+            }
+            else
+            {
+                //走後端流程送包
+            }
+            Debug.LogFormat("施放直接觸發技能! 技能ID: {0}", _skill.ID);
+        }
+
+        /// <summary>
+        /// 設定碰撞觸發技能
+        /// </summary>
+        /// <param name="_skill">技能Data</param>
+        /// <param name="_selected">是否選中技能</param>
+        public void SetMeleeSkill(JsonSkill _skill, bool _selected)
+        {
+            //會先把技能存在在此 等到真正碰撞後才會施放
+            if (_selected)
+            {
+                SelectedMeleeSkill = _skill;
+                Debug.LogFormat("設定碰撞觸發技能! 技能ID: {0}", _skill.ID);
+            }
+            else
+            {
+                SelectedMeleeSkill = null;
+                Debug.LogFormat("取消碰撞觸發技能! 技能ID: {0}", _skill.ID);
+            }
+        }
+
+        /// <summary>
+        /// 施放碰撞觸發技能
+        /// </summary>
+        public void CastMeleeSkill()
+        {
+            //TODO:實際發生碰撞請呼叫此方法來進行判定
+            if (bFrontEndTest)
+            {
+                //走前端流程 直接演出
+                if (SelectedMeleeSkill == null)
+                {
+                    //沒選技能 則純粹挨打
+                    Debug.Log("沒選擇碰撞觸發技能!");
+                }
+                else
+                {
+                    //有選技能 施放技能
+                    Debug.LogFormat("施放碰撞技能. ID: {0}", SelectedMeleeSkill.ID);
+                }
+            }
+            else
+            {
+                //走後端流程送包
+            }
+        }
+        #endregion
+
         //TODO:
-        //技能施放
-        //體力條計算
-        //對撞計算
-        //扣血計算
+        //體力條計算(自動恢復 使用技能消耗 衝刺消耗)
+        //對撞計算(傷害計算>>血量 擊退距離>>人物模型位置改變 撞牆判定>>是否被打到邊界 要額外扣血演出 這個建議不要跟傷害一起演出 而是先有撞牆演出後再扣血)
+        //血量計算(傷害量/恢復量傳給UI演出)
         //戰鬥結算
         //buff設定
 

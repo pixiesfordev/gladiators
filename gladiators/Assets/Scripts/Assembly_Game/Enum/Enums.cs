@@ -166,4 +166,14 @@ namespace Gladiators.Main {
         /// </summary>
         StartIoAds_NotReady,
     }
+    public enum BattleSkillType {
+        /// <summary>
+        /// 直接觸發
+        /// </summary>
+        Instant,
+        /// <summary>
+        /// 碰撞觸發
+        /// </summary>
+        Melee,
+    }
 }
