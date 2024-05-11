@@ -13,10 +13,14 @@ using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using Cysharp.Threading.Tasks;
 using Unity.Entities.UniversalDelegates;
+using Loxodon.Framework.Binding;
+using Cinemachine;
+using Cysharp.Threading.Tasks.Triggers;
 
 namespace Gladiators.Battle {
     public class BattleManager : MonoBehaviour {
         public static BattleManager Instance;
+        [SerializeField] public CinemachineVirtualCamera vCam;
         [SerializeField] Camera MyCam;
         public Camera BattleCam => MyCam;
 
@@ -27,6 +31,9 @@ namespace Gladiators.Battle {
 
         JsonSkill SelectedMeleeSkill;
 
+        [HeaderAttribute("===場景物件控制===")]
+        [SerializeField] BattleModelController battleModelController;
+        [SerializeField] public bool isRightPlayer = false;
 
         [HeaderAttribute("==============TEST==============")]
         //測試參數區塊
@@ -86,8 +93,10 @@ namespace Gladiators.Battle {
             BattleIsEnd = false;
             BattleLeftTime = BattleDefaultTime;
             ResetBattleSceneUI();
+            ResetBattleModelController();
             //TODO:這裡可能需要加入一個延遲等待開場演出
             CountDownBattleTime().Forget();
+            testStartGame();
         }
 
         //重設戰鬥UI
@@ -97,20 +106,28 @@ namespace Gladiators.Battle {
             BattleSceneUI.Instance.SetTimeText(BattleLeftTime);
         }
 
+        void ResetBattleModelController() {
+            if (battleModelController == null) return;
+
+            battleModelController.BattleReset();
+        }
+
+        void testStartGame() {
+            Debug.Log("本地測試開始");
+
+            battleModelController.BattleStart();
+        }
+
         #region 技能施放
         /// <summary>
         /// 施放直接觸發技能
         /// </summary>
         /// <param name="_skill">技能Data</param>
-        public void CastInstantSKill(JsonSkill _skill)
-        {
+        public void CastInstantSKill(JsonSkill _skill) {
             //TODO:在這裡做演出
-            if (bFrontEndTest)
-            {
+            if (bFrontEndTest) {
                 //走前端流程 直接演出
-            }
-            else
-            {
+            } else {
                 //走後端流程送包
             }
             Debug.LogFormat("施放直接觸發技能! 技能ID: {0}", _skill.ID);
@@ -121,16 +138,12 @@ namespace Gladiators.Battle {
         /// </summary>
         /// <param name="_skill">技能Data</param>
         /// <param name="_selected">是否選中技能</param>
-        public void SetMeleeSkill(JsonSkill _skill, bool _selected)
-        {
+        public void SetMeleeSkill(JsonSkill _skill, bool _selected) {
             //會先把技能存在在此 等到真正碰撞後才會施放
-            if (_selected)
-            {
+            if (_selected) {
                 SelectedMeleeSkill = _skill;
                 Debug.LogFormat("設定碰撞觸發技能! 技能ID: {0}", _skill.ID);
-            }
-            else
-            {
+            } else {
                 SelectedMeleeSkill = null;
                 Debug.LogFormat("取消碰撞觸發技能! 技能ID: {0}", _skill.ID);
             }
@@ -139,25 +152,18 @@ namespace Gladiators.Battle {
         /// <summary>
         /// 施放碰撞觸發技能
         /// </summary>
-        public void CastMeleeSkill()
-        {
+        public void CastMeleeSkill() {
             //TODO:實際發生碰撞請呼叫此方法來進行判定
-            if (bFrontEndTest)
-            {
+            if (bFrontEndTest) {
                 //走前端流程 直接演出
-                if (SelectedMeleeSkill == null)
-                {
+                if (SelectedMeleeSkill == null) {
                     //沒選技能 則純粹挨打
                     Debug.Log("沒選擇碰撞觸發技能!");
-                }
-                else
-                {
+                } else {
                     //有選技能 施放技能
                     Debug.LogFormat("施放碰撞技能. ID: {0}", SelectedMeleeSkill.ID);
                 }
-            }
-            else
-            {
+            } else {
                 //走後端流程送包
             }
         }
@@ -172,7 +178,7 @@ namespace Gladiators.Battle {
 
         //戰鬥剩餘秒數計算
         async UniTaskVoid CountDownBattleTime() {
-            ReCount:
+        ReCount:
             //Debug.Log("測試倒數秒數.現在秒數: " + BattleLeftTime);
             await UniTask.Delay(TimeSpan.FromSeconds(1f));
             //有可能會發生剩下一秒的時候分出勝負 所以一秒數完還是要再次確認是否已經分出勝負 沒有才繼續數秒
@@ -192,6 +198,7 @@ namespace Gladiators.Battle {
             //進入結算環節 避免出bug 如果已經開始結算就不要重複執行
             if (BattleIsEnd) return;
             BattleIsEnd = true;
+            battleModelController.BattleEnd();
             Debug.Log("戰鬥結束");
         }
 
