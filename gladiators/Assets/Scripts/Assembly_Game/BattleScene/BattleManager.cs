@@ -55,11 +55,14 @@ namespace Gladiators.Battle {
                     break;
             }
         }
-        public void GotEnemy() {
+        public void GotOpponent() {
             GameConnector.Instance.SetReady();
         }
         public void GoBribe() {
             WriteLog.LogError("開始賄賂");
+        }
+        public void StartGame() {
+            WriteLog.LogError("開始遊戲");
         }
 
         void SetCam() {

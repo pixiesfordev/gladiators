@@ -140,7 +140,7 @@ namespace Gladiators.Main {
             var enemy = _packPlayers.Find(a => a.DBPlayerID != myPlayer.ID);//因為只會有兩個玩家, 不是自己就是敵人
             if (enemy == null) return;
             SetGameState(GameState.GotPlayer);
-            BattleManager.Instance.GotEnemy();
+            BattleManager.Instance.GotOpponent();
         }
         /// <summary>
         /// 收到準備完成, 收到雙方準備完成 就會進入賄賂階段
@@ -148,6 +148,21 @@ namespace Gladiators.Main {
         public void ReceiveReady(bool[] _readys) {
             var allReady = _readys.All(a => a);
             if (allReady) BattleManager.Instance.GoBribe();
+        }
+
+        /// <summary>
+        /// 收到賄賂封包, 如果雙方的資料就收到就開始遊戲
+        /// </summary>
+        public void ReceiveBribe(PackPlayerState[] _playerStates) {
+            if (_playerStates == null) return;
+            int playerCount = 0;
+            for (int i = 0; i < _playerStates.Length; i++) {
+                if (_playerStates[i] == null) continue;
+                WriteLog.LogErrorFormat("收到角鬥士{0} 的資料", i);
+                WriteLog.WriteObj(_playerStates[i]);
+                playerCount++;
+            }
+            if (playerCount == 2) BattleManager.Instance.StartGame();
         }
     }
 }

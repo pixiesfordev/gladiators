@@ -8,9 +8,6 @@ namespace Gladiators.Socket.Matchgame {
     }
     public class BRIBE_TOCLIENT : SocketContent {
         //class名稱就是封包的CMD名稱
-        public PackPlayerBribe[] PlayerBribes { get; private set; }
-    }
-    public class PackPlayerBribe {
-        public int[] JsonBribeIDs { get; private set; }
+        public PackPlayerState[] PlayerStates { get; private set; }
     }
 }
