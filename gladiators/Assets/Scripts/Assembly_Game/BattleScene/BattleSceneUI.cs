@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using Gladiators.Main;
 
 public class BattleSceneUI : BaseUI {
     [HeaderAttribute("==============AddressableAssets==============")]
@@ -44,6 +45,11 @@ public class BattleSceneUI : BaseUI {
         base.Init();
         SpawnBattleManager();
         Instance = this;
+
+        //先用暫時寫死的技能
+        SkillBtn1.SetData(GameDictionary.GetJsonData<JsonSkill>(1)); //這個是碰撞觸發技能
+        SkillBtn2.SetData(GameDictionary.GetJsonData<JsonSkill>(2)); //這個是直接觸發技能
+        SkillBtn3.SetData(GameDictionary.GetJsonData<JsonSkill>(3)); //這個是直接觸發技能
     }
 
     void SpawnBattleManager() {
@@ -59,15 +65,30 @@ public class BattleSceneUI : BaseUI {
     }
 
     //TODO:
-    //1.秒數倒數 數到0送出戰鬥結束
-    //2.體力條扣除與自動恢復數值與演出
-    //3.衝刺操作與演出 做兩種 一種為長壓操作方式 另一種為ON/OFF方式 設參數切換模式
-    //4.前端暫時計算邏輯預計先寫在BattleManager
-    //5.設定按鈕點擊開啟設定介面製作
+    //1.秒數倒數 數到0送出戰鬥結束(已完成)
+    //2.體力條扣除與自動恢復數值演出
+    //3.衝刺操作與演出 做兩種 一種為長壓操作方式 另一種為ON/OFF方式 設參數切換模式(已完成)
+    //4.設定按鈕點擊開啟設定介面製作
+    //5.技能點擊演出 設參數供調整測試
+    //6.血條演出 設參數供調整測試(已完成)
 
     //更新剩餘秒數
     public void SetTimeText(int num)
     {
         BattleLeftTime.text = num.ToString();
+    }
+
+    /// <summary>
+    /// 通知施放碰撞觸發技能
+    /// </summary>
+    public void CastMeleeSkill(JsonSkill _Skill)
+    {
+        //UI作演出 並把技能使用掉 更新下一個技能上來
+        if(SkillBtn1.SkillSelected)
+            SkillBtn1.CastMeleeSkill();
+        else if(SkillBtn2.SkillSelected)
+            SkillBtn2.CastMeleeSkill();
+        else if(SkillBtn3.SkillSelected)
+            SkillBtn3.CastMeleeSkill();
     }
 }
