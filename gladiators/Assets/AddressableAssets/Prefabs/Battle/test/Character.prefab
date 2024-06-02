@@ -61,7 +61,7 @@ MonoBehaviour:
   lookRight: 0
   isRightPlayer: 0
   otherPlayer: {fileID: 0}
-  moveSpeed: 1
+  moveSpeed: 8
   moveExitTimeThreshold: 0.85
   chnageCharLookTolerance: 1
   attackTolerance: 3.5

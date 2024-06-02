@@ -850,6 +850,7 @@ MonoBehaviour:
   battleModelController: {fileID: 1833489690963368632}
   isRightPlayer: 0
   bResetBattle: 0
+  bFrontEndTest: 1
 --- !u!1 &7590910013932357930
 GameObject:
   m_ObjectHideFlags: 0
@@ -1008,13 +1009,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8536922110977078062}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalPosition: {x: 13.42, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6169543276580997598}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!1 &8866085363062117479
 GameObject:
   m_ObjectHideFlags: 0
