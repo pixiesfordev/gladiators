@@ -6,7 +6,6 @@ using UnityEngine;
 
 public class Character : MonoBehaviour {
     public Camera mainCamera;
-
     public Transform Base;
     public Transform Baseturntable;
     public Transform BOARD;
@@ -37,6 +36,8 @@ public class Character : MonoBehaviour {
 
     void Start() {
         mainCamera = BattleManager.Instance.BattleCam;
+        SetFaceToTarget();
+
     }
 
     void Update() {
@@ -45,7 +46,6 @@ public class Character : MonoBehaviour {
         float distance = Vector3.Distance(otherPosition, myPosition);
 
         characterLookCam(distance, myPosition, otherPosition);
-        charLookOtherChart();
 
         if (BattleIsEnd) return;
 
@@ -103,13 +103,17 @@ public class Character : MonoBehaviour {
         }
     }
 
+    void SetFaceToTarget() {
+        Vector3 directionToTarget = otherPlayer.transform.position - transform.position;
+        transform.rotation = Quaternion.LookRotation(directionToTarget, Vector3.up);
+    }
+
     public void OnMove() {
         if (!canMove) return;
 
         AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
         if (stateInfo.IsName("move_Animation") && stateInfo.normalizedTime < moveExitTimeThreshold) {
-            Vector3 directionToTarget = otherPlayer.transform.position - transform.position;
-            transform.rotation = Quaternion.LookRotation(directionToTarget, Vector3.up);
+            SetFaceToTarget();
             transform.Translate(Vector3.forward * moveSpeed * Time.deltaTime);
         } else {
             animator.SetBool("isMove", true);
