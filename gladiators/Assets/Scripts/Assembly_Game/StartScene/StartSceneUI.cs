@@ -76,7 +76,7 @@ namespace Gladiators.Main {
 
                 //是否第一次執行遊戲，第一次執行遊戲後會自動進大廳，之後透過從大廳的設定中點回到主介面就不會又自動進大廳了
                 if (FirstTimeLaunchGame) {
-                    PopupUI.ShowLoading(StringJsonData.GetUIString("DataLoading"));
+                    PopupUI.ShowLoading(JsonString.GetUIString("DataLoading"));
                     UniTask.Void(async () => {
                         await RealmManager.OnSignin();
                         RealmManager.OnDataLoaded();
@@ -168,7 +168,7 @@ namespace Gladiators.Main {
         public void OnSignupClick(string _authTypeStr) {
 
             if (!TermsOfUseToggle.isOn) {//沒有勾選同意使用者條款的話會跳彈窗並返回
-                PopupUI.ShowClickCancel(StringJsonData.GetUIString("NeedToAgreeTersOfUse"), null);
+                PopupUI.ShowClickCancel(JsonString.GetUIString("NeedToAgreeTersOfUse"), null);
                 return;
             }
 
@@ -266,7 +266,7 @@ namespace Gladiators.Main {
         /// 移除帳戶，按下後會解除所有平台綁定並登出並顯示回需要登入狀態
         /// </summary>
         public void DeleteAccount() {
-            PopupUI.ShowConfirmCancel(StringJsonData.GetUIString("DeleteAccountCheck"), GameSettingJsonData.GetInt(GameSetting.LogoutCowndownSecs), () => {
+            PopupUI.ShowConfirmCancel(JsonString.GetUIString("DeleteAccountCheck"), JsonGameSetting.GetInt(GameSetting.LogoutCowndownSecs), () => {
                 UnlinkAllPlatfromsAndLogout();
             }, null);
         }

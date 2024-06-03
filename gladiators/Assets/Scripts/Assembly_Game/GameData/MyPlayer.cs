@@ -40,12 +40,12 @@ namespace Scoz.Func {
                 }
 
             } else {
-                SetLanguage((Language)GameSettingJsonData.GetInt(GameSetting.DefaultLanguage));
-                AudioPlayer.SetSoundVolume(GameSettingJsonData.GetFloat(GameSetting.DefaultSound));
-                AudioPlayer.SetMusicVolume(GameSettingJsonData.GetFloat(GameSetting.DefaultMusic));
-                AudioPlayer.SetVoiceVolume(GameSettingJsonData.GetFloat(GameSetting.DefaultVoice));
-                PostProcessing = GameSettingJsonData.GetBool(GameSetting.PostProcessing);
-                Vibration = GameSettingJsonData.GetBool(GameSetting.Vibration);
+                SetLanguage((Language)JsonGameSetting.GetInt(GameSetting.DefaultLanguage));
+                AudioPlayer.SetSoundVolume(JsonGameSetting.GetFloat(GameSetting.DefaultSound));
+                AudioPlayer.SetMusicVolume(JsonGameSetting.GetFloat(GameSetting.DefaultMusic));
+                AudioPlayer.SetVoiceVolume(JsonGameSetting.GetFloat(GameSetting.DefaultVoice));
+                PostProcessing = JsonGameSetting.GetBool(GameSetting.PostProcessing);
+                Vibration = JsonGameSetting.GetBool(GameSetting.Vibration);
                 UIDDic.Clear();
             }
         }

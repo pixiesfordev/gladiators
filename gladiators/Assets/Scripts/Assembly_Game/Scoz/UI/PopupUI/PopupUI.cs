@@ -74,7 +74,7 @@ namespace Scoz.Func {
         }
         public static void ShowGameInfo(string _infoUIStringID) {
             if (Instance.GameInfo_GO == null) return;
-            string content = StringJsonData.GetUIString(_infoUIStringID);
+            string content = JsonString.GetUIString(_infoUIStringID);
             Instance.GameInfo_Content.text = content;
             CoroutineJob.Instance.StartNewAction(() => { Instance.GameInfo_ContentSizeFitter.Update(); }, 0.01f);
             Instance.GameInfo_GO.SetActive(true);
@@ -187,8 +187,8 @@ namespace Scoz.Func {
             Instance.ConfirmCancelAction_Cancel = _cancelAction;
             Instance.ConfirmCancelAction_Click_WithParam = null;
             Instance.ConfirmCancelAction_Cancel_WithParam = null;
-            Instance.ConfirmCancel_ConfirmBtnText.text = StringJsonData.GetUIString("Confirm");
-            Instance.ConfirmCancel_CancelBtnText.text = StringJsonData.GetUIString("Cancel");
+            Instance.ConfirmCancel_ConfirmBtnText.text = JsonString.GetUIString("Confirm");
+            Instance.ConfirmCancel_CancelBtnText.text = JsonString.GetUIString("Cancel");
             Instance.ConfirmCancel_ConfirmBtnTimer = null;
             Instance.ConfirmCancel_ConfirmBtn.interactable = true;
         }
@@ -208,7 +208,7 @@ namespace Scoz.Func {
                 }, true, true);
             } else {
                 Instance.ConfirmCancel_ConfirmBtnTimer = null;
-                Instance.ConfirmCancel_ConfirmBtnText.text = StringJsonData.GetUIString("Confirm");
+                Instance.ConfirmCancel_ConfirmBtnText.text = JsonString.GetUIString("Confirm");
                 Instance.ConfirmCancel_ConfirmBtn.interactable = true;
             }
 
@@ -218,16 +218,16 @@ namespace Scoz.Func {
             Instance.ConfirmCancelAction_Cancel = _cancelAction;
             Instance.ConfirmCancelAction_Click_WithParam = null;
             Instance.ConfirmCancelAction_Cancel_WithParam = null;
-            Instance.ConfirmCancel_CancelBtnText.text = StringJsonData.GetUIString("Cancel");
+            Instance.ConfirmCancel_CancelBtnText.text = JsonString.GetUIString("Cancel");
         }
         static void SetConfirmBtnText() {
             if (Instance.ConfirmCanClickCoundownSecs > 0) {
                 Instance.ConfirmCancel_ConfirmBtn.interactable = false;
-                Instance.ConfirmCancel_ConfirmBtnText.text = string.Format(StringJsonData.GetUIString("CowndownSec"), Instance.ConfirmCanClickCoundownSecs.ToString());
+                Instance.ConfirmCancel_ConfirmBtnText.text = string.Format(JsonString.GetUIString("CowndownSec"), Instance.ConfirmCanClickCoundownSecs.ToString());
             } else {
                 Instance.ConfirmCancel_ConfirmBtnTimer = null;
                 Instance.ConfirmCancel_ConfirmBtn.interactable = true;
-                Instance.ConfirmCancel_ConfirmBtnText.text = StringJsonData.GetUIString("Confirm");
+                Instance.ConfirmCancel_ConfirmBtnText.text = JsonString.GetUIString("Confirm");
             }
         }
         public static void ShowConfirmCancel(string _text, string _confirmText, string _cancelText, Action _confirmAction, Action _cancelAction) {
@@ -239,8 +239,8 @@ namespace Scoz.Func {
             Instance.ConfirmCancelAction_Cancel = _cancelAction;
             Instance.ConfirmCancelAction_Click_WithParam = null;
             Instance.ConfirmCancelAction_Cancel_WithParam = null;
-            Instance.ConfirmCancel_ConfirmBtnText.text = StringJsonData.GetUIString("Confirm");
-            Instance.ConfirmCancel_CancelBtnText.text = StringJsonData.GetUIString("Cancel");
+            Instance.ConfirmCancel_ConfirmBtnText.text = JsonString.GetUIString("Confirm");
+            Instance.ConfirmCancel_CancelBtnText.text = JsonString.GetUIString("Cancel");
             Instance.ConfirmCancel_ConfirmBtnText.text = _confirmText;
             Instance.ConfirmCancel_CancelBtnText.text = _cancelText;
             Instance.ConfirmCancel_ConfirmBtnTimer = null;
@@ -259,8 +259,8 @@ namespace Scoz.Func {
             Instance.ConfirmCancelAction_Cancel_WithParam = _cancelAction;
             Instance.ConfirmCancel_ConfirmParam = _confirmParam;
             Instance.ConfirmCancel_CancelParam = _cancelParam;
-            Instance.ConfirmCancel_ConfirmBtnText.text = StringJsonData.GetUIString("Confirm");
-            Instance.ConfirmCancel_CancelBtnText.text = StringJsonData.GetUIString("Cancel");
+            Instance.ConfirmCancel_ConfirmBtnText.text = JsonString.GetUIString("Confirm");
+            Instance.ConfirmCancel_CancelBtnText.text = JsonString.GetUIString("Cancel");
             Instance.ConfirmCancel_ConfirmBtnTimer = null;
             Instance.ConfirmCancel_ConfirmBtn.interactable = true;
         }
@@ -397,7 +397,7 @@ namespace Scoz.Func {
         Gladiators.Main.SettingUI MySettingUI;
 
         void InitSettingUI(Action _ac) {
-            PopupUI.ShowLoading(StringJsonData.GetUIString("WaitForLoadingUI"));
+            PopupUI.ShowLoading(JsonString.GetUIString("WaitForLoadingUI"));
             //初始化UI
             AddressablesLoader.GetPrefabByRef(Instance.SettingUIAsset, (prefab, handle) => {
                 PopupUI.HideLoading();
@@ -441,7 +441,7 @@ namespace Scoz.Func {
             if (IsLoadingUITransitionAsset)
                 return;
             IsLoadingUITransitionAsset = true;
-            PopupUI.ShowLoading(StringJsonData.GetUIString("Loading"));
+            PopupUI.ShowLoading(JsonString.GetUIString("Loading"));
             //初始化UI
             AddressablesLoader.GetPrefabByRef(Instance.UITransitionAsset, (prefab, handle) => {
                 IsLoadingUITransitionAsset = false;

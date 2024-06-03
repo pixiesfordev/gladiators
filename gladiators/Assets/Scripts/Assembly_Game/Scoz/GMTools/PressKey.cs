@@ -2,6 +2,10 @@ using UnityEngine;
 using Service.Realms;
 using System.Linq;
 using Gladiators.Socket;
+using Gladiators.Main;
+using UnityEngine.SceneManagement;
+using System;
+using Cysharp.Threading.Tasks;
 
 namespace Scoz.Func {
     public partial class TestTool : MonoBehaviour {
@@ -15,36 +19,40 @@ namespace Scoz.Func {
 
 
             if (Input.GetKeyDown(KeyCode.Q)) {
-                int[] monsterIdxs = new int[1] { 1 };
-                key++;
-                GameConnector.Instance.Hit(key, monsterIdxs, "1_attack");
-            } else if (Input.GetKeyDown(KeyCode.W)) {
-                //GameConnector.Instance.Attack(1, "1_attack", 2);
-            } else if (Input.GetKeyDown(KeyCode.E)) {
-                GameConnector.Instance.Hit(1, new int[1] { 0 }, "1_attack");
+                Action connFunc = null;
+                if (SceneManager.GetActiveScene().name != MyScene.BattleScene.ToString())
+                    PopupUI.CallSceneTransition(MyScene.BattleScene);//跳轉到BattleScene
+                PopupUI.ShowLoading(JsonString.GetUIString("Loading"));
+                connFunc = () => GameConnector.Instance.ConnectToMatchgameTestVer(() => {
+                    PopupUI.HideLoading();
+                }, () => {
+                    WriteLog.LogError("連線遊戲房失敗");
+                }, () => {
+                    if (AllocatedRoom.Instance.CurGameState == AllocatedRoom.GameState.Playing) {
+                        WriteLog.LogError("需要斷線重連");
+                        connFunc();
+                    }
+                });
+                connFunc();
 
+            } else if (Input.GetKeyDown(KeyCode.W)) {
+                GameConnector.Instance.Bribe(new int[2] { 10001, 10002 });
+
+            } else if (Input.GetKeyDown(KeyCode.E)) {
             } else if (Input.GetKeyDown(KeyCode.R)) {
-                GameConnector.Instance.DropSpell(4);
 
             } else if (Input.GetKeyDown(KeyCode.P)) {
-                GameConnector.Instance.UpdateScene();
             } else if (Input.GetKeyDown(KeyCode.O)) {
 
             } else if (Input.GetKeyDown(KeyCode.I)) {
 
-                var dbMaps = RealmManager.MyRealm.All<DBMap>();
-                WriteLog.LogColor("文件數量:" + dbMaps.Count(), WriteLog.LogType.Realm);
-
-                var dbPlayers = RealmManager.MyRealm.All<DBPlayer>();//DBMatchgame在PopulateInitialSubscriptions中只取有自己在內的遊戲房所以直接用All不用再篩選
-                WriteLog.LogColor("文件數量:" + dbPlayers.Count(), WriteLog.LogType.Realm);
-
-                var dbSettings = RealmManager.MyRealm.All<DBGameSetting>();//DBMatchgame在PopulateInitialSubscriptions中只取有自己在內的遊戲房所以直接用All不用再篩選
-                WriteLog.LogColor("文件數量:" + dbSettings.Count(), WriteLog.LogType.Realm);
-
-                var dbPlayerState = RealmManager.MyRealm.All<DBPlayerState>();
-                WriteLog.LogColor("文件數量:" + dbPlayerState.Count(), WriteLog.LogType.Realm);
             } else if (Input.GetKeyDown(KeyCode.L)) {
-                GameConnector.Instance.UpdateScene();
+                var data = GameDictionary.GetJsonData<JsonGladiator>(1);
+                WriteLog.WriteObj(data);
+                var data2 = GameDictionary.GetJsonData<JsonSkill>(1);
+                WriteLog.WriteObj(data2);
+                var data3 = GameDictionary.GetJsonData<JsonSkillEffect>("1");
+                WriteLog.WriteObj(data3);
             }
         }
 

@@ -45,7 +45,7 @@ namespace Scoz.Func {
                 font = GameDictionary.GetUsingLanguageFont();
             if (string.IsNullOrEmpty(UIString) || !GameDictionary.IsInit)
                 return;
-            text = StringJsonData.GetUIString(UIString);
+            text = JsonString.GetUIString(UIString);
         }
         public static void RefreshActivityTextsAndFunctions() {
             RefreshActiveTexts();

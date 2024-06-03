@@ -13,10 +13,9 @@ namespace Service.Realms {
     /// DB玩家資料集合
     /// </summary>
     public enum DBPlayerCol {
-        player,
-        playerHistory,
-        playerState,
-        playerMatchgame,//遊戲房
+        DBPlayer,
+        DBPlayerHistory,
+        DBPlayerState,
     }
 
     /// <summary>
@@ -31,17 +30,19 @@ namespace Service.Realms {
     public enum DBGameSettingDoc {
         Timer,
         Address,
+        GameSetting,
         GameState,
-        ScheduledInGameNotification,
+        GameConfig,
     }
     public static partial class RealmManager {
+        public
         //環境版本對應Realm App ID
         static Dictionary<EnvVersion, string> REALM_APPID_DIC = new Dictionary<EnvVersion, string>() {
             { EnvVersion.Dev, "gladiators-pirlo"},
             { EnvVersion.Test, "gladiators-pirlo"},
             { EnvVersion.Release, "gladiators-pirlo"},
         };
-
+        public static string DBName { get; private set; } = "gladiators";
         public static App MyApp { get; private set; }
         public static Realm MyRealm { get; private set; }
         public static MongoClient MyClient { get; private set; }
@@ -81,7 +82,7 @@ namespace Service.Realms {
         /// </summary>
         public static void InitDB() {
             MyClient = MyApp.CurrentUser.GetMongoClient("mongodb-atlas");
-            MyDB = MyClient.GetDatabase("herofishing");
+            MyDB = MyClient.GetDatabase(DBName);
         }
 
 

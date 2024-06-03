@@ -37,7 +37,6 @@ namespace Gladiators.Main {
         /// </summary>
         void DoMinteThings() {
             GameStateManager.Instance.InGameCheckCanPlayGame();//檢測是否可繼續遊戲
-            GameStateManager.Instance.InGameCheckScheduledInGameNotification();//檢測是否跳出遊戲內推播
         }
         void OnlineSentRepeat() {
             //送更新在線時間

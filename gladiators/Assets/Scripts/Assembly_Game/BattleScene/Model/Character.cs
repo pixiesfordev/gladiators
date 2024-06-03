@@ -1,0 +1,188 @@
+using dnlib.DotNet;
+using Gladiators.Battle;
+using UniRx;
+using UniRx.Triggers;
+using UnityEngine;
+
+public class Character : MonoBehaviour {
+    public Camera mainCamera;
+
+    public Transform Base;
+    public Transform Baseturntable;
+    public Transform BOARD;
+    public Transform CamLook_Left;
+    public Transform CamLook_Right;
+
+    public Collider mainCollider;
+    public Rigidbody mainRigidbody;
+    public Animator animator;
+    public bool lookRight;
+
+    [SerializeField] public bool isRightPlayer;
+    public Character otherPlayer;
+
+    [SerializeField] public float moveSpeed = 1.0f;
+    [SerializeField] public float moveExitTimeThreshold = 0.85f;
+    [SerializeField] float chnageCharLookTolerance = 1.0f;
+    [SerializeField] float attackTolerance = 3.5f;
+
+    [SerializeField] public bool canMove = false;
+    [SerializeField] bool canSkill = false;
+    [SerializeField] bool getAttack = false;
+    [SerializeField] bool isRepel = false;
+    [SerializeField] bool isRotation = false;
+    [SerializeField] public bool BattleIsEnd = false;
+
+    public bool showDebug = false;
+
+    void Start() {
+        mainCamera = BattleManager.Instance.BattleCam;
+    }
+
+    void Update() {
+        Vector3 myPosition = transform.position;
+        Vector3 otherPosition = otherPlayer.transform.position;
+        float distance = Vector3.Distance(otherPosition, myPosition);
+
+        characterLookCam(distance, myPosition, otherPosition);
+        charLookOtherChart();
+
+        if (BattleIsEnd) return;
+
+        doAnimation();
+    }
+
+    void characterLookCam(float distance, Vector3 myPosition, Vector3 otherPosition) {
+        if (getAttack) return;
+        if (canSkill) return;
+
+        if (mainCamera != null && otherPlayer.transform != null) {
+            if (distance <= chnageCharLookTolerance) {
+
+            } else {
+                if (otherPosition.x < myPosition.x) {
+                    lookRight = false;
+                } else {
+                    lookRight = true;
+                }
+            }
+        }
+    }
+
+    void doAnimation() {
+        if (getAttack) {
+            GetAttack();
+        } else if (canSkill) {
+            OnSkill();
+        } else {
+            OnMove();
+        }
+    }
+
+    private void charLookOtherChart() {
+        if (getAttack) return;
+        if (canSkill) return;
+
+        BOARD.LookAt(mainCamera.transform.position, Vector3.up);
+        if (lookRight) {
+            BOARD.eulerAngles = new Vector3(-90, BOARD.eulerAngles.y, BOARD.eulerAngles.z);
+        } else {
+            BOARD.eulerAngles = new Vector3(-90, BOARD.eulerAngles.y, BOARD.eulerAngles.z - 180);
+        }
+    }
+
+    public void setCharacter(Character _otherPlayer) {
+        otherPlayer = _otherPlayer;
+
+        if (BattleManager.Instance.isRightPlayer && isRightPlayer) {
+            BattleManager.Instance.vCam.Follow = CamLook_Left;
+            BattleManager.Instance.vCam.LookAt = CamLook_Left;
+        } else if (!BattleManager.Instance.isRightPlayer && !isRightPlayer) {
+            BattleManager.Instance.vCam.Follow = CamLook_Right;
+            BattleManager.Instance.vCam.LookAt = CamLook_Right;
+        }
+    }
+
+    public void OnMove() {
+        if (!canMove) return;
+
+        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+        if (stateInfo.IsName("move_Animation") && stateInfo.normalizedTime < moveExitTimeThreshold) {
+            Vector3 directionToTarget = otherPlayer.transform.position - transform.position;
+            transform.rotation = Quaternion.LookRotation(directionToTarget, Vector3.up);
+            transform.Translate(Vector3.forward * moveSpeed * Time.deltaTime);
+        } else {
+            animator.SetBool("isMove", true);
+        }
+    }
+
+    public void OnSkill() {
+        if (!canSkill) return;
+
+        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+        if (stateInfo.IsName("idle_Animation")) {
+        } else if (stateInfo.IsName("attack_spin")) {
+            canSkill = false;
+            animator.SetBool("isAttack", false);
+            animator.SetBool("isAnimation", false);
+        } else {
+            animator.SetBool("isAttack", true);
+            animator.SetBool("isAnimation", true);
+        }
+    }
+
+    public void doSkillAttack() {
+        canSkill = true;
+    }
+
+    [SerializeField] public float knockbackForce = 5.0f;
+    [SerializeField] public Vector3 knockbackDirection;
+    [SerializeField] public float knockbackDuration = 1.0f;
+    [SerializeField] public float knockbackTimer = 0f;
+    public void isGetAttack(Vector3 _knockbackDirection, float _knockbackForce = 5.0f, float _knockbackDuration = 1.0f) {
+        getAttack = true;
+        knockbackDirection = _knockbackDirection;
+        knockbackForce = _knockbackForce;
+        knockbackDuration = _knockbackDuration;
+    }
+    public void GetAttack() {
+        if (!getAttack) return;
+
+        knockbackTimer += Time.deltaTime;
+
+        Vector3 knockbackDirectionTemp = -transform.forward;
+        mainRigidbody.velocity = knockbackDirectionTemp * knockbackForce;
+
+        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+        if (stateInfo.IsName("idle_Animation")) {
+
+        } else {
+            animator.SetBool("isRotation", true);
+            animator.SetBool("isAnimation", true);
+        }
+
+        if (knockbackTimer >= knockbackDuration) {
+            if (stateInfo.IsName("repel_Animation")) {
+                getAttack = false;
+                animator.SetBool("isRepel", false);
+                animator.SetBool("isRotation", false);
+                animator.SetBool("isAnimation", false);
+            } else {
+                animator.SetBool("isRotation", false);
+                animator.SetBool("isRepel", true);
+            }
+            mainRigidbody.velocity = Vector3.zero;
+            knockbackTimer = 0f;
+        }
+    }
+
+    public void BattleStart() {
+        canMove = true;
+        BattleIsEnd = false;
+    }
+    public void BattleEnd() {
+        if (BattleIsEnd) return;
+
+        BattleIsEnd = true;
+    }
+}

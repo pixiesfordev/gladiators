@@ -52,7 +52,7 @@ namespace Scoz.Func {
             FinishAC = _ac;
             SceneTransitionProgress.fillAmount = 0;
             TransitionAni.SetTrigger("Play");
-            SceneTransitionJsonData data = SceneTransitionJsonData.GetRandomData();
+            JsonSceneTransition data = JsonSceneTransition.GetRandomData();
             if (data != null) {
                 SceneTransitionText.text = data.Description;
                 if (!string.IsNullOrEmpty(data.RefPic)) {

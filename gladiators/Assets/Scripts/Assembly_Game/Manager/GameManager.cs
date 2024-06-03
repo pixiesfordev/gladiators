@@ -10,6 +10,7 @@ using Cysharp.Threading.Tasks;
 using Service.Realms;
 using Gladiators.Main;
 using Gladiators.Socket;
+using UnityEditor.Playables;
 
 namespace Scoz.Func {
     public enum DataLoad {
@@ -82,7 +83,7 @@ namespace Scoz.Func {
         }
 
         public static void UnloadUnusedAssets() {
-            if (!CDChecker.DoneCD("UnloadUnusedAssets", GameSettingJsonData.GetFloat(GameSetting.UnloadUnusedAssetsCD)))
+            if (!CDChecker.DoneCD("UnloadUnusedAssets", JsonGameSetting.GetFloat(GameSetting.UnloadUnusedAssetsCD)))
                 return;
             Resources.UnloadUnusedAssets();
         }
@@ -105,6 +106,12 @@ namespace Scoz.Func {
             if (IsInit) return;
             Instance = this;
             IsInit = true;
+
+            //// 修改JsonMapper預設的反射數值類型是float而不是double
+            //JsonMapper.RegisterImporter((double _value) => {
+            //    return (float)_value;
+            //});
+
             DontDestroyOnLoad(gameObject);
             //設定FPS與垂直同步
 #if Dev
@@ -142,6 +149,8 @@ namespace Scoz.Func {
 #endif
             //初始化文字取代工具
             StringReplacer.Init();
+            //初始化遊戲房間
+            AllocatedRoom.Init();
 
             // 建立AddressableManage並開始載包
             StartDownloadAddressable();
@@ -206,7 +215,6 @@ namespace Scoz.Func {
                                 Instance.CreateAddressableObjs();
                                 IsFinishedLoadAsset = true;
                                 SpawnSceneUI();
-
                             });
                         });
                     });

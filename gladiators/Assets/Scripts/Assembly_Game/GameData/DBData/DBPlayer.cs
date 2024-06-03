@@ -25,10 +25,10 @@ public partial class DBPlayer : IRealmObject {
     public DateTimeOffset? LastSignoutAt { get; private set; }
     [MapTo("onlineState")]
     public string OnlineState { get; private set; }
+    [MapTo("gold")]
+    public long? Gold { get; private set; }
     [MapTo("point")]
     public long? Point { get; private set; }
-    [MapTo("heroExp")]
-    public int? HeroExp { get; private set; }
     [MapTo("inMatchgameID")]
     public string InMatchgameID { get; private set; }
 
@@ -40,7 +40,6 @@ public partial class DBPlayer : IRealmObject {
     /// <summary>
     /// 呼叫時機為: 1.收到Matchmaker建立/加入房間成功後呼叫 2. 離開遊戲房時傳入(null)將玩家所在Matchgame(遊戲房)清掉
     /// 建立/加入房間時會設定所在Matchgame(遊戲房)的ID並訂閱DBMatchgame資料，若Server房間創好後會收到通知讓玩家主動scoket到Matchgame Server
-    /// 離開遊戲房時將InMatchgameID設回null並取消訂閱
     /// </summary>
     public async UniTask SetInMatchgameID(string _matchgameID) {
         await RealmManager.MyRealm.WriteAsync(() => {

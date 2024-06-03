@@ -37,7 +37,6 @@ namespace Scoz.Func {
         public static void DoNothing(object logMsg, UnityEngine.Object context = null) { }
         public static void DoNothing(UnityEngine.Object context, string format, params object[] args) { }
         public static void DoNothing(string format, params object[] args) { }
-
         public static LogDelegate Log { get { return UnityEngine.Debug.Log; } }
         public static LogDelegate LogError { get { return UnityEngine.Debug.LogError; } }
         public static LogDelegate LogWarning { get { return UnityEngine.Debug.LogWarning; } }
@@ -72,6 +71,9 @@ namespace Scoz.Func {
         }
         public static void LogException(Exception exception, UnityEngine.Object context) {
             UnityEngine.Debug.LogException(exception, context);
+        }
+        public static void WriteObj(object _obj) {
+            WriteLog.Log(DebugUtils.ObjToStr(_obj));
         }
         public static void Break() {
             UnityEngine.Debug.Break();
