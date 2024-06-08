@@ -52,7 +52,8 @@ public class BattleModelController : MonoBehaviour {
         leftChar.setCharacter(leftCharID, rightChar);
         rightChar.setCharacter(rightCharID, leftChar);
 
-        leftChar.transform.position = new Vector3(30, 0, 0);
+        leftChar.transform.position = new Vector3(-16, 0, 0);
+        rightChar.transform.position = new Vector3(16, 0, 0);
     }
 
     public void BattleReset() {

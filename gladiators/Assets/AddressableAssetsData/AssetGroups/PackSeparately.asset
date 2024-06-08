@@ -29,12 +29,6 @@ MonoBehaviour:
     m_SerializedLabels:
     - Prefab
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 5cb92566fbe9bf240b9168e0cdaea615
-    m_Address: Assets/AddressableAssets/Atlas
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - Atlas
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 8364aee01ec99214f887a1b54eabf862
     m_Address: Assets/AddressableAssets/Prefabs
     m_ReadOnly: 0
@@ -45,7 +39,7 @@ MonoBehaviour:
     m_Address: Assets/AddressableAssets/Dlls
     m_ReadOnly: 0
     m_SerializedLabels:
-    - Dlls
+    - Prefab
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b83bde0a1d1b28f43ad46c0d37b682a8
     m_Address: Assets/CartoonGrass/Materials/CartoonGrass_Grass_02_LOD2.mat
@@ -214,6 +208,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d0c319d1ed725c34d943f194d87436e1
     m_Address: Assets/LU/Scenes/T/grass_dome 1.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5cb92566fbe9bf240b9168e0cdaea615
+    m_Address: Assets/AddressableAssets/Atlas
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
