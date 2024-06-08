@@ -40,15 +40,17 @@ public class BattleModelController : MonoBehaviour {
         //Character leftPrefab = Resources.Load<Character>("Prefabs/Battle/test/Character" + leftCharID);
         leftChar = Instantiate(characterPrefab, charactersArea.transform);
         leftChar.name = "leftCharacter";
+        leftChar.tag = "leftobj";
         leftChar.isRightPlayer = false;
 
         //Character rightPrefab = Resources.Load<Character>("Prefabs/Battle/test/Character" + rightCharID);
         rightChar = Instantiate(characterPrefab, charactersArea.transform);
         rightChar.name = "rightCharacter";
+        rightChar.tag = "rightobj";
         rightChar.isRightPlayer = true;
 
-        leftChar.setCharacter(rightChar);
-        rightChar.setCharacter(leftChar);
+        leftChar.setCharacter(leftCharID, rightChar);
+        rightChar.setCharacter(rightCharID, leftChar);
 
         leftChar.transform.position = new Vector3(30, 0, 0);
     }

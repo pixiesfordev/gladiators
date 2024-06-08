@@ -1,7 +1,4 @@
-using dnlib.DotNet;
 using Gladiators.Battle;
-using UniRx;
-using UniRx.Triggers;
 using UnityEngine;
 
 public class Character : MonoBehaviour {
@@ -18,20 +15,34 @@ public class Character : MonoBehaviour {
     public Animator animator;
     public bool lookRight;
 
+    public GameObject skillArea;
+    public GameObject skillBall;
+
     [SerializeField] public bool isRightPlayer;
     public Character otherPlayer;
 
-    [SerializeField] public float moveSpeed = 1.0f;
+    [SerializeField] public float defaultSpeed = 1.0f;
+    [SerializeField] public float runSpeed = 2.0f;
+    float moveSpeed {
+        get {
+            if(isRun) return runSpeed;
+
+            return defaultSpeed;
+        }
+    }
     [SerializeField] public float moveExitTimeThreshold = 0.85f;
     [SerializeField] float chnageCharLookTolerance = 1.0f;
     [SerializeField] float attackTolerance = 3.5f;
 
+    [SerializeField] public bool isRun = false;
     [SerializeField] public bool canMove = false;
     [SerializeField] bool canSkill = false;
     [SerializeField] bool getAttack = false;
     [SerializeField] bool isRepel = false;
     [SerializeField] bool isRotation = false;
     [SerializeField] public bool BattleIsEnd = false;
+
+    int? nowSkillID = null;
 
     public bool showDebug = false;
 
@@ -91,8 +102,12 @@ public class Character : MonoBehaviour {
         }
     }
 
-    public void setCharacter(Character _otherPlayer) {
+    public void setCharacter(int charID, Character _otherPlayer) {
         otherPlayer = _otherPlayer;
+
+        //var charData = GameDictionary.GetJsonData<JsonGladiator>(charID);
+        defaultSpeed = 1.5f;
+        runSpeed = 2.5f;
 
         if (BattleManager.Instance.isRightPlayer && isRightPlayer) {
             BattleManager.Instance.vCam.Follow = CamLook_Left;
@@ -117,21 +132,40 @@ public class Character : MonoBehaviour {
     }
 
     public void OnSkill() {
+        if (getAttack) return;
         if (!canSkill) return;
+        if (nowSkillID == null) return;
 
         AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
         if (stateInfo.IsName("idle_Animation")) {
         } else if (stateInfo.IsName("attack_spin")) {
             canSkill = false;
+            nowSkillID = null;
             animator.SetBool("isAttack", false);
             animator.SetBool("isAnimation", false);
         } else {
-            animator.SetBool("isAttack", true);
-            animator.SetBool("isAnimation", true);
+            //var skillData = GameDictionary.GetJsonData<JsonSkill>((int)nowSkillID);
+            //var skillEffectData = GameDictionary.GetJsonData<JsonSkillEffect>((int)nowSkillID);
+
+            //if (skillData != null && skillData.Activation == "Instant") {
+                animator.SetBool("isAttack", true);
+                animator.SetBool("isAnimation", true);
+
+                //create skill ball
+                //var skillBall_temp = Instantiate(skillBall, skillArea.transform);
+                //if (isRightPlayer) {
+                //    skillBall_temp.gameObject.tag = "rightobj";
+                //} else {
+                //    skillBall_temp.gameObject.tag = "leftobj";
+                //}
+            //} else {
+
+            //}
         }
     }
 
-    public void doSkillAttack() {
+    public void doSkillAttack(int skillID) {
+        nowSkillID = skillID;
         canSkill = true;
     }
 
@@ -140,10 +174,10 @@ public class Character : MonoBehaviour {
     [SerializeField] public float knockbackDuration = 1.0f;
     [SerializeField] public float knockbackTimer = 0f;
     public void isGetAttack(Vector3 _knockbackDirection, float _knockbackForce = 5.0f, float _knockbackDuration = 1.0f) {
-        getAttack = true;
         knockbackDirection = _knockbackDirection;
         knockbackForce = _knockbackForce;
         knockbackDuration = _knockbackDuration;
+        getAttack = true;
     }
     public void GetAttack() {
         if (!getAttack) return;
