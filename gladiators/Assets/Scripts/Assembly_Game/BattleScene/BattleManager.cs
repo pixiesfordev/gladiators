@@ -43,19 +43,19 @@ namespace Gladiators.Battle {
 
         void Update() {
             if (bResetBattle) {
-                StartCoroutine(ResetBattle());
+                ResetBattle().Forget();
                 bResetBattle = false;
                 battleModelController.BattleStart();
             }
         }
 
-        public IEnumerator Init() {
+        public async UniTask Init() {
             Instance = this;
             SetCam();//設定攝影機模式
-            yield return StartCoroutine(ResetBattle());
-            yield return StartCoroutine(CheckGameState());
+            await ResetBattle();
+            await CheckGameState();
         }
-        IEnumerator CheckGameState() {
+        async UniTask CheckGameState() {
             switch (AllocatedRoom.Instance.CurGameState) {
                 case AllocatedRoom.GameState.NotInGame://本地測試
                     testStartGame();
@@ -69,7 +69,7 @@ namespace Gladiators.Battle {
                     GameConnector.Instance.SetReady();
                     break;
             }
-            yield return null;
+            await UniTask.Yield();
         }
         public void GotOpponent() {
             GameConnector.Instance.SetReady();
@@ -97,16 +97,15 @@ namespace Gladiators.Battle {
         }
 
         //重啟戰鬥
-        IEnumerator ResetBattle() {
+        async UniTask ResetBattle() {
             //相關參數在此重設 設定完才去更新UI
             BattleIsEnd = false;
             BattleLeftTime = BattleDefaultTime;
             ResetBattleSceneUI();
-            yield return StartCoroutine(ResetBattleModelController());
+            await ResetBattleModelController();
             //TODO:這裡可能需要加入一個延遲等待開場演出
             CountDownBattleTime().Forget();
             //testStartGame();
-            yield return null;
         }
 
         //重設戰鬥UI
@@ -116,10 +115,10 @@ namespace Gladiators.Battle {
             BattleSceneUI.Instance.SetTimeText(BattleLeftTime);
         }
 
-        IEnumerator ResetBattleModelController() {//正常不會有這行為，因為沒有重新戰鬥
-            if (battleModelController == null) yield return null;
+        async UniTask ResetBattleModelController() {//正常不會有這行為，因為沒有重新戰鬥
+            if (battleModelController == null) return;
 
-            yield return StartCoroutine(battleModelController.BattleReset());
+            await battleModelController.BattleReset();
         }
 
         void testStartGame() {
@@ -188,7 +187,7 @@ namespace Gladiators.Battle {
 
         //戰鬥剩餘秒數計算
         async UniTaskVoid CountDownBattleTime() {
-        ReCount:
+            ReCount:
             //Debug.Log("測試倒數秒數.現在秒數: " + BattleLeftTime);
             await UniTask.Delay(TimeSpan.FromSeconds(1f));
             //有可能會發生剩下一秒的時候分出勝負 所以一秒數完還是要再次確認是否已經分出勝負 沒有才繼續數秒

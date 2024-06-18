@@ -7,6 +7,7 @@ using UnityEngine.AddressableAssets;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Gladiators.Main;
+using Cysharp.Threading.Tasks;
 
 public class BattleSceneUI : BaseUI {
     [HeaderAttribute("==============AddressableAssets==============")]
@@ -56,7 +57,7 @@ public class BattleSceneUI : BaseUI {
         AddressablesLoader.GetPrefabByRef(BattleManagerAsset, (battleManagerPrefab, handle) => {
             GameObject go = Instantiate(battleManagerPrefab);
             var battleMaanger = go.GetComponent<BattleManager>();
-            StartCoroutine(battleMaanger.Init());
+            battleMaanger.Init().Forget();
         });
     }
 
@@ -73,22 +74,20 @@ public class BattleSceneUI : BaseUI {
     //6.血條演出 設參數供調整測試(已完成)
 
     //更新剩餘秒數
-    public void SetTimeText(int num)
-    {
+    public void SetTimeText(int num) {
         BattleLeftTime.text = num.ToString();
     }
 
     /// <summary>
     /// 通知施放碰撞觸發技能
     /// </summary>
-    public void CastMeleeSkill(JsonSkill _Skill)
-    {
+    public void CastMeleeSkill(JsonSkill _Skill) {
         //UI作演出 並把技能使用掉 更新下一個技能上來
-        if(SkillBtn1.SkillSelected)
+        if (SkillBtn1.SkillSelected)
             SkillBtn1.CastMeleeSkill();
-        else if(SkillBtn2.SkillSelected)
+        else if (SkillBtn2.SkillSelected)
             SkillBtn2.CastMeleeSkill();
-        else if(SkillBtn3.SkillSelected)
+        else if (SkillBtn3.SkillSelected)
             SkillBtn3.CastMeleeSkill();
     }
 }
