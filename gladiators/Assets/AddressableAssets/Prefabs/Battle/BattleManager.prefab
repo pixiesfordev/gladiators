@@ -83,6 +83,11 @@ MonoBehaviour:
     type: 3}
   terrainArea: {fileID: 8536922110977078062}
   charactersArea: {fileID: 7590910013932357930}
+  minDistance: 5
+  maxDistance: 20
+  minFOV: 30
+  maxFOV: 60
+  distanceOffset: 2
 --- !u!1 &586927303856555587
 GameObject:
   m_ObjectHideFlags: 0
@@ -298,6 +303,7 @@ Transform:
   m_Children:
   - {fileID: 382998234740706322}
   - {fileID: 91263584872272868}
+  - {fileID: 5116647600168455288}
   m_Father: {fileID: 2049168695766023727}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1975865431354585312
@@ -422,8 +428,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2911503781113169966}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
-  m_LocalPosition: {x: 0, y: 2, z: 9.5}
+  m_LocalRotation: {x: 0.17364816, y: -0, z: -0, w: 0.9848078}
+  m_LocalPosition: {x: 0, y: 8.01047, z: -9.854561}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -844,6 +850,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   vCam: {fileID: 2896679513101682643}
+  vTargetGroup: {fileID: 8007894965252531736}
   MyCam: {fileID: 2316466101126620663}
   BattleDefaultTime: 60
   BattleIsEnd: 0
@@ -907,14 +914,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7649430313357338200}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
-  m_LocalPosition: {x: 0, y: 2, z: 9.5}
+  m_LocalRotation: {x: 0.17364816, y: -0, z: -0, w: 0.9848078}
+  m_LocalPosition: {x: 0, y: 8.01047, z: -9.854561}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6845656777536393725}
   m_Father: {fileID: 8579495945198403075}
-  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+  m_LocalEulerAnglesHint: {x: 20, y: 0, z: 0}
 --- !u!114 &2896679513101682643
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -933,8 +940,8 @@ MonoBehaviour:
   m_StreamingVersion: 20170927
   m_Priority: 10
   m_StandbyUpdate: 1
-  m_LookAt: {fileID: 0}
-  m_Follow: {fileID: 0}
+  m_LookAt: {fileID: 5116647600168455288}
+  m_Follow: {fileID: 5116647600168455288}
   m_Lens:
     FieldOfView: 60
     OrthographicSize: 10
@@ -1016,6 +1023,54 @@ Transform:
   m_Children: []
   m_Father: {fileID: 6169543276580997598}
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+--- !u!1 &8791508410065879494
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5116647600168455288}
+  - component: {fileID: 8007894965252531736}
+  m_Layer: 0
+  m_Name: Target Group
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5116647600168455288
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8791508410065879494}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8579495945198403075}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8007894965252531736
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8791508410065879494}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5eb80d8e62d9d145bb50fb783c0f731, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_PositionMode: 0
+  m_RotationMode: 0
+  m_UpdateMethod: 2
+  m_Targets: []
 --- !u!1 &8866085363062117479
 GameObject:
   m_ObjectHideFlags: 0
@@ -1058,7 +1113,7 @@ GameObject:
   - component: {fileID: 6845656777536393725}
   - component: {fileID: 7813551799476437280}
   - component: {fileID: 7779462221211456918}
-  - component: {fileID: 2425455168031543692}
+  - component: {fileID: 6544319410430385720}
   m_Layer: 0
   m_Name: cm
   m_TagString: Untagged
@@ -1110,7 +1165,7 @@ MonoBehaviour:
   m_AmplitudeGain: 0
   m_FrequencyGain: 1
   mNoiseOffsets: {x: 24.364838, y: 843.4236, z: -68.21475}
---- !u!114 &2425455168031543692
+--- !u!114 &6544319410430385720
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1131,8 +1186,8 @@ MonoBehaviour:
   m_ZDamping: 1
   m_TargetMovementOnly: 1
   m_ScreenX: 0.5
-  m_ScreenY: 0.5
-  m_CameraDistance: 10
+  m_ScreenY: 0.8
+  m_CameraDistance: 12
   m_DeadZoneWidth: 0
   m_DeadZoneHeight: 0
   m_DeadZoneDepth: 0

@@ -56,7 +56,7 @@ public class BattleSceneUI : BaseUI {
         AddressablesLoader.GetPrefabByRef(BattleManagerAsset, (battleManagerPrefab, handle) => {
             GameObject go = Instantiate(battleManagerPrefab);
             var battleMaanger = go.GetComponent<BattleManager>();
-            battleMaanger.Init();
+            StartCoroutine(battleMaanger.Init());
         });
     }
 

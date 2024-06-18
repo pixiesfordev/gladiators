@@ -106,16 +106,18 @@ public class Character : MonoBehaviour {
         otherPlayer = _otherPlayer;
 
         //var charData = GameDictionary.GetJsonData<JsonGladiator>(charID);
-        defaultSpeed = 1.5f;
-        runSpeed = 2.5f;
+        defaultSpeed = 8f;
+        runSpeed = 12f;
 
-        if (BattleManager.Instance.isRightPlayer && isRightPlayer) {
-            BattleManager.Instance.vCam.Follow = CamLook_Left;
-            BattleManager.Instance.vCam.LookAt = CamLook_Left;
-        } else if (!BattleManager.Instance.isRightPlayer && !isRightPlayer) {
-            BattleManager.Instance.vCam.Follow = CamLook_Right;
-            BattleManager.Instance.vCam.LookAt = CamLook_Right;
-        }
+        //if (BattleManager.Instance.isRightPlayer && isRightPlayer) {
+        //    BattleManager.Instance.vCam.Follow = CamLook_Left;
+        //    BattleManager.Instance.vCam.LookAt = CamLook_Left;
+        //} else if (!BattleManager.Instance.isRightPlayer && !isRightPlayer) {
+        //    BattleManager.Instance.vCam.Follow = CamLook_Right;
+        //    BattleManager.Instance.vCam.LookAt = CamLook_Right;
+        //}
+
+        BattleManager.Instance.vTargetGroup.AddMember(transform, 1, 8);
     }
 
     void SetFaceToTarget() {
@@ -173,14 +175,16 @@ public class Character : MonoBehaviour {
         canSkill = true;
     }
 
-    [SerializeField] public float knockbackForce = 5.0f;
+    [SerializeField] public float knockbackForce = 1.0f;
     [SerializeField] public Vector3 knockbackDirection;
     [SerializeField] public float knockbackDuration = 1.0f;
     [SerializeField] public float knockbackTimer = 0f;
-    public void isGetAttack(Vector3 _knockbackDirection, float _knockbackForce = 5.0f, float _knockbackDuration = 1.0f) {
-        knockbackDirection = _knockbackDirection;
-        knockbackForce = _knockbackForce;
-        knockbackDuration = _knockbackDuration;
+    [SerializeField] public float initialSpeed = 20f; // ³õËÙ¶È
+    [SerializeField] public float knockbackSpeed;
+    public void isGetAttack(Vector3 _knockbackDirection, float _knockbackForce = 1.0f, float _knockbackDuration = 1.0f) {
+        //knockbackDirection = _knockbackDirection;
+        //knockbackForce = _knockbackForce;
+        //knockbackDuration = _knockbackDuration;
         getAttack = true;
     }
     public void GetAttack() {
@@ -189,17 +193,20 @@ public class Character : MonoBehaviour {
         knockbackTimer += Time.deltaTime;
 
         Vector3 knockbackDirectionTemp = -transform.forward;
-        mainRigidbody.velocity = knockbackDirectionTemp * knockbackForce;
+        float timeFraction = knockbackTimer / knockbackDuration;
+        knockbackSpeed = Mathf.Lerp(initialSpeed, 0, timeFraction);
+        mainRigidbody.velocity = knockbackDirectionTemp * knockbackForce * knockbackSpeed;
 
         AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
         if (stateInfo.IsName("idle_Animation")) {
-
+            mainRigidbody.velocity = Vector3.zero;
+            knockbackTimer = 0f;
         } else {
             animator.SetBool("isRotation", true);
             animator.SetBool("isAnimation", true);
         }
 
-        if (knockbackTimer >= knockbackDuration) {
+        if (knockbackTimer >= 0.8f) {
             if (stateInfo.IsName("repel_Animation")) {
                 getAttack = false;
                 animator.SetBool("isRepel", false);
@@ -209,8 +216,6 @@ public class Character : MonoBehaviour {
                 animator.SetBool("isRotation", false);
                 animator.SetBool("isRepel", true);
             }
-            mainRigidbody.velocity = Vector3.zero;
-            knockbackTimer = 0f;
         }
     }
 

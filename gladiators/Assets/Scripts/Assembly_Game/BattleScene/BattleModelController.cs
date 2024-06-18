@@ -1,6 +1,7 @@
 using Gladiators.Battle;
 using Gladiators.Main;
 using Scoz.Func;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,10 +13,10 @@ public class BattleModelController : MonoBehaviour {
     [SerializeField] GameObject terrainArea;
     [SerializeField] GameObject charactersArea;
 
-    Character leftChar = null;
-    Character rightChar = null;
+    [SerializeField] Character leftChar = null;
+    [SerializeField] Character rightChar = null;
 
-    bool BattleIsEnd = false;
+    [SerializeField] bool BattleIsEnd = false;
 
     void Start() {
         Init();
@@ -27,8 +28,14 @@ public class BattleModelController : MonoBehaviour {
         CreateCharacter(0, 0);
     }
 
-    void Update() {
+    public float minDistance = 5f; // 最小距離
+    public float maxDistance = 20f; // 最大距離
+    public float minFOV = 30f; // 最小視野
+    public float maxFOV = 60f; // 最大視野
+    public float distanceOffset = 2f; // 距離偏移量，用於調整cam的距離
 
+    void Update() {
+        Attack();
     }
 
     public void CreateTerrain(int terrainID) {
@@ -56,15 +63,30 @@ public class BattleModelController : MonoBehaviour {
         rightChar.transform.position = new Vector3(16, 0, 0);
     }
 
-    public void BattleReset() {
+    [SerializeField] public float distanceValue = 2.0f;
+    [SerializeField] public float PlayerDistance = 0.0f;
+    public void Attack() {
+        if (BattleIsEnd) return;
+        PlayerDistance = Vector3.Distance(leftChar.transform.position, rightChar.transform.position);
+        if (PlayerDistance <= distanceValue) {
+            leftChar.isGetAttack(leftChar.transform.forward);
+            rightChar.isGetAttack(rightChar.transform.forward);
+        }
+    }
 
-        //leftChar.transform.position = new Vector3(30, 0, 0);
-        //leftChar.transform.rotation = Quaternion.Euler(0, 0, 0);
-        //rightChar.transform.position = new Vector3(0, 0, 0);
-        //rightChar.transform.rotation = Quaternion.Euler(0, 0, 0);
+    public IEnumerator BattleReset() {
+        while (leftChar == null || rightChar == null) {
+            yield return new WaitForEndOfFrame();
+        }
+
+        leftChar.transform.position = new Vector3(-16, 0, 0);
+        leftChar.transform.rotation = Quaternion.Euler(0, 0, 0);
+        rightChar.transform.position = new Vector3(16, 0, 0);
+        rightChar.transform.rotation = Quaternion.Euler(0, 0, 0);
     }
 
     public void BattleStart() {
+        BattleIsEnd = false;
         leftChar.BattleStart();
         rightChar.BattleStart();
     }

@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - SceneCam
+  - leftobj
+  - rightobj
   layers:
   - Default
   - TransparentFX
@@ -17,8 +19,8 @@ TagManager:
   - Role
   - Scene
   - Monster
-  - leftobj
-  - rightobj
+  - 
+  - 
   - 
   - 
   - 

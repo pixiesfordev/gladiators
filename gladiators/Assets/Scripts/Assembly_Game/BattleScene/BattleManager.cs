@@ -21,6 +21,7 @@ namespace Gladiators.Battle {
     public class BattleManager : MonoBehaviour {
         public static BattleManager Instance;
         [SerializeField] public CinemachineVirtualCamera vCam;
+        [SerializeField] public CinemachineTargetGroup vTargetGroup;
         [SerializeField] Camera MyCam;
         public Camera BattleCam => MyCam;
 
@@ -42,28 +43,33 @@ namespace Gladiators.Battle {
 
         void Update() {
             if (bResetBattle) {
-                ResetBattle();
+                StartCoroutine(ResetBattle());
                 bResetBattle = false;
+                battleModelController.BattleStart();
             }
         }
 
-        public void Init() {
+        public IEnumerator Init() {
             Instance = this;
             SetCam();//設定攝影機模式
-            ResetBattle();
-            CheckGameState();
+            yield return StartCoroutine(ResetBattle());
+            yield return StartCoroutine(CheckGameState());
         }
-        void CheckGameState() {
+        IEnumerator CheckGameState() {
             switch (AllocatedRoom.Instance.CurGameState) {
                 case AllocatedRoom.GameState.NotInGame://本地測試
+                    testStartGame();
                     break;
                 case AllocatedRoom.GameState.UnAuth://需要等待Matchgame Server回傳Auth成功
+                    Debug.Log("需要等待Matchgame Server回傳Auth成功");
                     PopupUI.ShowLoading(JsonString.GetUIString("Loading"));
                     break;
                 case AllocatedRoom.GameState.GotPlayer://如果已經收到雙方玩家資料就送Ready
+                    Debug.Log("如果已經收到雙方玩家資料就送Ready");
                     GameConnector.Instance.SetReady();
                     break;
             }
+            yield return null;
         }
         public void GotOpponent() {
             GameConnector.Instance.SetReady();
@@ -91,15 +97,16 @@ namespace Gladiators.Battle {
         }
 
         //重啟戰鬥
-        void ResetBattle() {
+        IEnumerator ResetBattle() {
             //相關參數在此重設 設定完才去更新UI
             BattleIsEnd = false;
             BattleLeftTime = BattleDefaultTime;
             ResetBattleSceneUI();
-            ResetBattleModelController();
+            yield return StartCoroutine(ResetBattleModelController());
             //TODO:這裡可能需要加入一個延遲等待開場演出
             CountDownBattleTime().Forget();
-            testStartGame();
+            //testStartGame();
+            yield return null;
         }
 
         //重設戰鬥UI
@@ -109,10 +116,10 @@ namespace Gladiators.Battle {
             BattleSceneUI.Instance.SetTimeText(BattleLeftTime);
         }
 
-        void ResetBattleModelController() {
-            if (battleModelController == null) return;
+        IEnumerator ResetBattleModelController() {//正常不會有這行為，因為沒有重新戰鬥
+            if (battleModelController == null) yield return null;
 
-            battleModelController.BattleReset();
+            yield return StartCoroutine(battleModelController.BattleReset());
         }
 
         void testStartGame() {
