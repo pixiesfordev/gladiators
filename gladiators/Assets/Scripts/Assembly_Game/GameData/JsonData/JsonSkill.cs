@@ -14,9 +14,13 @@ namespace Gladiators.Main {
         Melee,//肉搏
         Passive,//被動
     }
+    public enum SkillType {
+        Normal,//一般技能
+        Divine,//神祉技能
+    }
     public enum Divine {
         Turtle,//石龜
-        Snake,//邪蛇
+        Snake,//妖蛇
         Bear,//巨熊
         Deer,//靈鹿
     }
@@ -30,6 +34,7 @@ namespace Gladiators.Main {
         public SkillActivation Activation { get; private set; }
         public int Initiative { get; private set; }
         public int Vigor { get; private set; }
+        public SkillType MySkillType { get; private set; }
         public Divine MyDivine { get; private set; }
         public List<JsonSkillEffect> Effects { get { return JsonSkillEffect.GetSkillEffectDatas(ID); } }
 
@@ -60,6 +65,10 @@ namespace Gladiators.Main {
                         break;
                     case "Vigor":
                         Vigor = int.Parse(item[key].ToString());
+                        break;
+                    case "Type":
+                        SkillType type;
+                        if (MyEnum.TryParseEnum(item[key].ToString(), out type)) MySkillType = type;
                         break;
                     case "Divine":
                         Divine divine;
