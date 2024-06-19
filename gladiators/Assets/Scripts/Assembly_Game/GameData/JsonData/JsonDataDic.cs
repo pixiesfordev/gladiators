@@ -51,7 +51,6 @@ namespace Scoz.Func {
             JsonBase.SetData_Remote<JsonSceneTransition>(SetDic);
             JsonBase.SetData_Remote<JsonGladiator>(SetDic);
             JsonBase.SetData_Remote<JsonSkill>(SetDic);
-            JsonBase.SetData_Remote<JsonBribe>(SetDic);
             JsonBase.SetDataStringKey_Remote<JsonSkillEffect>(SetDic);
 
             //設定X秒會顯示尚未載入的JsonData
@@ -112,7 +111,7 @@ namespace Scoz.Func {
             }
         }
         /// <summary>
-        /// 取得T類型的JsonData
+        /// 取得T類型的JsonData, T為Json+Json表格名稱, 例如Json表示Skill.json 那就可以用GetJsonData<JsonSkill>(1)就是取Skill表技能ID為1的技能
         /// </summary>
         public static T GetJsonData<T>(int _id, bool showErrorMsg = true) where T : JsonBase {
             if (IntKeyJsonDic == null)
@@ -130,7 +129,7 @@ namespace Scoz.Func {
             }
         }
         /// <summary>
-        /// 取得T類型的JsonData
+        /// 取得T類型的JsonData, T為Json+Json表格名稱, 例如Json表示SkillEffect.json 那就可以用GetJsonData<JsonSkillEffect>("1_1")就是取SkillEffect表技能ID為"1_1"的技能效果
         /// </summary>
         public static T GetJsonData<T>(string _id) where T : JsonBase {
             if (StrKeyJsonDic == null)

@@ -6,6 +6,7 @@ using Gladiators.Main;
 using UnityEngine.SceneManagement;
 using System;
 using Cysharp.Threading.Tasks;
+using LitJson;
 
 namespace Scoz.Func {
     public partial class TestTool : MonoBehaviour {
@@ -36,7 +37,7 @@ namespace Scoz.Func {
                 connFunc();
 
             } else if (Input.GetKeyDown(KeyCode.W)) {
-                GameConnector.Instance.Bribe(new int[2] { 10001, 10002 });
+                var effects = GameDictionary.GetJsonData<JsonSkill>(1).Effects;
 
             } else if (Input.GetKeyDown(KeyCode.E)) {
             } else if (Input.GetKeyDown(KeyCode.R)) {
