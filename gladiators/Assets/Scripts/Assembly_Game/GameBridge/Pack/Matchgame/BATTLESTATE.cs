@@ -6,14 +6,14 @@ namespace Gladiators.Socket.Matchgame {
     }
     public class BATTLESTATE_TOCLIENT : SocketContent {
         //class名稱就是封包的CMD名稱
-        public PackPlayerState[] PlayerStates { get; private set; }
-        public double GameTime { get; private set; }
+        public PackPlayerState[][] PlayerStates { get; private set; }
+        public double[] GameTime { get; private set; }
     }
 
     public class PackPlayerState {
         public string ID { get; private set; }
         public PackBribeSkill[] BribeSkills { get; private set; }
-        public PackGladiator Gladiators { get; private set; }
+        public PackGladiator Gladiator { get; private set; }
     }
     public class PackSkill {
         public int JsonID { get; private set; }
@@ -24,6 +24,7 @@ namespace Gladiators.Socket.Matchgame {
         public bool Used { get; private set; }
     }
     public class PackGladiator {
+        public bool LeftSide { get; private set; }
         public int JsonGladiatorID { get; private set; }
         public int[] JsonSkillIDs { get; private set; }
         public int[] JsonTraitIDs { get; private set; }
@@ -39,8 +40,9 @@ namespace Gladiators.Socket.Matchgame {
         public double CRIT { get; private set; }
         public int INIT { get; private set; }
         public int Knockback { get; private set; }
+        public int Speed { get; private set; }
         public int BattlePos { get; private set; }
-        public double[] StagePos { get; private set; }
+        public double StagePos { get; private set; }
         public PackBuffer[] Buffers { get; private set; }
     }
     public class PackBuffer {

@@ -1,9 +1,11 @@
 using Gladiators.Battle;
 using Gladiators.Main;
+using Gladiators.Socket.Matchgame;
 using Scoz.Func;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Entities.UniversalDelegates;
 using UnityEngine;
 
 public class BattleModelController : MonoBehaviour {
@@ -19,13 +21,13 @@ public class BattleModelController : MonoBehaviour {
     [SerializeField] bool BattleIsEnd = false;
 
     void Start() {
-        Init();
+        //Init();
     }
 
     public void Init() {
         //test create
-        CreateTerrain(0);
-        CreateCharacter(0, 0);
+        //CreateTerrain(0);
+        //CreateCharacter(0, 0);
     }
 
     public float minDistance = 5f; // 最小距離
@@ -35,7 +37,7 @@ public class BattleModelController : MonoBehaviour {
     public float distanceOffset = 2f; // 距離偏移量，用於調整cam的距離
 
     void Update() {
-        Attack();
+        //Attack();
     }
 
     public void CreateTerrain(int terrainID) {
@@ -43,45 +45,35 @@ public class BattleModelController : MonoBehaviour {
         var terrain = Instantiate(terrainPrefab, terrainArea.transform);
     }
 
-    public void CreateCharacter(int leftCharID, int rightCharID) {
+    public void CreateCharacter(int leftCharID, int rightCharID, PackPlayer[] _packPlayers) {
         //Character leftPrefab = Resources.Load<Character>("Prefabs/Battle/test/Character" + leftCharID);
         leftChar = Instantiate(characterPrefab, charactersArea.transform);
-        leftChar.name = "leftCharacter";
+        leftChar.name = _packPlayers[0].DBPlayerID;
         leftChar.tag = "leftobj";
         leftChar.isRightPlayer = false;
 
         //Character rightPrefab = Resources.Load<Character>("Prefabs/Battle/test/Character" + rightCharID);
         rightChar = Instantiate(characterPrefab, charactersArea.transform);
-        rightChar.name = "rightCharacter";
+        rightChar.name = _packPlayers[1].DBPlayerID;
         rightChar.tag = "rightobj";
         rightChar.isRightPlayer = true;
 
-        leftChar.setCharacter(leftCharID, rightChar);
-        rightChar.setCharacter(rightCharID, leftChar);
+        leftChar.setCharacter(_packPlayers[0].Gladiator, rightChar);
+        rightChar.setCharacter(_packPlayers[1].Gladiator, leftChar);
 
-        leftChar.transform.position = new Vector3(-16, 0, 0);
-        rightChar.transform.position = new Vector3(16, 0, 0);
+        leftChar.transform.position = new Vector3((float)_packPlayers[0].Gladiator.StagePos, 0, 0);
+        rightChar.transform.position = new Vector3((float)_packPlayers[1].Gladiator.StagePos, 0, 0);
     }
 
-    [SerializeField] public float distanceValue = 2.0f;
-    [SerializeField] public float PlayerDistance = 0.0f;
-    public void Attack() {
-        if (BattleIsEnd) return;
-        PlayerDistance = Vector3.Distance(leftChar.transform.position, rightChar.transform.position);
-        if (PlayerDistance <= distanceValue) {
-            leftChar.isGetAttack(leftChar.transform.forward);
-            rightChar.isGetAttack(rightChar.transform.forward);
-        }
-    }
-
-    public IEnumerator BattleReset() {
+    public IEnumerator WaitCharacterCreate() {
         while (leftChar == null || rightChar == null) {
             yield return new WaitForEndOfFrame();
         }
-
-        leftChar.transform.position = new Vector3(-16, 0, 0);
+    }
+    public void BattleReset(float leftPos, float rightPos) {
+        leftChar.transform.position = new Vector3(leftPos, 0, 0);
         leftChar.transform.rotation = Quaternion.Euler(0, 0, 0);
-        rightChar.transform.position = new Vector3(16, 0, 0);
+        rightChar.transform.position = new Vector3(rightPos, 0, 0);
         rightChar.transform.rotation = Quaternion.Euler(0, 0, 0);
     }
 
@@ -97,5 +89,21 @@ public class BattleModelController : MonoBehaviour {
         BattleIsEnd = true;
         leftChar.BattleEnd();
         rightChar.BattleEnd();
+    }
+
+    public void Movement(PackPlayerState leftPlayer, PackPlayerState rightPlayer) {
+        leftChar.Movement(leftPlayer.Gladiator);
+        rightChar.Movement(rightPlayer.Gladiator);
+    }
+
+    [SerializeField] public float distanceValue = 2.0f;
+    [SerializeField] public float PlayerDistance = 0.0f;
+    public void GetAttack(PackPlayerState leftPlayer, PackPlayerState rightPlayer) {
+        if (BattleIsEnd) return;
+        //PlayerDistance = Vector3.Distance(leftChar.transform.position, rightChar.transform.position);
+        //if (PlayerDistance <= distanceValue) {
+            leftChar.isGetAttack(leftPlayer.Gladiator);
+            rightChar.isGetAttack(rightPlayer.Gladiator);
+        //}
     }
 }

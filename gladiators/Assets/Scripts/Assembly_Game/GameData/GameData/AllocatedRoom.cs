@@ -140,6 +140,8 @@ namespace Gladiators.Main {
             var enemy = _packPlayers.Find(a => a.DBPlayerID != myPlayer.ID);//因為只會有兩個玩家, 不是自己就是敵人
             if (enemy == null) return;
             SetGameState(GameState.GotPlayer);
+            //設定資料
+            BattleManager.Instance.CreateTerrainAndChar(_packPlayers).Forget();
             BattleManager.Instance.GotOpponent();
         }
         /// <summary>
@@ -164,6 +166,17 @@ namespace Gladiators.Main {
             }
             if (playerCount == 2) BattleManager.Instance.StartGame();
         }
+
+        public void ReceiveBattleState(PackPlayerState[][] _playerStates, double[] GameTime) { //行為處理
+            if (_playerStates == null) return;
+
+            BattleManager.Instance.StartBattleTimer();
+            if (_playerStates.Length == 1) {
+                BattleManager.Instance.setBattleState(_playerStates[0], GameTime[0], BattleManager.BattleStateType.Move);
+            } else {
+                BattleManager.Instance.setBattleState(_playerStates[0], GameTime[0], BattleManager.BattleStateType.MoveAttack);
+                BattleManager.Instance.setBattleState(_playerStates[1], GameTime[1], BattleManager.BattleStateType.Knockback);
+            }
+        }
     }
 }
-

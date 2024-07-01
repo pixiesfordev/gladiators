@@ -16,6 +16,7 @@ using Unity.Entities.UniversalDelegates;
 using Loxodon.Framework.Binding;
 using Cinemachine;
 using Cysharp.Threading.Tasks.Triggers;
+using System.Linq;
 
 namespace Gladiators.Battle {
     public class BattleManager : MonoBehaviour {
@@ -43,7 +44,7 @@ namespace Gladiators.Battle {
 
         void Update() {
             if (bResetBattle) {
-                ResetBattle().Forget();
+                ResetBattle();
                 bResetBattle = false;
                 battleModelController.BattleStart();
             }
@@ -52,13 +53,11 @@ namespace Gladiators.Battle {
         public async UniTask Init() {
             Instance = this;
             SetCam();//設定攝影機模式
-            await ResetBattle();
             await CheckGameState();
         }
         async UniTask CheckGameState() {
             switch (AllocatedRoom.Instance.CurGameState) {
-                case AllocatedRoom.GameState.NotInGame://本地測試
-                    testStartGame();
+                case AllocatedRoom.GameState.NotInGame:
                     break;
                 case AllocatedRoom.GameState.UnAuth://需要等待Matchgame Server回傳Auth成功
                     Debug.Log("需要等待Matchgame Server回傳Auth成功");
@@ -74,11 +73,13 @@ namespace Gladiators.Battle {
         public void GotOpponent() {
             GameConnector.Instance.SetReady();
         }
-        public void GoBribe() {
+        public void GoBribe() { //開始遊戲用
             WriteLog.LogError("開始賄賂");
+            GameConnector.Instance.Bribe(new int[] { 1, 1 });
         }
         public void StartGame() {
             WriteLog.LogError("開始遊戲");
+            ResetBattle();
         }
 
         void SetCam() {
@@ -96,16 +97,24 @@ namespace Gladiators.Battle {
             cameraData.cameraStack.Add(_cam);
         }
 
+        //場地及人物生成
+        public async UniTask CreateTerrainAndChar(PackPlayer[] _packPlayers) {
+            battleModelController.CreateTerrain(0);
+            battleModelController.CreateCharacter(0, 0, _packPlayers);
+
+            await battleModelController.WaitCharacterCreate();
+            ResetBattle();
+        }
+
         //重啟戰鬥
-        async UniTask ResetBattle() {
+        void ResetBattle() {
             //相關參數在此重設 設定完才去更新UI
             BattleIsEnd = false;
             BattleLeftTime = BattleDefaultTime;
             ResetBattleSceneUI();
-            await ResetBattleModelController();
+            ResetBattleModelController();
             //TODO:這裡可能需要加入一個延遲等待開場演出
             CountDownBattleTime().Forget();
-            //testStartGame();
         }
 
         //重設戰鬥UI
@@ -115,10 +124,10 @@ namespace Gladiators.Battle {
             BattleSceneUI.Instance.SetTimeText(BattleLeftTime);
         }
 
-        async UniTask ResetBattleModelController() {//正常不會有這行為，因為沒有重新戰鬥
+        void ResetBattleModelController() {
             if (battleModelController == null) return;
 
-            await battleModelController.BattleReset();
+            //battleModelController.BattleReset(); //正常不會有這行為，因為沒有重新戰鬥
         }
 
         void testStartGame() {
@@ -211,5 +220,78 @@ namespace Gladiators.Battle {
             Debug.Log("戰鬥結束");
         }
 
+        bool isfirstTime = false;
+        public void StartBattleTimer() {
+            if (!isfirstTime) {
+                isfirstTime = true;
+                battleRunStates = new List<BattleRunState>();
+
+                ServerBattleTimer().Forget();
+            }
+        }
+
+        double BattleTimer = 0.0000000d;
+        async UniTaskVoid ServerBattleTimer() {
+            BattleTimer = 0.0000000d;
+
+        BattleTimber:
+                var tempTest = battleRunStates.FirstOrDefault();
+                if (tempTest != null && !tempTest.Start) {
+                    tempTest.Start = true;
+                    doBattleState(tempTest.PlayerStates, tempTest.GameTime, tempTest.BattleStateType);
+                }
+                if (tempTest != null && BattleTimer >= tempTest.GameTime) {
+                    tempTest.End = true;
+                    battleRunStates.Remove(tempTest);
+                }
+                await UniTask.Delay(TimeSpan.FromSeconds(0.01d));
+                BattleTimer += 0.01d;
+                goto BattleTimber;
+        }
+        public enum BattleStateType : byte {
+            Default = 0,
+            Move = 1,
+            MoveAttack = 2,
+            Knockback = 3,
+            SkillAttack = 4,
+        }
+        List<BattleRunState> battleRunStates = new List<BattleRunState>();
+        public void setBattleState(PackPlayerState[] _playerStates, double gameTime, BattleStateType battleStateType) {
+            battleRunStates.Add(new BattleRunState(gameTime, _playerStates, battleStateType));
+        }
+        public void doBattleState(PackPlayerState[] _playerStates, double gameTime, BattleStateType battleStateType) {
+            switch (battleStateType) {
+                case BattleStateType.Move:  //玩家移動
+                    battleModelController.Movement(_playerStates[0], _playerStates[1]);
+                    break;
+                case BattleStateType.MoveAttack:    //玩家移動並近身攻擊
+                    battleModelController.Movement(_playerStates[0], _playerStates[1]);
+                    break;
+                case BattleStateType.Knockback:
+                    battleModelController.GetAttack(_playerStates[0], _playerStates[1]);
+                    break;
+
+                case BattleStateType.Default:
+                default:
+                    break;
+            }
+        }
+    }
+}
+
+public class BattleRunState {
+    //class名稱就是封包的CMD名稱
+    public double GameTime { get; private set; }
+    public PackPlayerState[] PlayerStates { get; private set; }
+    public bool Start { get; set; } = false;
+    public bool End { get; set; } = false;
+    public Gladiators.Battle.BattleManager.BattleStateType BattleStateType { get; private set; }
+
+    public BattleRunState(double gameTime, PackPlayerState[] _playerStates, Gladiators.Battle.BattleManager.BattleStateType battleStateType) {
+        GameTime = gameTime;
+        PlayerStates = _playerStates;
+        Start = false;
+        End = false;
+        BattleStateType = battleStateType;
     }
 }

@@ -108,5 +108,10 @@ namespace Gladiators.Socket {
             var cmd = new SocketCMD<BRIBE>(new BRIBE(_jsonBribeIDs));
             Socket.TCPSend(cmd);
         }
+
+        public void BattleState() {
+            var cmd = new SocketCMD<BATTLESTATE>();
+            Socket.TCPSend(cmd);
+        }
     }
 }

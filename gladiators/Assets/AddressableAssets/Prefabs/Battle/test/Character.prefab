@@ -113,6 +113,7 @@ MonoBehaviour:
   knockbackDuration: 1
   knockbackTimer: 0
   initialSpeed: 20
+  knockbackSpeed: 0
 --- !u!65 &7565611485784462102
 BoxCollider:
   m_ObjectHideFlags: 0

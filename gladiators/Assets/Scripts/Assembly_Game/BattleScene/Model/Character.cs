@@ -1,4 +1,6 @@
 using Gladiators.Battle;
+using Gladiators.Socket.Matchgame;
+using PlasticGui.WorkspaceWindow.QueryViews.Changesets;
 using UnityEngine;
 
 public class Character : MonoBehaviour {
@@ -41,6 +43,9 @@ public class Character : MonoBehaviour {
     [SerializeField] bool isRotation = false;
     [SerializeField] public bool BattleIsEnd = false;
 
+    float moveTo = 0.0f;
+    float nowPos = 0.0f;
+
     int? nowSkillID = null;
 
     public bool showDebug = false;
@@ -48,7 +53,6 @@ public class Character : MonoBehaviour {
     void Start() {
         mainCamera = BattleManager.Instance.BattleCam;
         SetFaceToTarget();
-
     }
 
     void Update() {
@@ -58,7 +62,7 @@ public class Character : MonoBehaviour {
 
         characterLookCam(distance, myPosition, otherPosition);
 
-        if (BattleIsEnd) return;
+        //if (BattleIsEnd) return;
 
         doAnimation();
     }
@@ -102,20 +106,11 @@ public class Character : MonoBehaviour {
         }
     }
 
-    public void setCharacter(int charID, Character _otherPlayer) {
+    public void setCharacter(PackGladiator _packGladiator, Character _otherPlayer) {
         otherPlayer = _otherPlayer;
 
-        //var charData = GameDictionary.GetJsonData<JsonGladiator>(charID);
-        defaultSpeed = 8f;
-        runSpeed = 12f;
-
-        //if (BattleManager.Instance.isRightPlayer && isRightPlayer) {
-        //    BattleManager.Instance.vCam.Follow = CamLook_Left;
-        //    BattleManager.Instance.vCam.LookAt = CamLook_Left;
-        //} else if (!BattleManager.Instance.isRightPlayer && !isRightPlayer) {
-        //    BattleManager.Instance.vCam.Follow = CamLook_Right;
-        //    BattleManager.Instance.vCam.LookAt = CamLook_Right;
-        //}
+        defaultSpeed = _packGladiator.Speed;
+        runSpeed = _packGladiator.Speed;
 
         BattleManager.Instance.vTargetGroup.AddMember(transform, 1, 8);
     }
@@ -127,14 +122,28 @@ public class Character : MonoBehaviour {
 
     public void OnMove() {
         if (!canMove) return;
+        if (getAttack) return;
 
         AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
         if (stateInfo.IsName("move_Animation") && stateInfo.normalizedTime < moveExitTimeThreshold) {
             SetFaceToTarget();
             transform.Translate(Vector3.forward * moveSpeed * Time.deltaTime);
+
+            if (transform.position.x == moveTo) {
+                transform.position = new Vector3(moveTo, transform.position.y, transform.position.z);
+                animator.SetBool("isMove", false);
+                canMove = false;
+            }
         } else {
             animator.SetBool("isMove", true);
         }
+    }
+
+    public void Movement(PackGladiator _packGladiator) {
+        defaultSpeed = _packGladiator.Speed;
+        runSpeed = _packGladiator.Speed;
+        moveTo = (float)_packGladiator.StagePos;
+        canMove = true;
     }
 
     public void OnSkill() {
@@ -179,12 +188,16 @@ public class Character : MonoBehaviour {
     [SerializeField] public Vector3 knockbackDirection;
     [SerializeField] public float knockbackDuration = 1.0f;
     [SerializeField] public float knockbackTimer = 0f;
-    [SerializeField] public float initialSpeed = 20f; // 初速度
+    [SerializeField] public float initialSpeed = 35f; // 初速度
     [SerializeField] public float knockbackSpeed;
-    public void isGetAttack(Vector3 _knockbackDirection, float _knockbackForce = 1.0f, float _knockbackDuration = 1.0f) {
-        //knockbackDirection = _knockbackDirection;
-        //knockbackForce = _knockbackForce;
-        //knockbackDuration = _knockbackDuration;
+    public void isGetAttack(PackGladiator _packGladiator) {
+        initialSpeed = 35f;
+
+        canMove = false;
+        knockbackTimer = 0f;
+        defaultSpeed = _packGladiator.Speed;
+        runSpeed = _packGladiator.Speed;
+        moveTo = (float)_packGladiator.StagePos;
         getAttack = true;
     }
     public void GetAttack() {
@@ -196,6 +209,10 @@ public class Character : MonoBehaviour {
         float timeFraction = knockbackTimer / knockbackDuration;
         knockbackSpeed = Mathf.Lerp(initialSpeed, 0, timeFraction);
         mainRigidbody.velocity = knockbackDirectionTemp * knockbackForce * knockbackSpeed;
+
+        if (transform.position.x == moveTo || knockbackTimer >= knockbackDuration) {
+            transform.position = new Vector3(moveTo, transform.position.y, transform.position.z);
+        }
 
         AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
         if (stateInfo.IsName("idle_Animation")) {

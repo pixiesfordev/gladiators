@@ -211,6 +211,10 @@ namespace Gladiators.Socket {
                         var bribePacket = LitJson.JsonMapper.ToObject<SocketCMD<BRIBE_TOCLIENT>>(_msg);
                         HandleBribe(bribePacket);
                         break;
+                    case SocketContent.MatchgameCMD_TCP.BATTLESTATE_TOCLIENT:
+                        var battlePacket = LitJson.JsonMapper.ToObject<SocketCMD<BATTLESTATE_TOCLIENT>>(_msg);
+                        HandlerBattleState(battlePacket);
+                        break;
                     default:
                         WriteLog.LogErrorFormat("收到尚未定義的命令類型: {0}", cmdType);
                         break;
@@ -243,6 +247,11 @@ namespace Gladiators.Socket {
             if (SceneManager.GetActiveScene().name != MyScene.BattleScene.ToString()) return;
             AllocatedRoom.Instance.ReceiveBribe(_packet.Content.PlayerStates);
         }
+        void HandlerBattleState(SocketCMD<BATTLESTATE_TOCLIENT> _packet) {
+            if (SceneManager.GetActiveScene().name != MyScene.BattleScene.ToString()) return;
+            AllocatedRoom.Instance.ReceiveBattleState(_packet.Content.PlayerStates, _packet.Content.GameTime);
+        }
 
     }
 }
+
