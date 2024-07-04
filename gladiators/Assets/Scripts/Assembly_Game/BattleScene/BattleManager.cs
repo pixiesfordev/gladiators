@@ -75,11 +75,16 @@ namespace Gladiators.Battle {
         }
         public void GoBribe() { //開始遊戲用
             WriteLog.LogError("開始賄賂");
-            GameConnector.Instance.Bribe(new int[] { 1, 1 });
+            //叫出神址選擇介面(舊稱賄賂) 這裡顯示介面讓玩家選擇
+            if (DivineSelectUI.Instance != null)
+                DivineSelectUI.Instance.SetActive(true);
         }
         public void StartGame() {
             WriteLog.LogError("開始遊戲");
-            ResetBattle();
+            //關閉神祇技能選擇介面(做完演出後才去執行後續動作)
+            DivineSelectUI.Instance?.CloseUI(() => { 
+                ResetBattle();
+            });
         }
 
         void SetCam() {

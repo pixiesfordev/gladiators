@@ -31,7 +31,9 @@ namespace Gladiators.Main {
                 return JsonString.GetString_static(DataName + "_" + ID, "Name");
             }
         }
+        public string Ref { get; private set; }
         public SkillActivation Activation { get; private set; }
+        public int Cost { get; private set; }
         public int Initiative { get; private set; }
         public int Vigor { get; private set; }
         public SkillType MySkillType { get; private set; }
@@ -59,6 +61,12 @@ namespace Gladiators.Main {
                     case "Activation":
                         SkillActivation activation;
                         if (MyEnum.TryParseEnum(item[key].ToString(), out activation)) Activation = activation;
+                        break;
+                    case "Ref":
+                        Ref = item[key].ToString();
+                        break;
+                    case "Cost":
+                        Cost = int.Parse(item[key].ToString());
                         break;
                     case "Initiative":
                         Initiative = int.Parse(item[key].ToString());
