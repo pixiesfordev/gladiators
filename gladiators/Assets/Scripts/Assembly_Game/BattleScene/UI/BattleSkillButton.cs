@@ -44,13 +44,13 @@ public class BattleSkillButton : MonoBehaviour {
     {
         //判斷技能類型
         if (SkillData == null) return;
-        if (SkillData.Activation.Equals(BattleSkillType.Instant.ToString()))
+        if (SkillData.Activation.Equals(SkillActivation.Instant))
         {
             //TODO:
             //直接觸發類
             BattleManager.Instance.CastInstantSKill(SkillData);
         }
-        else if (SkillData.Activation.Equals(BattleSkillType.Melee.ToString()))
+        else if (SkillData.Activation.Equals(SkillActivation.Melee))
         {
             //TODO:
             //碰撞觸發類 把技能傳給BattleManager存放

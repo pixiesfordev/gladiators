@@ -157,14 +157,17 @@ namespace Gladiators.Main {
         /// </summary>
         public void ReceiveBribe(PackPlayerState[] _playerStates) {
             if (_playerStates == null) return;
+            var playerDB = GamePlayer.Instance.GetDBPlayerDoc<DBPlayer>();
+            PackPlayerState playerState = null;
             int playerCount = 0;
             for (int i = 0; i < _playerStates.Length; i++) {
                 if (_playerStates[i] == null) continue;
+                if (playerDB != null && _playerStates[i].ID == playerDB.ID) playerState = _playerStates[i];
                 WriteLog.LogErrorFormat("收到角鬥士{0} 的資料", i);
                 WriteLog.WriteObj(_playerStates[i]);
                 playerCount++;
             }
-            if (playerCount == 2) BattleManager.Instance.StartGame();
+            if (playerCount == 2) BattleManager.Instance.StartGame(playerState);
         }
 
         public void ReceiveBattleState(PackPlayerState[][] _playerStates, double[] GameTime) { //行為處理

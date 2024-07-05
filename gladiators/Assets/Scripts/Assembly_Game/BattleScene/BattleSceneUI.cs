@@ -8,6 +8,8 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Gladiators.Main;
 using Cysharp.Threading.Tasks;
+using Gladiators.Socket.Matchgame;
+using Unity.Entities.UniversalDelegates;
 
 public class BattleSceneUI : BaseUI {
     [HeaderAttribute("==============AddressableAssets==============")]
@@ -28,6 +30,8 @@ public class BattleSceneUI : BaseUI {
     [SerializeField] BattleSkillButton NextSkillBtn;
 
     [SerializeField] Image StaminaBar;//使用技能體力條
+
+    [SerializeField] BattleDivineSkill[] DivineSkills;//神址卡牌
 
     [SerializeField] BattleSprintButton SprintBtn;//衝刺按鈕
 
@@ -81,7 +85,7 @@ public class BattleSceneUI : BaseUI {
     /// <summary>
     /// 通知施放碰撞觸發技能
     /// </summary>
-    public void CastMeleeSkill(JsonSkill _Skill) {
+    public void CastMeleeSkill(JsonSkill _skill) {
         //UI作演出 並把技能使用掉 更新下一個技能上來
         if (SkillBtn1.SkillSelected)
             SkillBtn1.CastMeleeSkill();
@@ -89,5 +93,12 @@ public class BattleSceneUI : BaseUI {
             SkillBtn2.CastMeleeSkill();
         else if (SkillBtn3.SkillSelected)
             SkillBtn3.CastMeleeSkill();
+    }
+
+    public void SetDivineSkillData(PackBribeSkill[] _datas)
+    {
+        if(_datas == null) { WriteLog.Log("神祇技能資料遺失!"); return;}
+        DivineSkills[0].SetData(_datas.Length > 0 ? _datas[0] : null);
+        DivineSkills[1].SetData(_datas.Length > 1 ? _datas[1] : null);
     }
 }
