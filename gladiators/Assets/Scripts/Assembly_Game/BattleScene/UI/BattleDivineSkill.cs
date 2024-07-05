@@ -24,7 +24,7 @@ public class BattleDivineSkill : MonoBehaviour
         if (_skill == null)
         {
             gameObject.SetActive(false);
-            WriteLog.LogFormat("空的神祉技能");
+            WriteLog.LogErrorFormat("空的神祉技能");
         }
         else
         {
@@ -32,7 +32,7 @@ public class BattleDivineSkill : MonoBehaviour
             WriteLog.LogFormat("神祉技能設定. ID:{0} ", PackData.JsonID);
 
             JsonSkill SkillData = GameDictionary.GetJsonData<JsonSkill>(PackData.JsonID);
-            if (SkillData != null) {
+            if (SkillData != null && SkillData.MySkillType == SkillType.Divine) {
                 //設定金額(cost)
                 Cost.text = SkillData.Cost.ToString();
                 //設定技能說明(之後補)
@@ -45,6 +45,9 @@ public class BattleDivineSkill : MonoBehaviour
                 } else {
                     SkillIcon.gameObject.SetActive(false);
                 }
+            } else {
+                gameObject.SetActive(false);
+                WriteLog.LogErrorFormat("神址技能不存在或者不是神址類技能.");
             }
         }
     }
