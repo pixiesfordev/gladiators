@@ -2,9 +2,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 using System.Collections;
+using Gladiators.Battle;
 
-public class BattleSprintButton : MonoBehaviour
-{
+public class BattleSprintButton : MonoBehaviour {
     //兩種操作模式 做兩種用意是為了測試手感哪種比較好 決定用哪種之後再確定介面要怎麼演出
     //1.長壓模式(就是傳統的Press)
     //2.點擊切換On/off
@@ -17,76 +17,63 @@ public class BattleSprintButton : MonoBehaviour
 
     bool IsOn = false; //On/Off模式 true為On false為Off 預設為off 
 
-    public void PressMode_Run()
-    {
-        if (PressMode)
-        {
+    public void PressMode_Run() {
+        if (PressMode) {
             Run();
             HideText();
         }
     }
 
-    public void PressMode_Stop()
-    {
-        if (PressMode)
-        {
+    public void PressMode_Stop() {
+        if (PressMode) {
             StopRun();
             HideText();
         }
     }
 
-    public void OnOffMode_Click()
-    {
-        if(!PressMode)
-        {
+    public void OnOffMode_Click() {
+        if (!PressMode) {
             IsOn = !IsOn;
-            if(IsOn)
+            if (IsOn)
                 OnOffMode_Run();
             else
                 OnOffMode_Stop();
         }
     }
 
-    void OnOffMode_Run()
-    {
-        if (!PressMode)
-        {
+    void OnOffMode_Run() {
+        if (!PressMode) {
             Run();
             OnText();
-        }            
+        }
     }
 
-    void OnOffMode_Stop()
-    {
-        if(!PressMode)
-        {
+    void OnOffMode_Stop() {
+        if (!PressMode) {
             StopRun();
             OffText();
         }
     }
 
-    void OnText()
-    {
+    void OnText() {
         StateText.text = "衝刺中";
     }
 
-    void OffText()
-    {
+    void OffText() {
         StateText.text = "行走中";
     }
 
-    void HideText()
-    {
+    void HideText() {
         StateText.text = "";
     }
 
-    void Run()
-    {
+    void Run() {
+        BattleManager.Instance.GoRun(true);
         Debug.Log("衝刺中~~~");
     }
 
-    void StopRun()
-    {
+    void StopRun() {
+        BattleManager.Instance.GoRun(false);
         Debug.Log("停止衝刺~~~~");
     }
 }

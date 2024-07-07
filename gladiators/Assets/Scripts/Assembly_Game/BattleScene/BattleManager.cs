@@ -17,6 +17,7 @@ using Loxodon.Framework.Binding;
 using Cinemachine;
 using Cysharp.Threading.Tasks.Triggers;
 using System.Linq;
+using Unity.VisualScripting;
 
 namespace Gladiators.Battle {
     public class BattleManager : MonoBehaviour {
@@ -86,7 +87,7 @@ namespace Gladiators.Battle {
             BattleSceneUI.Instance?.SetDivineSkillData(_playerStates.BribeSkills);
             //關閉神祇技能選擇介面(做完演出後才去執行後續動作)
             DivineSelectUI.Instance?.CloseUI(() => { 
-                ResetBattle();
+            ResetBattle();
             });
         }
 
@@ -202,9 +203,14 @@ namespace Gladiators.Battle {
         //戰鬥結算
         //buff設定
 
+        //衝次
+        public void GoRun(bool isRun) {
+            GameConnector.Instance.SetRun(isRun);
+        }
+
         //戰鬥剩餘秒數計算
         async UniTaskVoid CountDownBattleTime() {
-            ReCount:
+        ReCount:
             //Debug.Log("測試倒數秒數.現在秒數: " + BattleLeftTime);
             await UniTask.Delay(TimeSpan.FromSeconds(1f));
             //有可能會發生剩下一秒的時候分出勝負 所以一秒數完還是要再次確認是否已經分出勝負 沒有才繼續數秒
@@ -238,23 +244,29 @@ namespace Gladiators.Battle {
             }
         }
 
-        double BattleTimer = 0.0000000d;
+        float BattleTimer = 0.00f;
         async UniTaskVoid ServerBattleTimer() {
-            BattleTimer = 0.0000000d;
+            BattleTimer = 0.00f;
 
         BattleTimber:
-                var tempTest = battleRunStates.FirstOrDefault();
-                if (tempTest != null && !tempTest.Start) {
-                    tempTest.Start = true;
-                    doBattleState(tempTest.PlayerStates, tempTest.GameTime, tempTest.BattleStateType);
-                }
-                if (tempTest != null && BattleTimer >= tempTest.GameTime) {
-                    tempTest.End = true;
-                    battleRunStates.Remove(tempTest);
-                }
-                await UniTask.Delay(TimeSpan.FromSeconds(0.01d));
-                BattleTimer += 0.01d;
-                goto BattleTimber;
+            var tempTest = battleRunStates.FirstOrDefault();
+            var tempAction = battleActionStates.FirstOrDefault();
+            if (tempTest != null && BattleTimer >= tempTest.GameTime && tempTest.Start) {
+                tempTest.End = true;
+                battleRunStates.Remove(tempTest);
+                tempTest = battleRunStates.FirstOrDefault();
+            }
+            if (tempTest != null && !tempTest.Start) {
+                tempTest.Start = true;
+                doBattleState(tempTest.PlayerStates, tempTest.GameTime, tempTest.BattleStateType);
+            }
+            if (tempAction != null && !tempAction.Start) {
+                tempAction.Start = true;
+                doBattleState(tempAction.PlayerStates, tempAction.GameTime, tempAction.BattleStateType);
+            }
+            await UniTask.Delay(TimeSpan.FromMilliseconds(10));
+            BattleTimer += 0.01f;
+            goto BattleTimber;
         }
         public enum BattleStateType : byte {
             Default = 0,
@@ -264,8 +276,12 @@ namespace Gladiators.Battle {
             SkillAttack = 4,
         }
         List<BattleRunState> battleRunStates = new List<BattleRunState>();
+        List<BattleRunState> battleActionStates = new List<BattleRunState>();
         public void setBattleState(PackPlayerState[] _playerStates, double gameTime, BattleStateType battleStateType) {
             battleRunStates.Add(new BattleRunState(gameTime, _playerStates, battleStateType));
+        }
+        public void setBattleState_byAction(PackPlayerState[] _playerStates, double gameTime, BattleStateType battleStateType) {
+            battleActionStates.Add(new BattleRunState(gameTime, _playerStates, battleStateType));
         }
         public void doBattleState(PackPlayerState[] _playerStates, double gameTime, BattleStateType battleStateType) {
             switch (battleStateType) {

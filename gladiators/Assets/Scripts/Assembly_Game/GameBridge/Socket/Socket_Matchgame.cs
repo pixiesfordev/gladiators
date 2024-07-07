@@ -215,6 +215,10 @@ namespace Gladiators.Socket {
                         var battlePacket = LitJson.JsonMapper.ToObject<SocketCMD<BATTLESTATE_TOCLIENT>>(_msg);
                         HandlerBattleState(battlePacket);
                         break;
+                    case SocketContent.MatchgameCMD_TCP.PLAYERACTION_TOCLIENT:
+                        var playerActionPacket = LitJson.JsonMapper.ToObject<SocketCMD<PLAYERACTION_TOCLIENT>>(_msg);
+                        HandlerPlayerAction(playerActionPacket);
+                        break;
                     default:
                         WriteLog.LogErrorFormat("收到尚未定義的命令類型: {0}", cmdType);
                         break;
@@ -251,7 +255,10 @@ namespace Gladiators.Socket {
             if (SceneManager.GetActiveScene().name != MyScene.BattleScene.ToString()) return;
             AllocatedRoom.Instance.ReceiveBattleState(_packet.Content.PlayerStates, _packet.Content.GameTime);
         }
-
+        void HandlerPlayerAction(SocketCMD<PLAYERACTION_TOCLIENT> _packet) {
+            if (SceneManager.GetActiveScene().name != MyScene.BattleScene.ToString()) return;
+            AllocatedRoom.Instance.ReceivePlayerAction(_packet.Content.ActionType, _packet.Content.ActionContent, _packet.Content.PlayerStates, _packet.Content.GameTime);
+        }
     }
 }
 

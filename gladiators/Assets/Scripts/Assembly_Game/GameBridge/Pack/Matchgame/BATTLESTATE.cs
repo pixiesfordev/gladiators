@@ -44,6 +44,7 @@ namespace Gladiators.Socket.Matchgame {
         public int BattlePos { get; private set; }
         public double StagePos { get; private set; }
         public PackBuffer[] Buffers { get; private set; }
+        public bool Rush { get; private set; }
     }
     public class PackBuffer {
         public int JsonID { get; private set; }

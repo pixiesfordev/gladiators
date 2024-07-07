@@ -108,9 +108,18 @@ namespace Gladiators.Socket {
             var cmd = new SocketCMD<BRIBE>(new BRIBE(_jsonBribeIDs));
             Socket.TCPSend(cmd);
         }
-
+        /// <summary>
+        /// 通知Server此玩家已經進入BattleScene
+        /// </summary>
         public void BattleState() {
             var cmd = new SocketCMD<BATTLESTATE>();
+            Socket.TCPSend(cmd);
+        }
+        /// <summary>
+        /// 通知Server此玩家已經進入Run
+        /// </summary>
+        public void SetRun(bool isRun) {
+            var cmd = new SocketCMD<PLAYERACTION>(new PLAYERACTION("PLAYERACTION_RUSH", new PackAction_Rush(isRun)));
             Socket.TCPSend(cmd);
         }
     }

@@ -13,6 +13,8 @@ namespace Gladiators.Socket.Matchgame {
         //class名稱就是封包的CMD名稱
         public string ActionType { get; private set; }
         public object ActionContent { get; private set; }
+        public PackPlayerState[][] PlayerStates { get; private set; }
+        public double[] GameTime { get; private set; }
     }
     public class PackAction_Skill : IActionContent {
         public bool On { get; private set; }
@@ -24,6 +26,7 @@ namespace Gladiators.Socket.Matchgame {
     }
     public class PackAction_Rush : IActionContent {
         public bool On { get; private set; }
+        public PackAction_Rush(bool _on) => On = _on;
     }
     public class PackAction_Surrender : IActionContent {
     }

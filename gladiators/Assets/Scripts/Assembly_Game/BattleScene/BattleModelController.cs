@@ -92,18 +92,24 @@ public class BattleModelController : MonoBehaviour {
     }
 
     public void Movement(PackPlayerState leftPlayer, PackPlayerState rightPlayer) {
-        leftChar.Movement(leftPlayer.Gladiator);
-        rightChar.Movement(rightPlayer.Gladiator);
+        if (leftPlayer != null) {
+            leftChar.Movement(leftPlayer.Gladiator);
+        }
+
+        if (rightPlayer != null) {
+            rightChar.Movement(rightPlayer.Gladiator);
+        }
     }
 
     [SerializeField] public float distanceValue = 2.0f;
     [SerializeField] public float PlayerDistance = 0.0f;
     public void GetAttack(PackPlayerState leftPlayer, PackPlayerState rightPlayer) {
-        if (BattleIsEnd) return;
-        //PlayerDistance = Vector3.Distance(leftChar.transform.position, rightChar.transform.position);
-        //if (PlayerDistance <= distanceValue) {
+        if (leftPlayer != null) {
             leftChar.isGetAttack(leftPlayer.Gladiator);
+        }
+
+        if (rightPlayer != null) {
             rightChar.isGetAttack(rightPlayer.Gladiator);
-        //}
+        }
     }
 }

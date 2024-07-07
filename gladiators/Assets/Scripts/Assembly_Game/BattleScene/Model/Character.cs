@@ -11,8 +11,6 @@ public class Character : MonoBehaviour {
     public Transform CamLook_Left;
     public Transform CamLook_Right;
 
-    public Collider mainCollider;
-    public Rigidbody mainRigidbody;
     public Animator animator;
     public bool lookRight;
 
@@ -129,7 +127,7 @@ public class Character : MonoBehaviour {
             SetFaceToTarget();
             transform.Translate(Vector3.forward * moveSpeed * Time.deltaTime);
 
-            if (transform.position.x == moveTo) {
+            if ((transform.position.x >= moveTo && !isRightPlayer) || (transform.position.x <= moveTo && isRightPlayer)) {
                 transform.position = new Vector3(moveTo, transform.position.y, transform.position.z);
                 animator.SetBool("isMove", false);
                 canMove = false;
@@ -140,6 +138,10 @@ public class Character : MonoBehaviour {
     }
 
     public void Movement(PackGladiator _packGladiator) {
+        if (_packGladiator.Knockback == 0) return;
+
+        getAttack = false;
+
         defaultSpeed = _packGladiator.Speed;
         runSpeed = _packGladiator.Speed;
         moveTo = (float)_packGladiator.StagePos;
@@ -191,9 +193,12 @@ public class Character : MonoBehaviour {
     [SerializeField] public float initialSpeed = 35f; // ³õËÙ¶È
     [SerializeField] public float knockbackSpeed;
     public void isGetAttack(PackGladiator _packGladiator) {
+        if (_packGladiator.Knockback == 0) return;
+
         initialSpeed = 35f;
 
         canMove = false;
+
         knockbackTimer = 0f;
         defaultSpeed = _packGladiator.Speed;
         runSpeed = _packGladiator.Speed;
@@ -205,35 +210,39 @@ public class Character : MonoBehaviour {
 
         knockbackTimer += Time.deltaTime;
 
-        Vector3 knockbackDirectionTemp = -transform.forward;
         float timeFraction = knockbackTimer / knockbackDuration;
-        knockbackSpeed = Mathf.Lerp(initialSpeed, 0, timeFraction);
-        mainRigidbody.velocity = knockbackDirectionTemp * knockbackForce * knockbackSpeed;
+        float currentSpeed = Mathf.Lerp(initialSpeed, 0, timeFraction);
+        Vector3 knockbackDirection = Vector3.back;
+        transform.Translate(knockbackDirection * currentSpeed * Time.deltaTime);
 
-        if (transform.position.x == moveTo || knockbackTimer >= knockbackDuration) {
+        if ((transform.position.x <= moveTo && !isRightPlayer) || (transform.position.x >= moveTo && isRightPlayer) || knockbackTimer >= knockbackDuration) {
             transform.position = new Vector3(moveTo, transform.position.y, transform.position.z);
         }
 
         AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
         if (stateInfo.IsName("idle_Animation")) {
-            mainRigidbody.velocity = Vector3.zero;
-            knockbackTimer = 0f;
+        } else if (stateInfo.IsName("repel_Animation")) {
+            getAttack = false;
+        } else if (stateInfo.IsName("Rotation_Basic")) {
+            animator.SetBool("isRepel", false);
+            animator.SetBool("isRotation", false);
+            animator.SetBool("isAnimation", false);
         } else {
             animator.SetBool("isRotation", true);
             animator.SetBool("isAnimation", true);
         }
 
-        if (knockbackTimer >= 0.8f) {
-            if (stateInfo.IsName("repel_Animation")) {
-                getAttack = false;
-                animator.SetBool("isRepel", false);
-                animator.SetBool("isRotation", false);
-                animator.SetBool("isAnimation", false);
-            } else {
-                animator.SetBool("isRotation", false);
-                animator.SetBool("isRepel", true);
-            }
-        }
+        //if (knockbackTimer >= 0.8f) {
+        //    if (stateInfo.IsName("repel_Animation")) {
+        //        getAttack = false;
+        //        animator.SetBool("isRepel", false);
+        //        animator.SetBool("isRotation", false);
+        //        animator.SetBool("isAnimation", false);
+        //    } else {
+        //        animator.SetBool("isRotation", false);
+        //        animator.SetBool("isRepel", true);
+        //    }
+        //}
     }
 
     public void BattleStart() {

@@ -5,6 +5,7 @@ using Gladiators.Socket;
 using Gladiators.Socket.Matchgame;
 using Scoz.Func;
 using Service.Realms;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -170,6 +171,9 @@ namespace Gladiators.Main {
             if (playerCount == 2) BattleManager.Instance.StartGame(playerState);
         }
 
+        /// <summary>
+        /// 收到戰鬥資訊封包, 存儲封包資料
+        /// </summary>
         public void ReceiveBattleState(PackPlayerState[][] _playerStates, double[] GameTime) { //行為處理
             if (_playerStates == null) return;
 
@@ -179,6 +183,25 @@ namespace Gladiators.Main {
             } else {
                 BattleManager.Instance.setBattleState(_playerStates[0], GameTime[0], BattleManager.BattleStateType.MoveAttack);
                 BattleManager.Instance.setBattleState(_playerStates[1], GameTime[1], BattleManager.BattleStateType.Knockback);
+            }
+        }
+
+        /// <summary>
+        /// 收到玩家行為封包, 存儲封包資料
+        /// </summary>
+        public void ReceivePlayerAction(string _actionType, object _actionContent, PackPlayerState[][] _playerStates, double[] GameTime) { //行為處理
+            Debug.Log($"ActionType : {_actionType}");
+            switch (_actionType) {
+                case "PLAYERACTION_RUSH":
+                    if (_playerStates.Length == 1) {
+                        BattleManager.Instance.setBattleState_byAction(_playerStates[0], GameTime[0], BattleManager.BattleStateType.Move);
+                    } else {
+                        BattleManager.Instance.setBattleState_byAction(_playerStates[0], GameTime[0], BattleManager.BattleStateType.MoveAttack);
+                        BattleManager.Instance.setBattleState(_playerStates[1], GameTime[1], BattleManager.BattleStateType.Knockback);
+                    }
+                    break;
+                default:
+                    break;
             }
         }
     }
