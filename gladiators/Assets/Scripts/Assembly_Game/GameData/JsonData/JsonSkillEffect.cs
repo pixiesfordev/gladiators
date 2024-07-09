@@ -7,23 +7,58 @@ using Unity.Entities.UniversalDelegates;
 
 namespace Gladiators.Main {
     public enum EffectType {
-        Attack,//傷害
-        RestoreHP,//生命
-        RestoreVigor,//體力
-        Dizzy,//暈眩
-        Poison,//中毒
-        Bleeding,//流血
-        Burning,//著火
-        Fearing,//恐懼
-        Vulnerable,//無力
-        Weak,//虛弱
-        Fatigue,//疲勞
-        Protection,//守護
-        Reflection,//反射傷害
-        Rush,//突擊
-        Pull,//拉取
-        Knockback,//擊退
-        Enraged,//激怒
+        PDmg,
+        MDmg,
+        RestoreHP,
+        RestoreVigor,
+        RegenHP,
+        RegenVigor,
+        Dizzy,
+        Poison,
+        Bleeding,
+        Burning,
+        Fearing,
+        Vulnerable,
+        Weak,
+        Fatigue,
+        Protection,
+        MeleeSkillReflect,
+        RangeSkillReflect,
+        MeleeDmgReflect,
+        Rush,
+        Pull,
+        Enraged,
+        Block,
+        PDefUp,
+        MDefUp,
+        StrUp,
+        KnockbackUp,
+        Purge,
+        Barrier,
+        Poisoning,
+        ComboAttack,
+        Vampire,
+        CriticalUp,
+        Condition_SkillVigorBelow,
+        Condition_FirstAttack,
+        Condition_Charge,
+        Dodge_RangeAttack,
+        InitUp,
+        TriggerEffect_BeAttack,
+        TriggerEffect_Time,
+        TriggerEffect_WaitTime,
+        TriggerEffect_BattleResult,
+        Indomitable,
+        Berserk,
+        StrUpByHp,
+        Chaos,
+        SkillVigorUp,
+        Shuffle,
+        Seal,
+        Fortune,
+        SkillChange,
+        Intuition,
+        PermanentHp,
     }
     public class JsonSkillEffect : JsonBase {
         public static string DataName { get; set; }
@@ -58,8 +93,8 @@ namespace Gladiators.Main {
             //}
 
             //自定義屬性
-            EffectType tmpTEffectType = EffectType.Attack;
-            int tmpTypeValue = 0;
+            EffectType tmpTEffectType = EffectType.PDmg;
+            string tmpTypeValue = "";
             foreach (string key in item.Keys) {
                 switch (key) {
                     case "ID":
@@ -76,7 +111,7 @@ namespace Gladiators.Main {
                             if (key.Contains("EffectType")) {
                                 tmpTEffectType = MyEnum.ParseEnum<EffectType>(item[key].ToString());
                             } else if (key.Contains("EffectValue")) {
-                                tmpTypeValue = (int)item[key];
+                                tmpTypeValue = item[key].ToString();
                             } else if (key.Contains("EffectProb")) {
                                 SkillEffect effect = new SkillEffect(tmpTEffectType, (double)item[key], tmpTypeValue);
                                 if (MyTarget == Target.Enemy) EnemyEffects.Add(effect);
@@ -104,12 +139,12 @@ namespace Gladiators.Main {
     public class SkillEffect {
         public EffectType EffectType { get; private set; }
         public double Prob { get; private set; }
-        public int Value { get; private set; }
+        public string ValueStr { get; private set; }
 
-        public SkillEffect(EffectType _type, double _prob, int _value) {
+        public SkillEffect(EffectType _type, double _prob, string _value) {
             EffectType = _type;
             Prob = _prob;
-            Value = _value;
+            ValueStr = _value;
         }
     }
 
