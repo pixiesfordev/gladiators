@@ -89,8 +89,8 @@ namespace Gladiators.Main {
         /// 設定被Matchmaker分配到的房間資料，CreateRoom後會從Matchmaker回傳取得此資料
         /// </summary>
         public async UniTask SetRoom_TestvVer(string _createID, string[] _playerIDs, string _dbMapID, string _dbMatchgameID, string _tcpIP, string _udpIP, int _port, string _podName) {
-            _tcpIP = "34.80.209.169";
-            _port = 8443;
+            _tcpIP = "www.pixies.dev";
+            _port = 443;
             CreaterID = _createID;
             PlayerIDs = _playerIDs;
             DBMapID = _dbMapID;

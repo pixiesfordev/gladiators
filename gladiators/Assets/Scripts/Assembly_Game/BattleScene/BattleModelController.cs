@@ -30,11 +30,11 @@ public class BattleModelController : MonoBehaviour {
         //CreateCharacter(0, 0);
     }
 
-    public float minDistance = 5f; // ×îĞ¡¾àëx
-    public float maxDistance = 20f; // ×î´ó¾àëx
-    public float minFOV = 30f; // ×îĞ¡Ò•Ò°
-    public float maxFOV = 60f; // ×î´óÒ•Ò°
-    public float distanceOffset = 2f; // ¾àëxÆ«ÒÆÁ¿£¬ÓÃì¶Õ{ÕûcamµÄ¾àëx
+    public float minDistance = 5f; // éƒ”è‹¤æ“’è¤©
+    public float maxDistance = 20f; // éƒ”æ¹®æ“’è¤©
+    public float minFOV = 30f; // éƒ”è‹¤?ç§
+    public float maxFOV = 60f; // éƒ”æ¹®?ç§
+    public float distanceOffset = 2f; // æ“’è¤©ïš»ç—„è¬›ã„›èššé»ºæ¼æ·•camè…”æ“’è¤©
 
     void Update() {
         //Attack();
