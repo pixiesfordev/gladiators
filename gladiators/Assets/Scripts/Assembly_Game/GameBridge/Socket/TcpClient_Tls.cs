@@ -1,50 +1,41 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using UnityEngine;
 using Scoz.Func;
 using Cysharp.Threading.Tasks;
-using System.Net.Security;
-using System.Security.Cryptography.X509Certificates;
+using Org.BouncyCastle.Security;
+using Org.BouncyCastle.Tls;
+using Org.BouncyCastle.Tls.Crypto;
+using Org.BouncyCastle.Tls.Crypto.Impl.BC;
 
 namespace Gladiators.Socket {
     public partial class TcpClient : MonoBehaviour, INetworkClient {
 
-
-        SslStream sslStream;
-
         private async void Thread_Connect_TLS() {
             try {
-                WriteLog.LogColor("IP=" + IP, WriteLog.LogType.Connection);
-                WriteLog.LogColor("Port=" + Port, WriteLog.LogType.Connection);
+                string hostname = "www.pixies.dev";
+                int port = 443;
+                WriteLog.LogColor("hostname=" + hostname, WriteLog.LogType.Connection);
+                WriteLog.LogColor("port=" + port, WriteLog.LogType.Connection);
 
-                // 连接到服务器
-                socket.Connect(IPAddress.Parse(IP), Port);
+                socket.Connect(hostname, port);
                 WriteLog.LogColor("Socket connect initiated", WriteLog.LogType.Connection);
 
                 await UniTask.WaitUntil(() => socket.Connected, cancellationToken: cancellationToken);
-                syncContext.Post(state => OnConnect(true), null);
-
                 WriteLog.LogColor("Tcp connect success", WriteLog.LogType.Connection);
 
-                // 使用 NetworkStream 和 SslStream 进行 TLS 连接
                 NetworkStream networkStream = new NetworkStream(socket, ownsSocket: false);
-                sslStream = new SslStream(networkStream, false, new RemoteCertificateValidationCallback(ValidateServerCertificate), null);
+                TlsClientProtocol tlsClientProtocol = new TlsClientProtocol(networkStream, networkStream);
+                MyTlsClient tlsClient = new MyTlsClient(new BcTlsCrypto(new SecureRandom()));
 
-                // 添加日志以调试 TLS 握手
-                WriteLog.LogColor("Starting TLS handshake", WriteLog.LogType.Connection);
-
-                // 执行 TLS 握手
-                await UniTask.Run(() => sslStream.AuthenticateAsClient(IP), cancellationToken: cancellationToken);
+                tlsClientProtocol.Connect(tlsClient);
 
                 WriteLog.LogColor("TLS handshake completed", WriteLog.LogType.Connection);
+                syncContext.Post(state => OnConnect(true), null);
 
-                thread_receive = new Thread(Thread_Receive_TLS);
+                thread_receive = new Thread(() => Thread_Receive_TLS(tlsClientProtocol));
                 thread_receive.Start();
             } catch (Exception e) {
                 WriteLog.LogErrorFormat("(TCP)Socket send error: {0}", e.ToString());
@@ -55,35 +46,24 @@ namespace Gladiators.Socket {
             }
         }
 
-        private bool ValidateServerCertificate(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors) {
-            if (sslPolicyErrors == SslPolicyErrors.None) return true;
-            WriteLog.LogError("Certificate error: " + sslPolicyErrors);
-            return false;
-        }
-
-        private void Thread_Receive_TLS() {
+        private void Thread_Receive_TLS(TlsClientProtocol tlsClientProtocol) {
             string mseQueue = "";
             while (IsConnected) {
                 try {
-                    //if (socket.Available <= 0) continue;
                     byte[] tmp = new byte[2048];
-                    int length = sslStream.Read(tmp, 0, tmp.Length); // 修改这一行
+                    int length = tlsClientProtocol.Stream.Read(tmp, 0, tmp.Length);
                     if (length <= 0) {
-                        //OnDisConnect();
                         break;
                     }
 
                     string msg = Encoding.UTF8.GetString(tmp, 0, length);
-                    //WriteLog.Log("Socket Recieve " + msg + " " + length);
                     if (!string.IsNullOrEmpty(mseQueue)) {
                         msg = mseQueue + msg;
                         mseQueue = string.Empty;
                     }
 
-                    //黏包
                     string[] packets = msg.Split('\n');
                     int packetNumber = packets.Length;
-                    //分包 最后一包被截断
                     if (msg.LastIndexOf('\n') != length - 1) {
                         mseQueue = mseQueue + packets[packets.Length - 1];
                         packetNumber--;
@@ -93,16 +73,13 @@ namespace Gladiators.Socket {
                             string packet = packets[i];
                             syncContext.Post(state => OnReceiveMsg?.Invoke(packet), null);
                         }
-                        //messageQueue.Enqueue(packets[i]);
                     }
                 } catch (ThreadAbortException e) {
-                    //this.Close();
                     WriteLog.Log($"TcpClient Exception={e}");
                     WriteLog.LogWarning($"TcpClient Exception={e}");
                     break;
                 } catch (Exception e) {
                     WriteLog.LogErrorFormat("Socket receive error: {0}", e.ToString());
-                    //OnDisConnect();
                     break;
                 }
             }
@@ -111,6 +88,36 @@ namespace Gladiators.Socket {
             } catch {
             }
         }
-    }
 
+        public class MyTlsClient : DefaultTlsClient {
+            public MyTlsClient(TlsCrypto crypto) : base(crypto) { }
+
+            public override ProtocolVersion[] GetProtocolVersions() {
+                return ProtocolVersion.TLSv12.DownTo(ProtocolVersion.TLSv10);
+            }
+
+            public override int[] GetCipherSuites() {
+                return new int[] {
+                    CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
+                    CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+                };
+            }
+
+            public override TlsAuthentication GetAuthentication() {
+                return new MyTlsAuthentication();
+            }
+        }
+
+        public class MyTlsAuthentication : TlsAuthentication {
+            public void NotifyServerCertificate(TlsServerCertificate serverCertificate) {
+                // 在這裡添加驗證邏輯
+                var certList = serverCertificate.Certificate;
+                // 您可以根據需要添加驗證邏輯，例如檢查證書的公鑰
+            }
+
+            public TlsCredentials GetClientCredentials(CertificateRequest certificateRequest) {
+                return null; // 如果不需要客戶端證書，返回null
+            }
+        }
+    }
 }
