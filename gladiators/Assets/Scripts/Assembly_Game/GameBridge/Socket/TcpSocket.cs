@@ -11,12 +11,18 @@ using Scoz.Func;
 using Cysharp.Threading.Tasks;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
+using UnityEngine.AddressableAssets;
+using System.IO;
+using Gladiators.Socket;
 
-namespace Gladiators.Socket {
-    public partial class TcpClient : MonoBehaviour, INetworkClient {
+namespace HeroFishing.Socket {
+    public class TcpSocket : MonoBehaviour, INetworkClient {
         public event Action<string> OnReceiveMsg;
 
-        private System.Net.Sockets.Socket socket;
+        //private System.Net.Sockets.Socket socket;
+        private TcpClient tcpClient;
+        private Stream stream;
+        private bool useSslStream = false;
         string IP { get; set; }
         int Port { get; set; }
         private Thread thread_connect;
@@ -31,6 +37,7 @@ namespace Gladiators.Socket {
 
         private ConcurrentQueue<string> messageQueue = new ConcurrentQueue<string>();
         private bool isTryConnect = false;
+        private const string CRT_PATH = "Assets/AddressableAssets/server.txt";
         private void Start() {
             DontDestroyOnLoad(this);
         }
@@ -56,7 +63,9 @@ namespace Gladiators.Socket {
         public void Init(string ip, int port, AddressFamily family = AddressFamily.InterNetwork, SocketType type = SocketType.Stream, ProtocolType protocol = ProtocolType.Tcp) {
             IP = ip;
             Port = port;
-            socket = new System.Net.Sockets.Socket(family, type, protocol);
+            tcpClient = new TcpClient();
+
+            //socket = new System.Net.Sockets.Socket(family, type, protocol);
             this.OnConnect = null;
             this.OnDisConnectEvent = null;
             this.OnReceiveMsg = null;
@@ -69,12 +78,17 @@ namespace Gladiators.Socket {
             WriteLog.LogColor("Tcp init", WriteLog.LogType.Connection);
         }
 
+        private bool ValidateServerCertificate(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors) {
+            // 在這裡進行服務器證書驗證邏輯
+            return sslPolicyErrors == SslPolicyErrors.None;
+        }
+
         public void StartConnect(Action<bool> _cb) {
             if (isTryConnect) return;
             WriteLog.LogColor("Tcp start connecting", WriteLog.LogType.Connection);
             this.OnConnect = _cb;
             isTryConnect = true;
-            thread_connect = new Thread(Thread_Connect_TLS);
+            thread_connect = new Thread(Thread_Connect);
             thread_connect.Start();
             //StartCoroutine(HandleConnect());
         }
@@ -96,9 +110,10 @@ namespace Gladiators.Socket {
                     thread_receive.Abort();
                 if (cancellationSource != null)
                     cancellationSource.Dispose();
-                if (!IsConnected || socket == null) return;
-                socket.Shutdown(SocketShutdown.Both);
-                socket.Close();
+                //if (!IsConnected || tcpClient == null) return;
+                //socket.Shutdown(SocketShutdown.Both);Lo
+                tcpClient?.Close();
+                stream?.Close();
             } catch {
 
             }
@@ -108,8 +123,8 @@ namespace Gladiators.Socket {
 
         public bool IsConnected {
             get {
-                if (socket == null) return false;
-                else return socket.Connected;
+                if (tcpClient == null) return false;
+                else return tcpClient.Connected;
             }
         }
 
@@ -119,11 +134,14 @@ namespace Gladiators.Socket {
                 try {
                     command.SetPackID(packetID++ % int.MaxValue);
                     string msg = LitJson.JsonMapper.ToJson(command);
-                    socket.Send(Encoding.UTF8.GetBytes(msg));
+                    var bytes = Encoding.UTF8.GetBytes(msg);
+                    stream.Write(bytes, 0, bytes.Length);
+                    stream.Flush();
+                    //socket.Send(Encoding.UTF8.GetBytes(msg));
                     WriteLog.LogColorFormat("(TCP)送: {0}", WriteLog.LogType.Connection, msg);
                     return command.PackID;
                 } catch (Exception e) {
-                    WriteLog.LogErrorFormat("Socket send error: {0}", e.ToString());
+                    WriteLog.LogErrorFormat("Socket send error: {0} {1}", e.ToString(), command.CMD);
                     OnDisConnect();
                     return -1;
                 }
@@ -134,14 +152,30 @@ namespace Gladiators.Socket {
 
         private async void Thread_Connect() {
             try {
-                WriteLog.LogColor("IP=" + IP, WriteLog.LogType.Connection);
-                WriteLog.LogColor("Port=" + Port, WriteLog.LogType.Connection);
-                socket.Connect(IPAddress.Parse(IP), Port);
+                string hostname = "www.pixies.dev";
+                int port = 443;
+                TcpClient tcpClient = new TcpClient();
+                await tcpClient.ConnectAsync(hostname, port);
+                WriteLog.LogColor("Tcp connect success", WriteLog.LogType.Connection);
 
-                await UniTask.WaitUntil(() => socket.Connected, cancellationToken: cancellationToken);
+                if (useSslStream) {
+                    var sslStream = new SslStream(tcpClient.GetStream(), false,
+                        new RemoteCertificateValidationCallback(ValidateServerCertificate), null);
+
+                    // 加載包含證書鏈的證書
+                    var serverCert = new X509Certificate2(CRT_PATH);
+                    var certCollection = new X509Certificate2Collection { serverCert };
+
+                    // 認證客戶端
+                    sslStream.AuthenticateAsClient(hostname, certCollection, System.Security.Authentication.SslProtocols.Tls12, false);
+                    stream = sslStream;
+                    WriteLog.LogColor("TLS handshake completed", WriteLog.LogType.Connection);
+                } else {
+                    stream = tcpClient.GetStream();
+                }
+
                 syncContext.Post(state => OnConnect(true), null);
 
-                WriteLog.LogColor("Tcp connect success", WriteLog.LogType.Connection);
                 thread_receive = new Thread(Thread_Receive);
                 thread_receive.Start();
             } catch (Exception e) {
@@ -154,13 +188,27 @@ namespace Gladiators.Socket {
         }
 
 
+        //private IEnumerator HandleConnect() {
+        //    while (isTryConnect) {
+        //        if (socket != null && socket.Connected) {
+        //            isTryConnect = false;
+        //            OnConnect?.Invoke(true);
+        //            StartCoroutine(HandleMessageEvent());
+        //            yield break;
+        //        }
+        //        yield return null;
+        //    }
+        //    WriteLog.LogErrorFormat("Call connect error");
+        //    OnConnect?.Invoke(false);
+        //}
+
         private void Thread_Receive() {
             string mseQueue = "";
             while (IsConnected) {
                 try {
                     //if (socket.Available <= 0) continue;
                     byte[] tmp = new byte[2048];
-                    int length = socket.Receive(tmp);
+                    int length = stream.Read(tmp, 0, 2048);
                     if (length <= 0) {
                         //OnDisConnect();
                         break;
@@ -197,19 +245,29 @@ namespace Gladiators.Socket {
                     break;
                 } catch (Exception e) {
                     WriteLog.LogErrorFormat("Scoket receive error: {0}", e.ToString());
-                    //OnDisConnect();
+                    OnDisConnect();
                     break;
                 }
             }
             try {
-                socket.Close();
+                tcpClient.Close();
+                stream.Close();
             } catch {
             }
 
         }
 
-
-
+        //private IEnumerator HandleMessageEvent() {
+        //    while (socket.Connected) {
+        //        while (!messageQueue.IsEmpty) {
+        //            if (messageQueue.TryDequeue(out string msg)) {
+        //                OnReceiveMsg?.Invoke(msg);
+        //            }
+        //        }
+        //        yield return null;
+        //    }
+        //    OnDisConnect();
+        //}
 
         private void OnDisConnect() {
             OnDisConnectEvent?.Invoke();

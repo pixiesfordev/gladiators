@@ -2,6 +2,7 @@ using Cysharp.Threading.Tasks;
 using Gladiators.Battle;
 using Gladiators.Main;
 using Gladiators.Socket.Matchgame;
+using HeroFishing.Socket;
 using LitJson;
 using Scoz.Func;
 using System;
@@ -13,7 +14,7 @@ using UnityEngine.SceneManagement;
 
 namespace Gladiators.Socket {
     public partial class GladiatorsSocket {
-        TcpClient TCP_MatchgameClient;
+        TcpSocket TCP_MatchgameClient;
         UdpSocket UDP_MatchgameClient;
         ServerTimeSyncer TimeSyncer;
         string UDP_MatchgameConnToken;// 連Matchgame需要的Token，由AUTH_REPLY時取得

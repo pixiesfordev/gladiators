@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using Gladiators.Main;
 using Gladiators.Socket.Matchmaker;
+using HeroFishing.Socket;
 using LitJson;
 using NSubstitute;
 using Scoz.Func;
@@ -14,7 +15,7 @@ using UnityEngine.SceneManagement;
 namespace Gladiators.Socket {
     public partial class GladiatorsSocket {
 
-        TcpClient TCP_MatchmakerClient;
+        TcpSocket TCP_MatchmakerClient;
 
         readonly Subject<Unit> LogInSubject = new Subject<Unit>();
         readonly Subject<CREATEROOM_TOCLIENT> CreateRoomSubject = new Subject<CREATEROOM_TOCLIENT>();
@@ -24,7 +25,7 @@ namespace Gladiators.Socket {
         public void CreateMatchmaker(string _ip, int _port) {
             if (TCP_MatchmakerClient != null)
                 TCP_MatchmakerClient.Close();
-            TCP_MatchmakerClient = new GameObject("MatchmakerSocket").AddComponent<TcpClient>();
+            TCP_MatchmakerClient = new GameObject("MatchmakerSocket").AddComponent<TcpSocket>();
             TCP_MatchmakerClient.Init(_ip, _port);
             TCP_MatchmakerClient.OnReceiveMsg += OnRecieveMatchmakerTCPMsg;
         }
