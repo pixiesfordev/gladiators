@@ -1,53 +1,33 @@
 using System.Numerics;
 
 namespace Gladiators.Socket.Matchgame {
-    public class BATTLESTATE : SocketContent {
+    public class BattleState : SocketContent {
         //class名稱就是封包的CMD名稱
     }
-    public class BATTLESTATE_TOCLIENT : SocketContent {
+    public class BattleState_ToClient : SocketContent {
         //class名稱就是封包的CMD名稱
-        public PackPlayerState[][] PlayerStates { get; private set; }
-        public double[] GameTime { get; private set; }
+        public PackPlayerState MyPlayerState { get; private set; }
+        public PackPlayerState OpponentPlayerState { get; private set; }
+        public double GameTime { get; private set; }
     }
 
     public class PackPlayerState {
-        public string ID { get; private set; }
-        public PackBribeSkill[] BribeSkills { get; private set; }
-        public PackGladiator Gladiator { get; private set; }
+        public string DBID { get; private set; }
+        public PackDivineSkill[] DivineSkills { get; private set; }
+        public PackGladiatorState GladiatorState { get; private set; }
     }
-    public class PackSkill {
-        public int JsonID { get; private set; }
-        public bool On { get; private set; }
-    }
-    public class PackBribeSkill {
+    public class PackDivineSkill {
         public int JsonID { get; private set; }
         public bool Used { get; private set; }
     }
-    public class PackGladiator {
-        public bool LeftSide { get; private set; }
-        public int JsonGladiatorID { get; private set; }
-        public int[] JsonSkillIDs { get; private set; }
-        public int[] JsonTraitIDs { get; private set; }
-        public int[] JsonEquipIDs { get; private set; }
-        public PackSkill[] CurSkills { get; private set; }
-        public int HP { get; private set; }
-        public int CurHP { get; private set; }
-        public double CurVigor { get; private set; }
-        public double VigorRegen { get; private set; }
-        public int STR { get; private set; }
-        public int DEF { get; private set; }
-        public int MDEF { get; private set; }
-        public double CRIT { get; private set; }
-        public int INIT { get; private set; }
-        public int Knockback { get; private set; }
-        public int Speed { get; private set; }
-        public int BattlePos { get; private set; }
-        public double StagePos { get; private set; }
-        public PackBuffer[] Buffers { get; private set; }
-        public bool Rush { get; private set; }
-    }
-    public class PackBuffer {
-        public int JsonID { get; private set; }
-        public int Stack { get; private set; }
+    public class PackGladiatorState {
+        public int[] HandSkillIDs { get; private set; }    // (玩家自己才會收到)
+        public int CurHp { get; private set; }      // 目前生命
+        public float CurVigor { get; private set; }  // 目前體力
+        public float CurSpd { get; private set; }// 目前速度
+        public float CurPos { get; private set; }// 目前位置
+        public bool IsRush { get; private set; }// 是否正在衝刺中
+        public string[] EffectTypes { get; private set; }  // 狀態清單
+        public int ActivedMeleeJsonSkillID { get; private set; }// (玩家自己才會收到)啟用中的肉搏技能ID, 玩家啟用中的肉搏技能, 如果是0代表沒有啟用中的肉搏技能
     }
 }

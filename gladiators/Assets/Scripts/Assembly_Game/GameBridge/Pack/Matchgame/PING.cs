@@ -1,5 +1,5 @@
 namespace Gladiators.Socket.Matchgame {
-    public class PING : SocketContent {
+    public class Ping : SocketContent {
         //class名稱就是封包的CMD名稱
     }
 }

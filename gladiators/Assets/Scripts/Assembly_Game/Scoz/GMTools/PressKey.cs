@@ -29,7 +29,7 @@ namespace Scoz.Func {
                 }, () => {
                     WriteLog.LogError("連線遊戲房失敗");
                 }, () => {
-                    if (AllocatedRoom.Instance.CurGameState == AllocatedRoom.GameState.Playing) {
+                    if (AllocatedRoom.Instance.CurGameState == AllocatedRoom.GameState.GameState_Fighting) {
                         WriteLog.LogError("需要斷線重連");
                         connFunc();
                     }

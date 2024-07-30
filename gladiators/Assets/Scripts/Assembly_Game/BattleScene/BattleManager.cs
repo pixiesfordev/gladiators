@@ -58,13 +58,13 @@ namespace Gladiators.Battle {
         }
         async UniTask CheckGameState() {
             switch (AllocatedRoom.Instance.CurGameState) {
-                case AllocatedRoom.GameState.NotInGame:
+                case AllocatedRoom.GameState.GameState_NotInGame:
                     break;
-                case AllocatedRoom.GameState.UnAuth://需要等待Matchgame Server回傳Auth成功
+                case AllocatedRoom.GameState.GameState_UnAuth://需要等待Matchgame Server回傳Auth成功
                     Debug.Log("需要等待Matchgame Server回傳Auth成功");
                     PopupUI.ShowLoading(JsonString.GetUIString("Loading"));
                     break;
-                case AllocatedRoom.GameState.GotPlayer://如果已經收到雙方玩家資料就送Ready
+                case AllocatedRoom.GameState.GameState_SelectingDivineSkill://如果已經收到雙方玩家資料就送Ready
                     Debug.Log("如果已經收到雙方玩家資料就送Ready");
                     GameConnector.Instance.SetReady();
                     break;
@@ -82,12 +82,12 @@ namespace Gladiators.Battle {
         }
         public void StartGame(PackPlayerState _playerStates) {
             WriteLog.LogError("開始遊戲");
-            if (_playerStates == null) { WriteLog.LogFormat("找不到玩家自己的資料!"); return;}
+            if (_playerStates == null) { WriteLog.LogFormat("找不到玩家自己的資料!"); return; }
             //更新介面神祉技能卡牌
-            BattleSceneUI.Instance?.SetDivineSkillData(_playerStates.BribeSkills);
+            BattleSceneUI.Instance?.SetDivineSkillData(_playerStates.DivineSkills);
             //關閉神祇技能選擇介面(做完演出後才去執行後續動作)
-            DivineSelectUI.Instance?.CloseUI(() => { 
-            ResetBattle();
+            DivineSelectUI.Instance?.CloseUI(() => {
+                ResetBattle();
             });
         }
 
@@ -107,7 +107,7 @@ namespace Gladiators.Battle {
         }
 
         //場地及人物生成
-        public async UniTask CreateTerrainAndChar(PackPlayer[] _packPlayers) {
+        public async UniTask CreateTerrainAndChar(PackPlayer _myPlayer, PackPlayer _opponentPlayer) {
             battleModelController.CreateTerrain(0);
             battleModelController.CreateCharacter(0, 0, _packPlayers);
 
@@ -210,7 +210,7 @@ namespace Gladiators.Battle {
 
         //戰鬥剩餘秒數計算
         async UniTaskVoid CountDownBattleTime() {
-        ReCount:
+            ReCount:
             //Debug.Log("測試倒數秒數.現在秒數: " + BattleLeftTime);
             await UniTask.Delay(TimeSpan.FromSeconds(1f));
             //有可能會發生剩下一秒的時候分出勝負 所以一秒數完還是要再次確認是否已經分出勝負 沒有才繼續數秒
@@ -248,7 +248,7 @@ namespace Gladiators.Battle {
         async UniTaskVoid ServerBattleTimer() {
             BattleTimer = 0.00f;
 
-        BattleTimber:
+            BattleTimber:
             var tempTest = battleRunStates.FirstOrDefault();
             var tempAction = battleActionStates.FirstOrDefault();
             if (tempTest != null && BattleTimer >= tempTest.GameTime && tempTest.Start) {

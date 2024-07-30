@@ -15,11 +15,11 @@ public class BattleDivineSkill : MonoBehaviour
     [SerializeField] Image BG;
     [SerializeField] Button Btn;
 
-    PackBribeSkill PackData;//同步資料
+    PackDivineSkill PackData;//同步資料
 
     void Start() { }
 
-    public void SetData(PackBribeSkill _skill)
+    public void SetData(PackDivineSkill _skill)
     {
         if (_skill == null)
         {

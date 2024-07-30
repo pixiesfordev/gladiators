@@ -95,7 +95,7 @@ public class BattleSceneUI : BaseUI {
             SkillBtn3.CastMeleeSkill();
     }
 
-    public void SetDivineSkillData(PackBribeSkill[] _datas)
+    public void SetDivineSkillData(PackDivineSkill[] _datas)
     {
         if(_datas == null) { WriteLog.Log("神祇技能資料遺失!"); return;}
         DivineSkills[0].SetData(_datas.Length > 0 ? _datas[0] : null);

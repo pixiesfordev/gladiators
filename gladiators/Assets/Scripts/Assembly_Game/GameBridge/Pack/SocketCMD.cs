@@ -43,8 +43,8 @@ namespace Gladiators.Socket {
         public enum MatchgameCMD_TCP {
             AUTH_TOCLIENT,// (TCP)身分驗證-送Client
             SETPLAYER_TOCLIENT,// (TCP)設定玩家資料-送Client
-            READY_TOCLIENT,// (TCP)遊戲準備就緒-送Client
-            BRIBE_TOCLIENT,// (TCP)賄賂選擇-送Client
+            SETREADY_TOCLIENT,// (TCP)遊戲準備就緒-送Client
+            SETDIVINESKILL_TOCLIENT,// (TCP)賄賂選擇-送Client
             PLAYERACTION_TOCLIENT,// (TCP)玩家指令-送Client
             BATTLESTATE_TOCLIENT,// (TCP)狀態更新-送Client
             ENDGAME_TOCLIENT,// (TCP)遊戲結算-送Client

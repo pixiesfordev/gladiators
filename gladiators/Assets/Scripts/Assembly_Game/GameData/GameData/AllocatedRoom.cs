@@ -56,13 +56,15 @@ namespace Gladiators.Main {
         public DBGladiator EnemyGladiator { get; private set; }
 
         public enum GameState {
-            NotInGame,// 不在遊戲中
-            UnAuth,//已經從Matchmaker收到配對房間但還沒從Matchgame收到Auth回傳true
-            Authed,//已經從Matchgame收到Auth驗證
-            GotPlayer,//已經從Matchgame收到玩家資料
-            Playing,//遊玩中(加入Matchgame並收到Auth回傳true)
+            GameState_NotInGame,// 不在遊戲中
+            GameState_UnAuth,//已經從Matchmaker收到配對房間但還沒從Matchgame收到Auth回傳true
+            GameState_WaitingPlayers,//已經從Matchgame收到Auth驗證, 等待雙方玩家入場
+            GameState_SelectingDivineSkill,//雙方玩家已入場, 選擇神祉技能中
+            GameState_CountingDown,//已完成神祉技能選擇, 戰鬥倒數中
+            GameState_Fighting,//戰鬥中
+            GameState_End,//戰鬥結束
         }
-        public GameState CurGameState { get; private set; } = GameState.NotInGame;
+        public GameState CurGameState { get; private set; } = GameState.GameState_NotInGame;
         public static void Init() {
             Instance = new AllocatedRoom();
         }
@@ -111,7 +113,7 @@ namespace Gladiators.Main {
         /// 清空配對房間(AllocatedRoom)資訊
         /// </summary>
         public void ClearRoom() {
-            SetGameState(GameState.NotInGame);
+            SetGameState(GameState.GameState_NotInGame);
             CreaterID = null;
             PlayerIDs = null;
             DBMapID = null;
@@ -128,21 +130,16 @@ namespace Gladiators.Main {
         /// Matchgame驗證完成時執行
         /// </summary>
         public void ReceiveAuth() {
-            SetGameState(GameState.Authed);
+            SetGameState(GameState.GameState_WaitingPlayers);
             GameConnector.Instance.SetPlayer("660926d4d0b8e0936ddc6afe");
         }
         /// <summary>
         /// 收到雙方玩家資料後, 將目前狀態設定為GotEnemy並通知BattleScene送Ready
         /// </summary>
-        public void ReceiveSetPlayer(PackPlayer[] _packPlayers) {
-            if (_packPlayers == null || _packPlayers.Length != 2) return;
-            // 取對手資料
-            var myPlayer = GamePlayer.Instance.GetDBPlayerDoc<DBPlayer>();
-            var enemy = _packPlayers.Find(a => a.DBPlayerID != myPlayer.ID);//因為只會有兩個玩家, 不是自己就是敵人
-            if (enemy == null) return;
-            SetGameState(GameState.GotPlayer);
+        public void ReceiveSetPlayer(PackPlayer _myPlayer, PackPlayer _opponentPlayer) {
+            SetGameState(GameState.GameState_SelectingDivineSkill);
             //設定資料
-            BattleManager.Instance.CreateTerrainAndChar(_packPlayers).Forget();
+            BattleManager.Instance.CreateTerrainAndChar(_myPlayer, _opponentPlayer).Forget();
             BattleManager.Instance.GotOpponent();
         }
         /// <summary>
@@ -163,7 +160,7 @@ namespace Gladiators.Main {
             int playerCount = 0;
             for (int i = 0; i < _playerStates.Length; i++) {
                 if (_playerStates[i] == null) continue;
-                if (playerDB != null && _playerStates[i].ID == playerDB.ID) playerState = _playerStates[i];
+                if (playerDB != null && _playerStates[i].DBID == playerDB.ID) playerState = _playerStates[i];
                 WriteLog.LogErrorFormat("收到角鬥士{0} 的資料", i);
                 WriteLog.WriteObj(_playerStates[i]);
                 playerCount++;

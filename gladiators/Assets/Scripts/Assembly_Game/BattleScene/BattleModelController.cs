@@ -30,11 +30,11 @@ public class BattleModelController : MonoBehaviour {
         //CreateCharacter(0, 0);
     }
 
-    public float minDistance = 5f; // ×îĞ¡¾àëx
-    public float maxDistance = 20f; // ×î´ó¾àëx
-    public float minFOV = 30f; // ×îĞ¡Ò•Ò°
-    public float maxFOV = 60f; // ×î´óÒ•Ò°
-    public float distanceOffset = 2f; // ¾àëxÆ«ÒÆÁ¿£¬ÓÃì¶Õ{ÕûcamµÄ¾àëx
+    public float minDistance = 5f; // éƒ”è‹¤æ“’è¤©
+    public float maxDistance = 20f; // éƒ”æ¹®æ“’è¤©
+    public float minFOV = 30f; // éƒ”è‹¤?ç§
+    public float maxFOV = 60f; // éƒ”æ¹®?ç§
+    public float distanceOffset = 2f; // æ“’è¤©ïš»ç—„è¬›ã„›èššé»ºæ¼æ·•camè…”æ“’è¤©
 
     void Update() {
         //Attack();
@@ -48,13 +48,13 @@ public class BattleModelController : MonoBehaviour {
     public void CreateCharacter(int leftCharID, int rightCharID, PackPlayer[] _packPlayers) {
         //Character leftPrefab = Resources.Load<Character>("Prefabs/Battle/test/Character" + leftCharID);
         leftChar = Instantiate(characterPrefab, charactersArea.transform);
-        leftChar.name = _packPlayers[0].DBPlayerID;
+        leftChar.name = _packPlayers[0].DBID;
         leftChar.tag = "leftobj";
         leftChar.isRightPlayer = false;
 
         //Character rightPrefab = Resources.Load<Character>("Prefabs/Battle/test/Character" + rightCharID);
         rightChar = Instantiate(characterPrefab, charactersArea.transform);
-        rightChar.name = _packPlayers[1].DBPlayerID;
+        rightChar.name = _packPlayers[1].DBID;
         rightChar.tag = "rightobj";
         rightChar.isRightPlayer = true;
 
@@ -93,11 +93,11 @@ public class BattleModelController : MonoBehaviour {
 
     public void Movement(PackPlayerState leftPlayer, PackPlayerState rightPlayer) {
         if (leftPlayer != null) {
-            leftChar.Movement(leftPlayer.Gladiator);
+            leftChar.Movement(leftPlayer.GladiatorState);
         }
 
         if (rightPlayer != null) {
-            rightChar.Movement(rightPlayer.Gladiator);
+            rightChar.Movement(rightPlayer.GladiatorState);
         }
     }
 
@@ -105,11 +105,11 @@ public class BattleModelController : MonoBehaviour {
     [SerializeField] public float PlayerDistance = 0.0f;
     public void GetAttack(PackPlayerState leftPlayer, PackPlayerState rightPlayer) {
         if (leftPlayer != null) {
-            leftChar.isGetAttack(leftPlayer.Gladiator);
+            leftChar.isGetAttack(leftPlayer.GladiatorState);
         }
 
         if (rightPlayer != null) {
-            rightChar.isGetAttack(rightPlayer.Gladiator);
+            rightChar.isGetAttack(rightPlayer.GladiatorState);
         }
     }
 }

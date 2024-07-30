@@ -26,8 +26,8 @@ namespace Gladiators.Socket {
         /// 確認DBMatchgame表被建立後會跳BattleScene並開始跑ConnToMatchgame開始連線到Matchgame
         /// </summary>
         public void ConnToMatchgame(Action _onConnected, Action _onJoinGameFail, Action _onDisconnected) {
-            if (AllocatedRoom.Instance.CurGameState != AllocatedRoom.GameState.NotInGame) return;
-            AllocatedRoom.Instance.SetGameState(AllocatedRoom.GameState.UnAuth);
+            if (AllocatedRoom.Instance.CurGameState != AllocatedRoom.GameState.GameState_NotInGame) return;
+            AllocatedRoom.Instance.SetGameState(AllocatedRoom.GameState.GameState_UnAuth);
             if (IsConnectomg) return;
             OnConnToMatchgame = _onConnected;
             OnJoinGameFail = _onJoinGameFail;
@@ -91,35 +91,35 @@ namespace Gladiators.Socket {
         /// 通知Server此玩家已經進入BattleScene
         /// </summary>
         public void SetReady() {
-            var cmd = new SocketCMD<READY>(new READY());
+            var cmd = new SocketCMD<SetReady>(new SetReady());
             Socket.TCPSend(cmd);
         }
         /// <summary>
         /// 通知Server此玩家已經進入BattleScene
         /// </summary>
         public void SetPlayer(string _dbGladiatorID) {
-            var cmd = new SocketCMD<SETPLAYER>(new SETPLAYER(_dbGladiatorID));
+            var cmd = new SocketCMD<SetPlayer>(new SetPlayer(_dbGladiatorID));
             Socket.TCPSend(cmd);
         }
         /// <summary>
         /// 通知Server此玩家已經進入BattleScene
         /// </summary>
         public void Bribe(int[] _jsonBribeIDs) {
-            var cmd = new SocketCMD<BRIBE>(new BRIBE(_jsonBribeIDs));
+            var cmd = new SocketCMD<SetDivineSkill>(new SetDivineSkill(_jsonBribeIDs));
             Socket.TCPSend(cmd);
         }
         /// <summary>
         /// 通知Server此玩家已經進入BattleScene
         /// </summary>
         public void BattleState() {
-            var cmd = new SocketCMD<BATTLESTATE>();
+            var cmd = new SocketCMD<BattleState>();
             Socket.TCPSend(cmd);
         }
         /// <summary>
         /// 通知Server此玩家已經進入Run
         /// </summary>
         public void SetRun(bool isRun) {
-            var cmd = new SocketCMD<PLAYERACTION>(new PLAYERACTION("PLAYERACTION_RUSH", new PackAction_Rush(isRun)));
+            var cmd = new SocketCMD<PlayerAction>(new PlayerAction("PLAYERACTION_RUSH", new PackAction_Rush(isRun)));
             Socket.TCPSend(cmd);
         }
     }
