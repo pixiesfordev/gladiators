@@ -104,8 +104,8 @@ namespace Gladiators.Socket {
         /// <summary>
         /// 通知Server此玩家已經進入BattleScene
         /// </summary>
-        public void Bribe(int[] _jsonBribeIDs) {
-            var cmd = new SocketCMD<SetDivineSkill>(new SetDivineSkill(_jsonBribeIDs));
+        public void SetDivineSkills(int[] _jsonSKillIDs) {
+            var cmd = new SocketCMD<SetDivineSkill>(new SetDivineSkill(_jsonSKillIDs));
             Socket.TCPSend(cmd);
         }
         /// <summary>
@@ -119,7 +119,7 @@ namespace Gladiators.Socket {
         /// 通知Server此玩家已經進入Run
         /// </summary>
         public void SetRun(bool isRun) {
-            var cmd = new SocketCMD<PlayerAction>(new PlayerAction("PLAYERACTION_RUSH", new PackAction_Rush(isRun)));
+            var cmd = new SocketCMD<PlayerAction>(new PlayerAction("Action_Rush", new PackAction_Rush(isRun)));
             Socket.TCPSend(cmd);
         }
     }

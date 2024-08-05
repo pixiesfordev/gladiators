@@ -18,6 +18,10 @@ namespace Gladiators.Socket.Matchgame {
     public class PackAction_Skill : IActionContent {
         public bool On { get; private set; }
         public int SkillID { get; private set; }
+        public PackAction_Skill(bool _on, int _skillID) {
+            On = _on;
+            SkillID = _skillID;
+        }
     }
     public class PackAction_Skill_ToClient : IActionContent {
         public bool On { get; private set; }
@@ -26,6 +30,10 @@ namespace Gladiators.Socket.Matchgame {
     public class PackAction_DivineSkill : IActionContent {
         public bool On { get; private set; }
         public int SkillID { get; private set; }
+        public PackAction_DivineSkill(bool _on, int _skillID) {
+            On = _on;
+            SkillID = _skillID;
+        }
     }
     public class PackAction_DivineSkill_ToClient : IActionContent {
         public bool On { get; private set; }
@@ -33,6 +41,9 @@ namespace Gladiators.Socket.Matchgame {
     }
     public class PackAction_Rush : IActionContent {
         public bool On { get; private set; }
+        public PackAction_Rush(bool _on) {
+            On = _on;
+        }
     }
     public class PackAction_Rush_ToClient : IActionContent {
         public bool On { get; private set; }

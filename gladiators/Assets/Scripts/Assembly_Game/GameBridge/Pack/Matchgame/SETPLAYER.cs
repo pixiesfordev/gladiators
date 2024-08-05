@@ -2,6 +2,7 @@ namespace Gladiators.Socket.Matchgame {
     public class SetPlayer : SocketContent {
         //class名稱就是封包的CMD名稱
         public string DBGladiatorID { get; private set; }
+        public SetPlayer(string _id) { DBGladiatorID = _id; }
     }
 
     public class SetPlayer_ToClient : SocketContent {

@@ -225,7 +225,7 @@ namespace Gladiators.Battle {
             int selectedSkillID1 = SelectedDivineSkills[0] != null ? SelectedDivineSkills[0].ID : 0;
             int selectedSkillID2 = SelectedDivineSkills[1] != null ? SelectedDivineSkills[1].ID : 0;
             //發送Socket
-            GameConnector.Instance.Bribe(new int[] { selectedSkillID1, selectedSkillID2 });
+            GameConnector.Instance.SetDivineSkills(new int[] { selectedSkillID1, selectedSkillID2 });
         }
 
         void CoinDrop()

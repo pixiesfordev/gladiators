@@ -45,24 +45,21 @@ public class BattleModelController : MonoBehaviour {
         var terrain = Instantiate(terrainPrefab, terrainArea.transform);
     }
 
-    public void CreateCharacter(int leftCharID, int rightCharID, PackPlayer[] _packPlayers) {
+    public void CreateCharacter(PackPlayer _myPlayerPack, PackPlayer _opponentPack) {
         //Character leftPrefab = Resources.Load<Character>("Prefabs/Battle/test/Character" + leftCharID);
         leftChar = Instantiate(characterPrefab, charactersArea.transform);
-        leftChar.name = _packPlayers[0].DBID;
+        leftChar.name = _myPlayerPack.DBID;
         leftChar.tag = "leftobj";
         leftChar.isRightPlayer = false;
 
         //Character rightPrefab = Resources.Load<Character>("Prefabs/Battle/test/Character" + rightCharID);
         rightChar = Instantiate(characterPrefab, charactersArea.transform);
-        rightChar.name = _packPlayers[1].DBID;
+        rightChar.name = _opponentPack.DBID;
         rightChar.tag = "rightobj";
         rightChar.isRightPlayer = true;
 
-        leftChar.setCharacter(_packPlayers[0].Gladiator, rightChar);
-        rightChar.setCharacter(_packPlayers[1].Gladiator, leftChar);
-
-        leftChar.transform.position = new Vector3((float)_packPlayers[0].Gladiator.StagePos, 0, 0);
-        rightChar.transform.position = new Vector3((float)_packPlayers[1].Gladiator.StagePos, 0, 0);
+        leftChar.setCharacter(_myPlayerPack.MyPackGladiator, leftChar);
+        rightChar.setCharacter(_opponentPack.MyPackGladiator, rightChar);
     }
 
     public IEnumerator WaitCharacterCreate() {

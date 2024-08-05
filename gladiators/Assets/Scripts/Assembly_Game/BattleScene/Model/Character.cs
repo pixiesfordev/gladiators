@@ -20,15 +20,7 @@ public class Character : MonoBehaviour {
     [SerializeField] public bool isRightPlayer;
     public Character otherPlayer;
 
-    [SerializeField] public float defaultSpeed = 1.0f;
-    [SerializeField] public float runSpeed = 2.0f;
-    float moveSpeed {
-        get {
-            if(isRun) return runSpeed;
-
-            return defaultSpeed;
-        }
-    }
+    [SerializeField] public float curSpd = 2.0f;
     [SerializeField] public float moveExitTimeThreshold = 0.85f;
     [SerializeField] float chnageCharLookTolerance = 1.0f;
     [SerializeField] float attackTolerance = 3.5f;
@@ -106,9 +98,7 @@ public class Character : MonoBehaviour {
 
     public void setCharacter(PackGladiator _packGladiator, Character _otherPlayer) {
         otherPlayer = _otherPlayer;
-
-        defaultSpeed = _packGladiator.Speed;
-        runSpeed = _packGladiator.Speed;
+        curSpd = _packGladiator.CurSpd;
 
         BattleManager.Instance.vTargetGroup.AddMember(transform, 1, 8);
     }
@@ -125,7 +115,7 @@ public class Character : MonoBehaviour {
         AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
         if (stateInfo.IsName("move_Animation") && stateInfo.normalizedTime < moveExitTimeThreshold) {
             SetFaceToTarget();
-            transform.Translate(Vector3.forward * moveSpeed * Time.deltaTime);
+            transform.Translate(Vector3.forward * curSpd * Time.deltaTime);
 
             if ((transform.position.x >= moveTo && !isRightPlayer) || (transform.position.x <= moveTo && isRightPlayer)) {
                 transform.position = new Vector3(moveTo, transform.position.y, transform.position.z);
@@ -137,14 +127,11 @@ public class Character : MonoBehaviour {
         }
     }
 
-    public void Movement(PackGladiator _packGladiator) {
-        if (_packGladiator.Knockback == 0) return;
+    public void Movement(PackGladiatorState _state) {
 
         getAttack = false;
-
-        defaultSpeed = _packGladiator.Speed;
-        runSpeed = _packGladiator.Speed;
-        moveTo = (float)_packGladiator.StagePos;
+        curSpd = _state.CurSpd;
+        moveTo = _state.CurPos;
         canMove = true;
     }
 
@@ -165,16 +152,16 @@ public class Character : MonoBehaviour {
             //var skillEffectData = GameDictionary.GetJsonData<JsonSkillEffect>((int)nowSkillID);
 
             //if (skillData != null && skillData.Activation == "Instant") {
-                animator.SetBool("isAttack", true);
-                animator.SetBool("isAnimation", true);
+            animator.SetBool("isAttack", true);
+            animator.SetBool("isAnimation", true);
 
-                //create skill ball
-                //var skillBall_temp = Instantiate(skillBall, skillArea.transform);
-                //if (isRightPlayer) {
-                //    skillBall_temp.gameObject.tag = "rightobj";
-                //} else {
-                //    skillBall_temp.gameObject.tag = "leftobj";
-                //}
+            //create skill ball
+            //var skillBall_temp = Instantiate(skillBall, skillArea.transform);
+            //if (isRightPlayer) {
+            //    skillBall_temp.gameObject.tag = "rightobj";
+            //} else {
+            //    skillBall_temp.gameObject.tag = "leftobj";
+            //}
             //} else {
 
             //}
@@ -190,19 +177,16 @@ public class Character : MonoBehaviour {
     [SerializeField] public Vector3 knockbackDirection;
     [SerializeField] public float knockbackDuration = 1.0f;
     [SerializeField] public float knockbackTimer = 0f;
-    [SerializeField] public float initialSpeed = 35f; // ³õËÙ¶È
+    [SerializeField] public float initialSpeed = 35f; // å ´åŽ’åƒ…
     [SerializeField] public float knockbackSpeed;
-    public void isGetAttack(PackGladiator _packGladiator) {
-        if (_packGladiator.Knockback == 0) return;
-
+    public void isGetAttack(PackGladiatorState _packGladiatorState) {
         initialSpeed = 35f;
 
         canMove = false;
 
         knockbackTimer = 0f;
-        defaultSpeed = _packGladiator.Speed;
-        runSpeed = _packGladiator.Speed;
-        moveTo = (float)_packGladiator.StagePos;
+        curSpd = _packGladiatorState.CurSpd;
+        moveTo = _packGladiatorState.CurPos;
         getAttack = true;
     }
     public void GetAttack() {

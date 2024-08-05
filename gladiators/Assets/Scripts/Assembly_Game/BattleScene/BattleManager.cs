@@ -109,7 +109,7 @@ namespace Gladiators.Battle {
         //場地及人物生成
         public async UniTask CreateTerrainAndChar(PackPlayer _myPlayer, PackPlayer _opponentPlayer) {
             battleModelController.CreateTerrain(0);
-            battleModelController.CreateCharacter(0, 0, _packPlayers);
+            battleModelController.CreateCharacter(_myPlayer, _opponentPlayer);
 
             await battleModelController.WaitCharacterCreate();
             ResetBattle();
