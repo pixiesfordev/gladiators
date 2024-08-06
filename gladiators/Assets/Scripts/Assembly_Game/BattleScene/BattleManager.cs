@@ -59,24 +59,26 @@ namespace Gladiators.Battle {
         async UniTask CheckGameState() {
             switch (AllocatedRoom.Instance.CurGameState) {
                 case AllocatedRoom.GameState.GameState_NotInGame:
+                    WriteLog.LogError($"錯誤的GameState:{AllocatedRoom.Instance.CurGameState}");
                     break;
                 case AllocatedRoom.GameState.GameState_UnAuth://需要等待Matchgame Server回傳Auth成功
-                    Debug.Log("需要等待Matchgame Server回傳Auth成功");
-                    PopupUI.ShowLoading(JsonString.GetUIString("Loading"));
+                    WriteLog.LogError($"錯誤的GameState:{AllocatedRoom.Instance.CurGameState}");
                     break;
-                case AllocatedRoom.GameState.GameState_SelectingDivineSkill://如果已經收到雙方玩家資料就送Ready
-                    Debug.Log("如果已經收到雙方玩家資料就送Ready");
-                    GameConnector.Instance.SetReady();
+                case AllocatedRoom.GameState.GameState_WaitingPlayersData://需要等待收到雙方SetPlayer回傳
+                    WriteLog.LogError($"錯誤的GameState:{AllocatedRoom.Instance.CurGameState}");
+                    break;
+                case AllocatedRoom.GameState.GameState_WaitingPlayersReady:
+                    AllocatedRoom.Instance.SetReady();
                     break;
             }
             await UniTask.Yield();
         }
-        public void GotOpponent() {
-            GameConnector.Instance.SetReady();
-        }
-        public void GoBribe() { //開始遊戲用
-            WriteLog.LogError("開始賄賂");
-            //叫出神址選擇介面(舊稱賄賂) 這裡顯示介面讓玩家選擇
+        /// <summary>
+        ///  雙方選完神祉技能 可以開始戰鬥
+        /// </summary>
+        public void StartSelectDivineSkill() {
+            WriteLog.Log($"開始選擇神祉技能");
+            //叫出神址選擇介面這裡顯示介面讓玩家選擇
             if (DivineSelectUI.Instance != null)
                 DivineSelectUI.Instance.SetActive(true);
         }
@@ -203,9 +205,9 @@ namespace Gladiators.Battle {
         //戰鬥結算
         //buff設定
 
-        //衝次
+        //衝刺
         public void GoRun(bool isRun) {
-            GameConnector.Instance.SetRun(isRun);
+            AllocatedRoom.Instance.SetRun(isRun);
         }
 
         //戰鬥剩餘秒數計算

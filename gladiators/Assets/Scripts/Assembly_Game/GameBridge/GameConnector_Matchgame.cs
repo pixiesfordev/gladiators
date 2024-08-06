@@ -87,40 +87,12 @@ namespace Gladiators.Socket {
             IsConnectomg = false;
             OnMatchgameDisconnected?.Invoke();
         }
-        /// <summary>
-        /// 通知Server此玩家已經進入BattleScene
-        /// </summary>
-        public void SetReady() {
-            var cmd = new SocketCMD<SetReady>(new SetReady());
+
+        public void SendTCP<T>(SocketCMD<T> cmd) where T : SocketContent {
             Socket.TCPSend(cmd);
         }
-        /// <summary>
-        /// 通知Server此玩家已經進入BattleScene
-        /// </summary>
-        public void SetPlayer(string _dbGladiatorID) {
-            var cmd = new SocketCMD<SetPlayer>(new SetPlayer(_dbGladiatorID));
-            Socket.TCPSend(cmd);
-        }
-        /// <summary>
-        /// 通知Server此玩家已經進入BattleScene
-        /// </summary>
-        public void SetDivineSkills(int[] _jsonSKillIDs) {
-            var cmd = new SocketCMD<SetDivineSkill>(new SetDivineSkill(_jsonSKillIDs));
-            Socket.TCPSend(cmd);
-        }
-        /// <summary>
-        /// 通知Server此玩家已經進入BattleScene
-        /// </summary>
-        public void BattleState() {
-            var cmd = new SocketCMD<BattleState>();
-            Socket.TCPSend(cmd);
-        }
-        /// <summary>
-        /// 通知Server此玩家已經進入Run
-        /// </summary>
-        public void SetRun(bool isRun) {
-            var cmd = new SocketCMD<PlayerAction>(new PlayerAction("Action_Rush", new PackAction_Rush(isRun)));
-            Socket.TCPSend(cmd);
+        public void SendUDP<T>(SocketCMD<T> cmd) where T : SocketContent {
+            Socket.UDPSend(cmd);
         }
     }
 }

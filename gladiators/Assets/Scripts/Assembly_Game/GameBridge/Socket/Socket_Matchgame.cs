@@ -241,7 +241,7 @@ namespace Gladiators.Socket {
         }
         void HandleSetPlayer(SocketCMD<SetPlayer_ToClient> _packet) {
             //if (SceneManager.GetActiveScene().name != MyScene.BattleScene.ToString()) return;
-            //AllocatedRoom.Instance.ReceiveSetPlayer(_packet.Content.Players);
+            AllocatedRoom.Instance.ReceiveSetPlayer(_packet.Content.MyPackPlayer, _packet.Content.OpponentPackPlayer);
         }
         void HandleReady(SocketCMD<SetReady_ToClient> _packet) {
             if (SceneManager.GetActiveScene().name != MyScene.BattleScene.ToString()) return;
@@ -249,7 +249,7 @@ namespace Gladiators.Socket {
         }
         void HandleSetDivineSkill(SocketCMD<SetDivineSkill_ToClient> _packet) {
             if (SceneManager.GetActiveScene().name != MyScene.BattleScene.ToString()) return;
-            //AllocatedRoom.Instance.ReceiveBribe(_packet.Content.PlayerStates);
+            AllocatedRoom.Instance.ReceiveDivineSkill(_packet.Content.MyPlayerState, _packet.Content.OpponentPlayerState);
         }
         void HandlerBattleState(SocketCMD<BattleState_ToClient> _packet) {
             if (SceneManager.GetActiveScene().name != MyScene.BattleScene.ToString()) return;
