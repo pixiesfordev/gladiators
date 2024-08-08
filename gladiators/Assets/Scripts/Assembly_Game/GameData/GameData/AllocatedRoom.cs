@@ -10,6 +10,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Gladiators.Main {
     /// <summary>
@@ -131,14 +132,14 @@ namespace Gladiators.Main {
         /// 送玩家資料給Server
         /// </summary>
         public void SetPlayer(string _dbGladiatorID) {
-            var cmd = new SocketCMD<SetPlayer>(new SetPlayer(_dbGladiatorID));
+            var cmd = new SocketCMD<SETPLAYER>(new SETPLAYER(_dbGladiatorID));
             GameConnector.Instance.SendTCP(cmd);
         }
         /// <summary>
         /// 通知Server此玩家已經進入BattleScene
         /// </summary>
         public void SetReady() {
-            var cmd = new SocketCMD<SetReady>(new SetReady());
+            var cmd = new SocketCMD<SETREADY>(new SETREADY());
             GameConnector.Instance.SendTCP(cmd);
         }
 
@@ -146,21 +147,21 @@ namespace Gladiators.Main {
         /// 通知Server此玩家已經進入BattleScene
         /// </summary>
         public void SetDivineSkills(int[] _jsonSKillIDs) {
-            var cmd = new SocketCMD<SetDivineSkill>(new SetDivineSkill(_jsonSKillIDs));
+            var cmd = new SocketCMD<SETDIVINESKILL>(new SETDIVINESKILL(_jsonSKillIDs));
             GameConnector.Instance.SendTCP(cmd);
         }
         /// <summary>
         /// 通知Server此玩家已經進入BattleScene
         /// </summary>
         public void BattleState() {
-            var cmd = new SocketCMD<BattleState>();
+            var cmd = new SocketCMD<BATTLESTATE>();
             GameConnector.Instance.SendTCP(cmd);
         }
         /// <summary>
         /// 通知Server此玩家已經進入Run
         /// </summary>
         public void SetRun(bool isRun) {
-            var cmd = new SocketCMD<PlayerAction>(new PlayerAction("Action_Rush", new PackAction_Rush(isRun)));
+            var cmd = new SocketCMD<PLAYERACTION>(new PLAYERACTION("Action_Rush", new PackAction_Rush(isRun)));
             GameConnector.Instance.SendTCP(cmd);
         }
         /// <summary>
@@ -175,9 +176,13 @@ namespace Gladiators.Main {
         /// </summary>
         public void ReceiveSetPlayer(PackPlayer _myPlayer, PackPlayer _opponentPlayer) {
             //收到雙方玩家資料
-            if (_myPlayer != null && _opponentPlayer != null && !string.IsNullOrEmpty(_myPlayer.DBID) && string.IsNullOrEmpty(_opponentPlayer.DBID)) {
+            if (_myPlayer != null && _opponentPlayer != null && !string.IsNullOrEmpty(_myPlayer.DBID) && !string.IsNullOrEmpty(_opponentPlayer.DBID)) {
                 SetGameState(GameState.GameState_WaitingPlayersReady);
-                BattleManager.Instance.CreateTerrainAndChar(_myPlayer, _opponentPlayer).Forget();
+                if (SceneManager.GetActiveScene().name != MyScene.BattleScene.ToString())//跳轉到BattleScene
+                    PopupUI.CallSceneTransition(MyScene.BattleScene);
+                else {
+                    BattleManager.Instance.CreateTerrainAndChar(_myPlayer, _opponentPlayer).Forget();
+                }
             }
         }
         /// <summary>
@@ -195,9 +200,15 @@ namespace Gladiators.Main {
         /// 收到神祉技能選擇封包, 如果雙方的資料都收到就開始遊戲
         /// </summary>
         public void ReceiveDivineSkill(PackPlayerState _myPlayerState, PackPlayerState _opponentPlayerState) {
-            if (_myPlayerState != null || _opponentPlayerState != null) return;
-            if (string.IsNullOrEmpty(_myPlayerState.DBID) || string.IsNullOrEmpty(_opponentPlayerState.DBID)) return;
-            BattleManager.Instance.StartGame(_myPlayerState);
+            if (_myPlayerState == null || _myPlayerState.DBID == null) return;
+            //更新介面神祉技能卡牌
+            BattleSceneUI.Instance?.SetDivineSkillData(_myPlayerState.DivineSkills);
+        }
+        /// <summary>
+        /// 收到戰鬥開始封包
+        /// </summary>
+        public void ReceiveStartFighting() {
+            BattleManager.Instance.StartGame();
         }
 
         /// <summary>
@@ -213,6 +224,9 @@ namespace Gladiators.Main {
                 BattleManager.Instance.setBattleState(_playerStates[0], GameTime[0], BattleManager.BattleStateType.MoveAttack);
                 BattleManager.Instance.setBattleState(_playerStates[1], GameTime[1], BattleManager.BattleStateType.Knockback);
             }
+        }
+        public void ReceivePing() { //行為處理
+
         }
 
         /// <summary>

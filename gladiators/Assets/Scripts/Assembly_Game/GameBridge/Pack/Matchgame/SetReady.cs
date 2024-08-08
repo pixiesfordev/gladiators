@@ -1,8 +1,8 @@
 namespace Gladiators.Socket.Matchgame {
-    public class SetReady : SocketContent {
+    public class SETREADY : SocketContent {
         //class名稱就是封包的CMD名稱
     }
-    public class SetReady_ToClient : SocketContent {
+    public class SETREADY_TOCLIENT : SocketContent {
         //class名稱就是封包的CMD名稱
         public bool[] PlayerReadies { get; private set; }
     }

@@ -34,9 +34,9 @@ namespace Gladiators.Main {
         public string Ref { get; private set; }
         public SkillActivation Activation { get; private set; }
         public int Cost { get; private set; }
-        public int Initiative { get; private set; }
+        public double Init { get; private set; }
         public int Vigor { get; private set; }
-        public int Knockback { get; private set; }
+        public double Knockback { get; private set; }
         public SkillType MySkillType { get; private set; }
         public Divine MyDivine { get; private set; }
         public List<JsonSkillEffect> Effects { get { return JsonSkillEffect.GetSkillEffectDatas(ID); } }
@@ -69,14 +69,14 @@ namespace Gladiators.Main {
                     case "Cost":
                         Cost = int.Parse(item[key].ToString());
                         break;
-                    case "Initiative":
-                        Initiative = int.Parse(item[key].ToString());
+                    case "Init":
+                        Init = double.Parse(item[key].ToString());
                         break;
                     case "Vigor":
                         Vigor = int.Parse(item[key].ToString());
                         break;
                     case "Knockback":
-                        Knockback = int.Parse(item[key].ToString());
+                        Knockback = double.Parse(item[key].ToString());
                         break;
                     case "Type":
                         SkillType type;

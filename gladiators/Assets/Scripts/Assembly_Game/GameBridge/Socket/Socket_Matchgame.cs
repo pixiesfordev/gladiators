@@ -10,6 +10,7 @@ using System.Linq;
 using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static Gladiators.Socket.SocketContent;
 
 namespace Gladiators.Socket {
     public partial class GladiatorsSocket {
@@ -107,7 +108,7 @@ namespace Gladiators.Socket {
                 TCP_MatchmakerClient.Close();
                 WriteLog.LogColor($"JoinMatchgame成功後 TCP_MatchmakerClient不需要了關閉 {TCP_MatchmakerClient}", WriteLog.LogType.Connection);
             }
-            SocketCMD<Auth> cmd = new SocketCMD<Auth>(new Auth(realmToken));
+            SocketCMD<AUTH> cmd = new SocketCMD<AUTH>(new AUTH(realmToken));
 
             int id = TCP_MatchgameClient.Send(cmd);
             if (id < 0) {
@@ -118,7 +119,7 @@ namespace Gladiators.Socket {
         }
 
         private void TCPClientCmdCallback(string msg) {
-            SocketCMD<Auth_ToClient> packet = LitJson.JsonMapper.ToObject<SocketCMD<Auth_ToClient>>(msg);
+            SocketCMD<AUTH_TOCLIENT> packet = LitJson.JsonMapper.ToObject<SocketCMD<AUTH_TOCLIENT>>(msg);
             if (packet.Content.IsAuth) {
                 try {
                     //目前遊戲沒使用UDP, 有需要再開
@@ -182,13 +183,16 @@ namespace Gladiators.Socket {
         private void OnRecieveMatchgameTCPMsg(string _msg) {
             try {
 
-                WriteLog.LogColorFormat("(TCP)接收: {0}", WriteLog.LogType.Connection, _msg);
+                //WriteLog.LogColorFormat("(TCP)接收: {0}", WriteLog.LogType.Connection, _msg);
                 SocketCMD<SocketContent> data = JsonMapper.ToObject<SocketCMD<SocketContent>>(_msg);
                 Tuple<string, int> cmdID = new Tuple<string, int>(data.CMD, data.PackID);
                 SocketContent.MatchgameCMD_TCP cmdType;
                 if (!MyEnum.TryParseEnum(data.CMD, out cmdType)) {
                     WriteLog.LogErrorFormat("收到錯誤的命令類型: {0}", cmdType);
                     return;
+                } else {
+                    // 避免輸出輸出Ping(Ping太洗頻了)
+                    if (data.CMD != MatchgameCMD_TCP.PING_TOCLIENT.ToString()) WriteLog.LogColorFormat("(TCP)接收: {0}", WriteLog.LogType.Connection, _msg);
                 }
                 if (CMDCallback.TryGetValue(cmdID, out Action<string> _cb)) {
                     CMDCallback.Remove(cmdID);
@@ -196,28 +200,36 @@ namespace Gladiators.Socket {
                 }
                 switch (cmdType) {
                     case SocketContent.MatchgameCMD_TCP.AUTH_TOCLIENT:
-                        var authPacket = LitJson.JsonMapper.ToObject<SocketCMD<Auth_ToClient>>(_msg);
+                        var authPacket = LitJson.JsonMapper.ToObject<SocketCMD<AUTH_TOCLIENT>>(_msg);
                         HandleAuth(authPacket);
                         break;
                     case SocketContent.MatchgameCMD_TCP.SETPLAYER_TOCLIENT:
-                        var setPlayerPacket = LitJson.JsonMapper.ToObject<SocketCMD<SetPlayer_ToClient>>(_msg);
+                        var setPlayerPacket = LitJson.JsonMapper.ToObject<SocketCMD<SETPLAYER_TOCLIENT>>(_msg);
                         HandleSetPlayer(setPlayerPacket);
                         break;
                     case SocketContent.MatchgameCMD_TCP.SETREADY_TOCLIENT:
-                        var readyPacket = LitJson.JsonMapper.ToObject<SocketCMD<SetReady_ToClient>>(_msg);
+                        var readyPacket = LitJson.JsonMapper.ToObject<SocketCMD<SETREADY_TOCLIENT>>(_msg);
                         HandleReady(readyPacket);
                         break;
                     case SocketContent.MatchgameCMD_TCP.SETDIVINESKILL_TOCLIENT:
-                        var bribePacket = LitJson.JsonMapper.ToObject<SocketCMD<SetDivineSkill_ToClient>>(_msg);
+                        var bribePacket = LitJson.JsonMapper.ToObject<SocketCMD<SETDIVINESKILL_TOCLIENT>>(_msg);
                         HandleSetDivineSkill(bribePacket);
                         break;
+                    case SocketContent.MatchgameCMD_TCP.STARTFIGHTING_TOCLIENT:
+                        var startFightingPacket = LitJson.JsonMapper.ToObject<SocketCMD<STARTFIGHTING_TOCLIENT>>(_msg);
+                        HandleStartFighting(startFightingPacket);
+                        break;
                     case SocketContent.MatchgameCMD_TCP.BATTLESTATE_TOCLIENT:
-                        var battlePacket = LitJson.JsonMapper.ToObject<SocketCMD<BattleState_ToClient>>(_msg);
+                        var battlePacket = LitJson.JsonMapper.ToObject<SocketCMD<BATTLESTATE_TOCLIENT>>(_msg);
                         HandlerBattleState(battlePacket);
                         break;
                     case SocketContent.MatchgameCMD_TCP.PLAYERACTION_TOCLIENT:
-                        var playerActionPacket = LitJson.JsonMapper.ToObject<SocketCMD<PlayerAction_ToClient>>(_msg);
+                        var playerActionPacket = LitJson.JsonMapper.ToObject<SocketCMD<PLAYERACTION_TOCLIENT>>(_msg);
                         HandlerPlayerAction(playerActionPacket);
+                        break;
+                    case SocketContent.MatchgameCMD_TCP.PING_TOCLIENT:
+                        var pingPacket = LitJson.JsonMapper.ToObject<SocketCMD<PING_TOCLIENT>>(_msg);
+                        HandlerPing(pingPacket);
                         break;
                     default:
                         WriteLog.LogErrorFormat("收到尚未定義的命令類型: {0}", cmdType);
@@ -231,7 +243,7 @@ namespace Gladiators.Socket {
                 }
             }
         }
-        void HandleAuth(SocketCMD<Auth_ToClient> _packet) {
+        void HandleAuth(SocketCMD<AUTH_TOCLIENT> _packet) {
             //if (SceneManager.GetActiveScene().name != MyScene.BattleScene.ToString()) return;
             if (_packet.Content == null || !_packet.Content.IsAuth) {
                 WriteLog.LogError("Auth錯誤 遊戲無法開始");
@@ -239,25 +251,32 @@ namespace Gladiators.Socket {
             }
             AllocatedRoom.Instance.ReceiveAuth();
         }
-        void HandleSetPlayer(SocketCMD<SetPlayer_ToClient> _packet) {
-            //if (SceneManager.GetActiveScene().name != MyScene.BattleScene.ToString()) return;
+        void HandleSetPlayer(SocketCMD<SETPLAYER_TOCLIENT> _packet) {
             AllocatedRoom.Instance.ReceiveSetPlayer(_packet.Content.MyPackPlayer, _packet.Content.OpponentPackPlayer);
         }
-        void HandleReady(SocketCMD<SetReady_ToClient> _packet) {
+        void HandleReady(SocketCMD<SETREADY_TOCLIENT> _packet) {
             if (SceneManager.GetActiveScene().name != MyScene.BattleScene.ToString()) return;
             AllocatedRoom.Instance.ReceiveReady(_packet.Content.PlayerReadies);
         }
-        void HandleSetDivineSkill(SocketCMD<SetDivineSkill_ToClient> _packet) {
+        void HandleSetDivineSkill(SocketCMD<SETDIVINESKILL_TOCLIENT> _packet) {
             if (SceneManager.GetActiveScene().name != MyScene.BattleScene.ToString()) return;
             AllocatedRoom.Instance.ReceiveDivineSkill(_packet.Content.MyPlayerState, _packet.Content.OpponentPlayerState);
         }
-        void HandlerBattleState(SocketCMD<BattleState_ToClient> _packet) {
+        void HandleStartFighting(SocketCMD<STARTFIGHTING_TOCLIENT> _packet) {
+            if (SceneManager.GetActiveScene().name != MyScene.BattleScene.ToString()) return;
+            AllocatedRoom.Instance.ReceiveStartFighting();
+        }
+        void HandlerBattleState(SocketCMD<BATTLESTATE_TOCLIENT> _packet) {
             if (SceneManager.GetActiveScene().name != MyScene.BattleScene.ToString()) return;
             //AllocatedRoom.Instance.ReceiveBattleState(_packet.Content.PlayerStates, _packet.Content.GameTime);
         }
-        void HandlerPlayerAction(SocketCMD<PlayerAction_ToClient> _packet) {
+        void HandlerPlayerAction(SocketCMD<PLAYERACTION_TOCLIENT> _packet) {
             if (SceneManager.GetActiveScene().name != MyScene.BattleScene.ToString()) return;
             //AllocatedRoom.Instance.ReceivePlayerAction(_packet.Content.ActionType, _packet.Content.ActionContent, _packet.Content.PlayerStates, _packet.Content.GameTime);
+        }
+        void HandlerPing(SocketCMD<PING_TOCLIENT> _packet) {
+            if (SceneManager.GetActiveScene().name != MyScene.BattleScene.ToString()) return;
+            AllocatedRoom.Instance.ReceivePing();
         }
     }
 }

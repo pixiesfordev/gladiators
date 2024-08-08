@@ -82,11 +82,8 @@ namespace Gladiators.Battle {
             if (DivineSelectUI.Instance != null)
                 DivineSelectUI.Instance.SetActive(true);
         }
-        public void StartGame(PackPlayerState _playerStates) {
+        public void StartGame() {
             WriteLog.LogError("開始遊戲");
-            if (_playerStates == null) { WriteLog.LogFormat("找不到玩家自己的資料!"); return; }
-            //更新介面神祉技能卡牌
-            BattleSceneUI.Instance?.SetDivineSkillData(_playerStates.DivineSkills);
             //關閉神祇技能選擇介面(做完演出後才去執行後續動作)
             DivineSelectUI.Instance?.CloseUI(() => {
                 ResetBattle();

@@ -1,10 +1,10 @@
 using System.Numerics;
 
 namespace Gladiators.Socket.Matchgame {
-    public class BattleState : SocketContent {
+    public class BATTLESTATE : SocketContent {
         //class名稱就是封包的CMD名稱
     }
-    public class BattleState_ToClient : SocketContent {
+    public class BATTLESTATE_TOCLIENT : SocketContent {
         //class名稱就是封包的CMD名稱
         public PackPlayerState MyPlayerState { get; private set; }
         public PackPlayerState OpponentPlayerState { get; private set; }

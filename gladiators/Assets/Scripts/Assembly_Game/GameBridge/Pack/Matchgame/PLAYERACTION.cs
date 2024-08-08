@@ -1,15 +1,15 @@
 namespace Gladiators.Socket.Matchgame {
     public interface IActionContent { }
-    public class PlayerAction : SocketContent {
+    public class PLAYERACTION : SocketContent {
         //class名稱就是封包的CMD名稱
         public string ActionType { get; private set; }
         public IActionContent ActionContent { get; private set; }
-        public PlayerAction(string _actionType, IActionContent _actionContent) {
+        public PLAYERACTION(string _actionType, IActionContent _actionContent) {
             ActionType = _actionType;
             ActionContent = _actionContent;
         }
     }
-    public class PlayerAction_ToClient : SocketContent {
+    public class PLAYERACTION_TOCLIENT : SocketContent {
         //class名稱就是封包的CMD名稱
         public string PlayerDBID { get; private set; }
         public string ActionType { get; private set; }

@@ -31,7 +31,7 @@ namespace Gladiators.Battle {
 
         JsonSkill[] SelectedDivineSkills;
         CancellationTokenSource CandleCountDownCTS; //用來控制中斷蠟燭倒數
-        bool lockSureBtn = false; //鎖定確認按鈕 避免重複發送
+        bool confirmed = false; //鎖定確認按鈕 避免重複發送
 
         enum DivineSkillSelectState : short {
             Choose,//選擇
@@ -103,7 +103,7 @@ namespace Gladiators.Battle {
         void ResetCandles() {
             foreach (var c in Candles)
                 c.gameObject.SetActive(true);
-            lockSureBtn = false;
+            confirmed = false;
         }
 
         //倒數蠟燭熄滅(用PerCandleCountDownTime設定每根蠟燭倒數時間)
@@ -116,9 +116,8 @@ namespace Gladiators.Battle {
                 CandleNum -= 1;
             }
             //時間到直接發送封包 先鎖定按鈕 等待一禎再發送 避免重複發送封包
-            lockSureBtn = true;
+            confirmed = true;
             await UniTask.Yield();
-            SendDivineSkill();
         }
 
         //卡牌選擇判斷
@@ -190,8 +189,8 @@ namespace Gladiators.Battle {
         }
 
         public void ClickSure() {
-            if (lockSureBtn) return;
-            lockSureBtn = true;
+            if (confirmed) return;
+            confirmed = true;
             SendDivineSkill();
         }
 

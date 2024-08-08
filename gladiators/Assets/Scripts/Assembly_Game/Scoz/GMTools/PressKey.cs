@@ -21,8 +21,6 @@ namespace Scoz.Func {
 
             if (Input.GetKeyDown(KeyCode.Q)) {
                 Action connFunc = null;
-                if (SceneManager.GetActiveScene().name != MyScene.BattleScene.ToString())
-                    PopupUI.CallSceneTransition(MyScene.BattleScene);//跳轉到BattleScene
                 PopupUI.ShowLoading(JsonString.GetUIString("Loading"));
                 connFunc = () => GameConnector.Instance.ConnectToMatchgameTestVer(() => {
                     PopupUI.HideLoading();

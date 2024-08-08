@@ -1,5 +1,5 @@
 namespace Gladiators.Socket.Matchgame {
-    public class EndGame_ToClient : SocketContent {
+    public class ENDGAME_TOCLIENT : SocketContent {
         //class名稱就是封包的CMD名稱
         public string Result { get; private set; }
         public PackPlayerResult[] PlayerResults { get; private set; }
