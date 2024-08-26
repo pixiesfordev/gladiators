@@ -90,6 +90,16 @@ namespace Scoz.Func {
             }
             return false;
         }
+        public static bool CheckEnumsExistInList<T>(this List<T> _list, params T[] _check) where T : struct, Enum {
+            HashSet<T> set = new HashSet<T>(_check);
+            foreach (var item in _list) {
+                if (set.Contains(item)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         public static bool CheckEnumExistInDicKeys<T, U>(Dictionary<T, U> _dic, params T[] _check) where T : Enum {
             T[] array = _dic.Keys.ToArray();
             for (int i = 0; i < array.Length; i++) {

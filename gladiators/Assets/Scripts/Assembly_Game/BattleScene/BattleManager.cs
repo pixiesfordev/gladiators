@@ -30,7 +30,9 @@ namespace Gladiators.Battle {
         [SerializeField] int BattleDefaultTime = 60;//設定戰鬥時間
 
         [SerializeField] bool BattleIsEnd = false;//控制戰鬥是否結束 先序列化出來供測試用
-        int BattleLeftTime;
+
+        public float GameTime { get; private set; }//遊戲時間
+        public int LeftGameTime { get { return Mathf.RoundToInt((float)BattleDefaultTime - GameTime); } }//遊戲剩餘時間
 
         JsonSkill SelectedMeleeSkill;
 
@@ -49,6 +51,10 @@ namespace Gladiators.Battle {
                 bResetBattle = false;
                 battleModelController.BattleStart();
             }
+            TimePass();
+        }
+        void TimePass() {
+            GameTime += Time.deltaTime;
         }
 
         public async UniTask Init() {
@@ -56,7 +62,7 @@ namespace Gladiators.Battle {
             SetCam();//設定攝影機模式
             await CheckGameState();
         }
-        async UniTask CheckGameState() {
+        public async UniTask CheckGameState() {
             switch (AllocatedRoom.Instance.CurGameState) {
                 case AllocatedRoom.GameState.GameState_NotInGame:
                     WriteLog.LogError($"錯誤的GameState:{AllocatedRoom.Instance.CurGameState}");
@@ -68,6 +74,7 @@ namespace Gladiators.Battle {
                     WriteLog.LogError($"錯誤的GameState:{AllocatedRoom.Instance.CurGameState}");
                     break;
                 case AllocatedRoom.GameState.GameState_WaitingPlayersReady:
+                    BattleManager.Instance.CreateTerrainAndChar().Forget();
                     AllocatedRoom.Instance.SetReady();
                     break;
             }
@@ -83,7 +90,6 @@ namespace Gladiators.Battle {
                 DivineSelectUI.Instance.SetActive(true);
         }
         public void StartGame() {
-            WriteLog.LogError("開始遊戲");
             //關閉神祇技能選擇介面(做完演出後才去執行後續動作)
             DivineSelectUI.Instance?.CloseUI(() => {
                 ResetBattle();
@@ -106,9 +112,9 @@ namespace Gladiators.Battle {
         }
 
         //場地及人物生成
-        public async UniTask CreateTerrainAndChar(PackPlayer _myPlayer, PackPlayer _opponentPlayer) {
-            battleModelController.CreateTerrain(0);
-            battleModelController.CreateCharacter(_myPlayer, _opponentPlayer);
+        public async UniTask CreateTerrainAndChar() {
+            battleModelController.CreateTerrain();
+            battleModelController.CreateCharacter(AllocatedRoom.Instance.MyPackPlayer, AllocatedRoom.Instance.OpponentPackPlayer);
 
             await battleModelController.WaitCharacterCreate();
             ResetBattle();
@@ -116,21 +122,12 @@ namespace Gladiators.Battle {
 
         //重啟戰鬥
         void ResetBattle() {
+            GameTime = 0;
             //相關參數在此重設 設定完才去更新UI
             BattleIsEnd = false;
-            BattleLeftTime = BattleDefaultTime;
-            ResetBattleSceneUI();
             ResetBattleModelController();
-            //TODO:這裡可能需要加入一個延遲等待開場演出
-            CountDownBattleTime().Forget();
         }
 
-        //重設戰鬥UI
-        void ResetBattleSceneUI() {
-            if (BattleSceneUI.Instance == null)
-                return;
-            BattleSceneUI.Instance.SetTimeText(BattleLeftTime);
-        }
 
         void ResetBattleModelController() {
             if (battleModelController == null) return;
@@ -208,20 +205,33 @@ namespace Gladiators.Battle {
         }
 
         //戰鬥剩餘秒數計算
-        async UniTaskVoid CountDownBattleTime() {
-            ReCount:
-            //Debug.Log("測試倒數秒數.現在秒數: " + BattleLeftTime);
-            await UniTask.Delay(TimeSpan.FromSeconds(1f));
-            //有可能會發生剩下一秒的時候分出勝負 所以一秒數完還是要再次確認是否已經分出勝負 沒有才繼續數秒
-            if (!BattleIsEnd) {
-                BattleLeftTime -= 1;
-                BattleSceneUI.Instance.SetTimeText(BattleLeftTime);
-                if (BattleLeftTime <= 0)
-                    BattleEnd();
-                else
-                    goto ReCount;
-            }
-            //Debug.Log("結束時間倒數計算!");
+        //async UniTaskVoid CountDownBattleTime() {
+        //    ReCount:
+        //    //Debug.Log("測試倒數秒數.現在秒數: " + BattleLeftTime);
+        //    await UniTask.Delay(TimeSpan.FromSeconds(1f));
+        //    //有可能會發生剩下一秒的時候分出勝負 所以一秒數完還是要再次確認是否已經分出勝負 沒有才繼續數秒
+        //    if (!BattleIsEnd) {
+        //        BattleLeftTime -= 1;
+        //        BattleSceneUI.Instance.SetTimeText(BattleLeftTime);
+        //        if (BattleLeftTime <= 0)
+        //            BattleEnd();
+        //        else
+        //            goto ReCount;
+        //    }
+        //    //Debug.Log("結束時間倒數計算!");
+        //}
+
+        public void SetBattleState(BATTLESTATE_TOCLIENT _state) {
+            GameTime = (float)_state.GameTime;
+            BattleSceneUI.Instance.SetTimeText(LeftGameTime);
+            battleModelController.Movement(_state.MyPlayerState, _state.OpponentPlayerState);
+        }
+
+        public void Melee(MELEE_TOCLIENT _melee) {
+            //var timeSpan = GameTime - (float)_melee.GameTime;
+            GameTime = (float)_melee.GameTime;
+            BattleSceneUI.Instance.SetTimeText(LeftGameTime);
+            battleModelController.Melee(_melee.MyPlayerState, _melee.OpponentPlayerState, _melee.MyAttack, _melee.OpponentAttack);
         }
 
         //戰鬥結束
@@ -232,89 +242,5 @@ namespace Gladiators.Battle {
             battleModelController.BattleEnd();
             Debug.Log("戰鬥結束");
         }
-
-        bool isfirstTime = false;
-        public void StartBattleTimer() {
-            if (!isfirstTime) {
-                isfirstTime = true;
-                battleRunStates = new List<BattleRunState>();
-
-                ServerBattleTimer().Forget();
-            }
-        }
-
-        float BattleTimer = 0.00f;
-        async UniTaskVoid ServerBattleTimer() {
-            BattleTimer = 0.00f;
-
-            BattleTimber:
-            var tempTest = battleRunStates.FirstOrDefault();
-            var tempAction = battleActionStates.FirstOrDefault();
-            if (tempTest != null && BattleTimer >= tempTest.GameTime && tempTest.Start) {
-                tempTest.End = true;
-                battleRunStates.Remove(tempTest);
-                tempTest = battleRunStates.FirstOrDefault();
-            }
-            if (tempTest != null && !tempTest.Start) {
-                tempTest.Start = true;
-                doBattleState(tempTest.PlayerStates, tempTest.GameTime, tempTest.BattleStateType);
-            }
-            if (tempAction != null && !tempAction.Start) {
-                tempAction.Start = true;
-                doBattleState(tempAction.PlayerStates, tempAction.GameTime, tempAction.BattleStateType);
-            }
-            await UniTask.Delay(TimeSpan.FromMilliseconds(10));
-            BattleTimer += 0.01f;
-            goto BattleTimber;
-        }
-        public enum BattleStateType : byte {
-            Default = 0,
-            Move = 1,
-            MoveAttack = 2,
-            Knockback = 3,
-            SkillAttack = 4,
-        }
-        List<BattleRunState> battleRunStates = new List<BattleRunState>();
-        List<BattleRunState> battleActionStates = new List<BattleRunState>();
-        public void setBattleState(PackPlayerState[] _playerStates, double gameTime, BattleStateType battleStateType) {
-            battleRunStates.Add(new BattleRunState(gameTime, _playerStates, battleStateType));
-        }
-        public void setBattleState_byAction(PackPlayerState[] _playerStates, double gameTime, BattleStateType battleStateType) {
-            battleActionStates.Add(new BattleRunState(gameTime, _playerStates, battleStateType));
-        }
-        public void doBattleState(PackPlayerState[] _playerStates, double gameTime, BattleStateType battleStateType) {
-            switch (battleStateType) {
-                case BattleStateType.Move:  //玩家移動
-                    battleModelController.Movement(_playerStates[0], _playerStates[1]);
-                    break;
-                case BattleStateType.MoveAttack:    //玩家移動並近身攻擊
-                    battleModelController.Movement(_playerStates[0], _playerStates[1]);
-                    break;
-                case BattleStateType.Knockback:
-                    battleModelController.GetAttack(_playerStates[0], _playerStates[1]);
-                    break;
-
-                case BattleStateType.Default:
-                default:
-                    break;
-            }
-        }
-    }
-}
-
-public class BattleRunState {
-    //class名稱就是封包的CMD名稱
-    public double GameTime { get; private set; }
-    public PackPlayerState[] PlayerStates { get; private set; }
-    public bool Start { get; set; } = false;
-    public bool End { get; set; } = false;
-    public Gladiators.Battle.BattleManager.BattleStateType BattleStateType { get; private set; }
-
-    public BattleRunState(double gameTime, PackPlayerState[] _playerStates, Gladiators.Battle.BattleManager.BattleStateType battleStateType) {
-        GameTime = gameTime;
-        PlayerStates = _playerStates;
-        Start = false;
-        End = false;
-        BattleStateType = battleStateType;
     }
 }

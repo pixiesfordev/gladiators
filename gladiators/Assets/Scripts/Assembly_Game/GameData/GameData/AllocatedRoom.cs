@@ -53,8 +53,8 @@ namespace Gladiators.Main {
         /// </summary>
         public string PodName { get; private set; }
 
-        public DBPlayer EnemyPlayer { get; private set; }
-        public DBGladiator EnemyGladiator { get; private set; }
+        public PackPlayer MyPackPlayer { get; private set; }
+        public PackPlayer OpponentPackPlayer { get; private set; }
 
         public enum GameState {
             GameState_NotInGame,// 不在遊戲中
@@ -175,14 +175,13 @@ namespace Gladiators.Main {
         /// 收到雙方玩家資料後, 將目前狀態設定為GotEnemy並通知BattleScene送Ready
         /// </summary>
         public void ReceiveSetPlayer(PackPlayer _myPlayer, PackPlayer _opponentPlayer) {
+            MyPackPlayer = _myPlayer;
+            OpponentPackPlayer = _opponentPlayer;
             //收到雙方玩家資料
-            if (_myPlayer != null && _opponentPlayer != null && !string.IsNullOrEmpty(_myPlayer.DBID) && !string.IsNullOrEmpty(_opponentPlayer.DBID)) {
+            if (MyPackPlayer != null && OpponentPackPlayer != null && !string.IsNullOrEmpty(MyPackPlayer.DBID) && !string.IsNullOrEmpty(OpponentPackPlayer.DBID)) {
                 SetGameState(GameState.GameState_WaitingPlayersReady);
                 if (SceneManager.GetActiveScene().name != MyScene.BattleScene.ToString())//跳轉到BattleScene
                     PopupUI.CallSceneTransition(MyScene.BattleScene);
-                else {
-                    BattleManager.Instance.CreateTerrainAndChar(_myPlayer, _opponentPlayer).Forget();
-                }
             }
         }
         /// <summary>
@@ -214,17 +213,16 @@ namespace Gladiators.Main {
         /// <summary>
         /// 收到戰鬥資訊封包, 存儲封包資料
         /// </summary>
-        public void ReceiveBattleState(PackPlayerState[][] _playerStates, double[] GameTime) { //行為處理
-            if (_playerStates == null) return;
-
-            BattleManager.Instance.StartBattleTimer();
-            if (_playerStates.Length == 1) {
-                BattleManager.Instance.setBattleState(_playerStates[0], GameTime[0], BattleManager.BattleStateType.Move);
-            } else {
-                BattleManager.Instance.setBattleState(_playerStates[0], GameTime[0], BattleManager.BattleStateType.MoveAttack);
-                BattleManager.Instance.setBattleState(_playerStates[1], GameTime[1], BattleManager.BattleStateType.Knockback);
-            }
+        public void ReceiveBattleState(BATTLESTATE_TOCLIENT _battleState) {
+            if (BattleManager.Instance != null) BattleManager.Instance.SetBattleState(_battleState);
         }
+        /// <summary>
+        /// 收到肉搏封包, 存儲封包資料
+        /// </summary>
+        public void ReceiveMelee(MELEE_TOCLIENT _melee) {
+            if (BattleManager.Instance != null) BattleManager.Instance.Melee(_melee);
+        }
+
         public void ReceivePing() { //行為處理
 
         }
@@ -236,12 +234,6 @@ namespace Gladiators.Main {
             Debug.Log($"ActionType : {_actionType}");
             switch (_actionType) {
                 case "PLAYERACTION_RUSH":
-                    if (_playerStates.Length == 1) {
-                        BattleManager.Instance.setBattleState_byAction(_playerStates[0], GameTime[0], BattleManager.BattleStateType.Move);
-                    } else {
-                        BattleManager.Instance.setBattleState_byAction(_playerStates[0], GameTime[0], BattleManager.BattleStateType.MoveAttack);
-                        BattleManager.Instance.setBattleState(_playerStates[1], GameTime[1], BattleManager.BattleStateType.Knockback);
-                    }
                     break;
                 default:
                     break;

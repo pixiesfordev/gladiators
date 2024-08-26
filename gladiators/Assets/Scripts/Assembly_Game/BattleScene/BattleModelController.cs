@@ -20,46 +20,24 @@ public class BattleModelController : MonoBehaviour {
 
     [SerializeField] bool BattleIsEnd = false;
 
-    void Start() {
-        //Init();
-    }
-
-    public void Init() {
-        //test create
-        //CreateTerrain(0);
-        //CreateCharacter(0, 0);
-    }
-
-    public float minDistance = 5f; // 郔苤擒褩
-    public float maxDistance = 20f; // 郔湮擒褩
-    public float minFOV = 30f; // 郔苤?珧
-    public float maxFOV = 60f; // 郔湮?珧
-    public float distanceOffset = 2f; // 擒褩痄講ㄛ蚚黺捼淕cam腔擒褩
-
-    void Update() {
-        //Attack();
-    }
-
-    public void CreateTerrain(int terrainID) {
-        //GameObject prefab = Resources.Load<GameObject>("Prefabs/Battle/test/terrain" + terrainID);
-        var terrain = Instantiate(terrainPrefab, terrainArea.transform);
+    public void CreateTerrain() {
+        Instantiate(terrainPrefab, terrainArea.transform);
     }
 
     public void CreateCharacter(PackPlayer _myPlayerPack, PackPlayer _opponentPack) {
-        //Character leftPrefab = Resources.Load<Character>("Prefabs/Battle/test/Character" + leftCharID);
         leftChar = Instantiate(characterPrefab, charactersArea.transform);
+        rightChar = Instantiate(characterPrefab, charactersArea.transform);
+
         leftChar.name = _myPlayerPack.DBID;
         leftChar.tag = "leftobj";
-        leftChar.isRightPlayer = false;
+        leftChar.Init((float)_myPlayerPack.MyPackGladiator.CurPos, rightChar, RightLeft.Right);
 
-        //Character rightPrefab = Resources.Load<Character>("Prefabs/Battle/test/Character" + rightCharID);
-        rightChar = Instantiate(characterPrefab, charactersArea.transform);
         rightChar.name = _opponentPack.DBID;
         rightChar.tag = "rightobj";
-        rightChar.isRightPlayer = true;
+        rightChar.Init((float)_opponentPack.MyPackGladiator.CurPos, leftChar, RightLeft.Left);
 
-        leftChar.setCharacter(_myPlayerPack.MyPackGladiator, leftChar);
-        rightChar.setCharacter(_opponentPack.MyPackGladiator, rightChar);
+        leftChar.SetFaceToTarget();
+        rightChar.SetFaceToTarget();
     }
 
     public IEnumerator WaitCharacterCreate() {
@@ -67,7 +45,7 @@ public class BattleModelController : MonoBehaviour {
             yield return new WaitForEndOfFrame();
         }
     }
-    public void BattleReset(float leftPos, float rightPos) {
+    void BattleReset(float leftPos, float rightPos) {
         leftChar.transform.position = new Vector3(leftPos, 0, 0);
         leftChar.transform.rotation = Quaternion.Euler(0, 0, 0);
         rightChar.transform.position = new Vector3(rightPos, 0, 0);
@@ -75,38 +53,36 @@ public class BattleModelController : MonoBehaviour {
     }
 
     public void BattleStart() {
+        BattleReset(-16, 16);
         BattleIsEnd = false;
-        leftChar.BattleStart();
-        rightChar.BattleStart();
     }
 
     public void BattleEnd() {
         if (BattleIsEnd) return;
 
         BattleIsEnd = true;
-        leftChar.BattleEnd();
-        rightChar.BattleEnd();
     }
 
     public void Movement(PackPlayerState leftPlayer, PackPlayerState rightPlayer) {
         if (leftPlayer != null) {
-            leftChar.Movement(leftPlayer.GladiatorState);
+            leftChar.SetState(leftPlayer.GladiatorState);
         }
 
         if (rightPlayer != null) {
-            rightChar.Movement(rightPlayer.GladiatorState);
+            rightChar.SetState(rightPlayer.GladiatorState);
         }
     }
 
-    [SerializeField] public float distanceValue = 2.0f;
-    [SerializeField] public float PlayerDistance = 0.0f;
-    public void GetAttack(PackPlayerState leftPlayer, PackPlayerState rightPlayer) {
+    public void Melee(PackPlayerState leftPlayer, PackPlayerState rightPlayer, PackAttack _leftAttack, PackAttack _rightAttack) {
         if (leftPlayer != null) {
-            leftChar.isGetAttack(leftPlayer.GladiatorState);
+            leftChar.HandleMelee(_leftAttack.SkillID, (float)_rightAttack.Knockback);
+            leftChar.SetState(leftPlayer.GladiatorState);
         }
 
         if (rightPlayer != null) {
-            rightChar.isGetAttack(rightPlayer.GladiatorState);
+            rightChar.HandleMelee(_rightAttack.SkillID, (float)_leftAttack.Knockback);
+            rightChar.SetState(rightPlayer.GladiatorState);
         }
     }
+
 }

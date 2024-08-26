@@ -20,9 +20,9 @@ namespace Gladiators.Socket.Matchgame {
         public int[] SkillIDs { get; private set; }    // (玩家自己才會收到)
         public int[] HandSkillIDs { get; private set; }    // (玩家自己才會收到)
         public int CurHp { get; private set; }      // 目前生命
-        public float CurVigor { get; private set; }  // 目前體力
-        public float CurSpd { get; private set; }// 目前速度
-        public float CurPos { get; private set; }// 目前位置
+        public double CurVigor { get; private set; }  // 目前體力
+        public double CurSpd { get; private set; }// 目前速度
+        public double CurPos { get; private set; }// 目前位置
         public string[] EffectTypes { get; private set; }  // 狀態清單
     }
 }

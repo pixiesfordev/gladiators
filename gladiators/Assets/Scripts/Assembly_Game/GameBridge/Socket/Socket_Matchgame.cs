@@ -191,8 +191,11 @@ namespace Gladiators.Socket {
                     WriteLog.LogErrorFormat("收到錯誤的命令類型: {0}", cmdType);
                     return;
                 } else {
-                    // 避免輸出輸出Ping(Ping太洗頻了)
-                    if (data.CMD != MatchgameCMD_TCP.PING_TOCLIENT.ToString()) WriteLog.LogColorFormat("(TCP)接收: {0}", WriteLog.LogType.Connection, _msg);
+                    // 不輸出的Conn Log加到清單中
+                    List<string> dontShowLogCMDs = new List<string>();
+                    dontShowLogCMDs.Add(MatchgameCMD_TCP.PING_TOCLIENT.ToString());
+                    dontShowLogCMDs.Add(MatchgameCMD_TCP.BATTLESTATE_TOCLIENT.ToString());
+                    if (!dontShowLogCMDs.Contains(data.CMD)) WriteLog.LogColorFormat("(TCP)接收: {0}", WriteLog.LogType.Connection, _msg);
                 }
                 if (CMDCallback.TryGetValue(cmdID, out Action<string> _cb)) {
                     CMDCallback.Remove(cmdID);
@@ -231,6 +234,10 @@ namespace Gladiators.Socket {
                         var pingPacket = LitJson.JsonMapper.ToObject<SocketCMD<PING_TOCLIENT>>(_msg);
                         HandlerPing(pingPacket);
                         break;
+                    case SocketContent.MatchgameCMD_TCP.MELEE_TOCLIENT:
+                        var meleePacket = LitJson.JsonMapper.ToObject<SocketCMD<MELEE_TOCLIENT>>(_msg);
+                        HandlerMelee(meleePacket);
+                        break;
                     default:
                         WriteLog.LogErrorFormat("收到尚未定義的命令類型: {0}", cmdType);
                         break;
@@ -268,7 +275,7 @@ namespace Gladiators.Socket {
         }
         void HandlerBattleState(SocketCMD<BATTLESTATE_TOCLIENT> _packet) {
             if (SceneManager.GetActiveScene().name != MyScene.BattleScene.ToString()) return;
-            //AllocatedRoom.Instance.ReceiveBattleState(_packet.Content.PlayerStates, _packet.Content.GameTime);
+            AllocatedRoom.Instance.ReceiveBattleState(_packet.Content);
         }
         void HandlerPlayerAction(SocketCMD<PLAYERACTION_TOCLIENT> _packet) {
             if (SceneManager.GetActiveScene().name != MyScene.BattleScene.ToString()) return;
@@ -277,6 +284,10 @@ namespace Gladiators.Socket {
         void HandlerPing(SocketCMD<PING_TOCLIENT> _packet) {
             if (SceneManager.GetActiveScene().name != MyScene.BattleScene.ToString()) return;
             AllocatedRoom.Instance.ReceivePing();
+        }
+        void HandlerMelee(SocketCMD<MELEE_TOCLIENT> _packet) {
+            if (SceneManager.GetActiveScene().name != MyScene.BattleScene.ToString()) return;
+            AllocatedRoom.Instance.ReceiveMelee(_packet.Content);
         }
     }
 }

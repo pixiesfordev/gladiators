@@ -6,8 +6,7 @@ using Gladiators.Socket.Matchgame;
 using Scoz.Func;
 using Gladiators.Main;
 
-public class BattleDivineSkill : MonoBehaviour
-{
+public class BattleDivineSkill : MonoBehaviour {
     //TODO:這裡介面尚未確定要怎麼排 先暫時用選擇時一樣的白版介面拚上去
     [SerializeField] Image SkillIcon;
     [SerializeField] Text Cost;
@@ -19,17 +18,17 @@ public class BattleDivineSkill : MonoBehaviour
 
     void Start() { }
 
-    public void SetData(PackDivineSkill _skill)
-    {
-        if (_skill == null)
-        {
+    public void SetData(PackDivineSkill _skill) {
+        if (_skill == null) {
             gameObject.SetActive(false);
             WriteLog.LogErrorFormat("空的神祉技能");
-        }
-        else
-        {
+        } else {
             PackData = _skill;
             WriteLog.LogFormat("神祉技能設定. ID:{0} ", PackData.JsonID);
+
+            if (PackData.JsonID == 0) {
+                return;
+            }
 
             JsonSkill SkillData = GameDictionary.GetJsonData<JsonSkill>(PackData.JsonID);
             if (SkillData != null && SkillData.MySkillType == SkillType.Divine) {
@@ -52,9 +51,8 @@ public class BattleDivineSkill : MonoBehaviour
         }
     }
 
-    public void ClickBtn()
-    {
+    public void ClickBtn() {
         //TODO:使用神祇技能
         WriteLog.LogFormat("使用神祇技能. ID:{0}", PackData.JsonID);
-    } 
+    }
 }

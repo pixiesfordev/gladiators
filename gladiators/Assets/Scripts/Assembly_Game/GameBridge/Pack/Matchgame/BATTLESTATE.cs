@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Numerics;
 
 namespace Gladiators.Socket.Matchgame {
@@ -23,11 +24,11 @@ namespace Gladiators.Socket.Matchgame {
     public class PackGladiatorState {
         public int[] HandSkillIDs { get; private set; }    // (玩家自己才會收到)
         public int CurHp { get; private set; }      // 目前生命
-        public float CurVigor { get; private set; }  // 目前體力
-        public float CurSpd { get; private set; }// 目前速度
-        public float CurPos { get; private set; }// 目前位置
+        public double CurVigor { get; private set; }  // 目前體力
+        public double CurSpd { get; private set; }// 目前速度
+        public double CurPos { get; private set; }// 目前位置
         public bool IsRush { get; private set; }// 是否正在衝刺中
-        public string[] EffectTypes { get; private set; }  // 狀態清單
+        public List<string> EffectTypes { get; private set; }  // 狀態清單
         public int ActivedMeleeJsonSkillID { get; private set; }// (玩家自己才會收到)啟用中的肉搏技能ID, 玩家啟用中的肉搏技能, 如果是0代表沒有啟用中的肉搏技能
     }
 }
