@@ -87,13 +87,6 @@ MonoBehaviour:
   leftChar: {fileID: 0}
   rightChar: {fileID: 0}
   BattleIsEnd: 0
-  minDistance: 5
-  maxDistance: 20
-  minFOV: 30
-  maxFOV: 60
-  distanceOffset: 2
-  distanceValue: 2
-  PlayerDistance: 0
 --- !u!1 &586927303856555587
 GameObject:
   m_ObjectHideFlags: 0

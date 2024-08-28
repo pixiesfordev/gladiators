@@ -87,6 +87,7 @@ public class Character : MonoBehaviour {
             return knockDist > dist;
         }
     }
+    public float CurServerPos { get; private set; }//真實位置是在一維的座標系上，也就是Server位置
 
     const float KNOCKUP_TIME = 0.5f;//擊飛時間
     float knockDist = 4;
@@ -110,7 +111,8 @@ public class Character : MonoBehaviour {
         enemy = _opponent;
         mainCamera = BattleManager.Instance.BattleCam;
         FaceDir = _faceDir;
-        setPos(_pos);
+        setClientPos(new Vector3(_pos, 0, 0));
+        setServerPos(_pos);
         BattleManager.Instance.vTargetGroup.AddMember(transform, 1, 8);
     }
     public void SetFaceToTarget() {
@@ -144,52 +146,88 @@ public class Character : MonoBehaviour {
         }
     }
 
-    void setPos(float _pos) {
-        transform.localPosition = new Vector3((float)_pos, transform.localPosition.y, transform.localPosition.z);
+    void setClientPos(Vector3 _pos) {
+        transform.localPosition = _pos;
     }
 
+    void setServerPos(float _pos) {
+        CurServerPos = _pos;
+    }
+
+
     public void SetState(PackGladiatorState _state) {
-        if (CanMove) setPos((float)_state.CurPos);
+        if (CanMove) setClientPos(new Vector3((float)_state.CurPos, transform.localPosition.y, transform.localPosition.z));
+        setServerPos((float)_state.CurPos);
         curSpd = (float)_state.CurSpd;
         EffectTypes = Skill.ConvertStrListToEffectTypes(_state.EffectTypes);
     }
     public int SkillID { get; private set; }
-    public void HandleMelee(int _skilID, float _knockback) {
+    public void HandleMelee(int _skilID, float _knockback, float _attackPos, float _resultPos) {
         SkillID = _skilID;
-        Knockback(_knockback);
+        Knockback(_knockback, _attackPos, _resultPos);
     }
 
-    void Knockback(float _knockback) {
+    void Knockback(float _knockback, float _attackPos, float _resultPos) {
         IsKnockback = true;
-        var originalPos = transform.localPosition;
+        float serverPosDisplacement = -(float)FaceDir * _knockback;// Server座標擊退後總位移
+
+        var originalPos = new Vector3(_attackPos, 0, 0);
         Vector3 knockbackDir = new Vector3(-(float)FaceDir, 0, 0);
-        Vector3 targetPos = originalPos + knockbackDir * _knockback;
+        Vector3 resultPos = originalPos + knockbackDir * _knockback;
         float passTime = 0f;
 
-        float knockupHeight = _knockback / 5; // 擊飛高度可以隨意設定, 目前設定演出是與擊退距離成正比
+        float knockupHeight = _knockback / 6; // 擊飛高度可以隨意設定, 目前設定演出是與擊退距離成正比
 
         // 根據擊飛高度計算重力與Y軸初速
         float gravity = 2 * knockupHeight / Mathf.Pow(KNOCKUP_TIME / 2, 2); //S=1/2*a*t平方 a=2*S/t平方
         float velocityY = gravity * (KNOCKUP_TIME / 2); // v=a*t
         Vector3 velocity = new Vector3(knockbackDir.x * (_knockback / KNOCKUP_TIME), velocityY, 0);
-
+        PlayAni("knockback");
         UniTask.Void(async () => {
-            PlayAni("knockback");
-
+            bool knockWall = false;
+            float knockWallTime = 0;
             while (passTime < KNOCKUP_TIME) {
                 passTime += Time.deltaTime;
-                // 更新水平方向位置
-                float horizontalPositionX = originalPos.x + velocity.x * passTime;
-                // 更新垂直方向位置
+
+                // Server位置計算
+                var serverPosMove = serverPosDisplacement * (passTime / KNOCKUP_TIME);
+                var tmpServerPos = _attackPos + serverPosMove;
+                // 撞牆檢查
+                if (knockWall == false) {
+                    knockWall = knockWallCheck(ref tmpServerPos);
+                    if (knockWall) knockWallTime = passTime;
+                }
+
+
+
+                // 表演用位置計算
+                float horizontalPositionX = originalPos.x;
+                if (!knockWall) horizontalPositionX += velocity.x * passTime;
+                else horizontalPositionX += velocity.x * knockWallTime;
                 float verticalPositionY = originalPos.y + velocity.y * passTime - 0.5f * gravity * passTime * passTime;
                 // 更新位置
-                transform.localPosition = new Vector3(horizontalPositionX, verticalPositionY, originalPos.z);
+                var newPos = new Vector3(horizontalPositionX, verticalPositionY, originalPos.z);
+                transform.localPosition = newPos;
+
+
                 await UniTask.Yield();
             }
-            transform.localPosition = new Vector3(targetPos.x, originalPos.y, originalPos.z);
             IsKnockback = false;
+            setServerPos(_resultPos);
+            setClientPos(new Vector3(resultPos.x, originalPos.y, originalPos.z));
             PlayAni("stun");
         });
+    }
+
+    bool knockWallCheck(ref float _pos) {
+        if (FaceDir == RightLeft.Right && _pos <= -BattleModelController.WALLPOS) {
+            _pos = -BattleModelController.WALLPOS;
+            return true;
+        } else if (FaceDir == RightLeft.Left && _pos >= BattleModelController.WALLPOS) {
+            _pos = BattleModelController.WALLPOS;
+            return true;
+        }
+        return false;
     }
 
 

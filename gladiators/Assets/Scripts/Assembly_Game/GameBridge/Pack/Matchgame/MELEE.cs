@@ -11,6 +11,7 @@ namespace Gladiators.Socket.Matchgame {
     }
 
     public class PackAttack {
+        public double AttackPos { get; private set; }
         public double Knockback { get; private set; }
         public int SkillID { get; private set; }
     }

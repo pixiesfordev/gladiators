@@ -20,6 +20,8 @@ public class BattleModelController : MonoBehaviour {
 
     [SerializeField] bool BattleIsEnd = false;
 
+    public const float WALLPOS = 20f;
+
     public void CreateTerrain() {
         Instantiate(terrainPrefab, terrainArea.transform);
     }
@@ -75,13 +77,18 @@ public class BattleModelController : MonoBehaviour {
 
     public void Melee(PackPlayerState leftPlayer, PackPlayerState rightPlayer, PackAttack _leftAttack, PackAttack _rightAttack) {
         if (leftPlayer != null) {
-            leftChar.HandleMelee(_leftAttack.SkillID, (float)_rightAttack.Knockback);
-            leftChar.SetState(leftPlayer.GladiatorState);
+            var state = leftPlayer.GladiatorState;
+            leftChar.SetState(state);
+            WriteLog.LogError("AttackPos=" + _leftAttack.AttackPos + "  CurPos=" + state.CurPos);
+            leftChar.HandleMelee(_leftAttack.SkillID, (float)_rightAttack.Knockback, (float)_leftAttack.AttackPos, (float)state.CurPos);
+
         }
 
         if (rightPlayer != null) {
-            rightChar.HandleMelee(_rightAttack.SkillID, (float)_leftAttack.Knockback);
-            rightChar.SetState(rightPlayer.GladiatorState);
+            var state = rightPlayer.GladiatorState;
+            rightChar.SetState(state);
+            WriteLog.LogError("AttackPos=" + _rightAttack.AttackPos + "  CurPos=" + state.CurPos);
+            rightChar.HandleMelee(_rightAttack.SkillID, (float)_leftAttack.Knockback, (float)_rightAttack.AttackPos, (float)state.CurPos);
         }
     }
 
