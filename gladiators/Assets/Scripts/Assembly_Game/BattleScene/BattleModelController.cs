@@ -79,7 +79,7 @@ public class BattleModelController : MonoBehaviour {
         if (leftPlayer != null) {
             var state = leftPlayer.GladiatorState;
             leftChar.SetState(state);
-            WriteLog.LogError("AttackPos=" + _leftAttack.AttackPos + "  CurPos=" + state.CurPos);
+            //WriteLog.LogError("AttackPos=" + _leftAttack.AttackPos + "  CurPos=" + state.CurPos);
             leftChar.HandleMelee(_leftAttack.SkillID, (float)_rightAttack.Knockback, (float)_leftAttack.AttackPos, (float)state.CurPos);
 
         }
@@ -87,7 +87,7 @@ public class BattleModelController : MonoBehaviour {
         if (rightPlayer != null) {
             var state = rightPlayer.GladiatorState;
             rightChar.SetState(state);
-            WriteLog.LogError("AttackPos=" + _rightAttack.AttackPos + "  CurPos=" + state.CurPos);
+            //WriteLog.LogError("AttackPos=" + _rightAttack.AttackPos + "  CurPos=" + state.CurPos);
             rightChar.HandleMelee(_rightAttack.SkillID, (float)_leftAttack.Knockback, (float)_rightAttack.AttackPos, (float)state.CurPos);
         }
     }

@@ -1,12 +1,7 @@
 using UnityEngine;
-using Service.Realms;
-using System.Linq;
 using Gladiators.Socket;
 using Gladiators.Main;
-using UnityEngine.SceneManagement;
 using System;
-using Cysharp.Threading.Tasks;
-using LitJson;
 
 namespace Scoz.Func {
     public partial class TestTool : MonoBehaviour {
@@ -46,12 +41,12 @@ namespace Scoz.Func {
             } else if (Input.GetKeyDown(KeyCode.I)) {
 
             } else if (Input.GetKeyDown(KeyCode.L)) {
-                var data = GameDictionary.GetJsonData<JsonGladiator>(1);
-                WriteLog.WriteObj(data);
-                var data2 = GameDictionary.GetJsonData<JsonSkill>(1);
-                WriteLog.WriteObj(data2);
-                var data3 = GameDictionary.GetJsonData<JsonSkillEffect>("1");
-                WriteLog.WriteObj(data3);
+                //var data = GameDictionary.GetJsonData<JsonGladiator>(1);
+                //WriteLog.WriteObj(data);
+                //var data2 = GameDictionary.GetJsonData<JsonSkill>(1);
+                //WriteLog.WriteObj(data2);
+                //var data3 = GameDictionary.GetJsonData<JsonSkillEffect>("1");
+                //WriteLog.WriteObj(data3);
             }
         }
 

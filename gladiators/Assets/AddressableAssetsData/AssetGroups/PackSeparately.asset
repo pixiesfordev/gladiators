@@ -39,7 +39,7 @@ MonoBehaviour:
     m_Address: Assets/AddressableAssets/Dlls
     m_ReadOnly: 0
     m_SerializedLabels:
-    - Prefab
+    - Dlls
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b83bde0a1d1b28f43ad46c0d37b682a8
     m_Address: Assets/CartoonGrass/Materials/CartoonGrass_Grass_02_LOD2.mat
@@ -213,6 +213,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5cb92566fbe9bf240b9168e0cdaea615
     m_Address: Assets/AddressableAssets/Atlas
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6b13f39291e0f544c805aa0cb1f000aa
+    m_Address: Assets/AddressableAssets/Particles
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Service.Realms;
+using Gladiators.Socket;
 
 namespace Gladiators.Main {
 
@@ -94,6 +95,22 @@ namespace Gladiators.Main {
         }
 
         public override void RefreshText() {
+        }
+
+        public void OnPlayClick() {
+            Action connFunc = null;
+            PopupUI.ShowLoading(JsonString.GetUIString("Loading"));
+            connFunc = () => GameConnector.Instance.ConnectToMatchgameTestVer(() => {
+                PopupUI.HideLoading();
+            }, () => {
+                WriteLog.LogError("連線遊戲房失敗");
+            }, () => {
+                if (AllocatedRoom.Instance.CurGameState == AllocatedRoom.GameState.GameState_Fighting) {
+                    WriteLog.LogError("需要斷線重連");
+                    connFunc();
+                }
+            });
+            connFunc();
         }
 
         //void LoadAssets(AdventureUIs _ui, Action _cb) {

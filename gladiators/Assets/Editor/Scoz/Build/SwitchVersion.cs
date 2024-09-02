@@ -45,15 +45,15 @@ namespace Scoz.Editor {
         //};
 
         static Dictionary<EnvVersion, string> KEYSTORE_ALIAS_DIC = new Dictionary<EnvVersion, string>() {
-            { EnvVersion.Dev, "gladiators"},
-            { EnvVersion.Test, "gladiators"},
-            { EnvVersion.Release, "gladiators"},
+            { EnvVersion.Dev, "mygladiators"},
+            { EnvVersion.Test, "mygladiators"},
+            { EnvVersion.Release, "mygladiators"},
         };
 
         static Dictionary<EnvVersion, string> PACKAGE_NAME_DIC = new Dictionary<EnvVersion, string>() {
-            { EnvVersion.Dev, "com.pixies.gladiators"},
-            { EnvVersion.Test, "com.pixies.gladiators"},
-            { EnvVersion.Release, "com.pixies.gladiators"},
+            { EnvVersion.Dev, "com.pixies.mygladiators"},
+            { EnvVersion.Test, "com.pixies.mygladiators"},
+            { EnvVersion.Release, "com.pixies.mygladiators"},
         };
 
 

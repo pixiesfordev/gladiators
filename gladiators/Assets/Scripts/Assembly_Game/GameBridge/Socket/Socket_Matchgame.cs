@@ -3,6 +3,7 @@ using Gladiators.Battle;
 using Gladiators.Main;
 using Gladiators.Socket.Matchgame;
 using LitJson;
+using Newtonsoft.Json;
 using Scoz.Func;
 using System;
 using System.Collections.Generic;
@@ -227,7 +228,10 @@ namespace Gladiators.Socket {
                         HandlerBattleState(battlePacket);
                         break;
                     case SocketContent.MatchgameCMD_TCP.PLAYERACTION_TOCLIENT:
-                        var playerActionPacket = LitJson.JsonMapper.ToObject<SocketCMD<PLAYERACTION_TOCLIENT>>(_msg);
+                        var playerActionPacket = JsonConvert.DeserializeObject<SocketCMD<PLAYERACTION_TOCLIENT>>(_msg);
+                        WriteLog.LogError("playerActionPacket=" + playerActionPacket);
+                        WriteLog.LogError("Content=" + playerActionPacket.Content);
+                        WriteLog.LogError("ActionType=" + playerActionPacket.Content.ActionType);
                         HandlerPlayerAction(playerActionPacket);
                         break;
                     case SocketContent.MatchgameCMD_TCP.PING_TOCLIENT:
@@ -279,7 +283,7 @@ namespace Gladiators.Socket {
         }
         void HandlerPlayerAction(SocketCMD<PLAYERACTION_TOCLIENT> _packet) {
             if (SceneManager.GetActiveScene().name != MyScene.BattleScene.ToString()) return;
-            //AllocatedRoom.Instance.ReceivePlayerAction(_packet.Content.ActionType, _packet.Content.ActionContent, _packet.Content.PlayerStates, _packet.Content.GameTime);
+            AllocatedRoom.Instance.ReceivePlayerAction(_packet.Content.PlayerDBID, _packet.Content.ActionType, _packet.Content.ActionContent);
         }
         void HandlerPing(SocketCMD<PING_TOCLIENT> _packet) {
             if (SceneManager.GetActiveScene().name != MyScene.BattleScene.ToString()) return;

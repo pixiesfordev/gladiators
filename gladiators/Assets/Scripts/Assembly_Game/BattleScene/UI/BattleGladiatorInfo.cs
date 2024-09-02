@@ -1,14 +1,9 @@
 using UnityEngine;
 using UnityEngine.UI;
 using Scoz.Func;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using Cysharp.Threading.Tasks;
-using Codice.Utils;
 using System.Threading;
 using Unity.Mathematics;
-using Unity.Entities.UniversalDelegates;
 using DG.Tweening;
 using System;
 
@@ -16,7 +11,7 @@ using System;
 /// 上方角鬥士資訊
 /// </summary>
 public class BattleGladiatorInfo : MonoBehaviour {
-    
+
     [HeaderAttribute("==============UI==============")]
     [SerializeField] MyText HeroName;
     [SerializeField] Image HeroIcon;
@@ -65,9 +60,9 @@ public class BattleGladiatorInfo : MonoBehaviour {
 
     //TODO:
     //1.扣血/回血 血條(Bar)演出 血條總長度396 Right值越大長度越短 396就等於0%
-      //1.心臟跳動效果(公式:100~1 >> Min~Max) >> 已完成(4/9)
-      //2.受擊 >> 心跳變黑白 往左搖晃一下 之後變回原本顏色 血條瞬間全白後開始扣減 >> 已完成(4/11)
-      //3.原本血條也要變黑白跟著縮減 縮減後變化血條不用隱藏 而是保留最後一小段 >> 已完成(4/11)
+    //1.心臟跳動效果(公式:100~1 >> Min~Max) >> 已完成(4/9)
+    //2.受擊 >> 心跳變黑白 往左搖晃一下 之後變回原本顏色 血條瞬間全白後開始扣減 >> 已完成(4/11)
+    //3.原本血條也要變黑白跟著縮減 縮減後變化血條不用隱藏 而是保留最後一小段 >> 已完成(4/11)
     //2.buff圖案
 
     CancellationTokenSource CurrentCTS; //用來中斷目前的血條演出
@@ -86,8 +81,7 @@ public class BattleGladiatorInfo : MonoBehaviour {
     Tweener HeartBeatGrayScaleTween1;
     Tweener HeartBeatGrayScaleTween2;
 
-    private void Start()
-    {
+    private void Start() {
         ChangeBarRect = HPChangeBar.GetComponent<RectTransform>();
         HPChangeBarWidth = ChangeBarRect.rect.width;
         HPChangeBarOffsetY = ChangeBarRect.offsetMax.y;
@@ -95,35 +89,30 @@ public class BattleGladiatorInfo : MonoBehaviour {
         SetHeartBeatParameter();
     }
 
-    void Update()
-    {
+    void Update() {
         //測試用 做血條演出
-        if (PerformHPReduce)
-        {
+        if (PerformHPReduce) {
             UniTask.Void(async () => {
                 if (CurrentCTS != null)
                     CurrentCTS.Cancel();
                 CurrentCTS = new CancellationTokenSource();
                 HPChange(CurrentCTS).Forget();
-                });
+            });
             PerformHPReduce = false;
         }
         //測試用 做心跳演出
-        if (UpdateHeartBeatParameter)
-        {
+        if (UpdateHeartBeatParameter) {
             SetHeartBeatParameter();
             UpdateHeartBeatParameter = false;
         }
         //測試用 直接設定當前HP
-        if (UpdateCurrentHP)
-        {
+        if (UpdateCurrentHP) {
             SetCurrentHP();
             UpdateCurrentHP = false;
         }
     }
 
-    public void SetData()
-    {
+    public void SetData() {
         //TODO:
         //英雄頭像設定
         //英雄名字設定
@@ -131,8 +120,7 @@ public class BattleGladiatorInfo : MonoBehaviour {
     }
 
     //血條演出 之後改傳入起始值跟終值作演出判斷
-    async UniTaskVoid HPChange(CancellationTokenSource ctk)
-    {
+    async UniTaskVoid HPChange(CancellationTokenSource ctk) {
         if (BarStartVal == BarFinalVal)
             return;
         Debug.Log("------開始演出血量-------");
@@ -157,21 +145,21 @@ public class BattleGladiatorInfo : MonoBehaviour {
         SetHPBarChangePos(currentVal);//設置變化血條起始位置
 
         //等待血條停滯時間
-        await UniTask.WaitForSeconds(BarChangeSecDelay, cancellationToken:ctk.Token);
+        await UniTask.WaitForSeconds(BarChangeSecDelay, cancellationToken: ctk.Token);
         //算出每禎變化值
         float delta = math.abs(BarStartVal - BarFinalVal) / BarChangeSecNeed / BarChangeFrame;
         float duration = 1f / BarChangeFrame;
-        
+
         //受擊演出 心跳變黑白旋轉 血條全白 顯示變化血條(直接接在血條末端)
         //旋轉演出
-        Tweener HeartBeatRotate = HeartBeatIconTrans.DORotate(HittedRotateAngle, HittedRotateDuration/2, RotateMode.Fast);
+        Tweener HeartBeatRotate = HeartBeatIconTrans.DORotate(HittedRotateAngle, HittedRotateDuration / 2, RotateMode.Fast);
         HeartBeatRotate.SetAutoKill(true);
         HeartBeatRotate.Pause();
         HeartBeatRotate.SetEase(Ease.OutSine);
         HeartBeatRotate.OnComplete(DOHeartBeatRotateBack);
         HeartBeatRotate.Restart();
 
-        Tweener HeartBeatGrayRotate = HeartBeatGrayIconTrans.DORotate(HittedRotateAngle, HittedRotateDuration/2, RotateMode.Fast);
+        Tweener HeartBeatGrayRotate = HeartBeatGrayIconTrans.DORotate(HittedRotateAngle, HittedRotateDuration / 2, RotateMode.Fast);
         HeartBeatGrayRotate.SetAutoKill(true);
         HeartBeatGrayRotate.Pause();
         HeartBeatGrayRotate.SetEase(Ease.OutSine);
@@ -179,15 +167,15 @@ public class BattleGladiatorInfo : MonoBehaviour {
         HeartBeatGrayRotate.Restart();
 
         //心臟變色演出
-        Tweener HeartBeatGrayCutIn = HeartBeatGrayIcon.DOColor(Color.white, HittedColorDuration/2);
+        Tweener HeartBeatGrayCutIn = HeartBeatGrayIcon.DOColor(Color.white, HittedColorDuration / 2);
         HeartBeatGrayCutIn.SetAutoKill(true);
         HeartBeatGrayCutIn.Pause();
         HeartBeatGrayCutIn.SetEase(Ease.Linear);
         HeartBeatGrayCutIn.OnComplete(DoHeartBeatGrayHide);
         HeartBeatGrayCutIn.Restart();
-        
+
         //血條變色(白色)演出 >> 原本是全透明 快速淡入又淡出
-        Tweener HPBarShowWhite = HPBarWhite.DOColor(Color.white, HittedHPBarWhiteDuration/2);
+        Tweener HPBarShowWhite = HPBarWhite.DOColor(Color.white, HittedHPBarWhiteDuration / 2);
         HPBarShowWhite.SetAutoKill(true);
         HPBarShowWhite.Pause();
         HPBarShowWhite.SetEase(Ease.Linear);
@@ -195,7 +183,7 @@ public class BattleGladiatorInfo : MonoBehaviour {
         HPBarShowWhite.Restart();
 
         //等待血條變色演出結束
-        await UniTask.WaitForSeconds(HittedHPBarWhiteDuration, cancellationToken:ctk.Token);
+        await UniTask.WaitForSeconds(HittedHPBarWhiteDuration, cancellationToken: ctk.Token);
 
         Debug.Log("------開始漸變------");
         Debug.Log("每秒變化量: " + delta + " 每次變化所需秒數: " + duration);
@@ -207,36 +195,31 @@ public class BattleGladiatorInfo : MonoBehaviour {
         //紀錄上次殘影出現血量百分比
         float lastAfterImageHPRate = 0f;
         UniTask.Void(async () => { HPGrayChange(CurrentCTS, isReduce, currentVal, BarFinalVal, grayDuration, grayDelta).Forget(); });
-        if (isReduce)
-        {
-            while(currentVal >= BarFinalVal) {
-                await UniTask.WaitForSeconds(duration, cancellationToken:ctk.Token);
+        if (isReduce) {
+            while (currentVal >= BarFinalVal) {
+                await UniTask.WaitForSeconds(duration, cancellationToken: ctk.Token);
                 currentVal -= delta;
                 //目前血條(彩色)開始變化
                 HPBar.fillAmount = currentVal;
                 //變化血條位移
                 SetHPBarChangePos(currentVal);
                 //製造殘影(比對上一次產生殘影的血量 高於等於設定值就產生殘影)
-                if (lastAfterImageHPRate == 0f || (Math.Abs(lastAfterImageHPRate - currentVal) >= HPRateGenerateAfterImage))
-                {
+                if (lastAfterImageHPRate == 0f || (Math.Abs(lastAfterImageHPRate - currentVal) >= HPRateGenerateAfterImage)) {
                     lastAfterImageHPRate = currentVal;
                     GenerateHPBarChangeAfterImage();
                 }
                 Debug.Log("數值減少 目前百分比值: " + currentVal);
             }
-        }
-        else
-        {
-            while(currentVal <= BarFinalVal){
-                await UniTask.WaitForSeconds(duration, cancellationToken:ctk.Token);
+        } else {
+            while (currentVal <= BarFinalVal) {
+                await UniTask.WaitForSeconds(duration, cancellationToken: ctk.Token);
                 currentVal += delta;
                 //目前血條(彩色)開始變化
                 HPBar.fillAmount = currentVal;
                 //變化血條位移
                 SetHPBarChangePos(currentVal);
                 //製造殘影(比對上一次產生殘影的血量 高於等於設定值就產生殘影)
-                if (lastAfterImageHPRate == 0f || (Math.Abs(lastAfterImageHPRate - currentVal) >= HPRateGenerateAfterImage))
-                {
+                if (lastAfterImageHPRate == 0f || (Math.Abs(lastAfterImageHPRate - currentVal) >= HPRateGenerateAfterImage)) {
                     lastAfterImageHPRate = currentVal;
                     GenerateHPBarChangeAfterImage();
                 }
@@ -262,26 +245,22 @@ public class BattleGladiatorInfo : MonoBehaviour {
     /// <param name="duration">每次變化所需時間</param>
     /// <param name="delta">每次血條變化量</param>
     /// <returns></returns>
-    async UniTaskVoid HPGrayChange(CancellationTokenSource ctk, bool isReduce, float currentVal, float changeFinalVal, 
-        float duration, float delta)
-    {
+    async UniTaskVoid HPGrayChange(CancellationTokenSource ctk, bool isReduce, float currentVal, float changeFinalVal,
+        float duration, float delta) {
         //等待設置延遲的秒數
-        await UniTask.WaitForSeconds(BarGrayChangeSecDelay, cancellationToken:ctk.Token);
+        await UniTask.WaitForSeconds(BarGrayChangeSecDelay, cancellationToken: ctk.Token);
         //以設置的演出時間開始變化血量
-        if (isReduce)
-        {
-            while(currentVal >= changeFinalVal) {
-                await UniTask.WaitForSeconds(duration, cancellationToken:ctk.Token);
+        if (isReduce) {
+            while (currentVal >= changeFinalVal) {
+                await UniTask.WaitForSeconds(duration, cancellationToken: ctk.Token);
                 currentVal -= delta;
                 //目前血條(黑白)開始變化
                 HPBarGray.fillAmount = currentVal;
                 //Debug.Log("黑白數值減少 目前百分比值: " + currentVal);
             }
-        }
-        else
-        {
-            while(currentVal <= changeFinalVal){
-                await UniTask.WaitForSeconds(duration, cancellationToken:ctk.Token);
+        } else {
+            while (currentVal <= changeFinalVal) {
+                await UniTask.WaitForSeconds(duration, cancellationToken: ctk.Token);
                 currentVal += delta;
                 //目前血條(黑白)開始變化
                 HPBarGray.fillAmount = currentVal;
@@ -294,8 +273,7 @@ public class BattleGladiatorInfo : MonoBehaviour {
     }
 
     //產生變化血條殘影
-    void GenerateHPBarChangeAfterImage()
-    {
+    void GenerateHPBarChangeAfterImage() {
         //複製Image 設置位置
         GameObject CloneChangeHPBar = Instantiate(HPChangeBar.gameObject, CloneHPChangerBarTrans);
         //淡出並銷毀
@@ -303,13 +281,12 @@ public class BattleGladiatorInfo : MonoBehaviour {
         CutOutTween.SetAutoKill(true);
         CutOutTween.Pause();
         CutOutTween.SetEase(Ease.Linear);
-        CutOutTween.OnComplete(()=> { Destroy(CloneChangeHPBar);});
+        CutOutTween.OnComplete(() => { Destroy(CloneChangeHPBar); });
         CutOutTween.Restart();
     }
 
     //設定血條變化量位置 作為血條變化演出 傳入值為0~1
-    void SetHPBarChangePos(float percent)
-    {
+    void SetHPBarChangePos(float percent) {
         //0.94~1X位移變化量約為1.6666667 因為圖案不是規則矩形導致斜率不是單一
         //公式為血量FillAmount為1時的所在位置(380)減去0.94時所在位置(370)除於區間差值(100-94)下去轉換變化量 所在位置(ChangeBar的PosX)是手動調整所得
         //float FirstChangeRate = (380 - 370) / 6f; //0.94~1的斜率變化量 
@@ -327,31 +304,25 @@ public class BattleGladiatorInfo : MonoBehaviour {
         //Debug.Log("Real Pos X: " + RealPosX);
     }
 
-    void ShowHPBarChange(bool bShow)
-    {
+    void ShowHPBarChange(bool bShow) {
         HPChangeBar.color = bShow ? Color.white : HideColor;
     }
 
-    void SetHeartBeatParameter()
-    {
+    void SetHeartBeatParameter() {
         //不為null就停止並殺掉原本的Tween
-        if (HeartBeatScaleTween1 != null)
-        {
+        if (HeartBeatScaleTween1 != null) {
             HeartBeatScaleTween1.Pause();
             HeartBeatScaleTween1.Kill();
         }
-        if (HeartBeatScaleTween2 != null)
-        {
+        if (HeartBeatScaleTween2 != null) {
             HeartBeatScaleTween2.Pause();
             HeartBeatScaleTween2.Kill();
         }
-        if (HeartBeatGrayScaleTween1 != null)
-        {
+        if (HeartBeatGrayScaleTween1 != null) {
             HeartBeatGrayScaleTween1.Pause();
             HeartBeatGrayScaleTween1.Kill();
         }
-        if (HeartBeatGrayScaleTween2 != null)
-        {
+        if (HeartBeatGrayScaleTween2 != null) {
             HeartBeatGrayScaleTween2.Pause();
             HeartBeatGrayScaleTween2.Kill();
         }
@@ -359,27 +330,27 @@ public class BattleGladiatorInfo : MonoBehaviour {
         HeartBeatIconTrans.localScale = HeartBeatReverse ? Vector3.left + Vector3.up + Vector3.forward : Vector3.one;
         HeartBeatGrayIconTrans.localScale = HeartBeatReverse ? Vector3.left + Vector3.up + Vector3.forward : Vector3.one;
         //新建立Tween
-        HeartBeatScaleTween1 = HeartBeatIconTrans.DOScale(new Vector3(HeartBeatReverse ? -HeartBeatTweenScale : HeartBeatTweenScale, HeartBeatTweenScale, 1f), HeartBeatDuration/2);
+        HeartBeatScaleTween1 = HeartBeatIconTrans.DOScale(new Vector3(HeartBeatReverse ? -HeartBeatTweenScale : HeartBeatTweenScale, HeartBeatTweenScale, 1f), HeartBeatDuration / 2);
         HeartBeatScaleTween1.SetAutoKill(false);
         HeartBeatScaleTween1.Pause();
         HeartBeatScaleTween1.SetDelay(HeartBeatDelayMax);
         HeartBeatScaleTween1.SetEase(Ease.OutSine);
         HeartBeatScaleTween1.OnComplete(HeartBeatBack);//OnComplete弄成循環
 
-        HeartBeatScaleTween2 = HeartBeatIconTrans.DOScale(HeartBeatReverse ? Vector3.left + Vector3.up + Vector3.forward : Vector3.one, HeartBeatDuration/2);
+        HeartBeatScaleTween2 = HeartBeatIconTrans.DOScale(HeartBeatReverse ? Vector3.left + Vector3.up + Vector3.forward : Vector3.one, HeartBeatDuration / 2);
         HeartBeatScaleTween2.SetAutoKill(false);
         HeartBeatScaleTween2.Pause();
         HeartBeatScaleTween2.SetEase(Ease.OutSine);
         HeartBeatScaleTween2.OnComplete(HeartBeat);//OnComplete弄成循環
 
-        HeartBeatGrayScaleTween1 = HeartBeatGrayIconTrans.DOScale(new Vector3(HeartBeatReverse ? -HeartBeatTweenScale : HeartBeatTweenScale, HeartBeatTweenScale, 1f), HeartBeatDuration/2);
+        HeartBeatGrayScaleTween1 = HeartBeatGrayIconTrans.DOScale(new Vector3(HeartBeatReverse ? -HeartBeatTweenScale : HeartBeatTweenScale, HeartBeatTweenScale, 1f), HeartBeatDuration / 2);
         HeartBeatGrayScaleTween1.SetAutoKill(false);
         HeartBeatGrayScaleTween1.Pause();
         HeartBeatGrayScaleTween1.SetDelay(HeartBeatDelayMax);
         HeartBeatGrayScaleTween1.SetEase(Ease.OutSine);
         HeartBeatGrayScaleTween1.OnComplete(HeartBeatGrayBack);//OnComplete弄成循環
 
-        HeartBeatGrayScaleTween2 = HeartBeatGrayIconTrans.DOScale(HeartBeatReverse ? Vector3.left + Vector3.up + Vector3.forward : Vector3.one, HeartBeatDuration/2);
+        HeartBeatGrayScaleTween2 = HeartBeatGrayIconTrans.DOScale(HeartBeatReverse ? Vector3.left + Vector3.up + Vector3.forward : Vector3.one, HeartBeatDuration / 2);
         HeartBeatGrayScaleTween2.SetAutoKill(false);
         HeartBeatGrayScaleTween2.Pause();
         HeartBeatGrayScaleTween2.SetEase(Ease.OutSine);
@@ -392,13 +363,11 @@ public class BattleGladiatorInfo : MonoBehaviour {
     }
 
     //更新心跳率
-    void SetHeartBeatRate()
-    {
+    void SetHeartBeatRate() {
         //根據目前血量換算心跳速度應該多快
         float HeartBeatChangeRate = (HeartBeatDelayMax - HeartBeatDelayMin) / 100f; //每百分比加快的秒數
         float CurrentHPDelay = HeartBeatDelayMax - HeartBeatChangeRate * ((1f - CurrentHPRate) * 100f); //換算現在血量對應的delay時間
-        if (HeartBeatScaleTween1 != null)
-        {
+        if (HeartBeatScaleTween1 != null) {
             HeartBeatScaleTween1.timeScale = 1f / (CurrentHPDelay / HeartBeatDelayMax); //換算TimeScale應該加快多少
             Debug.Log("轉換心跳演出加速倍率: " + HeartBeatScaleTween1.timeScale);
         }
@@ -411,35 +380,30 @@ public class BattleGladiatorInfo : MonoBehaviour {
     }
 
     //心跳跳回去(縮小回原尺寸)
-    void HeartBeatBack()
-    {
+    void HeartBeatBack() {
         HeartBeatScaleTween2.Restart();
         //Debug.Log("心跳跳回去");
     }
 
     //心跳跳動(放大尺寸)
-    void HeartBeat()
-    {
+    void HeartBeat() {
         HeartBeatScaleTween1.Restart();
         //Debug.Log("重新心跳");
     }
 
     //心跳跳回去(黑白圖 縮小回原尺寸)
-    void HeartBeatGrayBack()
-    {
+    void HeartBeatGrayBack() {
         HeartBeatGrayScaleTween2.Restart();
         //Debug.Log("心跳跳回去");
     }
 
     //心跳跳動(黑白圖 放大尺寸)
-    void HeartGrayBeat()
-    {
+    void HeartGrayBeat() {
         HeartBeatGrayScaleTween1.Restart();
         //Debug.Log("重新心跳");
     }
 
-    void SetCurrentHP()
-    {
+    void SetCurrentHP() {
         CurrentHPRate = SettingCurrentHP;
         HPBar.fillAmount = CurrentHPRate;
         HPBarGray.fillAmount = CurrentHPRate;
@@ -449,9 +413,8 @@ public class BattleGladiatorInfo : MonoBehaviour {
     }
 
     //心臟受擊旋轉回原位置
-    void DOHeartBeatRotateBack()
-    {
-        Tweener HeartBeatRotateBack = HeartBeatIconTrans.DORotate(Vector3.zero, HittedRotateDuration/2, RotateMode.Fast);
+    void DOHeartBeatRotateBack() {
+        Tweener HeartBeatRotateBack = HeartBeatIconTrans.DORotate(Vector3.zero, HittedRotateDuration / 2, RotateMode.Fast);
         HeartBeatRotateBack.SetAutoKill(true);
         HeartBeatRotateBack.Pause();
         HeartBeatRotateBack.SetEase(Ease.OutSine);
@@ -459,9 +422,8 @@ public class BattleGladiatorInfo : MonoBehaviour {
     }
 
     //心臟受擊(黑白)旋轉回原位置
-    void DOHeartBeatGrayGotateBack()
-    {
-        Tweener HeartBeatRotateBack = HeartBeatGrayIconTrans.DORotate(Vector3.zero, HittedRotateDuration/2, RotateMode.Fast);
+    void DOHeartBeatGrayGotateBack() {
+        Tweener HeartBeatRotateBack = HeartBeatGrayIconTrans.DORotate(Vector3.zero, HittedRotateDuration / 2, RotateMode.Fast);
         HeartBeatRotateBack.SetAutoKill(true);
         HeartBeatRotateBack.Pause();
         HeartBeatRotateBack.SetEase(Ease.OutSine);
@@ -469,9 +431,8 @@ public class BattleGladiatorInfo : MonoBehaviour {
     }
 
     //心臟受擊(黑白)隱藏
-    void DoHeartBeatGrayHide()
-    {
-        Tweener HeartBeatGray = HeartBeatGrayIcon.DOColor(HideColor, HittedColorDuration/2);
+    void DoHeartBeatGrayHide() {
+        Tweener HeartBeatGray = HeartBeatGrayIcon.DOColor(HideColor, HittedColorDuration / 2);
         HeartBeatGray.SetAutoKill(true);
         HeartBeatGray.Pause();
         HeartBeatGray.SetEase(Ease.Linear);
@@ -479,9 +440,8 @@ public class BattleGladiatorInfo : MonoBehaviour {
     }
 
     //白色血條隱藏
-    void HideHPBarWhite()
-    {
-        Tweener HideTween = HPBarWhite.DOColor(HideColor, HittedHPBarWhiteDuration/2);
+    void HideHPBarWhite() {
+        Tweener HideTween = HPBarWhite.DOColor(HideColor, HittedHPBarWhiteDuration / 2);
         HideTween.SetAutoKill(true);
         HideTween.Pause();
         HideTween.SetEase(Ease.Linear);

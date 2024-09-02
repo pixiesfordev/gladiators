@@ -1,7 +1,6 @@
 using Cysharp.Threading.Tasks;
 using Gladiators.Battle;
 using Gladiators.Socket.Matchgame;
-using PlasticGui.WorkspaceWindow.QueryViews.Changesets;
 using Scoz.Func;
 using System.Collections.Generic;
 using System.Linq;
@@ -173,7 +172,6 @@ public class Character : MonoBehaviour {
 
         var originalPos = new Vector3(_attackPos, 0, 0);
         Vector3 knockbackDir = new Vector3(-(float)FaceDir, 0, 0);
-        Vector3 resultPos = originalPos + knockbackDir * _knockback;
         float passTime = 0f;
 
         float knockupHeight = _knockback / 6; // 擊飛高度可以隨意設定, 目前設定演出是與擊退距離成正比
@@ -195,7 +193,14 @@ public class Character : MonoBehaviour {
                 // 撞牆檢查
                 if (knockWall == false) {
                     knockWall = knockWallCheck(ref tmpServerPos);
-                    if (knockWall) knockWallTime = passTime;
+                    if (knockWall) {
+                        knockWallTime = passTime;
+                        //產生特效
+                        AddressablesLoader.GetParticle("Battle/CFXR _BOOM_", (prefab, handle) => {
+                            var go = Instantiate(prefab);
+                            go.transform.position = transform.position + Vector3.up * 6;
+                        });
+                    }
                 }
 
 
@@ -214,7 +219,7 @@ public class Character : MonoBehaviour {
             }
             IsKnockback = false;
             setServerPos(_resultPos);
-            setClientPos(new Vector3(resultPos.x, originalPos.y, originalPos.z));
+            setClientPos(new Vector3(_resultPos, originalPos.y, originalPos.z));
             PlayAni("stun");
         });
     }

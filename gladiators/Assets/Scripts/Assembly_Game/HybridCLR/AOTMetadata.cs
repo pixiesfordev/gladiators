@@ -5,7 +5,6 @@ using UnityEngine;
 public static class AOTMetadata {
     public static List<string> AotDllList = new List<string> {"Cinemachine.dll",
 		"DOTween.dll",
-		"FlutterUnityIntegration.dll",
 		"LitJson.dll",
 		"Loxodon.Framework.dll",
 		"Realm.dll",
@@ -15,14 +14,9 @@ public static class AOTMetadata {
 		"UniRx.dll",
 		"UniTask.dll",
 		"Unity.Addressables.dll",
-		"Unity.Burst.dll",
-		"Unity.Collections.dll",
-		"Unity.Entities.Hybrid.dll",
-		"Unity.Entities.dll",
 		"Unity.RenderPipelines.Core.Runtime.dll",
 		"Unity.ResourceManager.dll",
 		"Unity.VisualScripting.Core.dll",
-		"UnityEngine.AndroidJNIModule.dll",
 		"UnityEngine.CoreModule.dll",
 		"mscorlib.dll",};
 }

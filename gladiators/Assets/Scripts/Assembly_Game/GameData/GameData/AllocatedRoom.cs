@@ -1,15 +1,11 @@
-using Castle.Core.Internal;
 using Cysharp.Threading.Tasks;
 using Gladiators.Battle;
 using Gladiators.Socket;
 using Gladiators.Socket.Matchgame;
+using Newtonsoft.Json.Linq;
 using Scoz.Func;
-using Service.Realms;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace Gladiators.Main {
@@ -202,6 +198,9 @@ namespace Gladiators.Main {
             if (_myPlayerState == null || _myPlayerState.DBID == null) return;
             //更新介面神祉技能卡牌
             BattleSceneUI.Instance?.SetDivineSkillData(_myPlayerState.DivineSkills);
+            //關閉神祇技能選擇介面(做完演出後才去執行後續動作)
+            DivineSelectUI.Instance?.CloseUI(() => {
+            });
         }
         /// <summary>
         /// 收到戰鬥開始封包
@@ -223,19 +222,31 @@ namespace Gladiators.Main {
             if (BattleManager.Instance != null) BattleManager.Instance.Melee(_melee);
         }
 
-        public void ReceivePing() { //行為處理
-
+        public void ReceivePing() { //回送Server(如果X秒Server都沒收到Ping會認為玩家斷線了)
+            var cmd = new SocketCMD<PING>(new PING());
+            GameConnector.Instance.SendTCP(cmd);
         }
 
         /// <summary>
         /// 收到玩家行為封包, 存儲封包資料
         /// </summary>
-        public void ReceivePlayerAction(string _actionType, object _actionContent, PackPlayerState[][] _playerStates, double[] GameTime) { //行為處理
-            Debug.Log($"ActionType : {_actionType}");
+        public void ReceivePlayerAction(string _playerID, string _actionType, object _actionContent) {
+
             switch (_actionType) {
-                case "PLAYERACTION_RUSH":
+                case "Action_Rush":
+                    if (_actionContent is JObject jObject) {
+                        try {
+                            var rushAction = jObject.ToObject<PackAction_Rush_ToClient>();
+                            WriteLog.Log($"Action_Rush: {rushAction.On}");
+                        } catch (Exception ex) {
+                            WriteLog.LogError($"反序列化為 PackAction_Rush_ToClient 時出錯: {ex.Message}");
+                        }
+                    } else {
+                        WriteLog.LogError($"ActionContent 无法识别，类型: {_actionContent.GetType().FullName}");
+                    }
                     break;
                 default:
+                    WriteLog.LogError($"未知的 ActionType: {_actionType}");
                     break;
             }
         }
