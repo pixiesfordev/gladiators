@@ -3,12 +3,14 @@ using Gladiators.Battle;
 using Gladiators.Main;
 using Gladiators.Socket.Matchgame;
 using LitJson;
+using MongoDB.Bson;
 using Newtonsoft.Json;
 using Scoz.Func;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using UniRx;
+using UnityEditor.Sprites;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using static Gladiators.Socket.SocketContent;
@@ -228,11 +230,10 @@ namespace Gladiators.Socket {
                         HandlerBattleState(battlePacket);
                         break;
                     case SocketContent.MatchgameCMD_TCP.PLAYERACTION_TOCLIENT:
-                        var playerActionPacket = JsonConvert.DeserializeObject<SocketCMD<PLAYERACTION_TOCLIENT>>(_msg);
-                        WriteLog.LogError("playerActionPacket=" + playerActionPacket);
-                        WriteLog.LogError("Content=" + playerActionPacket.Content);
-                        WriteLog.LogError("ActionType=" + playerActionPacket.Content.ActionType);
-                        HandlerPlayerAction(playerActionPacket);
+                        //收到封包要先進行PLAYERACTION_TOCLIENT反序列化之後再根據ActionType類型來使用泛型解析成正確的ActionContent
+                        var actionBasePacket = JsonMapper.ToObject<SocketCMD<PLAYERACTION_TOCLIENT<JsonData>>>(_msg);
+                        var actionContentJson = actionBasePacket.Content.ActionContent.ToJson();
+                        HandlerPlayerAction(actionBasePacket.Content.ActionType, actionBasePacket.Content.PlayerDBID, actionContentJson);
                         break;
                     case SocketContent.MatchgameCMD_TCP.PING_TOCLIENT:
                         var pingPacket = LitJson.JsonMapper.ToObject<SocketCMD<PING_TOCLIENT>>(_msg);
@@ -281,9 +282,17 @@ namespace Gladiators.Socket {
             if (SceneManager.GetActiveScene().name != MyScene.BattleScene.ToString()) return;
             AllocatedRoom.Instance.ReceiveBattleState(_packet.Content);
         }
-        void HandlerPlayerAction(SocketCMD<PLAYERACTION_TOCLIENT> _packet) {
+        void HandlerPlayerAction(string _actionType, string _playerID, string _jsonStr) {
             if (SceneManager.GetActiveScene().name != MyScene.BattleScene.ToString()) return;
-            AllocatedRoom.Instance.ReceivePlayerAction(_packet.Content.PlayerDBID, _packet.Content.ActionType, _packet.Content.ActionContent);
+            switch (_actionType) {
+                case "Action_Rush":
+                    var rush = JsonMapper.ToObject<PackAction_Rush_ToClient>(_jsonStr);
+                    AllocatedRoom.Instance.ReceiveRush(_playerID, rush.On);
+                    break;
+                default:
+                    Debug.LogError($"未知的 ActionType: {_actionType}");
+                    break;
+            }
         }
         void HandlerPing(SocketCMD<PING_TOCLIENT> _packet) {
             if (SceneManager.GetActiveScene().name != MyScene.BattleScene.ToString()) return;

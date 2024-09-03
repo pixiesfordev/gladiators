@@ -227,28 +227,9 @@ namespace Gladiators.Main {
             GameConnector.Instance.SendTCP(cmd);
         }
 
-        /// <summary>
-        /// 收到玩家行為封包, 存儲封包資料
-        /// </summary>
-        public void ReceivePlayerAction(string _playerID, string _actionType, object _actionContent) {
-
-            switch (_actionType) {
-                case "Action_Rush":
-                    if (_actionContent is JObject jObject) {
-                        try {
-                            var rushAction = jObject.ToObject<PackAction_Rush_ToClient>();
-                            WriteLog.Log($"Action_Rush: {rushAction.On}");
-                        } catch (Exception ex) {
-                            WriteLog.LogError($"反序列化為 PackAction_Rush_ToClient 時出錯: {ex.Message}");
-                        }
-                    } else {
-                        WriteLog.LogError($"ActionContent 无法识别，类型: {_actionContent.GetType().FullName}");
-                    }
-                    break;
-                default:
-                    WriteLog.LogError($"未知的 ActionType: {_actionType}");
-                    break;
-            }
+        public void ReceiveRush(string _playerID, bool _rush) {
+            WriteLog.Log($"玩家{_playerID} 衝刺={_rush}");
         }
+
     }
 }

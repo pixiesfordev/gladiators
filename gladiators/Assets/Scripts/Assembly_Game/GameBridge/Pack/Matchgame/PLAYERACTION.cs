@@ -8,11 +8,11 @@ namespace Gladiators.Socket.Matchgame {
             ActionContent = _actionContent;
         }
     }
-    public class PLAYERACTION_TOCLIENT : SocketContent {
+    public class PLAYERACTION_TOCLIENT<T> : SocketContent {
         //class名稱就是封包的CMD名稱
         public string PlayerDBID { get; private set; }
         public string ActionType { get; private set; }
-        public object ActionContent { get; private set; }
+        public T ActionContent { get; private set; }
 
     }
     public class PackAction_Skill {

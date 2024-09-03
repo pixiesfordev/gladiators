@@ -225,10 +225,13 @@ namespace Gladiators.Battle {
         }
 
         public void Melee(MELEE_TOCLIENT _melee) {
-            //var timeSpan = GameTime - (float)_melee.GameTime;
             GameTime = (float)_melee.GameTime;
             BattleSceneUI.Instance.SetTimeText(LeftGameTime);
             battleModelController.Melee(_melee.MyPlayerState, _melee.OpponentPlayerState, _melee.MyAttack, _melee.OpponentAttack);
+        }
+
+        public void Run(PackAction_Rush _run) {
+
         }
 
         //戰鬥結束
