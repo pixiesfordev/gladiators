@@ -66,6 +66,7 @@ public class Character : MonoBehaviour {
     public Transform BOARD;
     public Transform CamLook_Left;
     public Transform CamLook_Right;
+    public ParticleSystem MoveSmoke;
 
 
     public Animator animator;
@@ -79,6 +80,7 @@ public class Character : MonoBehaviour {
     Character enemy;
     [SerializeField] Transform SideRotationParent;
 
+    public bool IsRushing { get; private set; }
     public bool IsKnockback { get; private set; }
     bool InKnockDist {
         get {
@@ -92,8 +94,15 @@ public class Character : MonoBehaviour {
     float knockDist = 4;
     int? nowSkillID = null;
     public bool showDebug = false;
+    bool isInit;
 
-
+    // 狀態
+    public int MaxHP { get; private set; }
+    public int CurHP { get; private set; }
+    public float HPRatio { get { return CurHP / MaxHP; } }
+    public float CurVigor { get; private set; }
+    public float VigorRatio { get { return CurVigor / 10; } }
+    public float CurSpd { get; private set; }
     List<Skill.EffectType> EffectTypes = new List<Skill.EffectType>();
     public bool CanMove {
         get {
@@ -101,8 +110,7 @@ public class Character : MonoBehaviour {
             return !EffectTypes.IsMobileRestriction();
         }
     }
-    float curSpd = 0f;
-    bool isInit;
+
 
 
     public void Init(float _pos, Character _opponent, RightLeft _faceDir) {
@@ -113,6 +121,7 @@ public class Character : MonoBehaviour {
         setClientPos(new Vector3(_pos, 0, 0));
         setServerPos(_pos);
         BattleManager.Instance.vTargetGroup.AddMember(transform, 1, 8);
+        SetRush(false);
     }
     public void SetFaceToTarget() {
         Vector3 directionToTarget = enemy.transform.position - transform.position;
@@ -133,9 +142,22 @@ public class Character : MonoBehaviour {
         animator.SetTrigger(_aniName);
     }
 
+    public void SetRush(bool _on) {
+        IsRushing = _on;
+        if (IsRushing) {
+            if (CanMove) MoveSmoke.Play();
+            animator.SetFloat("moveSpeed", 1.5f);
+        } else {
+            MoveSmoke.Stop();
+            animator.SetFloat("moveSpeed", 1f);
+        }
+    }
+
     void onMove() {
-        if (!CanMove) return;
-        float posX = (float)FaceDir * curSpd * Time.deltaTime;
+        if (!CanMove) {
+            return;
+        }
+        float posX = (float)FaceDir * CurSpd * Time.deltaTime;
         Vector3 move = new Vector3(posX, 0, 0);
         transform.Translate(move);
         if (!InKnockDist) PlayAni("move");
@@ -157,8 +179,11 @@ public class Character : MonoBehaviour {
     public void SetState(PackGladiatorState _state) {
         if (CanMove) setClientPos(new Vector3((float)_state.CurPos, transform.localPosition.y, transform.localPosition.z));
         setServerPos((float)_state.CurPos);
-        curSpd = (float)_state.CurSpd;
+        CurSpd = (float)_state.CurSpd;
         EffectTypes = Skill.ConvertStrListToEffectTypes(_state.EffectTypes);
+        MaxHP = _state.MaxHP;
+        CurHP = _state.CurHp;
+        CurVigor = (float)_state.CurVigor;
     }
     public int SkillID { get; private set; }
     public void HandleMelee(int _skilID, float _knockback, float _attackPos, float _resultPos) {
@@ -235,21 +260,4 @@ public class Character : MonoBehaviour {
         return false;
     }
 
-
-
-    public void OnSkill() {
-        if (nowSkillID == null) return;
-
-        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
-        if (stateInfo.IsName("idle_Animation")) {
-        } else if (stateInfo.IsName("attack_spin")) {
-            nowSkillID = null;
-            animator.SetBool("isAttack", false);
-            animator.SetBool("isAnimation", false);
-        } else {
-            animator.SetBool("isAttack", true);
-            animator.SetBool("isAnimation", true);
-
-        }
-    }
 }

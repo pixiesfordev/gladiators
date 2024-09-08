@@ -228,7 +228,11 @@ namespace Gladiators.Main {
         }
 
         public void ReceiveRush(string _playerID, bool _rush) {
-            WriteLog.Log($"玩家{_playerID} 衝刺={_rush}");
+            if (BattleModelController.Instance != null) BattleModelController.Instance.Run(_playerID, _rush);
+        }
+
+        public void ReceiveSkill(string _playerID, int _skillID, bool _on) {
+            if (BattleModelController.Instance != null) BattleModelController.Instance.Skill(_playerID, _skillID, _on);
         }
 
     }

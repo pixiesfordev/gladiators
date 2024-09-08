@@ -23,6 +23,7 @@ namespace Gladiators.Socket.Matchgame {
     }
     public class PackGladiatorState {
         public int[] HandSkillIDs { get; private set; }    // (玩家自己才會收到)
+        public int MaxHP { get; private set; } // 最大生命
         public int CurHp { get; private set; }      // 目前生命
         public double CurVigor { get; private set; }  // 目前體力
         public double CurSpd { get; private set; }// 目前速度

@@ -74,7 +74,8 @@ namespace Gladiators.Battle {
                     WriteLog.LogError($"錯誤的GameState:{AllocatedRoom.Instance.CurGameState}");
                     break;
                 case AllocatedRoom.GameState.GameState_WaitingPlayersReady:
-                    BattleManager.Instance.CreateTerrainAndChar().Forget();
+                    BattleManager.Instance.InitBattleModelController().Forget();
+                    ResetBattle();
                     AllocatedRoom.Instance.SetReady();
                     break;
             }
@@ -109,12 +110,10 @@ namespace Gladiators.Battle {
         }
 
         //場地及人物生成
-        public async UniTask CreateTerrainAndChar() {
-            battleModelController.CreateTerrain();
+        public async UniTask InitBattleModelController() {
+            battleModelController.Init();
             battleModelController.CreateCharacter(AllocatedRoom.Instance.MyPackPlayer, AllocatedRoom.Instance.OpponentPackPlayer);
-
             await battleModelController.WaitCharacterCreate();
-            ResetBattle();
         }
 
         //重啟戰鬥
@@ -122,15 +121,8 @@ namespace Gladiators.Battle {
             GameTime = 0;
             //相關參數在此重設 設定完才去更新UI
             BattleIsEnd = false;
-            ResetBattleModelController();
         }
 
-
-        void ResetBattleModelController() {
-            if (battleModelController == null) return;
-
-            //battleModelController.BattleReset(); //正常不會有這行為，因為沒有重新戰鬥
-        }
 
         void testStartGame() {
             Debug.Log("本地測試開始");
@@ -221,17 +213,13 @@ namespace Gladiators.Battle {
         public void SetBattleState(BATTLESTATE_TOCLIENT _state) {
             GameTime = (float)_state.GameTime;
             BattleSceneUI.Instance.SetTimeText(LeftGameTime);
-            battleModelController.Movement(_state.MyPlayerState, _state.OpponentPlayerState);
+            battleModelController.UpdateGladiatorsState(_state.MyPlayerState, _state.OpponentPlayerState);
         }
 
         public void Melee(MELEE_TOCLIENT _melee) {
             GameTime = (float)_melee.GameTime;
             BattleSceneUI.Instance.SetTimeText(LeftGameTime);
             battleModelController.Melee(_melee.MyPlayerState, _melee.OpponentPlayerState, _melee.MyAttack, _melee.OpponentAttack);
-        }
-
-        public void Run(PackAction_Rush _run) {
-
         }
 
         //戰鬥結束

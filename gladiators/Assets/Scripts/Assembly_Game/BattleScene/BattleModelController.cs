@@ -21,8 +21,16 @@ public class BattleModelController : MonoBehaviour {
     [SerializeField] bool BattleIsEnd = false;
 
     public const float WALLPOS = 20f;
+    Dictionary<string, Character> CharDic;
 
-    public void CreateTerrain() {
+    public static BattleModelController Instance { get; private set; }
+
+    public void Init() {
+        Instance = this;
+        CreateTerrain();
+    }
+
+    void CreateTerrain() {
         Instantiate(terrainPrefab, terrainArea.transform);
     }
 
@@ -40,6 +48,10 @@ public class BattleModelController : MonoBehaviour {
 
         leftChar.SetFaceToTarget();
         rightChar.SetFaceToTarget();
+
+        CharDic = new Dictionary<string, Character>();
+        CharDic.Add(_myPlayerPack.DBID, leftChar);
+        CharDic.Add(_opponentPack.DBID, rightChar);
     }
 
     public IEnumerator WaitCharacterCreate() {
@@ -65,17 +77,19 @@ public class BattleModelController : MonoBehaviour {
         BattleIsEnd = true;
     }
 
-    public void Movement(PackPlayerState leftPlayer, PackPlayerState rightPlayer) {
-        if (leftPlayer != null) {
-            leftChar.SetState(leftPlayer.GladiatorState);
+
+    public void UpdateGladiatorsState(PackPlayerState _leftPlayer, PackPlayerState _rightPlayer) {
+        if (_leftPlayer != null) {
+            leftChar.SetState(_leftPlayer.GladiatorState);
         }
 
-        if (rightPlayer != null) {
-            rightChar.SetState(rightPlayer.GladiatorState);
+        if (_rightPlayer != null) {
+            rightChar.SetState(_rightPlayer.GladiatorState);
         }
     }
 
     public void Melee(PackPlayerState leftPlayer, PackPlayerState rightPlayer, PackAttack _leftAttack, PackAttack _rightAttack) {
+
         if (leftPlayer != null) {
             var state = leftPlayer.GladiatorState;
             leftChar.SetState(state);
@@ -90,6 +104,22 @@ public class BattleModelController : MonoBehaviour {
             //WriteLog.LogError("AttackPos=" + _rightAttack.AttackPos + "  CurPos=" + state.CurPos);
             rightChar.HandleMelee(_rightAttack.SkillID, (float)_leftAttack.Knockback, (float)_rightAttack.AttackPos, (float)state.CurPos);
         }
+
+        //產生特效
+        AddressablesLoader.GetParticle("Battle/MeleeHit", (prefab, handle) => {
+            var go = Instantiate(prefab);
+            var midPos = (rightChar.transform.position + leftChar.transform.position) / 2.0f;
+            go.transform.position = midPos + Vector3.up * 3;
+        });
+
+    }
+
+    public void Run(string _playerID, bool _run) {
+        if (CharDic.ContainsKey(_playerID)) CharDic[_playerID].SetRush(_run);
+    }
+
+    public void Skill(string _playerID, int _skillID, bool _on) {
+
     }
 
 }

@@ -289,6 +289,10 @@ namespace Gladiators.Socket {
                     var rush = JsonMapper.ToObject<PackAction_Rush_ToClient>(_jsonStr);
                     AllocatedRoom.Instance.ReceiveRush(_playerID, rush.On);
                     break;
+                case "Action_Skill":
+                    var skill = JsonMapper.ToObject<PackAction_Skill_ToClient>(_jsonStr);
+                    AllocatedRoom.Instance.ReceiveSkill(_playerID, skill.SkillID, skill.On);
+                    break;
                 default:
                     Debug.LogError($"未知的 ActionType: {_actionType}");
                     break;
