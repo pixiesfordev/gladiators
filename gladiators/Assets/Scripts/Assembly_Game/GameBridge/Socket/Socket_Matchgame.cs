@@ -272,7 +272,7 @@ namespace Gladiators.Socket {
         }
         void HandleSetDivineSkill(SocketCMD<SETDIVINESKILL_TOCLIENT> _packet) {
             if (SceneManager.GetActiveScene().name != MyScene.BattleScene.ToString()) return;
-            AllocatedRoom.Instance.ReceiveDivineSkill(_packet.Content.MyPlayerState, _packet.Content.OpponentPlayerState);
+            AllocatedRoom.Instance.ReceiveDivineSkill(_packet.Content.MyPlayerState, _packet.Content.MyCardState, _packet.Content.OpponentPlayerState);
         }
         void HandleStartFighting(SocketCMD<STARTFIGHTING_TOCLIENT> _packet) {
             if (SceneManager.GetActiveScene().name != MyScene.BattleScene.ToString()) return;

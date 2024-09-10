@@ -119,7 +119,7 @@ public class BattleModelController : MonoBehaviour {
     }
 
     public void Skill(string _playerID, int _skillID, bool _on) {
-
+        WriteLog.LogError($"_playerID={_playerID} _skillID={_skillID} _on={_on}");
     }
 
 }

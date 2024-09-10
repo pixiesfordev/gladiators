@@ -9,6 +9,7 @@ using System.Threading;
 using UnityEngine;
 using Scoz.Func;
 using Cysharp.Threading.Tasks;
+using static Gladiators.Socket.SocketContent;
 
 namespace Gladiators.Socket {
     public class TcpClient : MonoBehaviour, INetworkClient {
@@ -41,8 +42,7 @@ namespace Gladiators.Socket {
                     thread_receive.Abort();
                 if (cancellationSource != null)
                     cancellationSource.Dispose();
-            }
-            catch {
+            } catch {
 
             }
 
@@ -98,8 +98,7 @@ namespace Gladiators.Socket {
                 if (!IsConnected || socket == null) return;
                 socket.Shutdown(SocketShutdown.Both);
                 socket.Close();
-            }
-            catch {
+            } catch {
 
             }
             StopAllCoroutines();
@@ -120,10 +119,13 @@ namespace Gladiators.Socket {
                     command.SetPackID(packetID++ % int.MaxValue);
                     string msg = LitJson.JsonMapper.ToJson(command);
                     socket.Send(Encoding.UTF8.GetBytes(msg));
-                    WriteLog.LogColorFormat("(TCP)送: {0}", WriteLog.LogType.Connection, msg);
+
+                    // 不輸出的Conn Log加到清單中
+                    List<string> dontShowLogCMDs = new List<string>();
+                    dontShowLogCMDs.Add("PING");
+                    if (!dontShowLogCMDs.Contains(command.CMD)) WriteLog.LogColorFormat("(TCP)送: {0}", WriteLog.LogType.Connection, msg);
                     return command.PackID;
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     WriteLog.LogErrorFormat("Socket send error: {0}", e.ToString());
                     OnDisConnect();
                     return -1;
@@ -202,16 +204,14 @@ namespace Gladiators.Socket {
                             string packet = packets[i];
                             syncContext.Post(state => OnReceiveMsg?.Invoke(packet), null);
                         }
-                            //messageQueue.Enqueue(packets[i]);
+                        //messageQueue.Enqueue(packets[i]);
                     }
-                }
-                catch (ThreadAbortException e) {
+                } catch (ThreadAbortException e) {
                     //this.Close();
                     WriteLog.Log($"TcpClient Exception={e}");
                     WriteLog.LogWarning($"TcpClient Exception={e}");
                     break;
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     WriteLog.LogErrorFormat("Scoket receive error: {0}", e.ToString());
                     //OnDisConnect();
                     break;
@@ -219,8 +219,7 @@ namespace Gladiators.Socket {
             }
             try {
                 socket.Close();
-            }
-            catch {
+            } catch {
             }
 
         }

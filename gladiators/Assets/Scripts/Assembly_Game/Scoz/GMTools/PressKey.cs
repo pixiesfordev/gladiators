@@ -33,6 +33,7 @@ namespace Scoz.Func {
                 var effects = GameDictionary.GetJsonData<JsonSkill>(1).Effects;
 
             } else if (Input.GetKeyDown(KeyCode.E)) {
+                AllocatedRoom.Instance.SetSkill(1001, true);
             } else if (Input.GetKeyDown(KeyCode.R)) {
 
             } else if (Input.GetKeyDown(KeyCode.P)) {

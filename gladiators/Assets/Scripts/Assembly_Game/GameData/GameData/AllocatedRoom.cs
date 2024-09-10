@@ -160,6 +160,14 @@ namespace Gladiators.Main {
             var cmd = new SocketCMD<PLAYERACTION>(new PLAYERACTION("Action_Rush", new PackAction_Rush(isRun)));
             GameConnector.Instance.SendTCP(cmd);
         }
+
+        /// <summary>
+        /// 設定技能
+        /// </summary>
+        public void SetSkill(int _skillID, bool _on) {
+            var cmd = new SocketCMD<PLAYERACTION>(new PLAYERACTION("Action_Skill", new PackAction_Skill(_on, _skillID)));
+            GameConnector.Instance.SendTCP(cmd);
+        }
         /// <summary>
         /// Matchgame驗證完成時執行
         /// </summary>
@@ -194,8 +202,12 @@ namespace Gladiators.Main {
         /// <summary>
         /// 收到神祉技能選擇封包, 如果雙方的資料都收到就開始遊戲
         /// </summary>
-        public void ReceiveDivineSkill(PackPlayerState _myPlayerState, PackPlayerState _opponentPlayerState) {
+        public void ReceiveDivineSkill(PackPlayerState _myPlayerState, PackCardState _myCardState, PackPlayerState _opponentPlayerState) {
             if (_myPlayerState == null || _myPlayerState.DBID == null) return;
+            for (int i = 0; i < _myCardState.HandSkillIDs.Length; i++) {
+                WriteLog.Log($"手牌{i + 1}為技能ID{_myCardState.HandSkillIDs[i]}");
+            }
+
             //更新介面神祉技能卡牌
             BattleSceneUI.Instance?.SetDivineSkillData(_myPlayerState.DivineSkills);
             //關閉神祇技能選擇介面(做完演出後才去執行後續動作)
