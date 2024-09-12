@@ -16,22 +16,45 @@ using Cysharp.Threading.Tasks.CompilerServices;
 namespace Gladiators.Battle {
     public class DivineSelectUI : BaseUI {
 
+        [SerializeField] Image BGFore;
         [SerializeField] Button ConfirmBtn;
         [SerializeField] Text PlayerMoney;
         [SerializeField] GameObject[] Candles;
         [SerializeField] DivineSkill[] DivineSkills;
         [SerializeField] Transform DropCoinTrans;
         [SerializeField] Text SureBtnText;
+        [SerializeField] Image ApertureImage;
+        [SerializeField] RectTransform ApertureRT;
+        [SerializeField] RectTransform LeftArrowRT;
+        [SerializeField] RectTransform RightArrowRT;
+        [SerializeField] RectTransform BtnBGMaskRT;
+        [SerializeField] Material GrayMaterial;
 
         [HeaderAttribute("==============TEST==============")]
         [Tooltip("每根蠟燭倒數時間")][SerializeField] float PerCandleCountDownTime = 1f;
         [Tooltip("測試蠟燭倒數演出")][SerializeField] bool PerformCandleCountDown = false;
+        [Tooltip("光圈演出模式 打勾為逐漸縮小 否則為一步一步縮小")][SerializeField] bool ApertureModeDigital = false;
+        [Tooltip("光圈縮至最小的倍率 即蠟燭全熄滅時 光圈相對於原本大小的倍率 必須大於0")][SerializeField] float ApertureMinSize = 0.3f;
+        [Tooltip("背景變至最暗時的亮度 值為0~1")][SerializeField] float BGDarkestBrightness = 0.3f;
+        //[Tooltip("")][SerializeField]
+
+        //TODO:
+        //1.卡片被選中要有光圈(先上光圈圖)
+        //2.鏡頭左右偏移效果
+        // 1.PC版本
+        // 2.手機版本
 
         public static DivineSelectUI Instance;
 
         JsonSkill[] SelectedDivineSkills;
         CancellationTokenSource CandleCountDownCTS; //用來控制中斷蠟燭倒數
-        bool confirmed = false; //鎖定確認按鈕 避免重複發送
+        bool Confirmed = false; //鎖定確認按鈕 避免重複發送
+        Tweener ApertureScaleTween; //光圈動畫控件
+        Tweener BtnSizeTween; //按鈕延伸放大動畫控件
+        Tweener BtnMaskSizeTween; //按鈕遮罩放大動畫控件
+        Tweener LeftArrowPosTween; //按鈕左邊箭頭位移動畫控件
+        Tweener RightArrowPosTween; //按鈕右邊箭頭位移動畫控件
+        float BtnAniTime = 2f; //按鈕動畫時間
 
         enum DivineSkillSelectState : short {
             Choose,//選擇
@@ -54,7 +77,7 @@ namespace Gladiators.Battle {
 
             //更新玩家持有金幣
             UpdatePlayerGold();
-
+            
             //按鈕文字設定
             SureBtnText.text = JsonString.GetUIString("Confirm");
 
@@ -84,8 +107,8 @@ namespace Gladiators.Battle {
 
         void CountDownCandleTime() {
             UniTask.Void(async () => {
-                if (CandleCountDownCTS != null)
-                    CandleCountDownCTS.Cancel();
+                CandleCountDownCTS?.Cancel();
+                StopApertureDoScale();
                 CandleCountDownCTS = new CancellationTokenSource();
                 PlayCountDownCandleTime(CandleCountDownCTS).Forget();
             });
@@ -93,31 +116,97 @@ namespace Gladiators.Battle {
 
         //停止蠟燭倒數
         void EndCandleCountDown() {
-            if (CandleCountDownCTS != null)
-                CandleCountDownCTS.Cancel();
+            //停止所有倒數演出
+            CandleCountDownCTS?.Cancel();
+            StopApertureDoScale();
+
+            //全蠟燭熄滅
             foreach (var c in Candles)
                 c.gameObject.SetActive(false);
+            
+            //設定光圈&亮度(變至最小&最暗)
+            ApertureRT.localScale = new Vector3(ApertureMinSize, ApertureMinSize, 1f);
+            BGFore.color = new Color(BGDarkestBrightness, BGDarkestBrightness, BGDarkestBrightness);
+            ApertureImage.color = new Color(BGDarkestBrightness, BGDarkestBrightness, BGDarkestBrightness);
         }
 
         //重置蠟燭
         void ResetCandles() {
             foreach (var c in Candles)
                 c.gameObject.SetActive(true);
-            confirmed = false;
+            Confirmed = false;
+        }
+
+        //重設背景亮度
+        void ResetBGFore()
+        {
+            BGFore.color = Color.white;
+        }
+
+        //重設光圈大小
+        void ResetApeture()
+        {
+            ApertureRT.localScale = Vector3.one;
+            ApertureImage.color = Color.white;
+        }
+
+        //中止光圈演出
+        void StopApertureDoScale()
+        {
+            if (ApertureScaleTween != null)
+            {
+                ApertureScaleTween.Pause();
+                ApertureScaleTween.Kill();
+            }
+        }
+
+        void ResetButton()
+        {
+            //設定按鈕(短版色彩)
+            SetSureBtnState(false);
         }
 
         //倒數蠟燭熄滅(用PerCandleCountDownTime設定每根蠟燭倒數時間)
         async UniTaskVoid PlayCountDownCandleTime(CancellationTokenSource ctk) {
+            //重置演出相關物件
             ResetCandles();
+            ResetBGFore();
+            ResetApeture();
+
             int CandleNum = Candles.Length;
+
+            //背景色彩相關參數(變暗演出)
+            float bgColorDelta = (1f - BGDarkestBrightness) / CandleNum; //每次亮度變化量
+            float curBgColor = 1f; //目前亮度值
+
+            //光圈演出相關參數
+            float apertureDigitalDelta = (1f - ApertureMinSize) / CandleNum; //光圈數位演出方式每次差異值(一秒變一次)
+            float curApertureSize = 1f; //光圈目前尺寸
+
+            //光圈類比式演出(逐漸縮小) 演出時間會+1秒是因為比較早開始演出
+            if (!ApertureModeDigital)
+                ApertureScaleTween = ApertureRT.DOScale(new Vector3(ApertureMinSize, ApertureMinSize, 1f), CandleNum + 1f);
+
             while (CandleNum > 0) {
                 await UniTask.WaitForSeconds(PerCandleCountDownTime, cancellationToken: ctk.Token);
+                //熄滅蠟燭
                 Candles[CandleNum - 1].gameObject.SetActive(false);
                 CandleNum -= 1;
+                //光圈大小調整(類比式 一秒變一次)
+                curApertureSize -= apertureDigitalDelta;
+                if (ApertureModeDigital)
+                    ApertureRT.localScale = new Vector3(curApertureSize, curApertureSize, 1f);
+                //背景亮度調整
+                curBgColor -= bgColorDelta;
+                BGFore.color = new Color(curBgColor, curBgColor, curBgColor);
+                ApertureImage.color = new Color(curBgColor, curBgColor, curBgColor);
             }
+              
             //時間到直接發送封包 先鎖定按鈕 等待一禎再發送 避免重複發送封包
-            confirmed = true;
+            Confirmed = true;
             await UniTask.Yield();
+            //TODO:這裡先註解掉 因為要測試演出效果 等確定後這裡就應該要按照流程自動送出封包
+            //SendDivineSkill();
         }
 
         //卡牌選擇判斷
@@ -189,29 +278,101 @@ namespace Gladiators.Battle {
         }
 
         public void ClickSure() {
-            if (confirmed) return;
-            confirmed = true;
+            if (Confirmed) return;
+            Confirmed = true;
             SendDivineSkill();
         }
 
         void SendDivineSkill() {
-            //掉落金幣演出(先用白板落下位移演出)
-            CoinDrop();
+            //掉落金幣演出(先用白板落下位移演出) >> 先隱藏 目前沒要求掉落演出
+            //CoinDrop();
             //TODO:扣錢(前端先扣 之後後端實際接上扣錢回傳這段應該去掉 直接後端回接更新就好)
             DeductionCoin();
+            //設定按鈕(打灰拉長)
+            SetSureBtnState(true);
             //按鈕文字設定(等待玩家)
             SureBtnText.text = JsonString.GetUIString("WaitPlayer");
+            //讀取選中技能
             int selectedSkillID1 = SelectedDivineSkills[0] != null ? SelectedDivineSkills[0].ID : 0;
             int selectedSkillID2 = SelectedDivineSkills[1] != null ? SelectedDivineSkills[1].ID : 0;
             //發送Socket
             AllocatedRoom.Instance.SetDivineSkills(new int[] { selectedSkillID1, selectedSkillID2 });
         }
 
+        void SetSureBtnState(bool bGray)
+        {
+            if (BtnSizeTween != null)
+            {
+                BtnSizeTween.Pause();
+                BtnSizeTween.Kill();
+            }
+            if (BtnMaskSizeTween != null)
+            {
+                BtnMaskSizeTween.Pause();
+                BtnMaskSizeTween.Kill();
+            }
+            if (LeftArrowPosTween != null)
+            {
+                LeftArrowPosTween.Pause();
+                LeftArrowPosTween.Kill();
+            }
+            if (RightArrowPosTween != null)
+            {
+                RightArrowPosTween.Pause();
+                RightArrowPosTween.Kill();
+            }
+
+            //按鈕相關演出
+            RectTransform btnRT = ConfirmBtn.GetComponent<RectTransform>();
+            Image btnImage = btnRT.GetComponent<Image>();
+            Image maskImage = BtnBGMaskRT.GetComponent<Image>();
+            Image LeftArrowImage = LeftArrowRT.GetComponent<Image>();
+            Image RightArrowImage = RightArrowRT.GetComponent<Image>();
+            if (bGray)
+            {
+                //按鈕圖片要逐步變長
+                if (btnRT != null)
+                    BtnSizeTween = btnRT.DOSizeDelta(new Vector2(630f, 135f), BtnAniTime); 
+                //按鈕要打灰
+                if (btnImage != null)
+                    btnImage.material = GrayMaterial;
+                //按鈕遮罩要逐步變長
+                BtnMaskSizeTween = BtnBGMaskRT.DOSizeDelta(new Vector2(600f, 102f), BtnAniTime);
+                //按鈕遮罩要打灰
+                if (maskImage != null)
+                    maskImage.material = GrayMaterial;
+                //裝飾箭頭要逐漸移動位置
+                LeftArrowPosTween = LeftArrowRT.DOAnchorPos3D(new Vector3(292f, 0f, 0f), BtnAniTime);
+                if (LeftArrowImage != null)
+                    LeftArrowImage.material = GrayMaterial;
+                RightArrowPosTween = RightArrowRT.DOAnchorPos3D(new Vector3(-292f, 0f, 0f), BtnAniTime);
+                if (RightArrowImage != null)
+                    RightArrowImage.material = GrayMaterial;
+            }
+            else
+            {
+                //還原所有按鈕相關UI
+                if (btnRT != null)
+                    btnRT.sizeDelta = new Vector2(367f, 135f);
+                if (btnImage != null)
+                    btnImage.material = null;
+                BtnBGMaskRT.sizeDelta = new Vector2(308f, 94f);
+                if (maskImage != null)
+                    maskImage.material = null;
+                LeftArrowRT.anchoredPosition = new Vector2(154f, 0f);
+                if (LeftArrowImage != null)
+                    LeftArrowImage.material = null;
+                RightArrowRT.anchoredPosition = new Vector2(-154f ,0f);
+                if (RightArrowImage != null)
+                    RightArrowImage.material = null;
+            }
+        }
+
         void CoinDrop() {
             //重置位置
             DropCoinTrans.localPosition = Vector3.zero;
             //掉落演出
-            DropCoinTrans.DOLocalMove(new Vector3(0f, -430f, 0f), 2f, true);
+            DropCoinTrans.DOLocalMove(new Vector3(-24f, -430f, 0f), BtnAniTime, true);
         }
 
         void DeductionCoin() {
@@ -240,6 +401,9 @@ namespace Gladiators.Battle {
             WriteLog.Log("關閉介面 進入戰鬥!");
             base.SetActive(false);
             ResetCandles();
+            ResetBGFore();
+            ResetApeture();
+            ResetButton();
             _afterCloseAct();
         }
 
