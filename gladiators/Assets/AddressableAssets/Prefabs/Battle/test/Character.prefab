@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5872801342059066184}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: SkillArea
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -41,7 +41,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9008828048409509908}
   - component: {fileID: 8777980665360889955}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Character
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -100,7 +100,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2168189493600221619}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: SideRotationParent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -134,7 +134,7 @@ GameObject:
   m_Component:
   - component: {fileID: 759556913905644443}
   - component: {fileID: 439293456559096948}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -188,7 +188,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5488404779650223459}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: CamLook(RightPlayer)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -219,7 +219,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5751186689137934131}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: rotate
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -252,7 +252,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8041596203408771044}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: CamLook(LeftPlayer)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -332,10 +332,20 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2592318827888616408, guid: d2d1f94a204458d44a0b8c73ff9f1b13,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 5316348206110256664, guid: d2d1f94a204458d44a0b8c73ff9f1b13,
         type: 3}
       propertyPath: m_Name
       value: MoveSmoke
+      objectReference: {fileID: 0}
+    - target: {fileID: 5316348206110256664, guid: d2d1f94a204458d44a0b8c73ff9f1b13,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -427,10 +437,20 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: a2182897c86a7f343979adfbfc9784c5,
+        type: 3}
+      propertyPath: m_RenderingLayerMask
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: a2182897c86a7f343979adfbfc9784c5,
         type: 3}
       propertyPath: m_Name
       value: Baseturntable
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: a2182897c86a7f343979adfbfc9784c5,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -516,10 +536,20 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: 50d08f295685a1a4284563769b4fe241,
+        type: 3}
+      propertyPath: m_RenderingLayerMask
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 50d08f295685a1a4284563769b4fe241,
         type: 3}
       propertyPath: m_Name
       value: BOARD
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 50d08f295685a1a4284563769b4fe241,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -590,10 +620,20 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: 4dacebc848177b24fb0cee2a073e6ae4,
+        type: 3}
+      propertyPath: m_RenderingLayerMask
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 4dacebc848177b24fb0cee2a073e6ae4,
         type: 3}
       propertyPath: m_Name
       value: Base
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 4dacebc848177b24fb0cee2a073e6ae4,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -15,23 +15,24 @@ public class BattleModelController : MonoBehaviour {
     [SerializeField] GameObject terrainArea;
     [SerializeField] GameObject charactersArea;
 
-    [SerializeField] Character leftChar = null;
-    [SerializeField] Character rightChar = null;
+    Character leftChar = null;
+    Character rightChar = null;
 
     [SerializeField] bool BattleIsEnd = false;
 
-    public const float WALLPOS = 20f;
+    public const float WALLPOS = 20f;// 牆壁位置
+    public const float KnockAngleRange = 30;// 擊退最大水平角度
     Dictionary<string, Character> CharDic;
 
     public static BattleModelController Instance { get; private set; }
 
     public void Init() {
         Instance = this;
-        CreateTerrain();
     }
 
-    void CreateTerrain() {
-        Instantiate(terrainPrefab, terrainArea.transform);
+    private void Update() {
+        if (leftChar != null) leftChar.Move(curKnockAngle);
+        if (rightChar != null) rightChar.Move(curKnockAngle);
     }
 
     public void CreateCharacter(PackPlayer _myPlayerPack, PackPlayer _opponentPack) {
@@ -40,19 +41,19 @@ public class BattleModelController : MonoBehaviour {
 
         leftChar.name = _myPlayerPack.DBID;
         leftChar.tag = "leftobj";
-        leftChar.Init((float)_myPlayerPack.MyPackGladiator.CurPos, rightChar, RightLeft.Right);
-
+        leftChar.Init((float)_myPlayerPack.MyPackGladiator.CurPos, rightChar, RightLeft.Right, curKnockAngle);
+        BattleManager.Instance.vTargetGroup.AddMember(leftChar.transform, 1.8f, 8);
         rightChar.name = _opponentPack.DBID;
         rightChar.tag = "rightobj";
-        rightChar.Init((float)_opponentPack.MyPackGladiator.CurPos, leftChar, RightLeft.Left);
-
-        leftChar.SetFaceToTarget();
-        rightChar.SetFaceToTarget();
+        rightChar.Init((float)_opponentPack.MyPackGladiator.CurPos, leftChar, RightLeft.Left, curKnockAngle);
+        BattleManager.Instance.vTargetGroup.AddMember(rightChar.transform, 1, 8);
 
         CharDic = new Dictionary<string, Character>();
         CharDic.Add(_myPlayerPack.DBID, leftChar);
         CharDic.Add(_opponentPack.DBID, rightChar);
     }
+
+
 
     public IEnumerator WaitCharacterCreate() {
         while (leftChar == null || rightChar == null) {
@@ -77,33 +78,40 @@ public class BattleModelController : MonoBehaviour {
         BattleIsEnd = true;
     }
 
+    float curKnockAngle = 0; // 目前碰撞擊退的角度
 
     public void UpdateGladiatorsState(PackPlayerState _leftPlayer, PackPlayerState _rightPlayer) {
-        if (_leftPlayer != null) {
-            leftChar.SetState(_leftPlayer.GladiatorState);
-        }
+        if (_leftPlayer == null || _rightPlayer == null) return;
 
-        if (_rightPlayer != null) {
-            rightChar.SetState(_rightPlayer.GladiatorState);
-        }
+        // 計算server的中心點
+        float serverCenterPos = (float)(_rightPlayer.GladiatorState.CurPos + _leftPlayer.GladiatorState.CurPos) / 2.0f;
+        float leftToCenter = Mathf.Abs(serverCenterPos - (float)_leftPlayer.GladiatorState.CurPos);
+        float rightToCenter = Mathf.Abs(serverCenterPos - (float)_rightPlayer.GladiatorState.CurPos);
+
+        // 計算client的中心點
+        Vector3 clientCenterPos = (rightChar.transform.localPosition + leftChar.transform.localPosition) / 2.0f;
+
+        // 更新角色狀態
+        leftChar.SetState(_leftPlayer.GladiatorState, clientCenterPos, leftToCenter, curKnockAngle);
+        rightChar.SetState(_rightPlayer.GladiatorState, clientCenterPos, rightToCenter, curKnockAngle);
     }
 
-    public void Melee(PackPlayerState leftPlayer, PackPlayerState rightPlayer, PackAttack _leftAttack, PackAttack _rightAttack) {
 
-        if (leftPlayer != null) {
-            var state = leftPlayer.GladiatorState;
-            leftChar.SetState(state);
-            //WriteLog.LogError("AttackPos=" + _leftAttack.AttackPos + "  CurPos=" + state.CurPos);
-            leftChar.HandleMelee(_leftAttack.SkillID, (float)_rightAttack.Knockback, (float)_leftAttack.AttackPos, (float)state.CurPos);
+    public void Melee(PackPlayerState _leftPlayer, PackPlayerState _rightPlayer, PackAttack _leftAttack, PackAttack _rightAttack) {
+        if (_leftPlayer == null || _rightPlayer == null) return;
 
-        }
+        UpdateGladiatorsState(_leftPlayer, _rightPlayer);
 
-        if (rightPlayer != null) {
-            var state = rightPlayer.GladiatorState;
-            rightChar.SetState(state);
-            //WriteLog.LogError("AttackPos=" + _rightAttack.AttackPos + "  CurPos=" + state.CurPos);
-            rightChar.HandleMelee(_rightAttack.SkillID, (float)_leftAttack.Knockback, (float)_rightAttack.AttackPos, (float)state.CurPos);
-        }
+        curKnockAngle += UnityEngine.Random.Range(-KnockAngleRange, KnockAngleRange);
+        BattleManager.Instance.SetVCamTargetRot(-curKnockAngle);
+
+        var leftState = _leftPlayer.GladiatorState;
+        leftChar.HandleMelee((float)_leftAttack.AttackPos, (float)_leftAttack.Knockback, (float)leftState.CurPos, curKnockAngle, _leftAttack.SkillID);
+
+        var rightState = _rightPlayer.GladiatorState;
+        rightChar.HandleMelee((float)_rightAttack.AttackPos, (float)_rightAttack.Knockback, (float)rightState.CurPos, curKnockAngle, _rightAttack.SkillID);
+
+
 
         //產生特效
         AddressablesLoader.GetParticle("Battle/MeleeHit", (prefab, handle) => {

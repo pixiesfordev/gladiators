@@ -94,6 +94,11 @@ namespace Gladiators.Battle {
             ResetBattle();
         }
 
+        public void SetVCamTargetRot(float _angle) {
+            vTargetGroup.transform.localRotation = Quaternion.Euler(0, -90 + _angle, 0);
+            WriteLog.Log("vTargetGroup.transform.localRotation=" + vTargetGroup.transform.localRotation);
+        }
+
         void SetCam() {
             //因為戰鬥場景的攝影機有分為場景與UI, 要把場景攝影機設定為Base, UI設定為Overlay, 並在BaseCamera中加入Camera stack
             UICam.Instance.SetRendererMode(CameraRenderType.Overlay);
