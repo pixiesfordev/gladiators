@@ -21,6 +21,8 @@ public class BattleSceneUI : BaseUI {
     [SerializeField] BattleGladiatorInfo PlayerGladiatorInfo;
     [SerializeField] BattleGladiatorInfo EnemyGladiatorInfo;
 
+    [SerializeField] Text PlayerGoldText;//玩家持有金錢
+
     [SerializeField] MyTextPro BattleLeftTime;//戰鬥剩餘時間
 
     //技能牌
@@ -55,6 +57,44 @@ public class BattleSceneUI : BaseUI {
         SkillBtn1.SetData(GameDictionary.GetJsonData<JsonSkill>(1)); //這個是碰撞觸發技能
         SkillBtn2.SetData(GameDictionary.GetJsonData<JsonSkill>(2)); //這個是直接觸發技能
         SkillBtn3.SetData(GameDictionary.GetJsonData<JsonSkill>(3)); //這個是直接觸發技能
+    }
+
+    public void SetSkillBtnData()
+    {
+        //TODO:接收封包並設定按鈕的技能資料
+    }
+
+    /// <summary>
+    /// 更新玩家金錢
+    /// </summary>
+    /// <param name="gold">金錢</param>
+    public void UpdatePlayerGold(int gold)
+    {
+        PlayerGoldText.text = gold.ToString();
+    }
+
+    /// <summary>
+    /// 更新角鬥士資訊
+    /// </summary>
+    /// <param name="self">是否為己方角鬥士</param>
+    /// <param name="maxHP">最大血量</param>
+    /// <param name="curHP">目前血量</param>
+    /// <param name="heroID">英雄ID</param>
+    public void InitGladiator(bool self, int maxHP, int curHP, int heroID)
+    {
+        BattleGladiatorInfo target = self ? PlayerGladiatorInfo : EnemyGladiatorInfo;
+        target.Init(maxHP, curHP, heroID);
+    }
+
+    /// <summary>
+    /// 更新角鬥士血量
+    /// </summary>
+    /// <param name="self">是否為己方角鬥士</param>
+    /// <param name="curHP">目前血量</param>
+    public void UpdateGladiatorHP(bool self, int curHP)
+    {
+        BattleGladiatorInfo target = self ? PlayerGladiatorInfo : EnemyGladiatorInfo; 
+        target.AddHP(curHP);
     }
 
     void SpawnBattleManager() {

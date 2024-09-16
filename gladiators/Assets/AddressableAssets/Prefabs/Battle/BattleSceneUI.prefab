@@ -792,9 +792,11 @@ MonoBehaviour:
   HeartBeatGrayIconTrans: {fileID: 4394443284097386620}
   HeartBeatGrayIcon: {fileID: 5916359829940169212}
   BuffIconTrans: {fileID: 1409902349693763964}
-  PerformHPReduce: 0
-  BarStartVal: 0
-  BarFinalVal: 0
+  InitHPCondition: 0
+  HeroTestMaxHP: 0
+  HeroTestCurHP: 0
+  PerformHPChangeFlag: 0
+  HeroChangeHP: 0
   BarChangeSecDelay: 0
   BarChangeSecNeed: 0
   BarChangeFrame: 60
@@ -812,8 +814,8 @@ MonoBehaviour:
   HeartBeatTweenScale: 1.3
   HeartBeatDuration: 1
   HeartBeatReverse: 1
-  UpdateCurrentHP: 0
-  SettingCurrentHP: 1
+  UpdateHeroIcon: 0
+  HeroTestID: 0
 --- !u!1 &1105435031274134201
 GameObject:
   m_ObjectHideFlags: 0
@@ -7083,6 +7085,7 @@ MonoBehaviour:
     m_EditorAssetChanged: 0
   PlayerGladiatorInfo: {fileID: 6746283082193121166}
   EnemyGladiatorInfo: {fileID: 5661049524060450723}
+  PlayerGoldText: {fileID: 4513145301553664397}
   BattleLeftTime: {fileID: 4098945690757743790}
   SkillBtn1: {fileID: 6428109590702190356}
   SkillBtn2: {fileID: 2825287410354185771}
@@ -7179,7 +7182,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3214700814118358999}
   m_Layer: 5
-  m_Name: Money
+  m_Name: PlayerGold
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8087,9 +8090,11 @@ MonoBehaviour:
   HeartBeatGrayIconTrans: {fileID: 4503560226991277982}
   HeartBeatGrayIcon: {fileID: 2088362759688664329}
   BuffIconTrans: {fileID: 1798829969934345638}
-  PerformHPReduce: 0
-  BarStartVal: 0
-  BarFinalVal: 0
+  InitHPCondition: 0
+  HeroTestMaxHP: 0
+  HeroTestCurHP: 0
+  PerformHPChangeFlag: 0
+  HeroChangeHP: 0
   BarChangeSecDelay: 0
   BarChangeSecNeed: 0
   BarChangeFrame: 60
@@ -8107,8 +8112,8 @@ MonoBehaviour:
   HeartBeatTweenScale: 1.3
   HeartBeatDuration: 1
   HeartBeatReverse: 0
-  UpdateCurrentHP: 0
-  SettingCurrentHP: 1
+  UpdateHeroIcon: 0
+  HeroTestID: 0
 --- !u!1 &8763123108341908231
 GameObject:
   m_ObjectHideFlags: 0
@@ -8670,6 +8675,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: DivineSelectUI
+      objectReference: {fileID: 0}
+    - target: {fileID: 8640825839032587235, guid: 0bcc41ee2008f5f4695fab3afb01a727,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

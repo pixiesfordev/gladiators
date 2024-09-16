@@ -6,6 +6,7 @@ using System.Threading;
 using Unity.Mathematics;
 using DG.Tweening;
 using System;
+using Gladiators.Main;
 
 /// <summary>
 /// 上方角鬥士資訊
@@ -31,9 +32,11 @@ public class BattleGladiatorInfo : MonoBehaviour {
 
     [HeaderAttribute("==============TEST==============")]
     [HeaderAttribute("=========受擊血量變動測試=========")]
-    [Tooltip("測試血量扣減演出")][SerializeField] bool PerformHPReduce = false;
-    [Tooltip("血量起始值 0~1 此值大於BarFinalVal表示扣血")][SerializeField] float BarStartVal = 1f;
-    [Tooltip("血量剩餘值 0~1 此值大於BarStartVal表示回血")][SerializeField] float BarFinalVal = 0.7f;
+    [Tooltip("初始化血量條件")][SerializeField] bool InitHPCondition = false;
+    [Tooltip("英雄測試最大血量 必須是整數(int)")][SerializeField] int HeroTestMaxHP = 0;
+    [Tooltip("英雄測試目前血量 必須是整數(int)")][SerializeField] int HeroTestCurHP = 0;
+    [Tooltip("測試血量變化演出")][SerializeField] bool PerformHPChangeFlag = false;
+    [Tooltip("英雄變化血量 必須是整數(int)")][SerializeField] int HeroChangeHP = 0;
     [Tooltip("血量變化停滯秒數 就是被打掉的或者恢復量的血條殘留時間")][SerializeField] float BarChangeSecDelay = 1f;
     [Tooltip("血量變化演出秒數 越短就越快")][SerializeField] float BarChangeSecNeed = 1f;
     [Tooltip("血量變化演出偵數 即每秒血條變化張數")][SerializeField] float BarChangeFrame = 60f;
@@ -53,24 +56,21 @@ public class BattleGladiatorInfo : MonoBehaviour {
     [Tooltip("心跳放大倍數 1為原本比例沒放大 2就是放大一倍 建議1~2之間")][SerializeField] float HeartBeatTweenScale = 1.3f;
     [Tooltip("心跳所需時間 即從原本尺寸到放大再到變回來的所需時間 這個會自動隨著血量減少等比加快")][SerializeField] float HeartBeatDuration = 1f;
     [Tooltip("心跳需要反向 敵人頭像這個要打勾")][SerializeField] bool HeartBeatReverse = false;
-
-    [HeaderAttribute("=========設定當前血量測試=========")]
-    [Tooltip("更新當前血量")][SerializeField] bool UpdateCurrentHP;
-    [Tooltip("設定當前HP剩餘量 最大為1(滿血) 最小為0(空血)")][SerializeField] float SettingCurrentHP = 1f;
+    [HeaderAttribute("==============變更英雄頭像==============")]
+    [Tooltip("測試變更英雄頭像 要搭配英雄最大&目前血量一起設定")][SerializeField] bool UpdateHeroIcon = false;
+    [Tooltip("測試英雄頭像ID")][SerializeField] int HeroTestID = 0;
 
     //TODO:
-    //1.扣血/回血 血條(Bar)演出 血條總長度396 Right值越大長度越短 396就等於0%
+    //1.扣血/回血 血條(Bar)演出 血條總長度396 Right值越大長度越短 396就等於0% >> 已完成(9/17改版)
     //1.心臟跳動效果(公式:100~1 >> Min~Max) >> 已完成(4/9)
     //2.受擊 >> 心跳變黑白 往左搖晃一下 之後變回原本顏色 血條瞬間全白後開始扣減 >> 已完成(4/11)
     //3.原本血條也要變黑白跟著縮減 縮減後變化血條不用隱藏 而是保留最後一小段 >> 已完成(4/11)
-    //2.buff圖案
+    //4.buff圖案
 
     CancellationTokenSource CurrentCTS; //用來中斷目前的血條演出
 
     //血條演出區塊參數
     RectTransform ChangeBarRect; //血條rt參考
-    float HPChangeBarWidth; //血條長度
-    float HPChangeBarOffsetY; //血條高度偏移量
     float CurrentHPRate = 1f; //目前血量比率
     Vector3 ChangeBarOriginPos;
     Color HideColor = new Color(1f, 1f, 1f, 0f);
@@ -81,55 +81,119 @@ public class BattleGladiatorInfo : MonoBehaviour {
     Tweener HeartBeatGrayScaleTween1;
     Tweener HeartBeatGrayScaleTween2;
 
+    int HeroMaxHP = 0; //英雄最大血量
+    int HeroCurHP = 0; //英雄目前血量
+    float HeroDisplayHPRate = 0f; //英雄顯示血量百分比
+
     private void Start() {
         ChangeBarRect = HPChangeBar.GetComponent<RectTransform>();
-        HPChangeBarWidth = ChangeBarRect.rect.width;
-        HPChangeBarOffsetY = ChangeBarRect.offsetMax.y;
         ChangeBarOriginPos = ChangeBarRect.anchoredPosition3D;
         SetHeartBeatParameter();
     }
 
     void Update() {
+        //測試用 初始化血條
+        if (InitHPCondition) {
+            InitHP(HeroTestMaxHP, HeroTestCurHP);
+            SetHPBar(HeroDisplayHPRate);
+            InitHPCondition = false;
+        }
+
         //測試用 做血條演出
-        if (PerformHPReduce) {
-            UniTask.Void(async () => {
-                if (CurrentCTS != null)
-                    CurrentCTS.Cancel();
-                CurrentCTS = new CancellationTokenSource();
-                HPChange(CurrentCTS).Forget();
-            });
-            PerformHPReduce = false;
+        if (PerformHPChangeFlag) {
+            AddHP(HeroChangeHP);
+            PerformHPChangeFlag = false;
         }
         //測試用 做心跳演出
         if (UpdateHeartBeatParameter) {
             SetHeartBeatParameter();
             UpdateHeartBeatParameter = false;
         }
-        //測試用 直接設定當前HP
-        if (UpdateCurrentHP) {
-            SetCurrentHP();
-            UpdateCurrentHP = false;
+        //測試用 改變英雄頭像
+        if (UpdateHeroIcon) {
+            Init(HeroTestMaxHP, HeroTestCurHP, HeroTestID);
+            UpdateHeroIcon = false;
         }
     }
 
-    public void SetData() {
-        //TODO:
-        //英雄頭像設定
-        //英雄名字設定
+    /// <summary>
+    /// 初始化角鬥士資訊
+    /// </summary>
+    /// <param name="maxHP">最大血量</param>
+    /// <param name="curHP">目前血量</param>
+    /// <param name="heroID">英雄圖片ID</param>
+    public void Init(int maxHP, int curHP, int heroID) {
         //血量設定
+        InitHP(maxHP, curHP);
+
+        JsonGladiator heroData = GameDictionary.GetJsonData<JsonGladiator>(heroID);
+        if (heroData == null) {
+            WriteLog.LogErrorFormat("英雄資料不存在.英雄ID:{0}", heroID);
+            return;
+        }
+
+        //英雄頭像設定
+        if (!string.IsNullOrEmpty(heroData.Ref)) {
+            HeroIcon.gameObject.SetActive(true);
+            AssetGet.GetSpriteFromAtlas("HeroIcon", heroData.Ref, (sprite) => {
+                HeroIcon.sprite = sprite;
+            });
+        } else {
+            HeroIcon.gameObject.SetActive(false);
+            WriteLog.LogErrorFormat("英雄頭像不存在.英雄ID:{0}", heroID);
+        }
+        //英雄名字設定
+        HeroName.text = heroData.Name;
     }
 
-    //血條演出 之後改傳入起始值跟終值作演出判斷
+    /// <summary>
+    /// 血量變化
+    /// </summary>
+    /// <param name="_value">變化量</param>
+    public void AddHP(int _value)
+    {
+        //傳入變化血量 中斷目前演出 計算終值 往終值演出
+        HeroCurHP += _value;
+        if (HeroCurHP < 0)
+            HeroCurHP = 0;
+        else if (HeroCurHP > HeroMaxHP)
+            HeroCurHP = HeroMaxHP;
+        Debug.LogFormat("血量變化. 變化量:{0} 目前血量:{1}", _value, HeroCurHP);
+        PerformHPChange();
+    }
+
+    void InitHP(int maxHP, int curHP)
+    {
+        HeroMaxHP = maxHP;
+        HeroCurHP = curHP;
+        HeroDisplayHPRate = curHP / maxHP;
+        Debug.LogFormat("初始化HP. 最大HP:{0} 目前HP:{1} 目前顯示百分比:{2}", maxHP, curHP, HeroDisplayHPRate * 100);
+    }
+
+    //執行血條演出
+    void PerformHPChange()
+    {
+        UniTask.Void(async () => {
+            if (CurrentCTS != null)
+                CurrentCTS.Cancel();
+            CurrentCTS = new CancellationTokenSource();
+            HPChange(CurrentCTS).Forget();
+        });
+    }
+
+    //血條演出內容
     async UniTaskVoid HPChange(CancellationTokenSource ctk) {
+        //接入實際扣減的數值 換算血量比例
+        float BarStartVal = HeroDisplayHPRate;
+        float BarFinalVal = (float)HeroCurHP / HeroMaxHP;
+        Debug.LogFormat("血量準備變化. 起始值:{0} 最終值:{1}", BarStartVal, BarFinalVal);
         if (BarStartVal == BarFinalVal)
             return;
         Debug.Log("------開始演出血量-------");
-        //TODO:之後改為接入實際扣減的數值 需要換算血量比例
         bool isReduce = BarStartVal >= BarFinalVal;
-        float currentVal = BarStartVal;
         CurrentHPRate = BarFinalVal;
-        //血條(彩色)設定為血量變化起始長度
-        HPBar.fillAmount = BarStartVal;
+        //血條(彩色)設定為血量變化起始長度 & 設置變化血條起始位置
+        SetHPBar(HeroDisplayHPRate);
         //血條(白色)設定為血量變化起始長度
         HPBarGray.fillAmount = BarStartVal;
         //血條(黑白)設定為血量變化起始長度
@@ -142,7 +206,6 @@ public class BattleGladiatorInfo : MonoBehaviour {
         HeartBeatGrayIconTrans.localEulerAngles = Vector3.zero; //先歸0以免連續觸發演出導致角度不正常
         HeartBeatGrayIcon.color = HideColor; //還原顏色設定以免多次演出導致顏色異常
         HPBarWhite.color = HideColor;//還原顏色設定以免多次演出導致顏色異常
-        SetHPBarChangePos(currentVal);//設置變化血條起始位置
 
         //等待血條停滯時間
         await UniTask.WaitForSeconds(BarChangeSecDelay, cancellationToken: ctk.Token);
@@ -186,53 +249,47 @@ public class BattleGladiatorInfo : MonoBehaviour {
         await UniTask.WaitForSeconds(HittedHPBarWhiteDuration, cancellationToken: ctk.Token);
 
         Debug.Log("------開始漸變------");
-        Debug.Log("每秒變化量: " + delta + " 每次變化所需秒數: " + duration);
-        //Debug.Log("current Val: " + currentVal +  " Final Val: " + BarFinalVal);
+        Debug.Log("每次變化量: " + delta + " 每次變化所需秒數: " + duration);
+        //Debug.Log("current Val: " + HeroDisplayHPRate +  " Final Val: " + BarFinalVal);
         //血量變化 >> 變化血條長度固定並隨著血條末端位移 要有殘影滯留逐步縮退 彩色血條先 底下一條灰階的血條快速跟隨縮退
         //黑白血條演出 另外開一個UniTask去跑
         float grayDelta = math.abs(BarStartVal - BarFinalVal) / BarGrayChangeSecNeed / BarChangeFrame;//黑白血條演出所需每次變化量
         float grayDuration = 1f / BarChangeFrame;//黑白血條演出每次間隔時間
         //紀錄上次殘影出現血量百分比
         float lastAfterImageHPRate = 0f;
-        UniTask.Void(async () => { HPGrayChange(CurrentCTS, isReduce, currentVal, BarFinalVal, grayDuration, grayDelta).Forget(); });
+        UniTask.Void(async () => { HPGrayChange(CurrentCTS, isReduce, HeroDisplayHPRate, BarFinalVal, grayDuration, grayDelta).Forget(); });
         if (isReduce) {
-            while (currentVal >= BarFinalVal) {
+            while (HeroDisplayHPRate >= BarFinalVal) {
                 await UniTask.WaitForSeconds(duration, cancellationToken: ctk.Token);
-                currentVal -= delta;
-                //目前血條(彩色)開始變化
-                HPBar.fillAmount = currentVal;
-                //變化血條位移
-                SetHPBarChangePos(currentVal);
+                HeroDisplayHPRate -= delta;
+                //目前血條(彩色)開始變化 & 變化血條位移
+                SetHPBar(HeroDisplayHPRate);
                 //製造殘影(比對上一次產生殘影的血量 高於等於設定值就產生殘影)
-                if (lastAfterImageHPRate == 0f || (Math.Abs(lastAfterImageHPRate - currentVal) >= HPRateGenerateAfterImage)) {
-                    lastAfterImageHPRate = currentVal;
+                if (lastAfterImageHPRate == 0f || (Math.Abs(lastAfterImageHPRate - HeroDisplayHPRate) >= HPRateGenerateAfterImage)) {
+                    lastAfterImageHPRate = HeroDisplayHPRate;
                     GenerateHPBarChangeAfterImage();
                 }
-                Debug.Log("數值減少 目前百分比值: " + currentVal);
+                Debug.LogFormat("數值減少 目前百分比值: {0}.", HeroDisplayHPRate);
             }
         } else {
-            while (currentVal <= BarFinalVal) {
+            while (HeroDisplayHPRate <= BarFinalVal) {
                 await UniTask.WaitForSeconds(duration, cancellationToken: ctk.Token);
-                currentVal += delta;
-                //目前血條(彩色)開始變化
-                HPBar.fillAmount = currentVal;
-                //變化血條位移
-                SetHPBarChangePos(currentVal);
+                HeroDisplayHPRate += delta;
+                //目前血條(彩色)開始變化 & 變化血條位移
+                SetHPBar(HeroDisplayHPRate);
                 //製造殘影(比對上一次產生殘影的血量 高於等於設定值就產生殘影)
-                if (lastAfterImageHPRate == 0f || (Math.Abs(lastAfterImageHPRate - currentVal) >= HPRateGenerateAfterImage)) {
-                    lastAfterImageHPRate = currentVal;
+                if (lastAfterImageHPRate == 0f || (Math.Abs(lastAfterImageHPRate - HeroDisplayHPRate) >= HPRateGenerateAfterImage)) {
+                    lastAfterImageHPRate = HeroDisplayHPRate;
                     GenerateHPBarChangeAfterImage();
                 }
-                Debug.Log("數值增加 目前百分比值: " + currentVal);
+                Debug.LogFormat("數值增加 目前百分比值: {0}.", HeroDisplayHPRate);
             }
         }
         await UniTask.Yield(ctk.Token);
         //血量變化更改心跳速度
         SetHeartBeatRate();
-        //目前血條(彩色)設定至定量避免計算有偏差
-        HPBar.fillAmount = BarFinalVal;
-        //變化血條設定至定量避免計算有偏差 >> 經過實測不加這行會縮退太多 因為上面計算一定不會剛好停止
-        SetHPBarChangePos(BarFinalVal);
+        //目前血條(彩色)設定至定量避免計算有偏差 & 變化血條設定至定量避免計算有偏差 >> 經過實測不加這行會縮退太多 因為上面計算一定不會剛好停止
+        SetHPBar(BarFinalVal);
     }
 
     /// <summary>
@@ -270,6 +327,16 @@ public class BattleGladiatorInfo : MonoBehaviour {
         await UniTask.Yield(ctk.Token);
         //目前血條(黑白)設定至定量避免計算有偏差
         HPBarGray.fillAmount = changeFinalVal;
+    }
+
+    /// <summary>
+    /// 設定血條
+    /// </summary>
+    /// <param name="percent">血量百分比</param>
+    void SetHPBar(float percent)
+    {
+        HPBar.fillAmount = percent; //設定目前血條(彩色)
+        SetHPBarChangePos(percent); //變化血條位移
     }
 
     //產生變化血條殘影
@@ -401,15 +468,6 @@ public class BattleGladiatorInfo : MonoBehaviour {
     void HeartGrayBeat() {
         HeartBeatGrayScaleTween1.Restart();
         //Debug.Log("重新心跳");
-    }
-
-    void SetCurrentHP() {
-        CurrentHPRate = SettingCurrentHP;
-        HPBar.fillAmount = CurrentHPRate;
-        HPBarGray.fillAmount = CurrentHPRate;
-        HPBarWhite.fillAmount = CurrentHPRate;
-        SetHPBarChangePos(CurrentHPRate);
-        SetHeartBeatRate();
     }
 
     //心臟受擊旋轉回原位置

@@ -16,6 +16,7 @@ namespace Gladiators.Main {
                 return JsonString.GetString_static(DataName + "_" + ID, "Name");
             }
         }
+        public string Ref { get; private set; }
         public int HP { get; private set; }
         public int STR { get; private set; }
         public int DEF { get; private set; }
