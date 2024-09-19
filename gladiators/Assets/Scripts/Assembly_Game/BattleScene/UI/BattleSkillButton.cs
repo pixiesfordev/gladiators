@@ -18,7 +18,7 @@ public class BattleSkillButton : MonoBehaviour {
     //[Tooltip("")][SerializeField] ;
 
     JsonSkill SkillData;
-    public bool SkillSelected { get; private set;} = false; //技能被選上 等待觸發 碰撞觸發技能使用
+    public bool SkillSelected { get; private set; } = false; //技能被選上 等待觸發 碰撞觸發技能使用
 
     //TODO:
     //1.技能分類 直接釋放/碰撞釋放(enum的BattleSkillType)
@@ -31,28 +31,47 @@ public class BattleSkillButton : MonoBehaviour {
     //2.補牌:補到使用掉的牌的位置(可調整參數 等待多久後開始位移補入 淡出所需時間 這裡注意不要真的改物件 因為補充的牌不會掛按鈕)
     //3.肉搏牌ON/OFF演出(外框加金框的圖做淡入淡出)
 
+    /// <summary>
+    /// 設定技能資料
+    /// </summary>
+    /// <param name="_skill">技能資料</param>
     public void SetData(JsonSkill _skill)
     {
-        //TODO:設定技能資料 等有資料後要實際接入
         SkillData = _skill;
-        Debug.Log("技能物件: " + gameObject.name + " 設定技能資料! 技能ID: " + SkillData.ID);
+        Debug.LogFormat("技能物件:{0}設定技能資料! 技能ID: {1}", gameObject.name, SkillData.ID);
     }
 
+    /// <summary>
+    /// 比對與設定技能是否為啟動
+    /// </summary>
+    /// <param name="_handOnID">比對技能ID</param>
+    /// <param name="_on">是否啟動</param>
+    public void CheckAndSetSkillOn(int _handOnID, bool _on)
+    {
+        SkillSelected = SkillData != null && SkillData.ID == _handOnID && _on;
+        int logSkillID = SkillData == null ? 0 : SkillData.ID;
+        Debug.LogFormat("比對技能物件:{0}. 物件技能ID:{1} 是否啟動:{2}", gameObject.name, logSkillID, SkillSelected);
+    }
 
     //點擊施放技能
     public void ClickBtn()
     {
+        //判斷技能是否存在
+        if (SkillData == null) {
+            Debug.LogError("Skill Data is null!");
+            return;
+        }
+        //送封包給後端
+        AllocatedRoom.Instance.SetSkill(SkillData.ID, true);
+        /* 舊版 先註解 確定完成正式邏輯後刪除 先保留做為參考
         //判斷技能類型
-        if (SkillData == null) return;
         if (SkillData.Activation.Equals(SkillActivation.Instant))
         {
-            //TODO:
             //直接觸發類
             BattleManager.Instance.CastInstantSKill(SkillData);
         }
         else if (SkillData.Activation.Equals(SkillActivation.Melee))
         {
-            //TODO:
             //碰撞觸發類 把技能傳給BattleManager存放
             SkillSelected = !SkillSelected;
             BattleManager.Instance.SetMeleeSkill(SkillData, SkillSelected);
@@ -62,9 +81,10 @@ public class BattleSkillButton : MonoBehaviour {
             Debug.LogErrorFormat("Unknown Battle Skill Type. String: " + SkillData.Activation);
             return;
         }
+        */
     }
 
-    public void CastMeleeSkill()
+    public void CastMeleeSkill(JsonSkill _skill)
     {
         SkillSelected = false;
         //TODO:

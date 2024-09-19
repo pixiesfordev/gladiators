@@ -21,6 +21,25 @@ public class BattleStaminaObj : MonoBehaviour {
     //2.體力條補充演出
     //3.技能消耗數值
 
+    /// <summary>
+    /// 初始化體力值
+    /// </summary>
+    /// <param name="curVal">目前數值</param>
+    /// <param name="maxVal">最大值</param>
+    public void Init(float curVal, float maxVal)
+    {
+        
+    }
+
+    /// <summary>
+    /// 同步體力數值
+    /// </summary>
+    /// <param name="val">數值</param>
+    public void SetVigor(float val)
+    {
+        //TODO:跟server同步數值
+    }
+
     public void SetCostVal(int pos, int val)
     {
         switch(pos)

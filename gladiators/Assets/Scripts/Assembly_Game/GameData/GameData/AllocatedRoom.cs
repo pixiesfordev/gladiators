@@ -203,11 +203,13 @@ namespace Gladiators.Main {
         /// 收到神祉技能選擇封包, 如果雙方的資料都收到就開始遊戲
         /// </summary>
         public void ReceiveDivineSkill(PackPlayerState _myPlayerState, PackCardState _myCardState, PackPlayerState _opponentPlayerState) {
-            if (_myPlayerState == null || _myPlayerState.DBID == null) return;
+            if (_myPlayerState == null || _myPlayerState.DBID == null || _myCardState == null) return;
             for (int i = 0; i < _myCardState.HandSkillIDs.Length; i++) {
                 WriteLog.Log($"手牌{i + 1}為技能ID{_myCardState.HandSkillIDs[i]}");
             }
 
+            //更新介面手牌技能
+            BattleSceneUI.Instance?.SetSkillBtnData(_myCardState.HandSkillIDs);
             //更新介面神祉技能卡牌
             BattleSceneUI.Instance?.SetDivineSkillData(_myPlayerState.DivineSkills);
             //關閉神祇技能選擇介面(做完演出後才去執行後續動作)
@@ -245,6 +247,7 @@ namespace Gladiators.Main {
 
         public void ReceiveSkill(string _playerID, int _skillID, bool _on) {
             if (BattleModelController.Instance != null) BattleModelController.Instance.Skill(_playerID, _skillID, _on);
+            BattleSceneUI.Instance.UpdateSkillState(_skillID, _on);
         }
 
     }

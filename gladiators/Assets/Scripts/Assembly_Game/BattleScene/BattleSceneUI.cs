@@ -54,14 +54,39 @@ public class BattleSceneUI : BaseUI {
         Instance = this;
 
         //先用暫時寫死的技能
-        SkillBtn1.SetData(GameDictionary.GetJsonData<JsonSkill>(1)); //這個是碰撞觸發技能
-        SkillBtn2.SetData(GameDictionary.GetJsonData<JsonSkill>(2)); //這個是直接觸發技能
-        SkillBtn3.SetData(GameDictionary.GetJsonData<JsonSkill>(3)); //這個是直接觸發技能
+        //SkillBtn1.SetData(GameDictionary.GetJsonData<JsonSkill>(1)); //這個是碰撞觸發技能
+        //SkillBtn2.SetData(GameDictionary.GetJsonData<JsonSkill>(2)); //這個是直接觸發技能
+        //SkillBtn3.SetData(GameDictionary.GetJsonData<JsonSkill>(3)); //這個是直接觸發技能
     }
 
-    public void SetSkillBtnData()
+    /// <summary>
+    /// 初始化&更新技能資料
+    /// </summary>
+    /// <param name="_handSKillIDs">手牌技能</param>
+    /// <param name="_handOnID">選中技能(近戰啟動中)</param>
+    public void SetSkillBtnData(int[] _handSKillIDs)
     {
-        //TODO:接收封包並設定按鈕的技能資料
+        //接收封包並設定按鈕的技能資料
+        int setID1 = _handSKillIDs.Length > 0 ? _handSKillIDs[0] : 0;
+        int setID2 = _handSKillIDs.Length > 1 ? _handSKillIDs[1] : 0;
+        int setID3 = _handSKillIDs.Length > 2 ? _handSKillIDs[2] : 0;
+        int nextSetID = _handSKillIDs.Length > 3 ? _handSKillIDs[3] : 0;
+        SkillBtn1.SetData(GameDictionary.GetJsonData<JsonSkill>(setID1));
+        SkillBtn2.SetData(GameDictionary.GetJsonData<JsonSkill>(setID2));
+        SkillBtn3.SetData(GameDictionary.GetJsonData<JsonSkill>(setID3));
+        NextSkillBtn.SetData(GameDictionary.GetJsonData<JsonSkill>(nextSetID));
+    }
+
+    /// <summary>
+    /// 接收點技能後的回傳 更新技能On/Off
+    /// </summary>
+    /// <param name="_skillID">目標技能ID</param>
+    /// <param name="_on">是否啟動技能</param>
+    public void UpdateSkillState(int _skillID, bool _on)
+    {
+        SkillBtn1.CheckAndSetSkillOn(_skillID, _on);
+        SkillBtn2.CheckAndSetSkillOn(_skillID, _on);
+        SkillBtn3.CheckAndSetSkillOn(_skillID, _on);
     }
 
     /// <summary>
@@ -122,18 +147,17 @@ public class BattleSceneUI : BaseUI {
         BattleLeftTime.text = num.ToString();
     }
 
-    /// <summary>
-    /// 通知施放碰撞觸發技能
-    /// </summary>
+    /*舊版純前端邏輯 預留當時純前端演出 前端發生碰撞就從這裡直接要求作演出 保留當作參考 by 瑞榮2024.9.18
     public void CastMeleeSkill(JsonSkill _skill) {
         //UI作演出 並把技能使用掉 更新下一個技能上來
         if (SkillBtn1.SkillSelected)
-            SkillBtn1.CastMeleeSkill();
+            SkillBtn1.CastMeleeSkill(_skill);
         else if (SkillBtn2.SkillSelected)
-            SkillBtn2.CastMeleeSkill();
+            SkillBtn2.CastMeleeSkill(_skill);
         else if (SkillBtn3.SkillSelected)
-            SkillBtn3.CastMeleeSkill();
+            SkillBtn3.CastMeleeSkill(_skill);
     }
+    */
 
     public void SetDivineSkillData(PackDivineSkill[] _datas) {
         if (_datas == null) { WriteLog.Log("神祇技能資料遺失!"); return; }

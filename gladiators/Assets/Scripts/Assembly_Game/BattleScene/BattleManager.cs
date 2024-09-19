@@ -34,7 +34,7 @@ namespace Gladiators.Battle {
         public float GameTime { get; private set; }//遊戲時間
         public int LeftGameTime { get { return Mathf.RoundToInt((float)BattleDefaultTime - GameTime); } }//遊戲剩餘時間
 
-        JsonSkill SelectedMeleeSkill;
+        //JsonSkill SelectedMeleeSkill;
 
         [HeaderAttribute("===場景物件控制===")]
         [SerializeField] BattleModelController battleModelController;
@@ -43,7 +43,7 @@ namespace Gladiators.Battle {
         [HeaderAttribute("==============TEST==============")]
         //測試參數區塊
         [Tooltip("重置戰鬥")][SerializeField] bool bResetBattle = false;
-        [Tooltip("前端演示測試 打勾表示只使用純前端邏輯模擬")][SerializeField] bool bFrontEndTest = true;
+        //[Tooltip("前端演示測試 打勾表示只使用純前端邏輯模擬")][SerializeField] bool bFrontEndTest = true;
 
         void Update() {
             if (bResetBattle) {
@@ -141,12 +141,15 @@ namespace Gladiators.Battle {
         /// </summary>
         /// <param name="_skill">技能Data</param>
         public void CastInstantSKill(JsonSkill _skill) {
-            //TODO:在這裡做演出
+            //TODO:在這裡做演出 >> 現在直接走後端流程
+            /*舊版純前端演出預留邏輯 這裡原本是假設沒接後端的封包 前端自己保存選上技能 前端發生碰撞就施放技能的邏輯
+              因為邏輯流程上已經不同 目前已經要直接走後端流程 所以註解掉 保留只是當作參考用 by 瑞榮2024.9.18
             if (bFrontEndTest) {
                 //走前端流程 直接演出
             } else {
                 //走後端流程送包
             }
+            */
             Debug.LogFormat("施放直接觸發技能! 技能ID: {0}", _skill.ID);
         }
 
@@ -157,6 +160,8 @@ namespace Gladiators.Battle {
         /// <param name="_selected">是否選中技能</param>
         public void SetMeleeSkill(JsonSkill _skill, bool _selected) {
             //會先把技能存在在此 等到真正碰撞後才會施放
+            /*舊版純前端演出預留邏輯 這裡原本是假設沒接後端的封包 前端自己保存選上技能 前端發生碰撞就施放技能的邏輯
+              因為邏輯流程上已經不同 目前已經要直接走後端流程 所以註解掉 保留只是當作參考用 by 瑞榮2024.9.18
             if (_selected) {
                 SelectedMeleeSkill = _skill;
                 Debug.LogFormat("設定碰撞觸發技能! 技能ID: {0}", _skill.ID);
@@ -164,13 +169,16 @@ namespace Gladiators.Battle {
                 SelectedMeleeSkill = null;
                 Debug.LogFormat("取消碰撞觸發技能! 技能ID: {0}", _skill.ID);
             }
+            */
         }
 
         /// <summary>
         /// 施放碰撞觸發技能
         /// </summary>
         public void CastMeleeSkill() {
-            //TODO:實際發生碰撞請呼叫此方法來進行判定
+            //TODO:實際發生碰撞請呼叫此方法來進行判定 >> 現在直接走後端流程
+            /*舊版純前端演出預留邏輯 這裡原本是假設沒接後端的封包 前端自己保存選上技能 前端發生碰撞就施放技能的邏輯
+              因為邏輯流程上已經不同 目前已經要直接走後端流程 所以註解掉 保留只是當作參考用 by 瑞榮2024.9.18
             if (bFrontEndTest) {
                 //走前端流程 直接演出
                 if (SelectedMeleeSkill == null) {
@@ -183,6 +191,7 @@ namespace Gladiators.Battle {
             } else {
                 //走後端流程送包
             }
+            */
         }
         #endregion
 
