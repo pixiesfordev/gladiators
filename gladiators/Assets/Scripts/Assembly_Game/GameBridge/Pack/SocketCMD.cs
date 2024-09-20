@@ -51,6 +51,7 @@ namespace Gladiators.Socket {
             MELEE_TOCLIENT,// (TCP)肉搏-送Client
             ENDGAME_TOCLIENT,// (TCP)遊戲結算-送Client
             PING_TOCLIENT,// 心跳-送Client(太久沒收到回傳會視為斷線)
+            STATE_TOCLIENT,// 角鬥士狀態更新
         }
         public enum MatchgameCMD_UDP {
         }

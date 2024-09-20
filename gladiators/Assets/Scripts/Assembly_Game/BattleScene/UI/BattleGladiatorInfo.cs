@@ -150,8 +150,7 @@ public class BattleGladiatorInfo : MonoBehaviour {
     /// 血量變化
     /// </summary>
     /// <param name="_value">變化量</param>
-    public void AddHP(int _value)
-    {
+    public void AddHP(int _value) {
         //傳入變化血量 中斷目前演出 計算終值 往終值演出
         HeroCurHP += _value;
         if (HeroCurHP < 0)
@@ -162,8 +161,7 @@ public class BattleGladiatorInfo : MonoBehaviour {
         PerformHPChange();
     }
 
-    void InitHP(int maxHP, int curHP)
-    {
+    void InitHP(int maxHP, int curHP) {
         HeroMaxHP = maxHP;
         HeroCurHP = curHP;
         HeroDisplayHPRate = curHP / maxHP;
@@ -171,8 +169,7 @@ public class BattleGladiatorInfo : MonoBehaviour {
     }
 
     //執行血條演出
-    void PerformHPChange()
-    {
+    void PerformHPChange() {
         UniTask.Void(async () => {
             if (CurrentCTS != null)
                 CurrentCTS.Cancel();
@@ -333,8 +330,7 @@ public class BattleGladiatorInfo : MonoBehaviour {
     /// 設定血條
     /// </summary>
     /// <param name="percent">血量百分比</param>
-    void SetHPBar(float percent)
-    {
+    void SetHPBar(float percent) {
         HPBar.fillAmount = percent; //設定目前血條(彩色)
         SetHPBarChangePos(percent); //變化血條位移
     }
