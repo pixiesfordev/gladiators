@@ -44,6 +44,12 @@ public class BattleSceneUI : BaseUI {
     private bool _isSpellTest;
 
     public static BattleSceneUI Instance;
+    static PackGladiator myGladiator;
+    static PackGladiator opponentGladiator;
+    public static void SetPackGladiator(PackGladiator _myGladiator, PackGladiator _opponentGladiator) {
+        myGladiator = _myGladiator;
+        opponentGladiator = _opponentGladiator;
+    }
 
     private void Start() {
         Init();
@@ -52,7 +58,8 @@ public class BattleSceneUI : BaseUI {
         base.Init();
         SpawnBattleManager();
         Instance = this;
-
+        InitGladiator(true, myGladiator.MaxHP, myGladiator.CurHp, myGladiator.JsonID);
+        InitGladiator(false, opponentGladiator.MaxHP, opponentGladiator.CurHp, opponentGladiator.JsonID);
         //先用暫時寫死的技能
         //SkillBtn1.SetData(GameDictionary.GetJsonData<JsonSkill>(1)); //這個是碰撞觸發技能
         //SkillBtn2.SetData(GameDictionary.GetJsonData<JsonSkill>(2)); //這個是直接觸發技能
@@ -64,8 +71,7 @@ public class BattleSceneUI : BaseUI {
     /// </summary>
     /// <param name="_handSKillIDs">手牌技能</param>
     /// <param name="_handOnID">選中技能(近戰啟動中)</param>
-    public void SetSkillBtnData(int[] _handSKillIDs)
-    {
+    public void SetSkillBtnData(int[] _handSKillIDs) {
         //接收封包並設定按鈕的技能資料
         int setID1 = _handSKillIDs.Length > 0 ? _handSKillIDs[0] : 0;
         int setID2 = _handSKillIDs.Length > 1 ? _handSKillIDs[1] : 0;
@@ -82,8 +88,7 @@ public class BattleSceneUI : BaseUI {
     /// </summary>
     /// <param name="_skillID">目標技能ID</param>
     /// <param name="_on">是否啟動技能</param>
-    public void UpdateSkillState(int _skillID, bool _on)
-    {
+    public void UpdateSkillState(int _skillID, bool _on) {
         SkillBtn1.CheckAndSetSkillOn(_skillID, _on);
         SkillBtn2.CheckAndSetSkillOn(_skillID, _on);
         SkillBtn3.CheckAndSetSkillOn(_skillID, _on);
@@ -93,8 +98,7 @@ public class BattleSceneUI : BaseUI {
     /// 更新玩家金錢
     /// </summary>
     /// <param name="gold">金錢</param>
-    public void UpdatePlayerGold(int gold)
-    {
+    public void UpdatePlayerGold(int gold) {
         PlayerGoldText.text = gold.ToString();
     }
 
@@ -105,8 +109,7 @@ public class BattleSceneUI : BaseUI {
     /// <param name="maxHP">最大血量</param>
     /// <param name="curHP">目前血量</param>
     /// <param name="heroID">英雄ID</param>
-    public void InitGladiator(bool self, int maxHP, int curHP, int heroID)
-    {
+    public void InitGladiator(bool self, int maxHP, int curHP, int heroID) {
         BattleGladiatorInfo target = self ? PlayerGladiatorInfo : EnemyGladiatorInfo;
         target.Init(maxHP, curHP, heroID);
     }
@@ -115,11 +118,10 @@ public class BattleSceneUI : BaseUI {
     /// 更新角鬥士血量
     /// </summary>
     /// <param name="self">是否為己方角鬥士</param>
-    /// <param name="curHP">目前血量</param>
-    public void UpdateGladiatorHP(bool self, int curHP)
-    {
-        BattleGladiatorInfo target = self ? PlayerGladiatorInfo : EnemyGladiatorInfo; 
-        target.AddHP(curHP);
+    /// <param name="_addHP">目前血量</param>
+    public void UpdateGladiatorHP(bool self, int _addHP) {
+        BattleGladiatorInfo target = self ? PlayerGladiatorInfo : EnemyGladiatorInfo;
+        target.AddHP(_addHP);
     }
 
     void SpawnBattleManager() {

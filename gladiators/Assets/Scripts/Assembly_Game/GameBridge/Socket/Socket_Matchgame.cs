@@ -243,6 +243,10 @@ namespace Gladiators.Socket {
                         var meleePacket = LitJson.JsonMapper.ToObject<SocketCMD<MELEE_TOCLIENT>>(_msg);
                         HandlerMelee(meleePacket);
                         break;
+                    case SocketContent.MatchgameCMD_TCP.STATE_TOCLIENT:
+                        var statePacket = LitJson.JsonMapper.ToObject<SocketCMD<STATE_TOCLIENT>>(_msg);
+                        HandlerState(statePacket);
+                        break;
                     default:
                         WriteLog.LogErrorFormat("收到尚未定義的命令類型: {0}", cmdType);
                         break;
@@ -305,6 +309,10 @@ namespace Gladiators.Socket {
         void HandlerMelee(SocketCMD<MELEE_TOCLIENT> _packet) {
             if (SceneManager.GetActiveScene().name != MyScene.BattleScene.ToString()) return;
             AllocatedRoom.Instance.ReceiveMelee(_packet.Content);
+        }
+        void HandlerState(SocketCMD<STATE_TOCLIENT> _packet) {
+            if (SceneManager.GetActiveScene().name != MyScene.BattleScene.ToString()) return;
+            AllocatedRoom.Instance.ReceiveState(_packet.Content);
         }
     }
 }

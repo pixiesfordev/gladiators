@@ -184,8 +184,9 @@ namespace Gladiators.Main {
             //收到雙方玩家資料
             if (MyPackPlayer != null && OpponentPackPlayer != null && !string.IsNullOrEmpty(MyPackPlayer.DBID) && !string.IsNullOrEmpty(OpponentPackPlayer.DBID)) {
                 SetGameState(GameState.GameState_WaitingPlayersReady);
-                if (SceneManager.GetActiveScene().name != MyScene.BattleScene.ToString())//跳轉到BattleScene
+                if (SceneManager.GetActiveScene().name != MyScene.BattleScene.ToString())
                     PopupUI.CallSceneTransition(MyScene.BattleScene);
+                BattleSceneUI.SetPackGladiator(MyPackPlayer.MyPackGladiator, OpponentPackPlayer.MyPackGladiator);
             }
         }
         /// <summary>
@@ -234,6 +235,14 @@ namespace Gladiators.Main {
         /// </summary>
         public void ReceiveMelee(MELEE_TOCLIENT _melee) {
             if (BattleManager.Instance != null) BattleManager.Instance.Melee(_melee);
+        }
+        /// <summary>
+        /// 收到角鬥士狀態更新封包, 存儲封包資料
+        /// </summary>
+        public void ReceiveState(STATE_TOCLIENT _state) {
+            if (BattleManager.Instance != null) {
+                BattleSceneUI.Instance.UpdateGladiatorHP(_state.Myself, _state.HPChange);
+            }
         }
 
         public void ReceivePing() { //回送Server(如果X秒Server都沒收到Ping會認為玩家斷線了)
