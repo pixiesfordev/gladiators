@@ -5,7 +5,10 @@ using Gladiators.Socket.Matchgame;
 using Newtonsoft.Json.Linq;
 using Scoz.Func;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace Gladiators.Main {
@@ -52,6 +55,28 @@ namespace Gladiators.Main {
         public PackPlayer MyPackPlayer { get; private set; }
         public PackPlayer OpponentPackPlayer { get; private set; }
 
+        // Ping相關宣告
+        Accumulator accumulator_Ping;
+        private CancellationTokenSource pingCancellationTokenSource;
+        private Dictionary<long, long> pingSendDic = new Dictionary<long, long>();
+        private const int MaxLatencySamples = 10;
+        private Queue<double> latencySamples = new Queue<double>();
+        /// <summary>
+        /// 網路延遲平均豪秒數
+        /// </summary>
+        public double Lantency { get; private set; }
+
+        long firstPackServerTimestamp; // 配對開始後第一次收到封包的時間戳
+        public long ClientTimeStamp { get { return (long)(Time.realtimeSinceStartup * 1000) + AllocatedRoom.Instance.firstPackServerTimestamp; } } // 本地相對時間戳
+        public long RenderTimestamp { get { return ClientTimeStamp - (long)Lantency; } } // 本地渲染時間戳
+        void setFirstPackServerTimestamp(long _time) {
+            if (firstPackServerTimestamp == 0) {
+                firstPackServerTimestamp = _time - (long)(Time.realtimeSinceStartup * 1000);
+            }
+        }
+
+
+
         public enum GameState {
             GameState_NotInGame,// 不在遊戲中
             GameState_UnAuth,//已經從Matchmaker收到配對房間但還沒從Matchgame收到Auth回傳true
@@ -82,6 +107,7 @@ namespace Gladiators.Main {
             UdpIP = _ip;
             Port = _port;
             PodName = _podName;
+            firstPackServerTimestamp = 0;
             WriteLog.LogColorFormat("設定被Matchmaker分配到的房間資料: {0}", WriteLog.LogType.Debug, DebugUtils.ObjToStr(Instance));
 
             var dbPlayer = GamePlayer.Instance.GetDBPlayerDoc<DBPlayer>();
@@ -147,13 +173,6 @@ namespace Gladiators.Main {
             GameConnector.Instance.SendTCP(cmd);
         }
         /// <summary>
-        /// 通知Server此玩家已經進入BattleScene
-        /// </summary>
-        public void BattleState() {
-            var cmd = new SocketCMD<BATTLESTATE>();
-            GameConnector.Instance.SendTCP(cmd);
-        }
-        /// <summary>
         /// 通知Server此玩家已經進入Run
         /// </summary>
         public void SetRun(bool isRun) {
@@ -178,7 +197,7 @@ namespace Gladiators.Main {
         /// <summary>
         /// 收到雙方玩家資料後, 將目前狀態設定為GotEnemy並通知BattleScene送Ready
         /// </summary>
-        public void ReceiveSetPlayer(PackPlayer _myPlayer, PackPlayer _opponentPlayer) {
+        public void ReceiveSetPlayer(long _serverTimestamp, PackPlayer _myPlayer, PackPlayer _opponentPlayer) {
             MyPackPlayer = _myPlayer;
             OpponentPackPlayer = _opponentPlayer;
             //收到雙方玩家資料
@@ -188,7 +207,61 @@ namespace Gladiators.Main {
                     PopupUI.CallSceneTransition(MyScene.BattleScene);
                 BattleSceneUI.SetPackGladiator(MyPackPlayer.MyPackGladiator, OpponentPackPlayer.MyPackGladiator);
             }
+
+            // 開始PingLoop
+            accumulator_Ping = new Accumulator();
+            PingLoop().Forget();
+            setFirstPackServerTimestamp(_serverTimestamp);
         }
+
+        async UniTaskVoid PingLoop() {
+            pingCancellationTokenSource = new CancellationTokenSource();
+            var token = pingCancellationTokenSource.Token;
+            try {
+                while (!token.IsCancellationRequested) {
+                    SendPing();
+                    await UniTask.Delay(TimeSpan.FromSeconds(1), cancellationToken: token);
+                }
+            } catch (OperationCanceledException) {
+                WriteLog.Log("PingLoop cancelled.");
+            } catch (Exception ex) {
+                WriteLog.LogError($"PingLoop error: {ex.Message}");
+            }
+        }
+        public void StopPingLoop() {
+            pingCancellationTokenSource?.Cancel();
+        }
+        private void SendPing() {
+            var currentTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            var cmd = new SocketCMD<PING>(new PING());
+            GameConnector.Instance.SendTCP(cmd);
+            pingSendDic[cmd.PackID] = currentTime;
+        }
+        public void ReceivePing(int _packID, PING_TOCLIENT _ping) {
+            long pingReceiveTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            long pingSendTime = pingSendDic[_packID];
+            pingSendDic.Remove(_packID);
+            // 計算Ping送返時間
+            long rtt = pingReceiveTime - pingSendTime;
+            double oneWayLatency = rtt / 2.0;
+            UpdateLatency(oneWayLatency);
+        }
+        /// <summary>
+        /// 更新網路延遲估算
+        /// </summary>
+        private void UpdateLatency(double newOneWayLatency) {
+            if (latencySamples.Count >= MaxLatencySamples) {
+                latencySamples.Dequeue();
+            }
+            latencySamples.Enqueue(newOneWayLatency);
+            double sum = 0.0;
+            foreach (var latency in latencySamples) {
+                sum += latency;
+            }
+            Lantency = sum / latencySamples.Count;
+            WriteLog.LogColor($"近{MaxLatencySamples}筆Ping計算出的網路延遲為: {Lantency} ms", WriteLog.LogType.Connection);
+        }
+
         /// <summary>
         /// 收到準備完成, 收到雙方準備完成 就會進入神祉技能選擇階段
         /// </summary>
@@ -203,16 +276,10 @@ namespace Gladiators.Main {
         /// <summary>
         /// 收到神祉技能選擇封包, 如果雙方的資料都收到就開始遊戲
         /// </summary>
-        public void ReceiveDivineSkill(PackPlayerState _myPlayerState, PackCardState _myCardState, PackPlayerState _opponentPlayerState) {
-            if (_myPlayerState == null || _myPlayerState.DBID == null || _myCardState == null) return;
-            for (int i = 0; i < _myCardState.HandSkillIDs.Length; i++) {
-                WriteLog.Log($"手牌{i + 1}為技能ID{_myCardState.HandSkillIDs[i]}");
-            }
-
-            //更新介面手牌技能
-            BattleSceneUI.Instance?.SetSkillBtnData(_myCardState.HandSkillIDs);
+        public void ReceiveDivineSkill(SETDIVINESKILL_TOCLIENT _setDivineSkillToClient) {
+            if (_setDivineSkillToClient == null) return;
             //更新介面神祉技能卡牌
-            BattleSceneUI.Instance?.SetDivineSkillData(_myPlayerState.DivineSkills);
+            BattleSceneUI.Instance?.SetDivineSkillData(_setDivineSkillToClient.JsonSkillIDs);
             //關閉神祇技能選擇介面(做完演出後才去執行後續動作)
             DivineSelectUI.Instance?.CloseUI(() => {
             });
@@ -223,12 +290,17 @@ namespace Gladiators.Main {
         public void ReceiveStartFighting() {
             BattleManager.Instance.StartGame();
         }
+        /// <summary>
+        /// 收到戰鬥階段設定封包
+        /// </summary>
+        public void ReceiveGameState(GameState_TOCLIENT _gameState) {
+        }
 
         /// <summary>
         /// 收到戰鬥資訊封包, 存儲封包資料
         /// </summary>
-        public void ReceiveBattleState(BATTLESTATE_TOCLIENT _battleState) {
-            if (BattleManager.Instance != null) BattleManager.Instance.SetBattleState(_battleState);
+        public void ReceiveGladiatorStates(long _packID, GLADIATORSTATES_TOCLIENT _gladiatorStats) {
+            if (BattleManager.Instance != null) BattleModelController.Instance.UpdateGladiatorsState(_packID, _gladiatorStats.Time, _gladiatorStats.MyState, _gladiatorStats.OpponentState);
         }
         /// <summary>
         /// 收到肉搏封包, 存儲封包資料
@@ -237,17 +309,12 @@ namespace Gladiators.Main {
             if (BattleManager.Instance != null) BattleManager.Instance.Melee(_melee);
         }
         /// <summary>
-        /// 收到角鬥士狀態更新封包, 存儲封包資料
+        /// 收到角鬥士血量更新
         /// </summary>
-        public void ReceiveState(STATE_TOCLIENT _state) {
+        public void ReceiveGladiatorHP(Hp_TOCLIENT _hpPack) {
             if (BattleManager.Instance != null) {
-                BattleSceneUI.Instance.UpdateGladiatorHP(_state.Myself, _state.HPChange);
+                BattleSceneUI.Instance.UpdateGladiatorHP(true, _hpPack.HPChange);
             }
-        }
-
-        public void ReceivePing() { //回送Server(如果X秒Server都沒收到Ping會認為玩家斷線了)
-            var cmd = new SocketCMD<PING>(new PING());
-            GameConnector.Instance.SendTCP(cmd);
         }
 
         public void ReceiveRush(string _playerID, bool _rush) {

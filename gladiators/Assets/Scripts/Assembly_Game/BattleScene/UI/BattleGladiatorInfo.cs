@@ -205,7 +205,7 @@ public class BattleGladiatorInfo : MonoBehaviour {
         HPBarWhite.color = HideColor;//還原顏色設定以免多次演出導致顏色異常
 
         //防呆 避免設定錯誤導致遊戲炸掉
-        if(BarChangeSecNeed <= 0)
+        if (BarChangeSecNeed <= 0)
             BarChangeSecNeed = 1f;
 
         //等待血條停滯時間

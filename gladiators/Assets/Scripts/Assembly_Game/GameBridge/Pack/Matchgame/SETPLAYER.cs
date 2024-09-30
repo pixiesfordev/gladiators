@@ -7,6 +7,7 @@ namespace Gladiators.Socket.Matchgame {
 
     public class SETPLAYER_TOCLIENT : SocketContent {
         //class名稱就是封包的CMD名稱
+        public long Time { get; private set; }
         public PackPlayer MyPackPlayer { get; private set; }
         public PackPlayer OpponentPackPlayer { get; private set; }
     }

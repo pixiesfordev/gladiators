@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using Gladiators.Battle;
 using Gladiators.Main;
 using Gladiators.Socket.Matchgame;
@@ -15,14 +16,27 @@ public class BattleModelController : MonoBehaviour {
     [SerializeField] GameObject terrainArea;
     [SerializeField] GameObject charactersArea;
 
+    [SerializeField] bool BattleIsEnd = false;
+
     Character leftChar = null;
     Character rightChar = null;
+    Dictionary<string, Character> CharDic;
 
-    [SerializeField] bool BattleIsEnd = false;
+    const float MOVE_DURATION_SECS = 0.08f; // client收到server座標更新後幾秒內要平滑移動至目標秒數
+
+
 
     public const float WALLPOS = 20f;// 牆壁位置
     public const float KnockAngleRange = 30;// 擊退最大水平角度
-    Dictionary<string, Character> CharDic;
+    float curKnockAngle = 0; // 目前碰撞擊退的角度
+    SortedDictionary<long, ServerPosPack> PosBuffer = new SortedDictionary<long, ServerPosPack>(); // 移動插植緩衝
+    public class ServerPosPack {
+        public long PackID;
+        public float LeftPos;
+        public float RightPos;
+        public long Timestamp;
+    }
+
 
     public static BattleModelController Instance { get; private set; }
 
@@ -30,10 +44,6 @@ public class BattleModelController : MonoBehaviour {
         Instance = this;
     }
 
-    private void Update() {
-        if (leftChar != null) leftChar.Move(curKnockAngle);
-        if (rightChar != null) rightChar.Move(curKnockAngle);
-    }
 
     public void CreateCharacter(PackPlayer _myPlayerPack, PackPlayer _opponentPack) {
         leftChar = Instantiate(characterPrefab, charactersArea.transform);
@@ -70,46 +80,119 @@ public class BattleModelController : MonoBehaviour {
     public void BattleStart() {
         BattleReset(-16, 16);
         BattleIsEnd = false;
+        MoveLoop().Forget();
     }
 
     public void BattleEnd() {
         if (BattleIsEnd) return;
-
         BattleIsEnd = true;
     }
 
-    float curKnockAngle = 0; // 目前碰撞擊退的角度
+    /// <summary>
+    /// 插值移動循環
+    /// </summary>
+    private async UniTaskVoid MoveLoop() {
+        while (!BattleIsEnd) {
+            // 計算渲染時間戳
+            long renderTimestamp = AllocatedRoom.Instance.RenderTimestamp;
 
-    public void UpdateGladiatorsState(PackPlayerState _leftPlayer, PackPlayerState _rightPlayer) {
-        if (_leftPlayer == null || _rightPlayer == null) return;
+            // 找緩衝區中兩個相鄰的封包
+            ServerPosPack before = null;
+            ServerPosPack after = null;
+            var keys = PosBuffer.Keys;
+            long? beforeKey = null;
+            long? afterKey = null;
 
-        // 計算server的中心點
-        float serverCenterPos = (float)(_rightPlayer.GladiatorState.CurPos + _leftPlayer.GladiatorState.CurPos) / 2.0f;
-        float leftToCenter = Mathf.Abs(serverCenterPos - (float)_leftPlayer.GladiatorState.CurPos);
-        float rightToCenter = Mathf.Abs(serverCenterPos - (float)_rightPlayer.GladiatorState.CurPos);
+            // 清理已經不需要的插植緩衝(只保留最近1秒內的資料)
+            long cleanupTime = renderTimestamp - 1000;
+            List<long> keysToRemove = new List<long>();
 
-        // 計算client的中心點
-        Vector3 clientCenterPos = (rightChar.transform.localPosition + leftChar.transform.localPosition) / 2.0f;
+            foreach (var key in keys) {
+                if (key < cleanupTime) {
+                    keysToRemove.Add(key);
+                } else if (key <= renderTimestamp) {
+                    beforeKey = key;
+                } else {
+                    afterKey = key;
+                    break;
+                }
+            }
 
-        // 更新角色狀態
-        leftChar.SetState(_leftPlayer.GladiatorState, clientCenterPos, leftToCenter, curKnockAngle);
-        rightChar.SetState(_rightPlayer.GladiatorState, clientCenterPos, rightToCenter, curKnockAngle);
+            // 移除不需要插植緩衝
+            foreach (var key in keysToRemove) {
+                PosBuffer.Remove(key);
+            }
+
+            // 進行插值計算目前本地的座標
+            if (beforeKey.HasValue && afterKey.HasValue) {
+                before = PosBuffer[beforeKey.Value];
+                after = PosBuffer[afterKey.Value];
+
+                // 計算插值因子alpha
+                float alpha = (float)(renderTimestamp - before.Timestamp) / (float)(after.Timestamp - before.Timestamp);
+                alpha = Mathf.Clamp01(alpha);
+
+                // 計算插值位置
+                float leftPos = Mathf.Lerp(before.LeftPos, after.LeftPos, alpha);
+                float rightPos = Mathf.Lerp(before.RightPos, after.RightPos, alpha);
+                //WriteLog.Log("leftPos=" + leftPos + " rightPos=" + rightPos);
+
+                // 計算一維座標的中心點
+                float serverCenterPos = (float)(rightPos + leftPos) / 2.0f;
+                float leftToCenter = Mathf.Abs(serverCenterPos - (float)leftPos);
+                float rightToCenter = Mathf.Abs(serverCenterPos - (float)rightPos);
+
+                // 計算client二維座標的中心點
+                Vector3 clientCenterPos = (rightChar.transform.localPosition + leftChar.transform.localPosition) / 2.0f;
+
+                // 根據目前client角度來計算出目前該有的client座標
+                float angle_left = curKnockAngle + 180f;
+                float angle_right = curKnockAngle;
+                float angleInRadians_left = angle_left * Mathf.Deg2Rad;
+                float angleInRadians_right = angle_right * Mathf.Deg2Rad;
+                float offsetX_left = Mathf.Cos(angleInRadians_left) * leftToCenter;
+                float offsetZ_left = Mathf.Sin(angleInRadians_left) * leftToCenter;
+                float offsetX_right = Mathf.Cos(angleInRadians_right) * rightToCenter;
+                float offsetZ_right = Mathf.Sin(angleInRadians_right) * rightToCenter;
+                Vector3 pos_left = new Vector3(clientCenterPos.x + offsetX_left, 0, clientCenterPos.z + offsetZ_left);
+                Vector3 pos_right = new Vector3(clientCenterPos.x + offsetX_right, 0, clientCenterPos.z + offsetZ_right);
+
+                // 更新角色位置
+                leftChar.MoveClientToPos(pos_left, MOVE_DURATION_SECS).Forget();
+                rightChar.MoveClientToPos(pos_right, MOVE_DURATION_SECS).Forget();
+            }
+
+            await UniTask.Yield();
+        }
     }
 
 
-    public void Melee(PackPlayerState _leftPlayer, PackPlayerState _rightPlayer, PackAttack _leftAttack, PackAttack _rightAttack) {
-        if (_leftPlayer == null || _rightPlayer == null) return;
 
-        UpdateGladiatorsState(_leftPlayer, _rightPlayer);
+    public void UpdateGladiatorsState(long _packID, long _time, PACKGLADIATORSTATE _leftState, PACKGLADIATORSTATE _rightState) {
+        if (_leftState == null || _rightState == null) return;
+
+        leftChar.UpdateEffectTypes(_leftState.EffectTypes);
+        rightChar.UpdateEffectTypes(_rightState.EffectTypes);
+
+        // 新增移動插植緩衝
+        ServerPosPack pack = new ServerPosPack();
+        pack.PackID = _packID;
+        pack.Timestamp = _time;
+        pack.LeftPos = (float)_leftState.CurPos;
+        pack.RightPos = (float)_rightState.CurPos;
+        PosBuffer[_time] = pack;
+    }
+
+
+    public void Melee(PackMelee _leftMelee, PackMelee _rightMelee) {
+        if (_leftMelee == null || _rightMelee == null) return;
 
         curKnockAngle += UnityEngine.Random.Range(-KnockAngleRange, KnockAngleRange);
         BattleManager.Instance.SetVCamTargetRot(-curKnockAngle);
 
-        var leftState = _leftPlayer.GladiatorState;
-        leftChar.HandleMelee((float)_leftAttack.AttackPos, (float)_leftAttack.Knockback, (float)leftState.CurPos, curKnockAngle, _leftAttack.SkillID);
+        leftChar.HandleMelee(_leftMelee.EffectTypes, (float)_leftMelee.MeleePos, (float)_rightMelee.Knockback, (float)_leftMelee.CurPos, curKnockAngle, _leftMelee.SkillID);
 
-        var rightState = _rightPlayer.GladiatorState;
-        rightChar.HandleMelee((float)_rightAttack.AttackPos, (float)_rightAttack.Knockback, (float)rightState.CurPos, curKnockAngle, _rightAttack.SkillID);
+        rightChar.HandleMelee(_rightMelee.EffectTypes, (float)_rightMelee.MeleePos, (float)_leftMelee.Knockback, (float)_rightMelee.CurPos, curKnockAngle, _rightMelee.SkillID);
 
 
 

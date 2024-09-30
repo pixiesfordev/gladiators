@@ -14,23 +14,17 @@ public class BattleDivineSkill : MonoBehaviour {
     [SerializeField] Image BG;
     [SerializeField] Button Btn;
 
-    PackDivineSkill PackData;//同步資料
+    int skillID = 0;
 
-    void Start() { }
-
-    public void SetData(PackDivineSkill _skill) {
-        if (_skill == null) {
+    public void SetData(int _skillID) {
+        skillID = _skillID;
+        if (skillID == 0) {
             gameObject.SetActive(false);
             WriteLog.LogErrorFormat("空的神祉技能");
         } else {
-            PackData = _skill;
-            WriteLog.LogFormat("神祉技能設定. ID:{0} ", PackData.JsonID);
+            WriteLog.LogFormat("神祉技能設定. ID:{0} ", skillID);
 
-            if (PackData.JsonID == 0) {
-                return;
-            }
-
-            JsonSkill SkillData = GameDictionary.GetJsonData<JsonSkill>(PackData.JsonID);
+            JsonSkill SkillData = GameDictionary.GetJsonData<JsonSkill>(skillID);
             if (SkillData != null && SkillData.MySkillType == SkillType.Divine) {
                 //設定金額(cost)
                 Cost.text = SkillData.Cost.ToString();
@@ -53,6 +47,6 @@ public class BattleDivineSkill : MonoBehaviour {
 
     public void ClickBtn() {
         //TODO:使用神祇技能
-        WriteLog.LogFormat("使用神祇技能. ID:{0}", PackData.JsonID);
+        WriteLog.LogFormat("使用神祇技能. ID:{0}", skillID);
     }
 }

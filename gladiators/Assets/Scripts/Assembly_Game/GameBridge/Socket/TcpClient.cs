@@ -122,7 +122,7 @@ namespace Gladiators.Socket {
 
                     // 不輸出的Conn Log加到清單中
                     List<string> dontShowLogCMDs = new List<string>();
-                    dontShowLogCMDs.Add("PING");
+                    //dontShowLogCMDs.Add("PING");
                     if (!dontShowLogCMDs.Contains(command.CMD)) WriteLog.LogColorFormat("(TCP)送: {0}", WriteLog.LogType.Connection, msg);
                     return command.PackID;
                 } catch (Exception e) {

@@ -797,8 +797,8 @@ MonoBehaviour:
   HeroTestCurHP: 0
   PerformHPChangeFlag: 0
   HeroChangeHP: 0
-  BarChangeSecDelay: 1
-  BarChangeSecNeed: 1
+  BarChangeSecDelay: 0.3
+  BarChangeSecNeed: 0.3
   BarChangeFrame: 60
   HittedRotateAngle: {x: 0, y: 0, z: 10}
   HittedRotateDuration: 1
@@ -8117,8 +8117,8 @@ MonoBehaviour:
   HeroTestCurHP: 0
   PerformHPChangeFlag: 0
   HeroChangeHP: 0
-  BarChangeSecDelay: 1
-  BarChangeSecNeed: 1
+  BarChangeSecDelay: 0.3
+  BarChangeSecNeed: 0.3
   BarChangeFrame: 60
   HittedRotateAngle: {x: 0, y: 0, z: 10}
   HittedRotateDuration: 1

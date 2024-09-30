@@ -1,7 +1,10 @@
 using Cysharp.Threading.Tasks;
+using DG.Tweening;
 using Gladiators.Battle;
+using Gladiators.Main;
 using Gladiators.Socket.Matchgame;
 using Scoz.Func;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -59,6 +62,7 @@ public enum EffectType {
     Intuition,
     PermanentHp,
 }
+
 public class Character : MonoBehaviour {
     public Camera mainCamera;
     public Transform Base;
@@ -88,7 +92,6 @@ public class Character : MonoBehaviour {
             return knockDist > dist;
         }
     }
-    public float CurServerPos { get; private set; }//真實位置是在一維的座標系上，也就是Server位置
 
     const float KNOCKUP_TIME = 0.4f;//擊飛時間
     float knockDist = 4;
@@ -115,8 +118,7 @@ public class Character : MonoBehaviour {
         enemy = _opponent;
         mainCamera = BattleManager.Instance.BattleCam;
         FaceDir = _faceDir;
-        setClientPos(new Vector3(_pos, 0, 0));
-        setServerPos(_pos);
+        MoveClientToPos(new Vector3(_pos, 0, 0), 0).Forget();
         SetRush(false);
         setFaceToTarget(_knockAngle);
     }
@@ -138,67 +140,41 @@ public class Character : MonoBehaviour {
         }
     }
 
-    public void Move(float _angle) {
-        if (!CanMove) {
-            return;
-        }
-        float adjustedAngle = (FaceDir == RightLeft.Right) ? _angle : _angle + 180f;
-        float angleInRadians = adjustedAngle * Mathf.Deg2Rad;
+    //public void Move_Loco(float _angle) {
+    //    if (!CanMove) {
+    //        return;
+    //    }
+    //    float adjustedAngle = (FaceDir == RightLeft.Right) ? _angle : _angle + 180f;
+    //    float angleInRadians = adjustedAngle * Mathf.Deg2Rad;
 
-        float offsetX = Mathf.Cos(angleInRadians) * CurSpd * Time.deltaTime;
-        float offsetZ = Mathf.Sin(angleInRadians) * CurSpd * Time.deltaTime;
-        Vector3 newPos = new Vector3(transform.localPosition.x + offsetX, 0, transform.localPosition.z + offsetZ);
-        setClientPos(newPos);
+    //    float offsetX = Mathf.Cos(angleInRadians) * CurSpd * Time.deltaTime;
+    //    float offsetZ = Mathf.Sin(angleInRadians) * CurSpd * Time.deltaTime;
+    //    Vector3 newPos = new Vector3(transform.localPosition.x + offsetX, 0, transform.localPosition.z + offsetZ);
+    //    setClientPos(newPos);
 
-        if (!InKnockDist) {
-            PlayAni("move");
-        } else {
-            PlayAni("attack");
-        }
-    }
-
-
-    void setClientPos(Vector3 _pos) {
-        transform.localPosition = _pos;
-    }
-
-    void setServerPos(float _pos) {
-        CurServerPos = _pos;
-    }
+    //    if (!InKnockDist) {
+    //        PlayAni("move");
+    //    } else {
+    //        PlayAni("attack");
+    //    }
+    //}
 
 
-    public void SetState(PackGladiatorState _state, Vector3 _clientCenterPos, float _distFromCenter, float _knockAngle) {
-        // 設定伺服器位置
-        setServerPos((float)_state.CurPos);
-        CurSpd = (float)_state.CurSpd;
-        EffectTypes = Skill.ConvertStrListToEffectTypes(_state.EffectTypes);
-        MaxHP = _state.MaxHP;
-        CurHP = _state.CurHp;
-        CurVigor = (float)_state.CurVigor;
-
-
+    public async UniTask MoveClientToPos(Vector3 _pos, float _duration) {
         if (CanMove) {
-            // 根據目前client角度來計算出目前該有的client座標
-            float adjustedAngle = (FaceDir == RightLeft.Left) ? _knockAngle : _knockAngle + 180f;
-            float angleInRadians = adjustedAngle * Mathf.Deg2Rad;
-
-            float offsetX = Mathf.Cos(angleInRadians) * _distFromCenter;
-            float offsetZ = Mathf.Sin(angleInRadians) * _distFromCenter;
-
-            float newX = _clientCenterPos.x + offsetX;
-            float newZ = _clientCenterPos.z + offsetZ;
-
-            setClientPos(new Vector3(newX, 0, newZ));
+            PlayAni("move");
+            Tween tween = transform.DOLocalMove(_pos, _duration).SetEase(Ease.Linear);
+            await tween.AsyncWaitForCompletion();
         }
-
-
     }
 
 
+    public void UpdateEffectTypes(List<string> _effectTypStrs) {
+        EffectTypes = Skill.ConvertStrListToEffectTypes(_effectTypStrs);
+    }
 
-
-
-    public void HandleMelee(float _serverKnockPos, float _serverKnockDist, float _serverResultPos, float _knockAngl, int _skilID) {
+    public void HandleMelee(List<string> _effectTypes, float _serverKnockPos, float _serverKnockDist, float _serverResultPos, float _knockAngl, int _skilID) {
+        UpdateEffectTypes(_effectTypes);
         MeleeSkillID = _skilID;
         setFaceToTarget(_knockAngl);
         knockback(_serverKnockPos, _serverKnockDist, _serverResultPos, _knockAngl);
@@ -211,6 +187,8 @@ public class Character : MonoBehaviour {
 
 
     void knockback(float _serverKnockPos, float _serverKnockPower, float _serverResultPos, float _knockAngle) {
+        var dist = _serverKnockPos - _serverResultPos;
+        WriteLog.LogError($"_serverKnockPos={_serverKnockPos} _serverResultPos={_serverResultPos}  _serverKnockPower={_serverKnockPower}");
         IsKnockback = true;
 
         var originalPos = transform.localPosition;
@@ -287,9 +265,8 @@ public class Character : MonoBehaviour {
                 knockWall();
             }
 
-            // 設定client與server位置
-            setServerPos(_serverResultPos);
-            setClientPos(new Vector3(finalClientX, 0, finalClientZ));
+            // 設定client位置
+            MoveClientToPos(new Vector3(finalClientX, 0, finalClientZ), 0).Forget();
 
             PlayAni("stun");
         });

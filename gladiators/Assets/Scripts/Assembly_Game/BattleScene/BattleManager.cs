@@ -45,17 +45,6 @@ namespace Gladiators.Battle {
         [Tooltip("重置戰鬥")][SerializeField] bool bResetBattle = false;
         //[Tooltip("前端演示測試 打勾表示只使用純前端邏輯模擬")][SerializeField] bool bFrontEndTest = true;
 
-        void Update() {
-            if (bResetBattle) {
-                ResetBattle();
-                bResetBattle = false;
-                battleModelController.BattleStart();
-            }
-            TimePass();
-        }
-        void TimePass() {
-            GameTime += Time.deltaTime;
-        }
 
         public async UniTask Init() {
             Instance = this;
@@ -92,6 +81,7 @@ namespace Gladiators.Battle {
         }
         public void StartGame() {
             ResetBattle();
+            battleModelController.BattleStart();
         }
 
         public void SetVCamTargetRot(float _angle) {
@@ -128,12 +118,6 @@ namespace Gladiators.Battle {
             BattleIsEnd = false;
         }
 
-
-        void testStartGame() {
-            Debug.Log("本地測試開始");
-
-            battleModelController.BattleStart();
-        }
 
         #region 技能施放
         /// <summary>
@@ -207,33 +191,14 @@ namespace Gladiators.Battle {
             AllocatedRoom.Instance.SetRun(isRun);
         }
 
-        //戰鬥剩餘秒數計算
-        //async UniTaskVoid CountDownBattleTime() {
-        //    ReCount:
-        //    //Debug.Log("測試倒數秒數.現在秒數: " + BattleLeftTime);
-        //    await UniTask.Delay(TimeSpan.FromSeconds(1f));
-        //    //有可能會發生剩下一秒的時候分出勝負 所以一秒數完還是要再次確認是否已經分出勝負 沒有才繼續數秒
-        //    if (!BattleIsEnd) {
-        //        BattleLeftTime -= 1;
-        //        BattleSceneUI.Instance.SetTimeText(BattleLeftTime);
-        //        if (BattleLeftTime <= 0)
-        //            BattleEnd();
-        //        else
-        //            goto ReCount;
-        //    }
-        //    //Debug.Log("結束時間倒數計算!");
-        //}
-
-        public void SetBattleState(BATTLESTATE_TOCLIENT _state) {
-            GameTime = (float)_state.GameTime;
+        public void UpdateTimer(float _gameTime) {
+            if (BattleSceneUI.Instance == null) return;
+            GameTime = _gameTime;
             BattleSceneUI.Instance.SetTimeText(LeftGameTime);
-            battleModelController.UpdateGladiatorsState(_state.MyPlayerState, _state.OpponentPlayerState);
         }
 
         public void Melee(MELEE_TOCLIENT _melee) {
-            GameTime = (float)_melee.GameTime;
-            BattleSceneUI.Instance.SetTimeText(LeftGameTime);
-            battleModelController.Melee(_melee.MyPlayerState, _melee.OpponentPlayerState, _melee.MyAttack, _melee.OpponentAttack);
+            battleModelController.Melee(_melee.MyAttack, _melee.OpponentAttack);
         }
 
         //戰鬥結束

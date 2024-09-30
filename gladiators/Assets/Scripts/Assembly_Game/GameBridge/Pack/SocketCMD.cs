@@ -47,11 +47,12 @@ namespace Gladiators.Socket {
             SETDIVINESKILL_TOCLIENT,// (TCP)賄賂選擇-送Client
             STARTFIGHTING_TOCLIENT,// (TCP)戰鬥開始-送Client
             PLAYERACTION_TOCLIENT,// (TCP)玩家指令-送Client
-            BATTLESTATE_TOCLIENT,// (TCP)狀態更新-送Client
-            MELEE_TOCLIENT,// (TCP)肉搏-送Client
             ENDGAME_TOCLIENT,// (TCP)遊戲結算-送Client
             PING_TOCLIENT,// 心跳-送Client(太久沒收到回傳會視為斷線)
-            STATE_TOCLIENT,// 角鬥士狀態更新
+            GAMESTATE_TOCLIENT,  // (TCP)遊戲狀態-送Client
+            MELEE_TOCLIENT, // (TCP)肉搏-送Client
+            HP_TOCLIENT, // (TCP)角鬥士生命-送Client
+            GLADIATORSTATES_TOCLIENT, // (TCP)角鬥士狀態-送Client
         }
         public enum MatchgameCMD_UDP {
         }

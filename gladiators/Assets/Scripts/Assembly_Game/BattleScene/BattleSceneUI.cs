@@ -60,6 +60,8 @@ public class BattleSceneUI : BaseUI {
         Instance = this;
         InitGladiator(true, myGladiator.MaxHP, myGladiator.CurHp, myGladiator.JsonID);
         InitGladiator(false, opponentGladiator.MaxHP, opponentGladiator.CurHp, opponentGladiator.JsonID);
+        //更新介面手牌技能
+        SetSkillBtnData(myGladiator.HandSkillIDs);
         //先用暫時寫死的技能
         //SkillBtn1.SetData(GameDictionary.GetJsonData<JsonSkill>(1)); //這個是碰撞觸發技能
         //SkillBtn2.SetData(GameDictionary.GetJsonData<JsonSkill>(2)); //這個是直接觸發技能
@@ -161,9 +163,9 @@ public class BattleSceneUI : BaseUI {
     }
     */
 
-    public void SetDivineSkillData(PackDivineSkill[] _datas) {
-        if (_datas == null) { WriteLog.Log("神祇技能資料遺失!"); return; }
-        DivineSkills[0].SetData(_datas.Length > 0 ? _datas[0] : null);
-        DivineSkills[1].SetData(_datas.Length > 1 ? _datas[1] : null);
+    public void SetDivineSkillData(int[] _skillIDs) {
+        if (_skillIDs == null || _skillIDs.Length != 2) { WriteLog.Log("神祇技能資料遺失!"); return; }
+        DivineSkills[0].SetData(_skillIDs[0]);
+        DivineSkills[1].SetData(_skillIDs[1]);
     }
 }
