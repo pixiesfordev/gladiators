@@ -67,7 +67,7 @@ namespace Gladiators.Main {
         public double Lantency { get; private set; }
 
         long firstPackServerTimestamp; // 配對開始後第一次收到封包的時間戳
-        public long ClientTimeStamp { get { return (long)(Time.realtimeSinceStartup * 1000) + AllocatedRoom.Instance.firstPackServerTimestamp; } } // 本地相對時間戳
+        public long ClientTimeStamp { get { return (long)(Time.realtimeSinceStartup * 1000) + firstPackServerTimestamp; } } // 本地相對時間戳
         public long RenderTimestamp { get { return ClientTimeStamp - (long)Lantency; } } // 本地渲染時間戳
         void setFirstPackServerTimestamp(long _time) {
             if (firstPackServerTimestamp == 0) {
@@ -259,7 +259,7 @@ namespace Gladiators.Main {
                 sum += latency;
             }
             Lantency = sum / latencySamples.Count;
-            WriteLog.LogColor($"近{MaxLatencySamples}筆Ping計算出的網路延遲為: {Lantency} ms", WriteLog.LogType.Connection);
+            WriteLog.LogColor($"近{MaxLatencySamples}筆Ping計算出的網路延遲為: {MyMath.Round((float)Lantency, 2)} ms", WriteLog.LogType.Connection);
         }
 
         /// <summary>
