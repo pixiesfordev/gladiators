@@ -37,7 +37,7 @@ namespace Gladiators.Battle {
         //JsonSkill SelectedMeleeSkill;
 
         [HeaderAttribute("===場景物件控制===")]
-        [SerializeField] BattleModelController battleModelController;
+        [SerializeField] BattleController battleModelController;
         [SerializeField] public bool isRightPlayer = false;
 
         [HeaderAttribute("==============TEST==============")]

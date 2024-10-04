@@ -14,5 +14,6 @@ namespace Gladiators.Socket.Matchgame {
         public double Knockback { get; private set; }
         public double CurPos { get; private set; }
         public List<string> EffectTypes { get; private set; }
+        public int[] HandSkillIDs { get; private set; }    // (玩家自己才會收到)
     }
 }

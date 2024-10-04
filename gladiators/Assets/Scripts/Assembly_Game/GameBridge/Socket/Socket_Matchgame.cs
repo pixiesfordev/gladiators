@@ -297,10 +297,6 @@ namespace Gladiators.Socket {
         void HandlerPlayerAction(string _actionType, string _playerID, string _jsonStr) {
             if (SceneManager.GetActiveScene().name != MyScene.BattleScene.ToString() || BattleManager.Instance == null) return;
             switch (_actionType) {
-                case "Action_Rush":
-                    var rush = JsonMapper.ToObject<PackAction_Rush_ToClient>(_jsonStr);
-                    AllocatedRoom.Instance.ReceiveRush(_playerID, rush.On);
-                    break;
                 case "Action_Skill":
                     var skill = JsonMapper.ToObject<PackAction_Skill_ToClient>(_jsonStr);
                     AllocatedRoom.Instance.ReceiveSkill(_playerID, skill.SkillID, skill.On);

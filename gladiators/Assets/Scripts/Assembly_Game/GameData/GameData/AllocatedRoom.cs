@@ -68,12 +68,13 @@ namespace Gladiators.Main {
 
         long firstPackServerTimestamp; // 配對開始後第一次收到封包的時間戳
         public long ClientTimeStamp { get { return (long)(Time.realtimeSinceStartup * 1000) + firstPackServerTimestamp; } } // 本地相對時間戳
-        public long RenderTimestamp { get { return ClientTimeStamp - (long)Lantency; } } // 本地渲染時間戳
+        public long RenderTimestamp { get { return ClientTimeStamp - (long)Lantency - INTERPOLATION_DELAY_MILISECS; } } // 本地渲染時間戳
         void setFirstPackServerTimestamp(long _time) {
             if (firstPackServerTimestamp == 0) {
                 firstPackServerTimestamp = _time - (long)(Time.realtimeSinceStartup * 1000);
             }
         }
+        const long INTERPOLATION_DELAY_MILISECS = 100; // 緩衝延遲毫秒(進行插值計算時clientRender時間太接近或超前最新的封包的過程會找不到新封包而無法進行差值，所以要定義一個延遲時間)
 
 
 
@@ -300,7 +301,7 @@ namespace Gladiators.Main {
         /// 收到戰鬥資訊封包, 存儲封包資料
         /// </summary>
         public void ReceiveGladiatorStates(long _packID, GLADIATORSTATES_TOCLIENT _gladiatorStats) {
-            if (BattleManager.Instance != null) BattleModelController.Instance.UpdateGladiatorsState(_packID, _gladiatorStats.Time, _gladiatorStats.MyState, _gladiatorStats.OpponentState);
+            if (BattleManager.Instance != null) BattleController.Instance.UpdateGladiatorsState(_packID, _gladiatorStats.Time, _gladiatorStats.MyState, _gladiatorStats.OpponentState);
         }
         /// <summary>
         /// 收到肉搏封包, 存儲封包資料
@@ -317,12 +318,8 @@ namespace Gladiators.Main {
             }
         }
 
-        public void ReceiveRush(string _playerID, bool _rush) {
-            if (BattleModelController.Instance != null) BattleModelController.Instance.Run(_playerID, _rush);
-        }
-
         public void ReceiveSkill(string _playerID, int _skillID, bool _on) {
-            if (BattleModelController.Instance != null) BattleModelController.Instance.Skill(_playerID, _skillID, _on);
+            if (BattleController.Instance != null) BattleController.Instance.Skill(_playerID, _skillID, _on);
             BattleSceneUI.Instance.UpdateSkillState(_skillID, _on);
         }
 

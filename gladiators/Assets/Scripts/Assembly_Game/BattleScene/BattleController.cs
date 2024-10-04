@@ -10,7 +10,7 @@ using System.Linq;
 using Unity.Entities.UniversalDelegates;
 using UnityEngine;
 
-public class BattleModelController : MonoBehaviour {
+public class BattleController : MonoBehaviour {
     [SerializeField] GameObject terrainPrefab;
     [SerializeField] Character characterPrefab;
 
@@ -24,24 +24,27 @@ public class BattleModelController : MonoBehaviour {
     Dictionary<string, Character> CharDic;
 
     const float MOVE_DURATION_SECS = 0.08f; // client收到server座標更新後幾秒內要平滑移動至目標秒數
-    const long INTERPOLATION_DELAY_MILISECS = 100; // 緩衝延遲毫秒(進行插值移動時clientRender時間太接近或超前最新的封包的過程會找不到新封包而無法進行差值，所以要定義一個延遲時間)
     const int KEEP_ServerPosPack_MILISECS = 1000; // 移除多久以前的移動封包(毫秒)
+    const float MAX_EXTRAPOLATION_SECS = 1; // 最大外推秒數(限制外推時間，避免過長導致不準確)
 
     public const float WALLPOS = 20f;// 牆壁位置
     public const float KnockAngleRange = 30;// 擊退最大水平角度
     float curKnockAngle = 0; // 目前碰撞擊退的角度
-    SortedDictionary<long, ServerPosPack> PosBuffer = new SortedDictionary<long, ServerPosPack>(); // 移動插植緩衝
-    public class ServerPosPack {
+    SortedDictionary<long, ServerStatePack> StateBuffer = new SortedDictionary<long, ServerStatePack>(); // 狀態封包Buffer
+    public class ServerStatePack {
         public long PackID;
         public float LeftPos;
         public float LeftSpd;
+        public float LeftVigor;
+        public bool LeftRush;
         public float RightPos;
         public float RightSpd;
-        public long Timestamp;
+        public bool RightRush;
+        public long Timestamp; // server送封包的時間戳
     }
 
 
-    public static BattleModelController Instance { get; private set; }
+    public static BattleController Instance { get; private set; }
 
     public void Init() {
         Instance = this;
@@ -73,17 +76,10 @@ public class BattleModelController : MonoBehaviour {
             yield return new WaitForEndOfFrame();
         }
     }
-    void BattleReset(float leftPos, float rightPos) {
-        leftChar.transform.position = new Vector3(leftPos, 0, 0);
-        leftChar.transform.rotation = Quaternion.Euler(0, 0, 0);
-        rightChar.transform.position = new Vector3(rightPos, 0, 0);
-        rightChar.transform.rotation = Quaternion.Euler(0, 0, 0);
-    }
 
     public void BattleStart() {
-        BattleReset(-16, 16);
         BattleIsEnd = false;
-        MoveLoop().Forget();
+        StateUpdateLoop().Forget();
     }
 
     public void BattleEnd() {
@@ -97,26 +93,29 @@ public class BattleModelController : MonoBehaviour {
         rightChar.UpdateEffectTypes(_rightState.EffectTypes);
 
         // 新增移動插植緩衝
-        ServerPosPack pack = new ServerPosPack();
+        ServerStatePack pack = new ServerStatePack();
         pack.PackID = _packID;
         pack.Timestamp = _time;
         pack.LeftPos = (float)_leftState.CurPos;
         pack.LeftSpd = (float)_leftState.CurSpd;
+        pack.LeftVigor = (float)_leftState.CurVigor;
+        pack.LeftRush = _leftState.Rush;
         pack.RightPos = (float)_rightState.CurPos;
         pack.RightSpd = (float)_rightState.CurSpd;
-        PosBuffer[_time] = pack;
+        pack.RightRush = _rightState.Rush;
+        StateBuffer[_time] = pack;
     }
     /// <summary>
-    /// 插值移動循環
+    /// 狀態更新循環
     /// </summary>
-    private async UniTaskVoid MoveLoop() {
+    private async UniTaskVoid StateUpdateLoop() {
         while (!BattleIsEnd) {
             // 計算渲染時間戳
-            long renderTimestamp = AllocatedRoom.Instance.RenderTimestamp - INTERPOLATION_DELAY_MILISECS;
+            long renderTimestamp = AllocatedRoom.Instance.RenderTimestamp;
             // 找緩衝區中兩個相鄰的封包
-            ServerPosPack before = null;
-            ServerPosPack after = null;
-            var keys = PosBuffer.Keys;
+            ServerStatePack before = null;
+            ServerStatePack after = null;
+            var keys = StateBuffer.Keys;
             long? beforeKey = null;
             long? afterKey = null;
 
@@ -137,15 +136,30 @@ public class BattleModelController : MonoBehaviour {
 
             // 移除不需要插植緩衝
             foreach (var key in keysToRemove) {
-                PosBuffer.Remove(key);
+                StateBuffer.Remove(key);
             }
 
-            if (beforeKey.HasValue && afterKey.HasValue) { // 封包沒延遲時進行插值
-                before = PosBuffer[beforeKey.Value];
-                after = PosBuffer[afterKey.Value];
-                // 計算插值因子alpha
+            // <<<<<<<<衝刺>>>>>>>>>
+            ServerStatePack lastPack = null;
+            if (StateBuffer.Count >= 1) {
+                lastPack = StateBuffer.Values.Last();
+                leftChar.SetRush(lastPack.LeftRush);
+                rightChar.SetRush(lastPack.RightRush);
+            }
+
+            if (beforeKey.HasValue && afterKey.HasValue) { // 封包沒延遲時進行插值(interpolation)
+
+
+                // <<<<<<<<計算插值alpha>>>>>>>>>
+                before = StateBuffer[beforeKey.Value];
+                after = StateBuffer[afterKey.Value];
+                // 計算插值alpha
                 float alpha = (float)(renderTimestamp - before.Timestamp) / (float)(after.Timestamp - before.Timestamp);
                 alpha = Mathf.Clamp01(alpha);
+
+
+
+                // <<<<<<<<腳色位置>>>>>>>>>
                 // 計算插值位置
                 float leftPos = Mathf.Lerp(before.LeftPos, after.LeftPos, alpha);
                 float rightPos = Mathf.Lerp(before.RightPos, after.RightPos, alpha);
@@ -154,17 +168,25 @@ public class BattleModelController : MonoBehaviour {
                 // 更新角色位置
                 leftChar.MoveClientToPos(clientPos.Item1, MOVE_DURATION_SECS, true).Forget();
                 rightChar.MoveClientToPos(clientPos.Item2, MOVE_DURATION_SECS, true).Forget();
-            } else { // 封包延遲時進行外推
-                if (PosBuffer.Count >= 1) {
-                    // 取得最後一個封包的腳色速度來進行外推
-                    var lastPack = PosBuffer.Values.Last();
-                    // 取得速度
-                    float leftSpd = lastPack.LeftSpd;
-                    float rightSpd = lastPack.RightSpd;
+
+
+                // <<<<<<<<體力>>>>>>>>>
+                float leftVigor = Mathf.Lerp(before.LeftVigor, after.LeftVigor, alpha);
+
+
+            } else { // 封包延遲時進行外推(extrapolation)
+                if (lastPack != null) {
+
                     // 計算從最後封包到當前渲染時間的時間差(秒)
                     float extrapolateTime = (renderTimestamp - lastPack.Timestamp) / 1000f;
                     // 限制外推時間，避免過長導致不準確
-                    extrapolateTime = Mathf.Min(extrapolateTime, MOVE_DURATION_SECS);
+                    extrapolateTime = Mathf.Min(extrapolateTime, MAX_EXTRAPOLATION_SECS);
+
+
+                    // <<<<<<<<腳色位置>>>>>>>>>
+                    // 取得速度
+                    float leftSpd = lastPack.LeftSpd;
+                    float rightSpd = lastPack.RightSpd;
                     // 計算外推位置
                     float extrapolatedLeftPos = lastPack.LeftPos + leftSpd * extrapolateTime;
                     float extrapolatedRightPos = lastPack.RightPos + rightSpd * extrapolateTime;
@@ -176,6 +198,14 @@ public class BattleModelController : MonoBehaviour {
                     // 更新角色位置
                     leftChar.MoveClientToPos(clientExtrapolatedPos.Item1, MOVE_DURATION_SECS, false).Forget();
                     rightChar.MoveClientToPos(clientExtrapolatedPos.Item2, MOVE_DURATION_SECS, false).Forget();
+
+                    // <<<<<<<<體力>>>>>>>>>
+                    float leftVigor = lastPack.LeftVigor;
+                    // 計算外推體力
+                    float extrapolatedLeftVigor = lastPack.LeftVigor + 1 * extrapolateTime; // 體力回復都是1
+                    // 使用插值來平滑外推體力
+                    extrapolatedLeftVigor = Mathf.Lerp(lastPack.LeftVigor, extrapolatedLeftVigor, extrapolateTime / MOVE_DURATION_SECS);
+
                 } else {
                     // 尚未收到封包前腳色不會移動
                 }

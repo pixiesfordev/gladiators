@@ -64,7 +64,6 @@ public enum EffectType {
 }
 
 public class Character : MonoBehaviour {
-    public Camera mainCamera;
     public Transform Base;
     public Transform Baseturntable;
     public Transform BOARD;
@@ -109,11 +108,11 @@ public class Character : MonoBehaviour {
 
     public void Init(float _pos, Character _opponent, RightLeft _faceDir, float _knockAngle) {
         enemy = _opponent;
-        mainCamera = BattleManager.Instance.BattleCam;
         FaceDir = _faceDir;
         MoveClientToPos(new Vector3(_pos, 0, 0), 0).Forget();
         SetRush(false);
-        setFaceToTarget(_knockAngle);
+        MoveSmoke.Stop();
+        SetFaceToTarget(_knockAngle);
     }
 
 
@@ -123,9 +122,10 @@ public class Character : MonoBehaviour {
     }
 
     public void SetRush(bool _on) {
+        if (IsRushing == _on) return;
         IsRushing = _on;
         if (IsRushing) {
-            if (CanMove) MoveSmoke.Play();
+            MoveSmoke.Play();
             animator.SetFloat("moveSpeed", 1.5f);
         } else {
             MoveSmoke.Stop();
@@ -133,24 +133,6 @@ public class Character : MonoBehaviour {
         }
     }
 
-    //public void Move_Loco(float _angle) {
-    //    if (!CanMove) {
-    //        return;
-    //    }
-    //    float adjustedAngle = (FaceDir == RightLeft.Right) ? _angle : _angle + 180f;
-    //    float angleInRadians = adjustedAngle * Mathf.Deg2Rad;
-
-    //    float offsetX = Mathf.Cos(angleInRadians) * CurSpd * Time.deltaTime;
-    //    float offsetZ = Mathf.Sin(angleInRadians) * CurSpd * Time.deltaTime;
-    //    Vector3 newPos = new Vector3(transform.localPosition.x + offsetX, 0, transform.localPosition.z + offsetZ);
-    //    setClientPos(newPos);
-
-    //    if (!InKnockDist) {
-    //        PlayAni("move");
-    //    } else {
-    //        PlayAni("attack");
-    //    }
-    //}
 
 
     public async UniTask MoveClientToPos(Vector3 _pos, float _duration, bool _move = false) {
@@ -170,7 +152,7 @@ public class Character : MonoBehaviour {
     public void UpdateEffectTypes(List<string> _effectTypStrs) {
         EffectTypes = Skill.ConvertStrListToEffectTypes(_effectTypStrs);
     }
-    void setFaceToTarget(float _knockAngle) {
+    void SetFaceToTarget(float _knockAngle) {
         // 調整角度根據角色的面向方向(左右)
         float adjustedAngle = (FaceDir == RightLeft.Right) ? -_knockAngle : -(_knockAngle + 180f);
         transform.localRotation = Quaternion.Euler(0, adjustedAngle, 0);
@@ -178,7 +160,7 @@ public class Character : MonoBehaviour {
     public void HandleMelee(Vector3 _finalPos, List<string> _effectTypes, float _serverKnockDist, float _serverResultPos, float _knockAngl, int _skilID) {
         UpdateEffectTypes(_effectTypes);
         MeleeSkillID = _skilID;
-        setFaceToTarget(_knockAngl);
+        SetFaceToTarget(_knockAngl);
         knockback(_finalPos, _serverKnockDist, _serverResultPos, _knockAngl);
     }
 
@@ -216,7 +198,7 @@ public class Character : MonoBehaviour {
             transform.localPosition = new Vector3(_finalPos.x, originalPos.y, _finalPos.z);
             IsKnockback = false;
             // 撞牆檢查
-            if (_serverResultPos == BattleModelController.WALLPOS || _serverResultPos == -BattleModelController.WALLPOS) {
+            if (_serverResultPos == BattleController.WALLPOS || _serverResultPos == -BattleController.WALLPOS) {
                 knockWall();
             }
             // 播放暈眩動畫

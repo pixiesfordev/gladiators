@@ -17,6 +17,8 @@ namespace Gladiators.Socket.Matchgame {
         //class名稱就是封包的CMD名稱
         public double CurPos { get; private set; }
         public double CurSpd { get; private set; }
+        public double CurVigor { get; private set; }
+        public bool Rush { get; private set; }
         public List<string> EffectTypes { get; private set; }
     }
 
