@@ -9063,14 +9063,17 @@ MonoBehaviour:
     m_SubObjectName: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0
+  MyBattleStaminaObj: {fileID: 5596748445366749730}
+  MyDivineSelectUI: {fileID: 4341703146466420599}
   PlayerGladiatorInfo: {fileID: 6746283082193121166}
   EnemyGladiatorInfo: {fileID: 5661049524060450723}
   PlayerGoldText: {fileID: 4513145301553664397}
   BattleLeftTime: {fileID: 4098945690757743790}
-  SkillBtn1: {fileID: 6428109590702190356}
-  SkillBtn2: {fileID: 2825287410354185771}
-  SkillBtn3: {fileID: 8733163161354806148}
-  NextSkillBtn: {fileID: 2343207801984985483}
+  SkillBtns:
+  - {fileID: 6428109590702190356}
+  - {fileID: 2825287410354185771}
+  - {fileID: 8733163161354806148}
+  - {fileID: 2343207801984985483}
   StaminaBar: {fileID: 2215377328089998921}
   DivineSkills:
   - {fileID: 2432468833233880680}
@@ -10026,8 +10029,10 @@ MonoBehaviour:
   - {fileID: 478822626568093137}
   - {fileID: 1980205182482099223}
   - {fileID: 2889317837055787698}
-  LatticeVal: 0
   TestLattices: 0
+  TestLatticeVal: 0
+  TestInitLattices: 0
+  TestMaxLatticeVal: 0
 --- !u!1 &8121648351195798020
 GameObject:
   m_ObjectHideFlags: 0
@@ -11259,7 +11264,7 @@ PrefabInstance:
     - target: {fileID: 8640825839032587235, guid: 0bcc41ee2008f5f4695fab3afb01a727,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8778789168268291839, guid: 0bcc41ee2008f5f4695fab3afb01a727,
         type: 3}
@@ -11286,6 +11291,18 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 8935689843619639536}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &4341703146466420599 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4630024308697077639, guid: 0bcc41ee2008f5f4695fab3afb01a727,
+    type: 3}
+  m_PrefabInstance: {fileID: 8935689843619639536}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed35af146c6c8864ba79eb99867a3e59, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &7648480080736889660 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1595732829922827212, guid: 0bcc41ee2008f5f4695fab3afb01a727,

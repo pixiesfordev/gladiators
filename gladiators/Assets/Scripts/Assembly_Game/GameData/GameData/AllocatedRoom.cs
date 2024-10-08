@@ -3,6 +3,7 @@ using Gladiators.Battle;
 using Gladiators.Socket;
 using Gladiators.Socket.Matchgame;
 using Newtonsoft.Json.Linq;
+using PlasticPipe.PlasticProtocol.Server.Stubs;
 using Scoz.Func;
 using System;
 using System.Collections.Generic;
@@ -184,7 +185,7 @@ namespace Gladiators.Main {
         /// <summary>
         /// 設定技能
         /// </summary>
-        public void SetSkill(int _skillID, bool _on) {
+        public void ActiveSkill(int _skillID, bool _on) {
             var cmd = new SocketCMD<PLAYERACTION>(new PLAYERACTION("Action_Skill", new PackAction_Skill(_on, _skillID)));
             GameConnector.Instance.SendTCP(cmd);
         }
@@ -206,7 +207,8 @@ namespace Gladiators.Main {
                 SetGameState(GameState.GameState_WaitingPlayersReady);
                 if (SceneManager.GetActiveScene().name != MyScene.BattleScene.ToString())
                     PopupUI.CallSceneTransition(MyScene.BattleScene);
-                BattleSceneUI.SetPackGladiator(MyPackPlayer.MyPackGladiator, OpponentPackPlayer.MyPackGladiator);
+                BattleSceneUI.InitPlayerData(MyPackPlayer.MyPackGladiator, OpponentPackPlayer.MyPackGladiator, MyPackPlayer.MyPackGladiator.HandSkillIDs);
+                TestTool.Instance.UpdateSkills(MyPackPlayer.MyPackGladiator.HandSkillIDs, 0);
             }
 
             // 開始PingLoop
@@ -307,20 +309,25 @@ namespace Gladiators.Main {
         /// 收到肉搏封包, 存儲封包資料
         /// </summary>
         public void ReceiveMelee(MELEE_TOCLIENT _melee) {
-            if (BattleManager.Instance != null) BattleManager.Instance.Melee(_melee);
+            if (BattleManager.Instance == null) return;
+            BattleManager.Instance.Melee(_melee);
+            BattleController.Instance.UpdateMySkills(_melee.MyHandSkillIDs, 0);
+            BattleSceneUI.Instance.SetSkillDatas(_melee.MyHandSkillIDs, 0);
+            TestTool.Instance.UpdateSkills(_melee.MyHandSkillIDs, 0);
         }
         /// <summary>
         /// 收到角鬥士血量更新
         /// </summary>
         public void ReceiveGladiatorHP(Hp_TOCLIENT _hpPack) {
             if (BattleManager.Instance != null) {
-                BattleSceneUI.Instance.UpdateGladiatorHP(true, _hpPack.HPChange);
+                BattleSceneUI.Instance.UpdateGladiatorHP(_hpPack.PlayerID, _hpPack.HPChange);
             }
         }
 
-        public void ReceiveSkill(string _playerID, int _skillID, bool _on) {
-            if (BattleController.Instance != null) BattleController.Instance.Skill(_playerID, _skillID, _on);
-            BattleSceneUI.Instance.UpdateSkillState(_skillID, _on);
+        public void ReceiveSkill(int[] _skills, int _skillOnID) {
+            if (BattleController.Instance != null) BattleController.Instance.UpdateMySkills(_skills, _skillOnID);
+            BattleSceneUI.Instance.SetSkillDatas(_skills, _skillOnID);
+            TestTool.Instance.UpdateSkills(_skills, _skillOnID);
         }
 
     }

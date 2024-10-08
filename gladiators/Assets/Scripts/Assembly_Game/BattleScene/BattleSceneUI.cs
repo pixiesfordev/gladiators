@@ -16,6 +16,8 @@ public class BattleSceneUI : BaseUI {
     [SerializeField] AssetReference BattleManagerAsset;
 
     [HeaderAttribute("==============UI==============")]
+    [SerializeField] BattleStaminaObj MyBattleStaminaObj;
+    [SerializeField] DivineSelectUI MyDivineSelectUI;
     //TODO:考慮是否之後改腳本產生物件
     //上方角鬥士資訊
     [SerializeField] BattleGladiatorInfo PlayerGladiatorInfo;
@@ -25,11 +27,9 @@ public class BattleSceneUI : BaseUI {
 
     [SerializeField] MyTextPro BattleLeftTime;//戰鬥剩餘時間
 
-    //技能牌
-    [SerializeField] BattleSkillButton SkillBtn1;
-    [SerializeField] BattleSkillButton SkillBtn2;
-    [SerializeField] BattleSkillButton SkillBtn3;
-    [SerializeField] BattleSkillButton NextSkillBtn;
+
+    //技能手牌
+    [SerializeField] BattleSkillButton[] SkillBtns;
 
     [SerializeField] Image StaminaBar;//使用技能體力條
 
@@ -40,15 +40,20 @@ public class BattleSceneUI : BaseUI {
     [SerializeField] GameObject SettingBtn;//設定按鈕
 
 
+
     [Header("Settings")]
     private bool _isSpellTest;
 
     public static BattleSceneUI Instance;
+
+    // 收到SetPlayer封包後先暫存資料，因為此時可能還沒跑Init不能使用BattleUI.Instance
     static PackGladiator myGladiator;
     static PackGladiator opponentGladiator;
-    public static void SetPackGladiator(PackGladiator _myGladiator, PackGladiator _opponentGladiator) {
+    static int[] handSKillIDs;
+    public static void InitPlayerData(PackGladiator _myGladiator, PackGladiator _opponentGladiator, int[] _handSKillIDs) {
         myGladiator = _myGladiator;
         opponentGladiator = _opponentGladiator;
+        handSKillIDs = _handSKillIDs;
     }
 
     private void Start() {
@@ -56,45 +61,34 @@ public class BattleSceneUI : BaseUI {
     }
     public override void Init() {
         base.Init();
+        MyDivineSelectUI.Init();
+        MyBattleStaminaObj.Init();
         SpawnBattleManager();
         Instance = this;
         InitGladiator(true, myGladiator.MaxHP, myGladiator.CurHp, myGladiator.JsonID);
         InitGladiator(false, opponentGladiator.MaxHP, opponentGladiator.CurHp, opponentGladiator.JsonID);
-        //更新介面手牌技能
-        SetSkillBtnData(myGladiator.HandSkillIDs);
-        //先用暫時寫死的技能
-        //SkillBtn1.SetData(GameDictionary.GetJsonData<JsonSkill>(1)); //這個是碰撞觸發技能
-        //SkillBtn2.SetData(GameDictionary.GetJsonData<JsonSkill>(2)); //這個是直接觸發技能
-        //SkillBtn3.SetData(GameDictionary.GetJsonData<JsonSkill>(3)); //這個是直接觸發技能
+        SetSkillDatas(handSKillIDs, 0);
+
     }
 
     /// <summary>
-    /// 初始化&更新技能資料
+    /// 更新技能資料
     /// </summary>
     /// <param name="_handSKillIDs">手牌技能</param>
     /// <param name="_handOnID">選中技能(近戰啟動中)</param>
-    public void SetSkillBtnData(int[] _handSKillIDs) {
+    public void SetSkillDatas(int[] _handSKillIDs, int _skillOnID) {
+        if (_handSKillIDs.Length != SkillBtns.Length) {
+            WriteLog.LogError("_handSKillIDs封包格式錯誤");
+            return;
+        }
         //接收封包並設定按鈕的技能資料
-        int setID1 = _handSKillIDs.Length > 0 ? _handSKillIDs[0] : 0;
-        int setID2 = _handSKillIDs.Length > 1 ? _handSKillIDs[1] : 0;
-        int setID3 = _handSKillIDs.Length > 2 ? _handSKillIDs[2] : 0;
-        int nextSetID = _handSKillIDs.Length > 3 ? _handSKillIDs[3] : 0;
-        SkillBtn1.SetData(GameDictionary.GetJsonData<JsonSkill>(setID1));
-        SkillBtn2.SetData(GameDictionary.GetJsonData<JsonSkill>(setID2));
-        SkillBtn3.SetData(GameDictionary.GetJsonData<JsonSkill>(setID3));
-        NextSkillBtn.SetData(GameDictionary.GetJsonData<JsonSkill>(nextSetID));
+        for (int i = 0; i < SkillBtns.Length; i++) {
+            var jsonSkill = GameDictionary.GetJsonData<JsonSkill>(_handSKillIDs[i]);
+            SkillBtns[i].SetData(jsonSkill);
+            SkillBtns[i].SetSkillOn(_handSKillIDs[i] == _skillOnID);
+        }
     }
 
-    /// <summary>
-    /// 接收點技能後的回傳 更新技能On/Off
-    /// </summary>
-    /// <param name="_skillID">目標技能ID</param>
-    /// <param name="_on">是否啟動技能</param>
-    public void UpdateSkillState(int _skillID, bool _on) {
-        SkillBtn1.CheckAndSetSkillOn(_skillID, _on);
-        SkillBtn2.CheckAndSetSkillOn(_skillID, _on);
-        SkillBtn3.CheckAndSetSkillOn(_skillID, _on);
-    }
 
     /// <summary>
     /// 更新玩家金錢
@@ -121,9 +115,11 @@ public class BattleSceneUI : BaseUI {
     /// </summary>
     /// <param name="self">是否為己方角鬥士</param>
     /// <param name="_addHP">目前血量</param>
-    public void UpdateGladiatorHP(bool self, int _addHP) {
-        BattleGladiatorInfo target = self ? PlayerGladiatorInfo : EnemyGladiatorInfo;
-        target.AddHP(_addHP);
+    public void UpdateGladiatorHP(string _playerID, int _addHP) {
+        var playerDoc = GamePlayer.Instance.GetDBPlayerDoc<DBPlayer>();
+        WriteLog.LogError("_playerID=" + _playerID + " playerDoc.ID=" + playerDoc.ID + "  _addHP=" + _addHP);
+        if (_playerID == playerDoc.ID) PlayerGladiatorInfo.AddHP(_addHP);
+        else EnemyGladiatorInfo.AddHP(_addHP);
     }
 
     void SpawnBattleManager() {

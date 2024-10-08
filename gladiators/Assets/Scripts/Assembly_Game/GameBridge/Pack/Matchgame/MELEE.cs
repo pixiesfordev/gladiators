@@ -6,6 +6,7 @@ namespace Gladiators.Socket.Matchgame {
         //class名稱就是封包的CMD名稱
         public PackMelee MyAttack { get; private set; }
         public PackMelee OpponentAttack { get; private set; }
+        public int[] MyHandSkillIDs { get; private set; }
     }
 
     public class PackMelee {
@@ -14,6 +15,5 @@ namespace Gladiators.Socket.Matchgame {
         public double Knockback { get; private set; }
         public double CurPos { get; private set; }
         public List<string> EffectTypes { get; private set; }
-        public int[] HandSkillIDs { get; private set; }    // (玩家自己才會收到)
     }
 }

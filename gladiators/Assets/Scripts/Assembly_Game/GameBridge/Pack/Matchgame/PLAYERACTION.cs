@@ -24,9 +24,11 @@ namespace Gladiators.Socket.Matchgame {
         }
     }
     public class PackAction_Skill_ToClient {
-        public bool On { get; private set; }
+        public int SkillOnID { get; private set; } // 啟用中肉搏技能
+        public int[] HandSkillIDs { get; private set; } // 手牌技能
+    }
+    public class PackAction_OpponentSkill_ToClient {
         public int SkillID { get; private set; }
-        public int[] HandSkillIDs { get; private set; }    // (玩家自己才會收到)
     }
     public class PackAction_DivineSkill {
         public bool On { get; private set; }

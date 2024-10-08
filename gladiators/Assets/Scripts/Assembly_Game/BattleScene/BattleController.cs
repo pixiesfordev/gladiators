@@ -58,6 +58,7 @@ public class BattleController : MonoBehaviour {
         leftChar.name = _myPlayerPack.DBID;
         leftChar.tag = "leftobj";
         leftChar.Init((float)_myPlayerPack.MyPackGladiator.CurPos, rightChar, RightLeft.Right, curKnockAngle);
+        BattleStaminaObj.Instance.InitVigor((float)_myPlayerPack.MyPackGladiator.CurVigor, 20);
         BattleManager.Instance.vTargetGroup.AddMember(leftChar.transform, 1.8f, 8);
         rightChar.name = _opponentPack.DBID;
         rightChar.tag = "rightobj";
@@ -172,7 +173,7 @@ public class BattleController : MonoBehaviour {
 
                 // <<<<<<<<體力>>>>>>>>>
                 float leftVigor = Mathf.Lerp(before.LeftVigor, after.LeftVigor, alpha);
-
+                BattleStaminaObj.Instance.SetVigor(leftVigor);
 
             } else { // 封包延遲時進行外推(extrapolation)
                 if (lastPack != null) {
@@ -261,8 +262,9 @@ public class BattleController : MonoBehaviour {
         if (CharDic.ContainsKey(_playerID)) CharDic[_playerID].SetRush(_run);
     }
 
-    public void Skill(string _playerID, int _skillID, bool _on) {
-        WriteLog.LogError($"_playerID={_playerID} _skillID={_skillID} _on={_on}");
+    public void UpdateMySkills(int[] _skills, int _skillOnID) {
+    }
+    public void OpponentUseSkill(int _skillID) {
     }
 
 }

@@ -63,11 +63,6 @@ namespace Gladiators.Battle {
             GoldNotEnough,//金錢不足
         }
 
-        // Start is called before the first frame update
-        void Start() {
-            Init();
-        }
-
         public override void Init() {
             base.Init();
 
@@ -77,7 +72,7 @@ namespace Gladiators.Battle {
 
             //更新玩家持有金幣
             UpdatePlayerGold();
-            
+
             //按鈕文字設定
             SureBtnText.text = JsonString.GetUIString("Confirm");
 
@@ -123,7 +118,7 @@ namespace Gladiators.Battle {
             //全蠟燭熄滅
             foreach (var c in Candles)
                 c.gameObject.SetActive(false);
-            
+
             //設定光圈&亮度(變至最小&最暗)
             ApertureRT.localScale = new Vector3(ApertureMinSize, ApertureMinSize, 1f);
             BGFore.color = new Color(BGDarkestBrightness, BGDarkestBrightness, BGDarkestBrightness);
@@ -138,30 +133,25 @@ namespace Gladiators.Battle {
         }
 
         //重設背景亮度
-        void ResetBGFore()
-        {
+        void ResetBGFore() {
             BGFore.color = Color.white;
         }
 
         //重設光圈大小
-        void ResetApeture()
-        {
+        void ResetApeture() {
             ApertureRT.localScale = Vector3.one;
             ApertureImage.color = Color.white;
         }
 
         //中止光圈演出
-        void StopApertureDoScale()
-        {
-            if (ApertureScaleTween != null)
-            {
+        void StopApertureDoScale() {
+            if (ApertureScaleTween != null) {
                 ApertureScaleTween.Pause();
                 ApertureScaleTween.Kill();
             }
         }
 
-        void ResetButton()
-        {
+        void ResetButton() {
             //設定按鈕(短版色彩)
             SetSureBtnState(false);
         }
@@ -201,7 +191,7 @@ namespace Gladiators.Battle {
                 BGFore.color = new Color(curBgColor, curBgColor, curBgColor);
                 ApertureImage.color = new Color(curBgColor, curBgColor, curBgColor);
             }
-              
+
             //時間到直接發送封包 先鎖定按鈕 等待一禎再發送 避免重複發送封包
             Confirmed = true;
             await UniTask.Yield();
@@ -299,25 +289,20 @@ namespace Gladiators.Battle {
             AllocatedRoom.Instance.SetDivineSkills(new int[] { selectedSkillID1, selectedSkillID2 });
         }
 
-        void SetSureBtnState(bool bGray)
-        {
-            if (BtnSizeTween != null)
-            {
+        void SetSureBtnState(bool bGray) {
+            if (BtnSizeTween != null) {
                 BtnSizeTween.Pause();
                 BtnSizeTween.Kill();
             }
-            if (BtnMaskSizeTween != null)
-            {
+            if (BtnMaskSizeTween != null) {
                 BtnMaskSizeTween.Pause();
                 BtnMaskSizeTween.Kill();
             }
-            if (LeftArrowPosTween != null)
-            {
+            if (LeftArrowPosTween != null) {
                 LeftArrowPosTween.Pause();
                 LeftArrowPosTween.Kill();
             }
-            if (RightArrowPosTween != null)
-            {
+            if (RightArrowPosTween != null) {
                 RightArrowPosTween.Pause();
                 RightArrowPosTween.Kill();
             }
@@ -328,11 +313,10 @@ namespace Gladiators.Battle {
             Image maskImage = BtnBGMaskRT.GetComponent<Image>();
             Image LeftArrowImage = LeftArrowRT.GetComponent<Image>();
             Image RightArrowImage = RightArrowRT.GetComponent<Image>();
-            if (bGray)
-            {
+            if (bGray) {
                 //按鈕圖片要逐步變長
                 if (btnRT != null)
-                    BtnSizeTween = btnRT.DOSizeDelta(new Vector2(630f, 135f), BtnAniTime); 
+                    BtnSizeTween = btnRT.DOSizeDelta(new Vector2(630f, 135f), BtnAniTime);
                 //按鈕要打灰
                 if (btnImage != null)
                     btnImage.material = GrayMaterial;
@@ -348,9 +332,7 @@ namespace Gladiators.Battle {
                 RightArrowPosTween = RightArrowRT.DOAnchorPos3D(new Vector3(-292f, 0f, 0f), BtnAniTime);
                 if (RightArrowImage != null)
                     RightArrowImage.material = GrayMaterial;
-            }
-            else
-            {
+            } else {
                 //還原所有按鈕相關UI
                 if (btnRT != null)
                     btnRT.sizeDelta = new Vector2(367f, 135f);
@@ -362,7 +344,7 @@ namespace Gladiators.Battle {
                 LeftArrowRT.anchoredPosition = new Vector2(154f, 0f);
                 if (LeftArrowImage != null)
                     LeftArrowImage.material = null;
-                RightArrowRT.anchoredPosition = new Vector2(-154f ,0f);
+                RightArrowRT.anchoredPosition = new Vector2(-154f, 0f);
                 if (RightArrowImage != null)
                     RightArrowImage.material = null;
             }

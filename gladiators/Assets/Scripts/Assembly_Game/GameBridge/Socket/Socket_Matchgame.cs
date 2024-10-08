@@ -299,7 +299,10 @@ namespace Gladiators.Socket {
             switch (_actionType) {
                 case "Action_Skill":
                     var skill = JsonMapper.ToObject<PackAction_Skill_ToClient>(_jsonStr);
-                    AllocatedRoom.Instance.ReceiveSkill(_playerID, skill.SkillID, skill.On);
+                    AllocatedRoom.Instance.ReceiveSkill(skill.HandSkillIDs, skill.SkillOnID);
+                    break;
+                case "Action_OpponentSkill":
+                    var opponentSkill = JsonMapper.ToObject<PackAction_OpponentSkill_ToClient>(_jsonStr);
                     break;
                 default:
                     Debug.LogError($"未知的 ActionType: {_actionType}");

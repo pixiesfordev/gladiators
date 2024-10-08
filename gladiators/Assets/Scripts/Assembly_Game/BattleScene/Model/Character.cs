@@ -89,12 +89,6 @@ public class Character : MonoBehaviour {
     const float KNOCKUP_TIME = 0.4f;//擊飛時間
 
     // 狀態
-    public int MaxHP { get; private set; }
-    public int CurHP { get; private set; }
-    public float HPRatio { get { return CurHP / MaxHP; } }
-    public float CurVigor { get; private set; }
-    public float VigorRatio { get { return CurVigor / 10; } }
-    public float CurSpd { get; private set; }
     public int MeleeSkillID { get; private set; }
     List<Skill.EffectType> EffectTypes = new List<Skill.EffectType>();
     public bool CanMove {

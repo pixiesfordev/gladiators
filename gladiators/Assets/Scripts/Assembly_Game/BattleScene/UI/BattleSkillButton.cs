@@ -8,10 +8,10 @@ using UnityEngine.UI;
 /// 戰鬥技能按鈕
 /// </summary>
 public class BattleSkillButton : MonoBehaviour {
-    
+
     [SerializeField] Image SkillIcon;
     [SerializeField] Button Btn;
-    
+
     [HeaderAttribute("==============TEST==============")]
     [Tooltip("使用技能外移位置")][SerializeField] Vector3 UsedSkillMoveOutPosition;
     [Tooltip("使用技能外移所需時間")][SerializeField] float UsedSkillMoveOutTime = 1f;
@@ -35,34 +35,26 @@ public class BattleSkillButton : MonoBehaviour {
     /// 設定技能資料
     /// </summary>
     /// <param name="_skill">技能資料</param>
-    public void SetData(JsonSkill _skill)
-    {
+    public void SetData(JsonSkill _skill) {
         SkillData = _skill;
         Debug.LogFormat("技能物件:{0}設定技能資料! 技能ID: {1}", gameObject.name, SkillData.ID);
     }
 
-    /// <summary>
-    /// 比對與設定技能是否為啟動
-    /// </summary>
-    /// <param name="_handOnID">比對技能ID</param>
-    /// <param name="_on">是否啟動</param>
-    public void CheckAndSetSkillOn(int _handOnID, bool _on)
-    {
-        SkillSelected = SkillData != null && SkillData.ID == _handOnID && _on;
-        int logSkillID = SkillData == null ? 0 : SkillData.ID;
-        Debug.LogFormat("比對技能物件:{0}. 物件技能ID:{1} 是否啟動:{2}", gameObject.name, logSkillID, SkillSelected);
+    public void SetSkillOn(bool _on) {
+        if (SkillData == null) return;
+        SkillSelected = _on;
     }
 
+
     //點擊施放技能
-    public void ClickBtn()
-    {
+    public void ClickBtn() {
         //判斷技能是否存在
         if (SkillData == null) {
             Debug.LogError("Skill Data is null!");
             return;
         }
         //送封包給後端
-        AllocatedRoom.Instance.SetSkill(SkillData.ID, true);
+        AllocatedRoom.Instance.ActiveSkill(SkillData.ID, true);
         /* 舊版 先註解 確定完成正式邏輯後刪除 先保留做為參考
         //判斷技能類型
         if (SkillData.Activation.Equals(SkillActivation.Instant))
@@ -84,8 +76,7 @@ public class BattleSkillButton : MonoBehaviour {
         */
     }
 
-    public void CastMeleeSkill(JsonSkill _skill)
-    {
+    public void CastMeleeSkill(JsonSkill _skill) {
         SkillSelected = false;
         //TODO:
         //作演出並替換下一個技能上來
