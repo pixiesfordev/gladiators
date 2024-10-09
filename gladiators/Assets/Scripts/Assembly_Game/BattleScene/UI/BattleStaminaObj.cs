@@ -26,10 +26,6 @@ public class BattleStaminaObj : MonoBehaviour {
     [Tooltip("測試更新體力值")][SerializeField] bool TestInitLattices;
     [Tooltip("測試設定最大體力值 值為10~20")][SerializeField] float TestMaxLatticeVal;
 
-
-
-
-
     //TODO:
     //1.體力條消耗演出
     //2.體力條補充演出
@@ -38,7 +34,7 @@ public class BattleStaminaObj : MonoBehaviour {
     void Update() {
         if (TestLattices) {
             TestLattices = !TestLattices;
-            SetLattices(TestLatticeVal);
+            SetVigor(TestLatticeVal);
         }
 
         if (TestInitLattices) {
@@ -62,11 +58,13 @@ public class BattleStaminaObj : MonoBehaviour {
         SetValText(curVal, CurrentVal);
         SetValText(maxVal, MaxVal);
         CurrentMaxVal = maxVal;
+        BattleSceneUI.Instance?.CheckVigor(curVal);
     }
 
     void SetValText(float val, Text obj) {
+        float showVal = Mathf.Floor(val);
         if (obj != null)
-            obj.text = val.ToString();
+            obj.text = showVal.ToString();
     }
 
     /// <summary>
@@ -74,9 +72,9 @@ public class BattleStaminaObj : MonoBehaviour {
     /// </summary>
     /// <param name="val">數值</param>
     public void SetVigor(float val) {
-        //TODO:跟server同步數值
         SetLattices(val);
         SetValText(val, CurrentVal);
+        BattleSceneUI.Instance?.CheckVigor(val);
     }
 
     void SetLattices(float val) {

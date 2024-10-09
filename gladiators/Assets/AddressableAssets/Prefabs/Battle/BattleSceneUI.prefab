@@ -1093,10 +1093,9 @@ GameObject:
   m_Component:
   - component: {fileID: 770423955923521572}
   - component: {fileID: 145654386856551580}
-  - component: {fileID: 4648500720970371624}
   - component: {fileID: 6322904696977187354}
   m_Layer: 5
-  m_Name: SprintBtn
+  m_Name: SprintBtnBG
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1132,20 +1131,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1105435031274134201}
   m_CullTransparentMesh: 1
---- !u!114 &4648500720970371624
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1105435031274134201}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b22d10ab6d384e74999e68e09da816f3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  PressMode: 1
-  StateText: {fileID: 5113572391482141870}
 --- !u!114 &6322904696977187354
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3066,7 +3051,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 1
+  m_Transition: 0
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
@@ -3091,7 +3076,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 4648500720970371624}
+      - m_Target: {fileID: 6797904588767860694}
         m_TargetAssemblyTypeName: BattleSprintButton, Game
         m_MethodName: OnOffMode_Click
         m_Mode: 1
@@ -3120,7 +3105,7 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 4648500720970371624}
+        - m_Target: {fileID: 6797904588767860694}
           m_TargetAssemblyTypeName: BattleSprintButton, Game
           m_MethodName: PressMode_Run
           m_Mode: 1
@@ -3136,7 +3121,7 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 4648500720970371624}
+        - m_Target: {fileID: 6797904588767860694}
           m_TargetAssemblyTypeName: BattleSprintButton, Game
           m_MethodName: PressMode_Stop
           m_Mode: 1
@@ -5315,7 +5300,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -5654,7 +5639,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -5939,7 +5924,7 @@ MonoBehaviour:
   m_Material: {fileID: -876546973899608171, guid: ef3d569bb41ff3d40be8f8efb892ab6f,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 0.84313726}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -6057,8 +6042,9 @@ GameObject:
   - component: {fileID: 1119931367285350091}
   - component: {fileID: 7102330170021119607}
   - component: {fileID: 8898953110382197147}
+  - component: {fileID: 6797904588767860694}
   m_Layer: 5
-  m_Name: Button00
+  m_Name: SprintBtn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6107,7 +6093,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 2100000, guid: a929e68baeb04f74d8979932b8f16c44, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 0}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -6144,6 +6130,22 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &6797904588767860694
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5012573197772321349}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b22d10ab6d384e74999e68e09da816f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StateText: {fileID: 5113572391482141870}
+  ButtonAnimator: {fileID: 8898953110382197147}
+  Btn: {fileID: 2271151290300352636}
+  PressMode: 1
 --- !u!1 &5374091322560707669
 GameObject:
   m_ObjectHideFlags: 0
@@ -6221,7 +6223,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 0.92941177}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -9074,11 +9076,10 @@ MonoBehaviour:
   - {fileID: 2825287410354185771}
   - {fileID: 8733163161354806148}
   - {fileID: 2343207801984985483}
-  StaminaBar: {fileID: 2215377328089998921}
   DivineSkills:
   - {fileID: 2432468833233880680}
   - {fileID: 3756264542844957122}
-  SprintBtn: {fileID: 4648500720970371624}
+  SprintBtn: {fileID: 6797904588767860694}
   SettingBtn: {fileID: 6614019982269878782}
 --- !u!1 &7261653907666183505
 GameObject:
@@ -10392,7 +10393,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 2100000, guid: aff160904717c1143a9895120314b2b0, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -11264,7 +11265,7 @@ PrefabInstance:
     - target: {fileID: 8640825839032587235, guid: 0bcc41ee2008f5f4695fab3afb01a727,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8778789168268291839, guid: 0bcc41ee2008f5f4695fab3afb01a727,
         type: 3}

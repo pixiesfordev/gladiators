@@ -31,8 +31,6 @@ public class BattleSceneUI : BaseUI {
     //技能手牌
     [SerializeField] BattleSkillButton[] SkillBtns;
 
-    [SerializeField] Image StaminaBar;//使用技能體力條
-
     [SerializeField] BattleDivineSkill[] DivineSkills;//神址卡牌
 
     [SerializeField] BattleSprintButton SprintBtn;//衝刺按鈕
@@ -68,7 +66,7 @@ public class BattleSceneUI : BaseUI {
         InitGladiator(true, myGladiator.MaxHP, myGladiator.CurHp, myGladiator.JsonID);
         InitGladiator(false, opponentGladiator.MaxHP, opponentGladiator.CurHp, opponentGladiator.JsonID);
         SetSkillDatas(handSKillIDs, 0);
-
+        CheckVigor(0f);
     }
 
     /// <summary>
@@ -163,5 +161,31 @@ public class BattleSceneUI : BaseUI {
         if (_skillIDs == null || _skillIDs.Length != 2) { WriteLog.Log("神祇技能資料遺失!"); return; }
         DivineSkills[0].SetData(_skillIDs[0]);
         DivineSkills[1].SetData(_skillIDs[1]);
+    }
+
+    /// <summary>
+    /// 初始化體力值
+    /// </summary>
+    /// <param name="curVal">目前數值</param>
+    /// <param name="maxVal">最大值</param>
+    public void InitVigor(float curVal, float maxVal)
+    {
+        MyBattleStaminaObj.InitVigor(curVal, maxVal);
+        CheckVigor(curVal);
+    }
+
+    /// <summary>
+    /// 同步體力數值
+    /// </summary>
+    /// <param name="val">數值</param>
+    public void SetVigor(float val)
+    {
+        MyBattleStaminaObj.SetVigor(val);
+        CheckVigor(val);
+    }
+
+    public void CheckVigor(float val)
+    {
+        SprintBtn.CheckVigor(val);
     }
 }
