@@ -58,7 +58,7 @@ public class BattleController : MonoBehaviour {
         leftChar.name = _myPlayerPack.DBID;
         leftChar.tag = "leftobj";
         leftChar.Init((float)_myPlayerPack.MyPackGladiator.CurPos, rightChar, RightLeft.Right, curKnockAngle);
-        BattleStaminaObj.Instance.InitVigor((float)_myPlayerPack.MyPackGladiator.CurVigor, 20);
+        BattleSceneUI.Instance.InitVigor((float)_myPlayerPack.MyPackGladiator.CurVigor, 20);
         BattleManager.Instance.vTargetGroup.AddMember(leftChar.transform, 1.8f, 8);
         rightChar.name = _opponentPack.DBID;
         rightChar.tag = "rightobj";
@@ -173,7 +173,7 @@ public class BattleController : MonoBehaviour {
 
                 // <<<<<<<<體力>>>>>>>>>
                 float leftVigor = Mathf.Lerp(before.LeftVigor, after.LeftVigor, alpha);
-                BattleStaminaObj.Instance.SetVigor(leftVigor);
+                BattleSceneUI.Instance.SetVigor(leftVigor);
 
             } else { // 封包延遲時進行外推(extrapolation)
                 if (lastPack != null) {

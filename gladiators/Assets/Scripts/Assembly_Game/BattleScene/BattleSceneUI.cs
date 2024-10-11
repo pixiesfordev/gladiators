@@ -60,7 +60,6 @@ public class BattleSceneUI : BaseUI {
     public override void Init() {
         base.Init();
         MyDivineSelectUI.Init();
-        MyBattleStaminaObj.Init();
         SpawnBattleManager();
         Instance = this;
         InitGladiator(true, myGladiator.MaxHP, myGladiator.CurHp, myGladiator.JsonID);
@@ -168,8 +167,7 @@ public class BattleSceneUI : BaseUI {
     /// </summary>
     /// <param name="curVal">目前數值</param>
     /// <param name="maxVal">最大值</param>
-    public void InitVigor(float curVal, float maxVal)
-    {
+    public void InitVigor(float curVal, float maxVal) {
         MyBattleStaminaObj.InitVigor(curVal, maxVal);
         CheckVigor(curVal);
     }
@@ -178,14 +176,12 @@ public class BattleSceneUI : BaseUI {
     /// 同步體力數值
     /// </summary>
     /// <param name="val">數值</param>
-    public void SetVigor(float val)
-    {
+    public void SetVigor(float val) {
         MyBattleStaminaObj.SetVigor(val);
         CheckVigor(val);
     }
 
-    public void CheckVigor(float val)
-    {
+    public void CheckVigor(float val) {
         SprintBtn.CheckVigor(val);
     }
 }

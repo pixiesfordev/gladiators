@@ -17,7 +17,6 @@ public class BattleStaminaObj : MonoBehaviour {
     [SerializeField] MyTextPro SkillCostValNext;
     [SerializeField] Image[] Bar_lattices;
 
-    public static BattleStaminaObj Instance;
     float CurrentMaxVal = 0f; //目前最大能量值 
 
     [HeaderAttribute("==============TEST==============")]
@@ -43,10 +42,6 @@ public class BattleStaminaObj : MonoBehaviour {
                 TestMaxLatticeVal = 10;
             InitVigor(TestLatticeVal, TestMaxLatticeVal);
         }
-    }
-
-    public void Init() {
-        Instance = this;
     }
 
     /// <summary>
