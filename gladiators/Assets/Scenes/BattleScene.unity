@@ -233,6 +233,26 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -1
       objectReference: {fileID: 0}
+    - target: {fileID: 1150519581632609720, guid: 47f3571aae87a674d94dae49d7212105,
+        type: 3}
+      propertyPath: m_Name
+      value: ' Button04'
+      objectReference: {fileID: 0}
+    - target: {fileID: 2506854933695475002, guid: 47f3571aae87a674d94dae49d7212105,
+        type: 3}
+      propertyPath: m_Name
+      value: GapMask04
+      objectReference: {fileID: 0}
+    - target: {fileID: 3071948050628474909, guid: 47f3571aae87a674d94dae49d7212105,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 303
+      objectReference: {fileID: 0}
+    - target: {fileID: 3071948050628474909, guid: 47f3571aae87a674d94dae49d7212105,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 76.8
+      objectReference: {fileID: 0}
     - target: {fileID: 4535788761178399287, guid: 47f3571aae87a674d94dae49d7212105,
         type: 3}
       propertyPath: m_Pivot.x
@@ -273,6 +293,12 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -28
       objectReference: {fileID: 0}
+    - target: {fileID: 6949083263521102078, guid: 47f3571aae87a674d94dae49d7212105,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 8ffa870bf5847554ebf74e9e07223d98,
+        type: 3}
     - target: {fileID: 7207892069393774342, guid: 47f3571aae87a674d94dae49d7212105,
         type: 3}
       propertyPath: m_Name
@@ -287,6 +313,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_ShowMaskGraphic
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7894786417678776272, guid: 47f3571aae87a674d94dae49d7212105,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 7894786417678776272, guid: 47f3571aae87a674d94dae49d7212105,
         type: 3}
@@ -317,7 +348,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Material
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 2100000, guid: 795b3d3a8a0870047a2149788697fe7a, type: 2}
     - target: {fileID: 7894786417678776272, guid: 47f3571aae87a674d94dae49d7212105,
         type: 3}
       propertyPath: m_RaycastTarget
@@ -458,6 +489,11 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8517378356529728760, guid: 47f3571aae87a674d94dae49d7212105,
+        type: 3}
+      propertyPath: m_Name
+      value: ' Button04_OUT'
+      objectReference: {fileID: 0}
     - target: {fileID: 8603222117818628816, guid: 47f3571aae87a674d94dae49d7212105,
         type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -467,6 +503,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 36.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 9036905599848370352, guid: 47f3571aae87a674d94dae49d7212105,
+        type: 3}
+      propertyPath: m_Name
+      value: Button4
       objectReference: {fileID: 0}
     - target: {fileID: 9056511575006383684, guid: 47f3571aae87a674d94dae49d7212105,
         type: 3}
@@ -481,6 +522,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 7825083392299623832, guid: 47f3571aae87a674d94dae49d7212105, type: 3}
+    - {fileID: 8517378356529728760, guid: 47f3571aae87a674d94dae49d7212105, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 47f3571aae87a674d94dae49d7212105, type: 3}
