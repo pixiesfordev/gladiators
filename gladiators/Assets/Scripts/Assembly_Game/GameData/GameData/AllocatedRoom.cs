@@ -11,6 +11,7 @@ using System.Linq;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static Gladiators.Main.AllocatedRoom;
 
 namespace Gladiators.Main {
     /// <summary>
@@ -288,15 +289,18 @@ namespace Gladiators.Main {
             });
         }
         /// <summary>
-        /// 收到戰鬥開始封包
-        /// </summary>
-        public void ReceiveStartFighting() {
-            BattleManager.Instance.StartGame();
-        }
-        /// <summary>
         /// 收到戰鬥階段設定封包
         /// </summary>
         public void ReceiveGameState(GameState_TOCLIENT _gameState) {
+            PackGameState gameState;
+            if (MyEnum.TryParseEnum(_gameState.State, out gameState)) {
+                WriteLog.LogColor($"SERVER狀態: {gameState}", WriteLog.LogType.Connection);
+                switch (gameState) {
+                    case PackGameState.GAMESTATE_FIGHTING:
+                        BattleManager.Instance.StartGame();
+                        break;
+                }
+            }
         }
 
         /// <summary>

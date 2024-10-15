@@ -221,10 +221,6 @@ namespace Gladiators.Socket {
                         var bribePacket = LitJson.JsonMapper.ToObject<SocketCMD<SETDIVINESKILL_TOCLIENT>>(_msg);
                         HandleSetDivineSkill(bribePacket);
                         break;
-                    case SocketContent.MatchgameCMD_TCP.STARTFIGHTING_TOCLIENT:
-                        var startFightingPacket = LitJson.JsonMapper.ToObject<SocketCMD<STARTFIGHTING_TOCLIENT>>(_msg);
-                        HandleStartFighting(startFightingPacket);
-                        break;
                     case SocketContent.MatchgameCMD_TCP.PLAYERACTION_TOCLIENT:
                         //收到封包要先進行PLAYERACTION_TOCLIENT反序列化之後再根據ActionType類型來使用泛型解析成正確的ActionContent
                         var actionBasePacket = JsonMapper.ToObject<SocketCMD<PLAYERACTION_TOCLIENT<JsonData>>>(_msg);
@@ -281,10 +277,6 @@ namespace Gladiators.Socket {
         void HandleSetDivineSkill(SocketCMD<SETDIVINESKILL_TOCLIENT> _packet) {
             if (SceneManager.GetActiveScene().name != MyScene.BattleScene.ToString() || BattleManager.Instance == null) return;
             AllocatedRoom.Instance.ReceiveDivineSkill(_packet.Content);
-        }
-        void HandleStartFighting(SocketCMD<STARTFIGHTING_TOCLIENT> _packet) {
-            if (SceneManager.GetActiveScene().name != MyScene.BattleScene.ToString() || BattleManager.Instance == null) return;
-            AllocatedRoom.Instance.ReceiveStartFighting();
         }
         void HandlerGladiatorStates(SocketCMD<GLADIATORSTATES_TOCLIENT> _packet) {
             if (SceneManager.GetActiveScene().name != MyScene.BattleScene.ToString() || BattleManager.Instance == null) return;

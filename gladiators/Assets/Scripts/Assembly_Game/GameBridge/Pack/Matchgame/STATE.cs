@@ -7,6 +7,16 @@ namespace Gladiators.Socket.Matchgame {
         //class名稱就是封包的CMD名稱
         public string State { get; private set; }
     }
+    public enum PackGameState {
+        GAMESTATE_INITIALIZING,         // 初始化中
+        GAMESTATE_INITED,               // 初始化完成
+        GAMESTATE_WAITINGPLAYERS,      // 等待雙方玩家入場
+        GAMESTATE_SELECTINGDIVINESKILL, // 選擇神祉技能
+        GAMESTATE_COUNTINGDOWN,        // 戰鬥倒數開始中
+        GAMESTATE_FIGHTING,             // 戰鬥中
+        GAMESTATE_END                   // 結束戰鬥
+    }
+
     public class GLADIATORSTATES_TOCLIENT : SocketContent {
         public long Time { get; private set; }
         //class名稱就是封包的CMD名稱
