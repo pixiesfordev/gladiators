@@ -288,18 +288,22 @@ namespace Gladiators.Socket {
         }
         void HandlerPlayerAction(string _actionType, string _playerID, string _jsonStr) {
             if (SceneManager.GetActiveScene().name != MyScene.BattleScene.ToString() || BattleManager.Instance == null) return;
-            switch (_actionType) {
-                case "Action_Skill":
-                    var skill = JsonMapper.ToObject<PackAction_Skill_ToClient>(_jsonStr);
-                    AllocatedRoom.Instance.ReceiveSkill(skill.HandSkillIDs, skill.SkillOnID);
-                    break;
-                case "Action_OpponentSkill":
-                    var opponentSkill = JsonMapper.ToObject<PackAction_OpponentSkill_ToClient>(_jsonStr);
-                    break;
-                default:
-                    Debug.LogError($"未知的 ActionType: {_actionType}");
-                    break;
+            PLAYERACTION.PackActionType actionType;
+            if (MyEnum.TryParseEnum(_actionType, out actionType)) {
+                switch (actionType) {
+                    case PLAYERACTION.PackActionType.ACTION_SKILL:
+                        var skill = JsonMapper.ToObject<PackAction_Skill_ToClient>(_jsonStr);
+                        AllocatedRoom.Instance.ReceiveSkill(skill.HandSkillIDs, skill.SkillOnID);
+                        break;
+                    case PLAYERACTION.PackActionType.ACTION_OPPONENTSKILL:
+                        var opponentSkill = JsonMapper.ToObject<PackAction_OpponentSkill_ToClient>(_jsonStr);
+                        break;
+                    default:
+                        Debug.LogError($"收到未實作處理的 PackActionType: {_actionType}");
+                        break;
+                }
             }
+
         }
         void HandlerPing(SocketCMD<PING_TOCLIENT> _packet) {
             if (SceneManager.GetActiveScene().name != MyScene.BattleScene.ToString() || BattleManager.Instance == null) return;

@@ -1,5 +1,12 @@
 namespace Gladiators.Socket.Matchgame {
     public class PLAYERACTION : SocketContent {
+        public enum PackActionType {
+            ACTION_SKILL,
+            ACTION_OPPONENTSKILL,
+            ACTION_RUSH,
+            ACTION_DIVINESKILL,
+            ACTION_SURRENDER,
+        }
         //class名稱就是封包的CMD名稱
         public string ActionType { get; private set; }
         public object ActionContent { get; private set; }
