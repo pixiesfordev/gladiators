@@ -217,7 +217,7 @@ public class Character : MonoBehaviour {
     }
 
     [SerializeField] DamageNumber damagePrefab;
-    [SerializeField] DamageNumber bleedDamagePrefab;
+    [SerializeField] DamageNumber effectDamagePrefab;
     [SerializeField] DamageNumber recoveryHPPrefab;
     [SerializeField] DamageNumber recoveryPhysicalPrefab;
     public void ShowBattleNumber(NumType type, int value) {
@@ -238,13 +238,13 @@ public class Character : MonoBehaviour {
                 damagePopup.SetScale(3f);
                 break;
             case NumType.Damage_Bleed:
-                damagePopup = bleedDamagePrefab.Spawn(this.transform.position + new Vector3(0, 5f, -1), value);
+                damagePopup = damagePrefab.Spawn(this.transform.position + new Vector3(0, 5f, -1), value);
                 break;
             case NumType.Damage_Poison:
-                damagePopup = bleedDamagePrefab.Spawn(this.transform.position + new Vector3(0, 5f, -1), value);
+                damagePopup = effectDamagePrefab.Spawn(this.transform.position + new Vector3(0, 5f, -1), value);
                 break;
             case NumType.Damage_Burning:
-                damagePopup = bleedDamagePrefab.Spawn(this.transform.position + new Vector3(0, 5f, -1), value);
+                damagePopup = effectDamagePrefab.Spawn(this.transform.position + new Vector3(0, 5f, -1), value);
                 break;
             case NumType.Recovery_HP:
                 damagePopup = recoveryHPPrefab.Spawn(this.transform.position + new Vector3(0, 5f, -1), value);
