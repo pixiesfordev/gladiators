@@ -19,7 +19,7 @@ public class BattleController : MonoBehaviour {
 
     [SerializeField] bool BattleIsEnd = false;
 
-    Character leftChar = null;
+    public Character leftChar = null;
     Character rightChar = null;
     Dictionary<string, Character> CharDic;
 

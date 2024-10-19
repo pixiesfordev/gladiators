@@ -79,7 +79,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d35b3355ad68e2c40a7f99ac5782d6b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainCamera: {fileID: 0}
   Base: {fileID: 8928958586304762752}
   Baseturntable: {fileID: 5736816231627140569}
   BOARD: {fileID: 6010600535063512694}
@@ -90,7 +89,14 @@ MonoBehaviour:
   skillArea: {fileID: 980406719335467535}
   skillBall: {fileID: 1056164926751785, guid: 432440bddfae88f4ba673cc220bacea5, type: 3}
   SideRotationParent: {fileID: 2168189493600221619}
-  showDebug: 0
+  damagePrefab: {fileID: 1259023133563206875, guid: c4a99d43960701d48a6a90ecb48cb276,
+    type: 3}
+  bleedDamagePrefab: {fileID: 1259023133563206875, guid: a5448cd0847bccc45a1cc9db236a95ca,
+    type: 3}
+  recoveryHPPrefab: {fileID: 1259023133563206875, guid: 01b4e586e1b11d34d802e16cc75a01d7,
+    type: 3}
+  recoveryPhysicalPrefab: {fileID: 1259023133563206875, guid: 9266649564cf06243ac4747233b001b3,
+    type: 3}
 --- !u!1 &1797717852724952814
 GameObject:
   m_ObjectHideFlags: 0

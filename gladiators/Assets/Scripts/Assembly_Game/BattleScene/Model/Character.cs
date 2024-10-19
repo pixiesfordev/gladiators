@@ -1,13 +1,11 @@
 using Cysharp.Threading.Tasks;
+using DamageNumbersPro;
 using DG.Tweening;
-using Gladiators.Battle;
-using Gladiators.Main;
-using Gladiators.Socket.Matchgame;
 using Scoz.Func;
-using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Diagnostics;
 using UnityEngine;
+
 public enum EffectType {
     PDmg,
     MDmg,
@@ -63,6 +61,19 @@ public enum EffectType {
     PermanentHp,
 }
 
+public enum NumType { 
+    Damage_Small,
+    Damage_Medium,
+    Damage_Large,
+
+    Damage_Bleed,
+    Damage_Poison,
+    Damage_Burning,
+
+    Recovery_HP,
+    Recovery_Physical,
+}
+
 public class Character : MonoBehaviour {
     public Transform Base;
     public Transform Baseturntable;
@@ -97,8 +108,6 @@ public class Character : MonoBehaviour {
             return !EffectTypes.IsMobileRestriction();
         }
     }
-
-
 
     public void Init(float _pos, Character _opponent, RightLeft _faceDir, float _knockAngle) {
         enemy = _opponent;
@@ -200,10 +209,6 @@ public class Character : MonoBehaviour {
         });
     }
 
-
-
-
-
     void knockWall() {
         AddressablesLoader.GetParticle("Battle/CFXR _BOOM_", (prefab, handle) => {
             var go = Instantiate(prefab);
@@ -211,4 +216,46 @@ public class Character : MonoBehaviour {
         });
     }
 
+    [SerializeField] DamageNumber damagePrefab;
+    [SerializeField] DamageNumber bleedDamagePrefab;
+    [SerializeField] DamageNumber recoveryHPPrefab;
+    [SerializeField] DamageNumber recoveryPhysicalPrefab;
+    public void ShowBattleNumber(NumType type, int value) {
+
+        DamageNumber damagePopup = null;
+
+        switch (type) {
+            default:
+            case NumType.Damage_Small:
+                damagePopup = damagePrefab.Spawn(this.transform.position + new Vector3(0, 5f, -1), value);
+                break;
+            case NumType.Damage_Medium:
+                damagePopup = damagePrefab.Spawn(this.transform.position + new Vector3(0, 5f, -1), value);
+                damagePopup.SetScale(2.5f);
+                break;
+            case NumType.Damage_Large:
+                damagePopup = damagePrefab.Spawn(this.transform.position + new Vector3(0, 5f, -1), value);
+                damagePopup.SetScale(3f);
+                break;
+            case NumType.Damage_Bleed:
+                damagePopup = bleedDamagePrefab.Spawn(this.transform.position + new Vector3(0, 5f, -1), value);
+                break;
+            case NumType.Damage_Poison:
+                damagePopup = bleedDamagePrefab.Spawn(this.transform.position + new Vector3(0, 5f, -1), value);
+                break;
+            case NumType.Damage_Burning:
+                damagePopup = bleedDamagePrefab.Spawn(this.transform.position + new Vector3(0, 5f, -1), value);
+                break;
+            case NumType.Recovery_HP:
+                damagePopup = recoveryHPPrefab.Spawn(this.transform.position + new Vector3(0, 5f, -1), value);
+                break;
+            case NumType.Recovery_Physical:
+                damagePopup = recoveryPhysicalPrefab.Spawn(this.transform.position + new Vector3(0, 5f, -1), value);
+                break;
+        }
+
+        damagePopup.SetFollowedTarget(this.transform);
+        damagePopup.transform.SetParent(this.transform);
+        damagePopup.transform.localRotation = Quaternion.Euler(0, 0, 0);
+    }
 }

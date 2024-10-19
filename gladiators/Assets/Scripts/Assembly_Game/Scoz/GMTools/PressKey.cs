@@ -2,6 +2,7 @@ using UnityEngine;
 using Gladiators.Socket;
 using Gladiators.Main;
 using System;
+using Gladiators.Battle;
 
 namespace Scoz.Func {
     public partial class TestTool : MonoBehaviour {
@@ -66,6 +67,9 @@ namespace Scoz.Func {
 
             } else if (Input.GetKeyDown(KeyCode.I)) {
 
+                BattleManager.Instance.battleModelController.leftChar.ShowBattleNumber(NumType.Damage_Small, UnityEngine.Random.Range(1, 100));
+                BattleManager.Instance.battleModelController.leftChar.ShowBattleNumber(NumType.Recovery_HP, UnityEngine.Random.Range(1, 100));
+                BattleManager.Instance.battleModelController.leftChar.ShowBattleNumber(NumType.Recovery_Physical, UnityEngine.Random.Range(1, 100));
             } else if (Input.GetKeyDown(KeyCode.L)) {
                 //var data = GameDictionary.GetJsonData<JsonGladiator>(1);
                 //WriteLog.WriteObj(data);
