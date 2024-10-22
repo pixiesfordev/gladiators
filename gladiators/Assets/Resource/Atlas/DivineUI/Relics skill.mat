@@ -69,11 +69,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _main_Tex:
-        m_Texture: {fileID: 2800000, guid: 3506d42c59b8efe46a5bb31616649034, type: 3}
+        m_Texture: {fileID: 2800000, guid: abf8cbcc156f27b48be5dce90a5363cf, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _main_mask01:
-        m_Texture: {fileID: 2800000, guid: 246c3e7770724c743a51fe577aea5cd5, type: 3}
+        m_Texture: {fileID: 2800000, guid: 8ca36d0ac8c6a094581cbda303d4ead8, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
@@ -120,8 +120,8 @@ Material:
     - _Surface: 0
     - _WorkflowMode: 1
     - _ZWrite: 1
-    - _color_saturation: 1
-    - _exposure: 1
+    - _color_saturation: 0.8
+    - _exposure: 1.5
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
