@@ -837,6 +837,8 @@ MonoBehaviour:
   Info: {fileID: 5008175996352240327}
   BG: {fileID: 1958802704000927117}
   Btn: {fileID: 8768489118263603728}
+  FloatingAni: {fileID: 0}
+  EffectAni: {fileID: 0}
 --- !u!1 &857110950947679116
 GameObject:
   m_ObjectHideFlags: 0
@@ -2256,6 +2258,8 @@ MonoBehaviour:
   Info: {fileID: 973546961135900064}
   BG: {fileID: 7426676385031623543}
   Btn: {fileID: 4159300502707851338}
+  FloatingAni: {fileID: 0}
+  EffectAni: {fileID: 0}
 --- !u!1 &2659823410023569031
 GameObject:
   m_ObjectHideFlags: 0
@@ -3959,6 +3963,8 @@ MonoBehaviour:
   Info: {fileID: 2149275980717361533}
   BG: {fileID: 8362734521255731636}
   Btn: {fileID: 8686700282367763850}
+  FloatingAni: {fileID: 0}
+  EffectAni: {fileID: 0}
 --- !u!1 &4815514814038139734
 GameObject:
   m_ObjectHideFlags: 0
@@ -4527,6 +4533,8 @@ MonoBehaviour:
   Info: {fileID: 2100201573525435592}
   BG: {fileID: 858264181174699218}
   Btn: {fileID: 6509516215843847449}
+  FloatingAni: {fileID: 0}
+  EffectAni: {fileID: 0}
 --- !u!1 &5939487271367177139
 GameObject:
   m_ObjectHideFlags: 0
@@ -5790,6 +5798,8 @@ MonoBehaviour:
   RightArrowRT: {fileID: 7075125007328220761}
   BtnBGMaskRT: {fileID: 6221739004746196173}
   GrayMaterial: {fileID: 2100000, guid: 6bbe2c983e390cc47b55f7b320b6d0ff, type: 2}
+  BGMoveWithCameraTiers: []
+  CandleAnis: []
   PerCandleCountDownTime: 1
   PerformCandleCountDown: 0
   ApertureModeDigital: 0

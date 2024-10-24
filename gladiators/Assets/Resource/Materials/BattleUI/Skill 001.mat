@@ -21,7 +21,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Skill 001
-  m_Shader: {fileID: -6465566751694194690, guid: 9f4ac066a8019c94da84142ba5678ed6,
+  m_Shader: {fileID: -6465566751694194690, guid: 8492510c0c8cb1842825100d81eac464,
     type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
