@@ -8,7 +8,6 @@ using UnityEngine.UI;
 public class BattleStaminaObj : MonoBehaviour {
 
     [SerializeField] Image Icon;
-    [SerializeField] Image Bar;
     [SerializeField] Text CurrentVal;
     [SerializeField] Text MaxVal;
     [SerializeField] MyTextPro SkillCostVal1;
