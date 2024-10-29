@@ -16,9 +16,11 @@ namespace Scoz.Func {
             Debug,
             Poster,
             Flutter,
+            ServerAPI,
         }
         public static Dictionary<LogType, string> LocColorCodes = new Dictionary<LogType, string>() {
             { LogType.Player,"db7777"},//紅
+            { LogType.ServerAPI,"db77c9"},//粉紅
             { LogType.Realm,"db77c9"},//粉紅
             { LogType.Connection,"dbdb77"},//黃
             { LogType.Addressable,"83a5d9"},//藍

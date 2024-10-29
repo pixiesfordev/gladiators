@@ -9,6 +9,7 @@ namespace Gladiators.Main {
     public enum EffectType {
         PDmg,
         MDmg,
+        TrueDmg,
         RestoreHP,
         RestoreVigor,
         MeleeDmgReflect,

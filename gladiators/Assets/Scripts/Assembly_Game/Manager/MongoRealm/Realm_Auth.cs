@@ -20,8 +20,9 @@ namespace Service.Realms {
         /// </summary>
         public static async UniTask AnonymousSignup() {
             if (MyApp == null) { WriteLog.LogError("尚未建立Realm App"); return; }
+            await MyApp.LogInAsync(Credentials.Anonymous());
             try {
-                await MyApp.LogInAsync(Credentials.Anonymous());
+
             } catch (Exception _e) {
                 WriteLog.LogError("在AnonymousSignup時MyApp.LogInAsync發生錯誤: " + _e);
             }

@@ -1,51 +1,53 @@
-using System;
+using Newtonsoft.Json;
+using System.Collections;
 using System.Collections.Generic;
-using Realms;
-using MongoDB.Bson;
-using Service.Realms;
-using Cysharp.Threading.Tasks;
+using UnityEngine;
 
-[MapTo("player")]
-public partial class DBPlayer : IRealmObject {
-    [MapTo("_id")]
-    [PrimaryKey]
-    [Required]
-    public string ID { get; private set; }
-    [MapTo("createdAt")]
-    public DateTimeOffset CreatedAt { get; private set; }
-    [MapTo("authType")]
-    public string AuthType { get; private set; }
-    [MapTo("ban")]
-    public bool? Ban { get; private set; }
-    [MapTo("deviceUID")]
-    public string DeviceUID { get; private set; }
-    [MapTo("lastSigninAt")]
-    public DateTimeOffset? LastSigninAt { get; private set; }
-    [MapTo("lastSignoutAt")]
-    public DateTimeOffset? LastSignoutAt { get; private set; }
-    [MapTo("onlineState")]
-    public string OnlineState { get; private set; }
-    [MapTo("gold")]
-    public long? Gold { get; private set; }
-    [MapTo("point")]
-    public long? Point { get; private set; }
-    [MapTo("inMatchgameID")]
-    public string InMatchgameID { get; private set; }
+namespace Gladiators.Main {
+    public class DBPlayer {
+        [JsonProperty("id")]
+        public string ID { get; set; }
 
-    public void SetDeviceUID(string _deviceUID) {
-        RealmManager.MyRealm.WriteAsync(() => {
-            DeviceUID = _deviceUID;
-        });
+        [JsonProperty("createdAt")]
+        public System.DateTime CreatedAt { get; set; }
+
+        [JsonProperty("authDatas")]
+        public Dictionary<string, string> AuthDatas { get; set; }
+
+        [JsonProperty("authType")]
+        public string AuthType { get; set; }
+
+        [JsonProperty("connToken")]
+        public string ConnToken { get; set; }
+
+        [JsonProperty("gold")]
+        public int Gold { get; set; }
+
+        [JsonProperty("point")]
+        public int Point { get; set; }
+
+        [JsonProperty("onlineState")]
+        public string OnlineState { get; set; }
+
+        [JsonProperty("lastSigninAt")]
+        public System.DateTime LastSigninAt { get; set; }
+
+        [JsonProperty("lastSignoutAt")]
+        public System.DateTime LastSignoutAt { get; set; }
+
+        [JsonProperty("ban")]
+        public bool Ban { get; set; }
+
+        [JsonProperty("deviceType")]
+        public string DeviceType { get; set; }
+
+        [JsonProperty("deviceUID")]
+        public string DeviceUID { get; set; }
+
+        [JsonProperty("inMatchgameID")]
+        public string InMatchgameID { get; set; }
+
+        [JsonProperty("myGladiatorID")]
+        public string MyGladiatorID { get; set; }
     }
-    /// <summary>
-    /// 呼叫時機為: 1.收到Matchmaker建立/加入房間成功後呼叫 2. 離開遊戲房時傳入(null)將玩家所在Matchgame(遊戲房)清掉
-    /// 建立/加入房間時會設定所在Matchgame(遊戲房)的ID並訂閱DBMatchgame資料，若Server房間創好後會收到通知讓玩家主動scoket到Matchgame Server
-    /// </summary>
-    public async UniTask SetInMatchgameID(string _matchgameID) {
-        await RealmManager.MyRealm.WriteAsync(() => {
-            InMatchgameID = _matchgameID;
-        });
-    }
-
-
 }
