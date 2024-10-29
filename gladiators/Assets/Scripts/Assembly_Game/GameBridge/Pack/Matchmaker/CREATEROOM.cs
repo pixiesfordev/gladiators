@@ -7,11 +7,11 @@ namespace Gladiators.Socket.Matchmaker {
         //class名稱就是封包的CMD名稱
 
         public string DBMapID { get; private set; }
-        public string CreaterID { get; private set; }
+        public string ConnToken { get; private set; }
 
-        public CREATEROOM(string _dbMapID, string _createrID) {
+        public CREATEROOM(string _dbMapID, string _connToken) {
             DBMapID = _dbMapID;
-            CreaterID = _createrID;
+            ConnToken = _connToken;
         }
 
     }

@@ -95,7 +95,7 @@ namespace Gladiators.Battle {
         }
 
         void UpdatePlayerGold() {
-            var playerDB = GamePlayer.Instance.GetDBPlayerDoc<DBPlayer>();
+            var playerDB = GamePlayer.Instance.GetDBData<DBPlayer>();
             var playerGold = playerDB != null ? playerDB.Gold : 0;
             PlayerMoney.text = playerGold.ToString();
         }
@@ -242,7 +242,7 @@ namespace Gladiators.Battle {
                     return DivineSkillSelectState.CannotSelect;
             }
             //判斷玩家金錢是否足夠可以選擇
-            var playerDB = GamePlayer.Instance.GetDBPlayerDoc<DBPlayer>();
+            var playerDB = GamePlayer.Instance.GetDBData<DBPlayer>();
             if (playerDB != null) {
                 int costGold = _selectSkill.Cost;
                 JsonSkill anotherSkill = _skillPos == 0 ? SelectedDivineSkills[1] : SelectedDivineSkills[0];
@@ -360,7 +360,7 @@ namespace Gladiators.Battle {
         void DeductionCoin() {
             int costGold = SelectedDivineSkills[0] != null ? SelectedDivineSkills[0].Cost : 0;
             costGold += SelectedDivineSkills[1] != null ? SelectedDivineSkills[1].Cost : 0;
-            var playerDB = GamePlayer.Instance.GetDBPlayerDoc<DBPlayer>();
+            var playerDB = GamePlayer.Instance.GetDBData<DBPlayer>();
             var playerGold = playerDB != null ? playerDB.Gold : 0;
             PlayerMoney.text = (playerGold - costGold).ToString();
         }

@@ -3,7 +3,6 @@ using UnityEngine.SceneManagement;
 using UnityEngine.AddressableAssets;
 using System;
 using UnityEngine.Rendering.Universal;
-using Service.Realms;
 using Gladiators.Main;
 using Gladiators.Socket;
 
@@ -116,7 +115,6 @@ namespace Scoz.Func {
             QualitySettings.vSyncCount = 0;
             Application.targetFrameRate = TargetFPS;
 #endif
-            RealmManager.NewApp();//初始化Realm
             //產生一個新玩家
             new GamePlayer();
             //建立FirebaseManager

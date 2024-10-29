@@ -1,10 +1,7 @@
-using System.Collections.Generic;
 using UnityEngine;
 using Scoz.Func;
 using UnityEngine.UI;
-using Service.Realms;
 using Cysharp.Threading.Tasks;
-using System.Threading.Tasks;
 
 namespace Gladiators.Main {
     public class StartSceneUI : BaseUI {
@@ -63,32 +60,20 @@ namespace Gladiators.Main {
         void AuthChek() {
             PopupUI.HideLoading();
 
-
-            //※之後也要新增玩家註冊完但是初始化玩家資料失敗的流程(不太會發生 但要考慮這個可能性)
-            //※之後也要新增玩家註冊完但是初始化玩家資料失敗的流程(不太會發生 但要考慮這個可能性)
-            //※之後也要新增玩家註冊完但是初始化玩家資料失敗的流程(不太會發生 但要考慮這個可能性)
-            //※之後也要新增玩家註冊完但是初始化玩家資料失敗的流程(不太會發生 但要考慮這個可能性)
-
-            if (RealmManager.MyApp.CurrentUser == null) {//尚無Realm帳戶
-                WriteLog.LogColor("玩家尚未登入Realm", WriteLog.LogType.Realm);
+            var dbPlayer = GamePlayer.Instance.GetDBData<DBPlayer>();
+            if (dbPlayer == null) {
+                WriteLog.LogColor("尚無玩家資料，進入註冊介面", WriteLog.LogType.Player);
                 ShowUI(Condition.NotLogin);
-            } else {//已經有Realm帳戶，就登入Realm
+            } else {//已經玩家資料就開始遊戲
 
                 //是否第一次執行遊戲，第一次執行遊戲後會自動進大廳，之後透過從大廳的設定中點回到主介面就不會又自動進大廳了
                 if (FirstTimeLaunchGame) {
-                    PopupUI.ShowLoading(JsonString.GetUIString("DataLoading"));
-                    UniTask.Void(async () => {
-                        await RealmManager.OnSignin();
-                        RealmManager.OnDataLoaded();
-                        PopupUI.HideLoading();
-                        //如果是Dev版本不直接轉場景(Dev版以外會直接進Lobby)
+                    //如果是Dev版本不直接轉場景(Dev版以外會直接進Lobby)
 #if Dev
-                        ShowUI(StartSceneUI.Condition.BackFromLobby_ShowLogoutBtn);
+                    ShowUI(StartSceneUI.Condition.BackFromLobby_ShowLogoutBtn);
 #else
-                        GoLobby();//進入下一個場景
+                    GoLobby();//進入下一個場景
 #endif
-
-                    });
                 } else {//如果是從大廳點設定回到主介面跑這裡，顯示登出按鈕與返回大廳按鈕
                     ShowUI(StartSceneUI.Condition.BackFromLobby_ShowLogoutBtn);
                 }
@@ -111,7 +96,7 @@ namespace Gladiators.Main {
             /// 2. 判斷玩家版本，若版本低於目前遊戲版本則會跳更新建議
             /// 3. 判斷Maintain是否為true，若為true則不在MaintainExemptPlayerUIDs中的玩家都會跳維護中
             /// 4. 判斷該玩家是否被Ban，不是才能進遊戲
-            GameStateManager.Instance.StartCheckCanPlayGame(() => {
+            GameStateManager.Instance.CheckCanPlayGame(() => {
                 FirstTimeLaunchGame = false;
                 PopupUI.InitSceneTransitionProgress(0, "LobbyUILoaded");
                 PopupUI.CallSceneTransition(MyScene.LobbyScene);
@@ -157,10 +142,8 @@ namespace Gladiators.Main {
         /// 2. (玩家登入) 顯示版本+玩家ID
         /// </summary>
         public void ShowInfo() {
-            if (RealmManager.MyApp != null && RealmManager.MyApp.CurrentUser != null)
-                VersionText.text = string.Format("版本: {0} {1} ", Application.version, RealmManager.MyApp.CurrentUser.Id);
-            else
-                VersionText.text = string.Format("版本: {0}", Application.version);
+            var dbPlayer = GamePlayer.Instance.GetDBData<DBPlayer>();
+            VersionText.text = $"版本: {Application.version} 玩家: {dbPlayer}";
         }
         /// <summary>
         /// 登入按鈕按下
@@ -175,75 +158,31 @@ namespace Gladiators.Main {
             //錯誤的登入類型就返回
             AuthType authType = AuthType.Guest;
             if (!MyEnum.TryParseEnum(_authTypeStr, out authType)) { WriteLog.LogError("錯誤的登入類型: " + _authTypeStr); return; }
-
-            switch (authType) {
-                case AuthType.Guest:
-
-                    if (RealmManager.MyApp.CurrentUser == null) {//玩家還沒登入
-                        PopupUI.ShowLoading(string.Format("Loading"));
-
-                        UniTask.Void(async () => {
-                            await RealmManager.AnonymousSignup();//Realm訪客註冊
-                            ShowUI(Condition.HideAll);
-                            await InitPlayerData(authType);//初始化玩家資料
-                            RealmManager.OnDataLoaded();
-                            PopupUI.HideLoading();
-                        });
-
-                    } else {//如果本來就有登入，代表是UI顯示錯誤(登入中的玩家不該點的到訪客註冊)
-                        WriteLog.LogError("本來就有登入，代表是UI顯示錯誤(登入中的玩家不該點的到訪客註冊)");
-                    }
-                    break;
-                case AuthType.Facebook:
-                    WriteLog.LogError("尚未實作FB登入");
-                    //if (RealmManager.MyApp.CurrentUser == null) {//玩家還沒登入Realm，開始進行三方登入
-                    //    FBAuth();
-                    //} else {//如果玩家本來就有登入Firebase帳戶，代表是從大廳退回主畫面的，此時要登出後再進行三方登入
-                    //    PopupUI.ShowConfirmCancel(StringJsonData.GetUIString("OverrideGuestAccountCheck"), () => {
-                    //        StartCoroutine(FirebaseManager.Logout(() => {//登出
-                    //            FBAuth();
-                    //        }));
-                    //    }, null);
-                    //}
-                    break;
-                case AuthType.Apple:
-                    WriteLog.LogError("尚未實作Apple登入");
-                    //if (RealmManager.MyApp.CurrentUser == null) {//玩家還沒登入Firebase，開始進行三方登入
-                    //    AppleAuth();
-                    //} else {//如果玩家本來就有登入Firebase帳戶，代表是從大廳退回主畫面的，此時要登出後再進行三方登入
-                    //    PopupUI.ShowConfirmCancel(StringJsonData.GetUIString("OverrideGuestAccountCheck"), () => {
-                    //        StartCoroutine(FirebaseManager.Logout(() => {//登出
-                    //            AppleAuth();
-                    //        }));
-                    //    }, null);
-                    //}
-                    break;
-                case AuthType.Google:
-                    WriteLog.LogError("尚未實作Google登入");
-                    //#if UNITY_EDITOR
-                    //                    PopupUI.ShowClickCancel("Editor不能使用Google登入", null);
-                    //#else
-                    //                                                    if (RealmManager.MyApp.CurrentUser == null) {//玩家還沒登入Firebase，開始進行三方登入
-                    //                                                        GoogleAuth();
-                    //                                                    } else {//如果玩家本來就有登入Firebase帳戶，代表是從大廳退回主畫面的，此時要登出後再進行三方登入
-                    //                                                        PopupUI.ShowConfirmCancel(StringJsonData.GetUIString("OverrideGuestAccountCheck"), () => {
-                    //                                                            StartCoroutine(FirebaseManager.Logout(() => {//登出
-                    //                                                                GoogleAuth();
-                    //                                                            }));
-                    //                                                        }, null);
-                    //                                                    }
-                    //#endif
-                    break;
-
+            var dbPlayer = GamePlayer.Instance.GetDBData<DBPlayer>();
+            if (dbPlayer != null) {
+                WriteLog.LogError("本來就有登入，代表是UI顯示錯誤(登入中的玩家不該點的到訪客註冊)");
+                return;
             }
+            signup(authType).Forget();
         }
         /// <summary>
         /// 初始化玩家資料
         /// </summary>
-        async UniTask InitPlayerData(AuthType _authType) {
-            WriteLog.LogColorFormat("尚無此玩家資料，開始初始化玩家 {0} 的資料", WriteLog.LogType.Realm, RealmManager.MyApp.CurrentUser.Id);
-            var replyData = await RealmManager.CallAtlasFunc_InitPlayerData(AuthType.Guest);
+        async UniTask signup(AuthType _authType) {
+            WriteLog.LogColor($"{_authType} 註冊玩家資料", WriteLog.LogType.Player);
+            string deviceUID = DeviceManager.GetDeviceUID();
+            switch (_authType) {
+                case AuthType.Guest:
+                    var dbPlayer = await APIManager.Signup(_authType.ToString(), deviceUID, deviceUID);
+                    break;
+                default:
+                    WriteLog.LogError($"尚未實作此AuthType: {_authType}");
+                    return;
+            }
 
+            onSignin();
+        }
+        void onSignin() {
             //如果是編輯器不直接轉場景(正式機才會直接進Lobby)
 #if UNITY_EDITOR
             ShowUI(StartSceneUI.Condition.BackFromLobby_ShowLogoutBtn);
@@ -252,6 +191,7 @@ namespace Gladiators.Main {
 #endif
 
         }
+
         /// <summary>
         /// 登出帳戶，按下後會登出並顯示回需要登入狀態
         /// </summary>

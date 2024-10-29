@@ -1,17 +1,8 @@
 ﻿using Cysharp.Threading.Tasks;
 using Gladiators.Main;
-using Gladiators.Socket.Matchgame;
-using Newtonsoft.Json.Linq;
 using Scoz.Func;
-using Service.Realms;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Net;
-using System.Threading.Tasks;
-using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace Gladiators.Socket {
     public partial class GameConnector : MonoBehaviour {
@@ -34,15 +25,16 @@ namespace Gladiators.Socket {
             OnMatchgameDisconnected = _onDisconnected;
 
             WriteLog.LogColor("DBMatchgame已建立好, 開始連線到Matchgame", WriteLog.LogType.Connection);
+
             UniTask.Void(async () => {
-                var dbMatchgame = await GamePlayer.Instance.GetMatchGame();
+                var dbMatchgame = await GamePlayer.Instance.GetNewestDBData<DBMatchgame>();
                 if (dbMatchgame == null) {
                     WriteLog.LogError("JoinMatchgame失敗，dbMatchgame is null");
                     OnJoinGameFail?.Invoke();
                     return;
                 }
                 IsConnectomg = true;
-                JoinMatchgame().Forget(); //開始連線到Matchgame                                          
+                joinMatchgame(); //開始連線到Matchgame                                          
             });
         }
         /// <summary>
@@ -51,24 +43,20 @@ namespace Gladiators.Socket {
         public void ConnectToMatchgameTestVer(Action _onConnnectedAC, Action _onJoinGameFail, Action _onDisconnected) {
             // 建立房間成功
             WriteLog.LogColor("個人測試模式連線Matchgame: ", WriteLog.LogType.Connection);
-            var gameState = GamePlayer.Instance.GetDBGameSettingDoc(DBGameSettingDoc.GameState);
+            var gameState = GamePlayer.Instance.GetDBData<DBGameState>();
             //設定玩家目前所在遊戲房間的資料
             UniTask.Void(async () => {
-                await AllocatedRoom.Instance.SetRoom_TestvVer("System", new string[2], gameState.MatchgameTestverMapID, gameState.MatchgameTestverRoomName, gameState.MatchgameTestverTcpIP, gameState.MatchgameTestverUdpIP, gameState.MatchgameTestverPort ?? 0, "");
+                await AllocatedRoom.Instance.SetRoom_TestvVer("System", new string[2], gameState.MatchgameTestverMapID, gameState.MatchgameTestverRoomName, gameState.MatchgameTestverTcpIP, "", gameState.MatchgameTestverPort, "");
                 ConnToMatchgame(_onConnnectedAC, _onJoinGameFail, _onDisconnected);
             });
         }
         /// <summary>
         /// 加入Matchmage
         /// </summary>
-        async UniTask JoinMatchgame() {
-            var realmToken = await RealmManager.GetValidAccessToken();
-            if (string.IsNullOrEmpty(AllocatedRoom.Instance.TcpIP) || string.IsNullOrEmpty(AllocatedRoom.Instance.UdpIP) || AllocatedRoom.Instance.Port == 0) {
-                WriteLog.LogError("JoinMatchgame失敗，AllocatedRoom的IP或Port為null");
-                OnJoinGameFail?.Invoke();
-                return;
-            }
-            Socket.JoinMatchgame(GameDisconnected, realmToken, AllocatedRoom.Instance.TcpIP, AllocatedRoom.Instance.UdpIP, AllocatedRoom.Instance.Port);
+        void joinMatchgame() {
+            var dbPlayer = GamePlayer.Instance.GetDBData<DBPlayer>();
+            if (dbPlayer == null) return;
+            Socket.JoinMatchgame(GameDisconnected, dbPlayer.ConnToken, AllocatedRoom.Instance.TcpIP, AllocatedRoom.Instance.UdpIP, AllocatedRoom.Instance.Port);
         }
 
         void JoinGameSuccess() {

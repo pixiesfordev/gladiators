@@ -3,7 +3,6 @@ using Scoz.Func;
 using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
-using Service.Realms;
 using Gladiators.Socket;
 
 namespace Gladiators.Main {
@@ -36,34 +35,14 @@ namespace Gladiators.Main {
             Instance = this;
 
 
-            //檢查realmg登入檢查
-            RealmLoginCheck(() => {
-                //初始化UIs
-                //UIs.Add(LobbyUIs.Map, MyMapUI);
-                SwitchUI(LobbyUIs.Lobby);
-
-            });
-        }
-
-
-        void RealmLoginCheck(Action _ac) {
-            if (RealmManager.MyApp.CurrentUser == null) {//尚無Realm帳戶
-                PopupUI.ShowLoading("玩家尚未登入Realm 要先登入Realm才能從Lobby開始遊戲");
+            var dbPlayer = GamePlayer.Instance.GetDBData<DBPlayer>();
+            if (dbPlayer == null) {//尚無登入帳戶
+                PopupUI.ShowLoading("玩家尚未登入 要先登入才能從Lobby開始遊戲");
                 WriteLog.LogError("玩家尚未登入Realm 要先登入Realm才能從Lobby開始遊戲");
                 return;
-            } else {//已經有Realm帳戶，就登入Realm
-                if (RealmManager.MyRealm == null) {// 還沒有設定Realm Config就先設定
-                    PopupUI.ShowLoading(JsonString.GetUIString("DataLoading"));
-                    UniTask.Void(async () => {
-                        await RealmManager.OnSignin();
-                        RealmManager.OnDataLoaded();
-                        PopupUI.HideLoading();
-                        _ac?.Invoke();
-                    });
-                } else {
-                    _ac?.Invoke();
-                }
             }
+
+            SwitchUI(LobbyUIs.Lobby);
         }
 
         void CloseUIExcept(LobbyUIs _exceptUI) {

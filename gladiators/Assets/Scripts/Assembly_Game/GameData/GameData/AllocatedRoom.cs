@@ -101,7 +101,7 @@ namespace Gladiators.Main {
         /// <summary>
         /// 設定被Matchmaker分配到的房間資料，CreateRoom後會從Matchmaker回傳取得此資料
         /// </summary>
-        public async UniTask SetRoom(string _createID, string[] _playerIDs, string _dbMapID, string _dbMatchgameID, string _ip, int _port, string _podName) {
+        public void SetRoom(string _createID, string[] _playerIDs, string _dbMapID, string _dbMatchgameID, string _ip, int _port, string _podName) {
             CreaterID = _createID;
             PlayerIDs = _playerIDs;
             DBMapID = _dbMapID;
@@ -112,10 +112,6 @@ namespace Gladiators.Main {
             PodName = _podName;
             firstPackServerTimestamp = 0;
             WriteLog.LogColorFormat("設定被Matchmaker分配到的房間資料: {0}", WriteLog.LogType.Debug, DebugUtils.ObjToStr(Instance));
-
-            var dbPlayer = GamePlayer.Instance.GetDBPlayerDoc<DBPlayer>();
-            if (dbPlayer == null) return;
-            await dbPlayer.SetInMatchgameID(DBMatchgameID);
         }
         /// <summary>
         /// 設定被Matchmaker分配到的房間資料，CreateRoom後會從Matchmaker回傳取得此資料
@@ -130,10 +126,6 @@ namespace Gladiators.Main {
             Port = _port;
             PodName = _podName;
             WriteLog.LogColorFormat("設定被Matchmaker分配到的房間資料: {0}", WriteLog.LogType.Debug, DebugUtils.ObjToStr(Instance));
-
-            var dbPlayer = GamePlayer.Instance.GetDBPlayerDoc<DBPlayer>();
-            if (dbPlayer == null) return;
-            await dbPlayer.SetInMatchgameID(DBMatchgameID);
         }
 
         /// <summary>
@@ -148,10 +140,6 @@ namespace Gladiators.Main {
             Port = 0;
             PodName = null;
             WriteLog.LogColorFormat("清空配對房間(AllocatedRoom)資訊: {0}", WriteLog.LogType.Debug, DebugUtils.ObjToStr(Instance));
-
-            var dbPlayer = GamePlayer.Instance.GetDBPlayerDoc<DBPlayer>();
-            if (dbPlayer == null) return;
-            dbPlayer.SetInMatchgameID(null).Forget();
         }
         /// <summary>
         /// 送玩家資料給Server

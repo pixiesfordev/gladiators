@@ -2,7 +2,6 @@
 using Gladiators.Main;
 using Gladiators.Socket.Matchmaker;
 using Scoz.Func;
-using Service.Realms;
 using System;
 using UnityEngine;
 
@@ -19,7 +18,7 @@ namespace Gladiators.Socket {
         ///  1. 從DB取ip, port, 檢查目前Server狀態後傳入此function
         ///  2. 連線進Matchmaker後會驗證token, 沒問題會回傳成功並執行OnConnectEvent
         /// </summary>
-        public async UniTask ConnToMatchmaker(string _dbMapID, Action _onConnToMatchmakerFail, Action _onCreateRoomFail, Action<CREATEROOM_TOCLIENT> _onMatchmakerCreated) {
+        public void ConnToMatchmaker(string _dbMapID, Action _onConnToMatchmakerFail, Action _onCreateRoomFail, Action<CREATEROOM_TOCLIENT> _onMatchmakerCreated) {
             WriteLog.LogColor("Start ConnToMatchmaker", WriteLog.LogType.Connection);
             TmpDBMapID = _dbMapID;
             CurRetryTimes = 0;
@@ -27,10 +26,12 @@ namespace Gladiators.Socket {
             OnCreateRoomFail = _onCreateRoomFail;
             OnMatchgameCreated = _onMatchmakerCreated;
             // 接Socket
-            var gameSetting = GamePlayer.Instance.GetDBGameSettingDoc(DBGameSettingDoc.GameSetting);
-            Socket.CreateMatchmaker(gameSetting.MatchmakerIP, gameSetting.MatchmakerPort ?? 0);
-            var token = await RealmManager.GetValidAccessToken();
-            Socket.LoginToMatchmaker(token);
+            var gameState = GamePlayer.Instance.GetDBData<DBGameState>();
+            if (gameState != null) {
+                Socket.CreateMatchmaker(gameState.LobbyIP, gameState.LobbyPort);
+                var dbPlayer = GamePlayer.Instance.GetDBData<DBPlayer>();
+                if (dbPlayer != null) Socket.LoginToMatchmaker(dbPlayer.ConnToken);
+            }
 
         }
 
@@ -45,7 +46,7 @@ namespace Gladiators.Socket {
         /// <summary>
         /// 登入配對伺服器失敗
         /// </summary>
-        async UniTask OnLoginToMatchmakerError() {
+        void OnLoginToMatchmakerError() {
             // 連線失敗時嘗試重連
             CurRetryTimes++;
             if (CurRetryTimes > MAX_RETRY_TIMES || !InternetChecker.InternetConnected) {
@@ -53,9 +54,8 @@ namespace Gladiators.Socket {
                 OnConnToMatchmakerFail?.Invoke();
             } else {
                 WriteLog.LogColorFormat("第{0}次連線失敗，{0}秒後嘗試重連: ", WriteLog.LogType.Connection, CurRetryTimes, RETRY_INTERVAL_SECS);
-                //連線失敗有可能是TOKEN過期 刷Token後再連
-                var token = await RealmManager.GetValidAccessToken();
-                Socket.LoginToMatchmaker(token);
+                var dbPlayer = GamePlayer.Instance.GetDBData<DBPlayer>();
+                if (dbPlayer != null) Socket.LoginToMatchmaker(dbPlayer.ConnToken);
             }
         }
 

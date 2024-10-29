@@ -1,12 +1,8 @@
-using Cysharp.Threading.Tasks;
 using Gladiators.Main;
 using Gladiators.Socket.Matchmaker;
 using LitJson;
-using NSubstitute;
 using Scoz.Func;
-using Service.Realms;
 using System;
-using System.Threading.Tasks;
 using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -55,7 +51,8 @@ namespace Gladiators.Socket {
 
         public void CreateMatchmakerRoom(string _dbMapID) {
             WriteLog.LogColor("CreateMatchmakerRoom", WriteLog.LogType.Connection);
-            CREATEROOM cmdContent = new CREATEROOM(_dbMapID, RealmManager.MyApp.CurrentUser.Id);//建立封包內容
+            var dbPlayer = GamePlayer.Instance.GetDBData<DBPlayer>();
+            CREATEROOM cmdContent = new CREATEROOM(_dbMapID, dbPlayer.ConnToken);//建立封包內容
             SocketCMD<CREATEROOM> cmd = new SocketCMD<CREATEROOM>(cmdContent);//建立封包
             int id = TCP_MatchmakerClient.Send(cmd);//送出封包
             if (id < 0) {

@@ -1,17 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
-using Gladiators.Main;
-using Newtonsoft.Json.Linq;
 using Scoz.Func;
-using Service.Realms;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Net;
-using System.Threading.Tasks;
 using UniRx;
-using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace Gladiators.Socket {
     public partial class GameConnector : MonoBehaviour {
@@ -29,7 +19,7 @@ namespace Gladiators.Socket {
 
         public void Init() {
             Instance = this;
-            Socket.LogInObservable.Subscribe(_ => OnLoginToMatchmaker(), ex => OnLoginToMatchmakerError().Forget());
+            Socket.LogInObservable.Subscribe(_ => OnLoginToMatchmaker(), ex => OnLoginToMatchmakerError());
             Socket.CreateRoomObservable.Subscribe(OnCreateRoom, OnCreateRoomError);
             Socket.JoinRoomObservable.Subscribe(_ => JoinGameSuccess(), JoinGameFailed);
         }
@@ -38,9 +28,6 @@ namespace Gladiators.Socket {
             WriteLog.LogColor("OnDisConnect", WriteLog.LogType.Connection);
         }
 
-        public void CheckLobbyServerStatus(Action<bool, bool> _cb) {
-            WriteLog.LogColor("CheckLobbyServerStatus", WriteLog.LogType.Connection);
-        }
 
     }
 }
