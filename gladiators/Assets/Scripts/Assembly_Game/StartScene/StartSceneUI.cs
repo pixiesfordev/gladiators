@@ -2,6 +2,7 @@ using UnityEngine;
 using Scoz.Func;
 using UnityEngine.UI;
 using Cysharp.Threading.Tasks;
+using PlasticGui.Configuration.CloudEdition.Welcome;
 
 namespace Gladiators.Main {
     public class StartSceneUI : BaseUI {
@@ -39,7 +40,6 @@ namespace Gladiators.Main {
 
         private void Start() {
             Init();
-            ShowInfo();//顯示資訊
             // Apple登入要打開
 #if UNITY_IOS
             AppleLoginGO.SetActive(true);
@@ -47,8 +47,31 @@ namespace Gladiators.Main {
             AppleLoginGO.SetActive(false);
 #endif
             ShowUI(Condition.HideAll);
-            AuthChek();
+            Signin().Forget();
+        }
 
+        async UniTask Signin() {
+            APIManager.Init(); // 初始化 APIManager
+            GameManager.Instance.SetTime(await APIManager.GetServerTime());
+            if (!string.IsNullOrEmpty(GamePlayer.Instance.PlayerID) && !string.IsNullOrEmpty(GamePlayer.Instance.MyAuthType) && !string.IsNullOrEmpty(GamePlayer.Instance.DeviceUID)) {
+                string authData = "";
+                AuthType authType;
+                if (!MyEnum.TryParseEnum(GamePlayer.Instance.MyAuthType, out authType)) return;
+                switch (authType) {
+                    case AuthType.GUEST:
+                        authData = GamePlayer.Instance.DeviceUID;
+                        break;
+                }
+                var dbPlayer = await APIManager.Signin(
+                    GamePlayer.Instance.PlayerID,
+                    GamePlayer.Instance.MyAuthType,
+                    authData,
+                    Application.platform.ToString(),
+                    GamePlayer.Instance.DeviceUID);
+                GamePlayer.Instance.SigninSetPlayerData(dbPlayer, false);
+            }
+            ShowInfo();//顯示資訊
+            AuthChek();
         }
 
         /// <summary>
@@ -156,7 +179,7 @@ namespace Gladiators.Main {
             }
 
             //錯誤的登入類型就返回
-            AuthType authType = AuthType.Guest;
+            AuthType authType = AuthType.GUEST;
             if (!MyEnum.TryParseEnum(_authTypeStr, out authType)) { WriteLog.LogError("錯誤的登入類型: " + _authTypeStr); return; }
             var dbPlayer = GamePlayer.Instance.GetDBData<DBPlayer>();
             if (dbPlayer != null) {
@@ -170,10 +193,11 @@ namespace Gladiators.Main {
         /// </summary>
         async UniTask signup(AuthType _authType) {
             WriteLog.LogColor($"{_authType} 註冊玩家資料", WriteLog.LogType.Player);
-            string deviceUID = DeviceManager.GetDeviceUID();
+            string deviceUID = DeviceManager.GenerateDeviceUID();
             switch (_authType) {
-                case AuthType.Guest:
-                    var dbPlayer = await APIManager.Signup(_authType.ToString(), deviceUID, deviceUID);
+                case AuthType.GUEST:
+                    var dbPlayer = await APIManager.Signup(_authType.ToString(), deviceUID, Application.platform.ToString(), deviceUID);
+                    GamePlayer.Instance.SigninSetPlayerData(dbPlayer, true);
                     break;
                 default:
                     WriteLog.LogError($"尚未實作此AuthType: {_authType}");

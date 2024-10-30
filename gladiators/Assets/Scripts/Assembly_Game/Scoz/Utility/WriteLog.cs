@@ -13,7 +13,6 @@ namespace Scoz.Func {
             Loco,
             Json,
             Debug,
-            Poster,
             Flutter,
             ServerAPI,
         }
@@ -25,8 +24,8 @@ namespace Scoz.Func {
 			{ LogType.Loco,"d9ad83"},//橘
 			{ LogType.Json,"398000"},//綠
 			{ LogType.Debug,"bcbcbc"},//灰
-			{ LogType.Poster,"008080"},//藍綠
 			{ LogType.Flutter,"805400"},//土黃
+			//{ LogType.Poster,"008080"},//藍綠
         };
 
 

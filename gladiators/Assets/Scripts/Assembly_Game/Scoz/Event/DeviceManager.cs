@@ -43,7 +43,7 @@ namespace Scoz.Func {
             OnApplicationQuitDo?.Invoke();
         }
 
-        public static string GetDeviceUID() {
+        public static string GenerateDeviceUID() {
             return System.Guid.NewGuid().ToString();
         }
 

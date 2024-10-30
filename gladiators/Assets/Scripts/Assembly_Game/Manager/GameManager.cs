@@ -5,6 +5,7 @@ using System;
 using UnityEngine.Rendering.Universal;
 using Gladiators.Main;
 using Gladiators.Socket;
+using Cysharp.Threading.Tasks;
 
 namespace Scoz.Func {
     public enum DataLoad {
@@ -135,6 +136,7 @@ namespace Scoz.Func {
             gameObject.AddComponent<UniTaskManager>().Init();
             //建立GameConnector
             gameObject.AddComponent<GameConnector>().Init();
+
             //Permission請求
 #if UNITY_ANDROID
             gameObject.AddComponent<AndroidPermission>().RequestLaunchPermissions();

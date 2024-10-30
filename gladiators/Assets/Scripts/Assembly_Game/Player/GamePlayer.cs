@@ -19,6 +19,7 @@ namespace Gladiators.Main {
         public GamePlayer()
         : base() {
             Instance = this;
+            dbDatas = new Dictionary<DBDataType, DBData>();
         }
         public override void LoadLocoData() {
             base.LoadLocoData();
@@ -26,16 +27,28 @@ namespace Gladiators.Main {
         }
 
         /// <summary>
+        /// 設定DB資料
+        /// </summary>
+        public void SetDBData<T>(T _data) where T : DBData {
+            if (dbDatas == null) {
+                WriteLog.LogError("SetDBData dbDatas 為null");
+                return;
+            }
+            var dataType = GetDBDataTypeByT<T>();
+            dbDatas[dataType] = _data;
+        }
+
+        /// <summary>
         /// 取得DB資料
         /// </summary>
         public T GetDBData<T>() where T : DBData {
             if (dbDatas == null) {
-                WriteLog.LogError("dbDatas 為null");
+                WriteLog.LogError("GetDBData dbDatas 為null");
                 return default(T);
             }
             var dataType = GetDBDataTypeByT<T>();
             if (!dbDatas.ContainsKey(dataType) || dbDatas[dataType] == null) {
-                WriteLog.LogError($"dbDatas 的 {typeof(T)} 類資料為null");
+                WriteLog.LogWarning($"dbDatas 的 {typeof(T)} 類資料為null");
                 return default(T);
             }
             return dbDatas[dataType] as T;
@@ -64,6 +77,17 @@ namespace Gladiators.Main {
             return dataType;
         }
 
+        /// <summary>
+        /// 登入時寫入設定玩家資料
+        /// </summary>
+        public void SigninSetPlayerData(DBPlayer _data, bool _saveLocoData) {
+            if (_data == null) return;
+            SetDBData(_data);
+            PlayerID = _data.ID;
+            MyAuthType = _data.AuthType;
+            DeviceUID = _data.DeviceUID;
+            if (_saveLocoData) SaveSettingToLoco();
+        }
 
     }
 }

@@ -10,6 +10,11 @@ namespace Gladiators.Main {
     public class APIManager {
         static string domain;
 
+        enum QueryType {
+            Get,
+            Post,
+        }
+
         public static void Init() {
             if (!MyEnum.TryParseEnum("Domain_" + GameManager.CurVersion, out GameSetting settingKey)) {
                 WriteLog.LogError("APIManager Init錯誤: 無法取得Domain");
@@ -18,17 +23,25 @@ namespace Gladiators.Main {
             domain = JsonGameSetting.GetStr(settingKey);
             WriteLog.LogColor($"domain: {domain}", WriteLog.LogType.ServerAPI);
         }
-        static async UniTask<string> post(string _url, object? _data) {
+        static async UniTask<string> query(QueryType _type, string _url, object _data) {
             if (string.IsNullOrEmpty(_url)) {
                 WriteLog.LogError($"post uri 為 null");
                 return null;
             }
-            if (_data == null) {
+            if (_type == QueryType.Post && _data == null) {
                 WriteLog.LogError($"post _data 為 null");
                 return null;
             }
             string jsonBody = JsonConvert.SerializeObject(_data);
-            string res = await Poster.Post(_url, jsonBody);
+            string res = "";
+            var dbPlayer = GamePlayer.Instance.GetDBData<DBPlayer>();
+            string connToken = "";
+            if (dbPlayer != null) connToken = dbPlayer.ConnToken;
+            if (_type == QueryType.Get) {
+                res = await Poster.Get(_url, connToken);
+            } else {
+                res = await Poster.Post(_url, connToken, jsonBody);
+            }
             if (string.IsNullOrEmpty(res)) {
                 WriteLog.LogError("post API 錯誤: " + _url);
                 return null;
@@ -43,12 +56,12 @@ namespace Gladiators.Main {
             }
             return resp;
         }
-        public static async UniTask<System.DateTimeOffset?> GetServerTime() {
+        public static async UniTask<System.DateTimeOffset> GetServerTime() {
             string url = domain + "/game/servertime";
-            string res = await post(url, null);
+            string res = await query(QueryType.Get, url, null);
             if (string.IsNullOrEmpty(res)) {
                 WriteLog.LogError("API錯誤: " + url);
-                return null;
+                return default(System.DateTimeOffset);
             }
             var resp = decode<GetServerTime_Res>(res);
             if (resp == null) return default(System.DateTimeOffset);
@@ -59,14 +72,15 @@ namespace Gladiators.Main {
             public System.DateTimeOffset ServerTime;
         }
 
-        public static async UniTask<DBPlayer> Signup(string _authType, string _authData, string _deviceUID) {
+        public static async UniTask<DBPlayer> Signup(string _authType, string _authData, string _deviceType, string _deviceUID) {
             string url = domain + "/game/signup";
             var sendData = new {
                 AuthType = _authType,
                 AuthData = _authData,
+                DeviceType = _deviceType,
                 DeviceUID = _deviceUID
             };
-            string res = await post(url, sendData);
+            string res = await query(QueryType.Post, url, sendData);
             var resp = decode<Signup_Res>(res);
             if (resp == null || resp.MyDBPlayer == null) return null;
             return resp.MyDBPlayer;
@@ -85,7 +99,7 @@ namespace Gladiators.Main {
                 DeviceType = _deviceType,
                 DeviceUID = _deviceUID
             };
-            string res = await post(url, sendData);
+            string res = await query(QueryType.Post, url, sendData);
             var resp = decode<Signin_Res>(res);
             if (resp == null || resp.MyDBPlayer == null) return null;
             return resp.MyDBPlayer;
@@ -100,7 +114,7 @@ namespace Gladiators.Main {
             var sendData = new {
                 ConnToken = _connToken,
             };
-            string res = await post(url, sendData);
+            string res = await query(QueryType.Post, url, sendData);
             var resp = decode<GameState_Res>(res);
             if (resp == null || resp.MyDBGameState == null) return null;
             return resp.MyDBGameState;

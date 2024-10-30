@@ -13,6 +13,7 @@ namespace Scoz.Func {
     public class LocoDataManager {
         public static void SaveDataToLoco(LocoDataName _name, string _json) {
             PlayerPrefs.SetString(_name.ToString(), _json);
+            PlayerPrefs.Save();
             WriteLog.LogColorFormat("SaveDataToLoco-{0}: {1}", WriteLog.LogType.Loco, _name, _json);
         }
 
