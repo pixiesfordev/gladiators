@@ -33,7 +33,8 @@ public class BattleSceneUI : BaseUI {
 
     [SerializeField] BattleDivineSkill[] DivineSkills;//神址卡牌
 
-    [SerializeField] BattleSprintButton SprintBtn;//衝刺按鈕
+    //衝刺按鈕(名稱是Button00 在SprintBtnPart底下 不要改這個物件的名字 因為美術演出直接在這個物件上拉 改名演出會失效)
+    [SerializeField] BattleSprintButton SprintBtn;
 
     [SerializeField] GameObject SettingBtn;//設定按鈕
 

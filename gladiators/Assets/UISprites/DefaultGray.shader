@@ -1,91 +1,121 @@
 // Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
 
 // Unity built-in shader source. Copyright (c) 2016 Unity Technologies. MIT license (see license.txt)
-//灰階材質球 出處:https://blog.csdn.net/LIQIANGEASTSUN/article/details/49700621
+//舊版灰階材質球 出處:https://blog.csdn.net/LIQIANGEASTSUN/article/details/49700621 現版本不是使用這個 只是做為紀錄
+//灰階材質球+mask可以使用 出處:https://discussions.unity.com/t/custom-sprite-shader-with-both-greyscale-and-masking/186383/3
 Shader "UISprites/DefaultGray"
 {
     Properties
-    {
-        [PerRendererData] _MinTex ("Sprite Texture", 2D) = "White" {}
-        _Color ("Tint", Color) = (1,1,1,1)
-        [MaterialToggle] PixelSnap ("Pixel Snap", Float) = 0
+	{
+		[PerRendererData] _MainTex ("Sprite Texture", 2D) = "white" {}
+		_Color ("Tint", Color) = (1,1,1,1)
+		
+		_StencilComp ("Stencil Comparison", Float) = 8
+		_Stencil ("Stencil ID", Float) = 0
+		_StencilOp ("Stencil Operation", Float) = 0
+		_StencilWriteMask ("Stencil Write Mask", Float) = 255
+		_StencilReadMask ("Stencil Read Mask", Float) = 255
 
-        //---Add---
-        // Change the brightness of the Sprite
-        _GrayScale ("GrayScale", Float) = 1
-        //---Add---
-    }
+		_EffectAmount ("Effect Amount", Range (0, 1)) = 1.0
+		_BrightnessAmount ("Brightness Amount", Range(0.0, 3)) = 1.0
 
-    SubShader
-    {
-        Tags
-        {
-            "Queue"="Transparent"
-            "IgnoreProjector"="True"
-            "RenderType"="Transparent"
-            "PreviewType"="Plane"
-            "CanUseSpriteAtlas"="True"
-        }
+		_ColorMask ("Color Mask", Float) = 15
+	}
 
-        Cull Off
-        Lighting Off
-        ZWrite Off
-        Blend One OneMinusSrcAlpha
+	SubShader
+	{
+		Tags
+		{ 
+			"Queue"="Transparent" 
+			"IgnoreProjector"="True" 
+			"RenderType"="Transparent" 
+			"PreviewType"="Plane"
+			"CanUseSpriteAtlas"="True"
+		}
+		
+		Stencil
+		{
+			Ref [_Stencil]
+			Comp [_StencilComp]
+			Pass [_StencilOp] 
+			ReadMask [_StencilReadMask]
+			WriteMask [_StencilWriteMask]
+		}
 
-        Pass
-        {
-        CGPROGRAM
-            #pragma vertex vert
-            #pragma fragment frag
-            #pragma multi_compile _ PIXELSNAP_ON
-            #include "UnityCG.cginc"
+		Cull Off
+		Lighting Off
+		ZWrite Off
+		ZTest [unity_GUIZTestMode]
+		Blend SrcAlpha OneMinusSrcAlpha
+		ColorMask [_ColorMask]
 
-            struct appdata_t
-            {
-                float4 vertex   : POSITION;
-                float4 color    : COLOR;
-                float2 texcoord : TEXCOORD0;
-            };
+		Pass
+		{
+		CGPROGRAM
+			#pragma vertex vert
+			#pragma fragment frag
 
-            struct v2f
-            {
-                float4 vertex   : SV_POSITION;
-                fixed4 color    : COLOR;
-                half2 texcoord  : TEXCOORD0;
-            };
+			#include "UnityCG.cginc"
+			#include "UnityUI.cginc"
+			
+			struct appdata_t
+			{
+				float4 vertex   : POSITION;
+				float4 color    : COLOR;
+				float2 texcoord : TEXCOORD0;
+			};
 
-            fixed4 _Color;
+			struct v2f
+			{
+				float4 vertex   : SV_POSITION;
+				fixed4 color    : COLOR;
+				half2 texcoord  : TEXCOORD0;
+				float4 worldPosition : TEXCOORD1;
+			};
+			
+			fixed4 _Color;
+			fixed4 _TextureSampleAdd;
+	
+			bool _UseClipRect;
+			float4 _ClipRect;
 
-            v2f vert(appdata_t IN)
-            {
-                v2f OUT;
-                OUT.vertex = UnityObjectToClipPos(IN.vertex);
-                OUT.texcoord = IN.texcoord;
-                OUT.color = IN.color * _Color;
-                #ifdef PIXELSNAP_ON
-                OUT.vertex = UnityPixelSnap (OUT.vertex);
-                #endif
+			bool _UseAlphaClip;
+			uniform float _EffectAmount;
+			uniform float _BrightnessAmount;
 
-                return OUT;
-            }
+			v2f vert(appdata_t IN)
+			{
+				v2f OUT;
+				OUT.worldPosition = IN.vertex;
+				OUT.vertex = UnityObjectToClipPos(OUT.worldPosition);
 
-            sampler2D _MainTex;
-            float _GrayScale;
+				OUT.texcoord = IN.texcoord;
+				
+				#ifdef UNITY_HALF_TEXEL_OFFSET
+				OUT.vertex.xy += (_ScreenParams.zw-1.0)*float2(-1,1);
+				#endif
+				
+				OUT.color = IN.color * _Color;
+				return OUT;
+			}
 
-            fixed4 frag(v2f IN) : SV_Target
-            {
-                fixed4 c = tex2D(_MainTex, IN.texcoord) * IN.color;
+			sampler2D _MainTex;
 
-                //---Add---
-                float cc = (c.r * 0.299 + c.g * 0.518 + c.b * 0.184);
-                cc *= _GrayScale;
-                c.r = c.g = c.b = cc;
-                //---Add---
+			fixed4 frag(v2f IN) : SV_Target
+			{
+				half4 color = (tex2D(_MainTex, IN.texcoord) + _TextureSampleAdd) * IN.color;
 
-                c.rgb *= c.a;
-                return c;
-            }
-        ENDCG
-        }
-    }
+				if (_UseClipRect)
+					color *= UnityGet2DClipping(IN.worldPosition.xy, _ClipRect);
+				
+				if (_UseAlphaClip)
+					clip (color.a - 0.001);
+
+				float3 brtColor = color.rgb * _BrightnessAmount;
+				color.rgb = lerp(brtColor, dot(brtColor, float3(0.3, 0.59, 0.11)), _EffectAmount);
+				return color;
+			}
+		ENDCG
+		}
+	}
 }
