@@ -27,12 +27,13 @@ namespace Gladiators.Socket {
             WriteLog.LogColor("DBMatchgame已建立好, 開始連線到Matchgame", WriteLog.LogType.Connection);
 
             UniTask.Void(async () => {
-                var dbMatchgame = await GamePlayer.Instance.GetNewestDBData<DBMatchgame>();
-                if (dbMatchgame == null) {
-                    WriteLog.LogError("JoinMatchgame失敗，dbMatchgame is null");
-                    OnJoinGameFail?.Invoke();
-                    return;
-                }
+                // 這裡要補從Lobby收到的Matchgame資料
+                //var dbMatchgame = await APIManager.GameState()
+                //if (dbMatchgame == null) {
+                //    WriteLog.LogError("JoinMatchgame失敗，dbMatchgame is null");
+                //    OnJoinGameFail?.Invoke();
+                //    return;
+                //}
                 IsConnectomg = true;
                 joinMatchgame(); //開始連線到Matchgame                                          
             });
@@ -46,7 +47,7 @@ namespace Gladiators.Socket {
             var gameState = GamePlayer.Instance.GetDBData<DBGameState>();
             //設定玩家目前所在遊戲房間的資料
             UniTask.Void(async () => {
-                await AllocatedRoom.Instance.SetRoom_TestvVer("System", new string[2], gameState.MatchgameTestverMapID, gameState.MatchgameTestverRoomName, gameState.MatchgameTestverTcpIP, "", gameState.MatchgameTestverPort, "");
+                await AllocatedRoom.Instance.SetRoom_TestvVer("System", new string[2], gameState.MatchgameTestverMapID, gameState.MatchgameTestverRoomName, gameState.MatchgameTestverTcpIp, "", gameState.MatchgameTestverPort, "");
                 ConnToMatchgame(_onConnnectedAC, _onJoinGameFail, _onDisconnected);
             });
         }

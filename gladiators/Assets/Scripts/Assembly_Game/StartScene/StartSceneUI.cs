@@ -53,6 +53,7 @@ namespace Gladiators.Main {
         async UniTask Signin() {
             APIManager.Init(); // 初始化 APIManager
             GameManager.Instance.SetTime(await APIManager.GetServerTime());
+            showInfo();//顯示資訊
             if (!string.IsNullOrEmpty(GamePlayer.Instance.PlayerID) && !string.IsNullOrEmpty(GamePlayer.Instance.MyAuthType) && !string.IsNullOrEmpty(GamePlayer.Instance.DeviceUID)) {
                 string authData = "";
                 AuthType authType;
@@ -69,8 +70,8 @@ namespace Gladiators.Main {
                     Application.platform.ToString(),
                     GamePlayer.Instance.DeviceUID);
                 GamePlayer.Instance.SigninSetPlayerData(dbPlayer, false);
+                await onSignin();
             }
-            ShowInfo();//顯示資訊
             AuthChek();
         }
 
@@ -164,9 +165,11 @@ namespace Gladiators.Main {
         /// 1. (玩家尚未登入) 顯示版本
         /// 2. (玩家登入) 顯示版本+玩家ID
         /// </summary>
-        public void ShowInfo() {
+        public void showInfo() {
+            string playerID = "尚未登入";
             var dbPlayer = GamePlayer.Instance.GetDBData<DBPlayer>();
-            VersionText.text = $"版本: {Application.version} 玩家: {dbPlayer}";
+            if (dbPlayer != null) playerID = dbPlayer.ID;
+            VersionText.text = $"版本: {Application.version} 玩家: {playerID}";
         }
         /// <summary>
         /// 登入按鈕按下
@@ -198,15 +201,20 @@ namespace Gladiators.Main {
                 case AuthType.GUEST:
                     var dbPlayer = await APIManager.Signup(_authType.ToString(), deviceUID, Application.platform.ToString(), deviceUID);
                     GamePlayer.Instance.SigninSetPlayerData(dbPlayer, true);
+
                     break;
                 default:
                     WriteLog.LogError($"尚未實作此AuthType: {_authType}");
                     return;
             }
 
-            onSignin();
+            await onSignin();
         }
-        void onSignin() {
+        async UniTask onSignin() {
+            showInfo();//顯示資訊
+            var dbGameState = await APIManager.GameState();
+            GamePlayer.Instance.SetDBData(dbGameState);
+
             //如果是編輯器不直接轉場景(正式機才會直接進Lobby)
 #if UNITY_EDITOR
             ShowUI(StartSceneUI.Condition.BackFromLobby_ShowLogoutBtn);

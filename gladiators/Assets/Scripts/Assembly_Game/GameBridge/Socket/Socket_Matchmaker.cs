@@ -1,5 +1,5 @@
 using Gladiators.Main;
-using Gladiators.Socket.Matchmaker;
+using Gladiators.Socket.Lobby;
 using LitJson;
 using Scoz.Func;
 using System;

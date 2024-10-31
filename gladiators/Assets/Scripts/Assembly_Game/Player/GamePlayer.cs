@@ -54,19 +54,6 @@ namespace Gladiators.Main {
             return dbDatas[dataType] as T;
         }
 
-        /// <summary>
-        /// 取得最新DB資料
-        /// </summary>
-        public async UniTask<T> GetNewestDBData<T>() where T : DBData {
-            var dataType = GetDBDataTypeByT<T>();
-            switch (dataType) {
-                case DBDataType.GameState:
-                    var dbPlayer = GetDBData<DBPlayer>();
-                    return await APIManager.GameState(dbPlayer.ConnToken) as T;
-            }
-            return default(T);
-        }
-
         DBDataType GetDBDataTypeByT<T>() where T : DBData {
             // 繼承自DBData的類的對應DBDataType都是該類名稱去掉"DB", 例如DBPlayer類的DBDataType就是"Player"
             string dataName = typeof(T).Name.Replace("DB", "");

@@ -1,6 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 using Gladiators.Main;
-using Gladiators.Socket.Matchmaker;
+using Gladiators.Socket.Lobby;
 using Scoz.Func;
 using System;
 using UnityEngine;

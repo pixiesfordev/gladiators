@@ -22,17 +22,17 @@ namespace Gladiators.Main {
         [JsonProperty("minGameVersion")]
         public string MinimumGameVersion { get; set; }
 
-        [JsonProperty("matchgame-testver-roomName")]
+        [JsonProperty("matchgameTestverRoomName")]
         public string MatchgameTestverRoomName { get; set; }
 
-        [JsonProperty("matchgame-testver-mapID")]
+        [JsonProperty("matchgameTestverMapID")]
         public string MatchgameTestverMapID { get; set; }
 
-        [JsonProperty("matchgame-testver-port")]
+        [JsonProperty("matchgameTestverPort")]
         public int MatchgameTestverPort { get; set; }
 
-        [JsonProperty("matchgame-testver-tcp-ip")]
-        public string MatchgameTestverTcpIP { get; set; }
+        [JsonProperty("matchgameTestverTcpIp")]
+        public string MatchgameTestverTcpIp { get; set; }
 
         [JsonProperty("lobbyIP")]
         public string LobbyIP { get; set; }

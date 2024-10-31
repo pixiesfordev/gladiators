@@ -25,11 +25,11 @@ namespace Gladiators.Main {
         }
         static async UniTask<string> query(QueryType _type, string _url, object _data) {
             if (string.IsNullOrEmpty(_url)) {
-                WriteLog.LogError($"post uri 為 null");
+                WriteLog.LogError($"{_type} uri 為 null");
                 return null;
             }
             if (_type == QueryType.Post && _data == null) {
-                WriteLog.LogError($"post _data 為 null");
+                WriteLog.LogError($"{_type} _data 為 null");
                 return null;
             }
             string jsonBody = JsonConvert.SerializeObject(_data);
@@ -43,7 +43,7 @@ namespace Gladiators.Main {
                 res = await Poster.Post(_url, connToken, jsonBody);
             }
             if (string.IsNullOrEmpty(res)) {
-                WriteLog.LogError("post API 錯誤: " + _url);
+                WriteLog.LogError($"{_type} API 錯誤: {_url}");
                 return null;
             }
             return res;
@@ -91,7 +91,7 @@ namespace Gladiators.Main {
         }
 
         public static async UniTask<DBPlayer> Signin(string _playerID, string _authType, string _authData, string _deviceType, string _deviceUID) {
-            string url = domain + "/player/signin";
+            string url = domain + "/game/signin";
             var sendData = new {
                 PlayerID = _playerID,
                 AuthType = _authType,
@@ -109,12 +109,9 @@ namespace Gladiators.Main {
             public DBPlayer MyDBPlayer;
         }
 
-        public static async UniTask<DBGameState> GameState(string _connToken) {
-            string url = domain + "/player/gamestate";
-            var sendData = new {
-                ConnToken = _connToken,
-            };
-            string res = await query(QueryType.Post, url, sendData);
+        public static async UniTask<DBGameState> GameState() {
+            string url = domain + "/game/gamestate";
+            string res = await query(QueryType.Get, url, null);
             var resp = decode<GameState_Res>(res);
             if (resp == null || resp.MyDBGameState == null) return null;
             return resp.MyDBGameState;
