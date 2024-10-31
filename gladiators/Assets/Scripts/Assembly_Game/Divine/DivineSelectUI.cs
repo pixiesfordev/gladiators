@@ -30,6 +30,9 @@ namespace Gladiators.Battle {
         [SerializeField] RectTransform BtnBGMaskRT;
         [SerializeField] Material GrayMaterial;
 
+        [SerializeField] Transform[] BGMoveWithCameraTiers; //會跟著鏡頭移動的分層 拆五層 五層移動量會不一樣 做出深度感
+        [SerializeField] Animator[] CandleAnis; //蠟燭動畫
+
         [HeaderAttribute("==============TEST==============")]
         [Tooltip("每根蠟燭倒數時間")][SerializeField] float PerCandleCountDownTime = 1f;
         [Tooltip("測試蠟燭倒數演出")][SerializeField] bool PerformCandleCountDown = false;
@@ -43,6 +46,14 @@ namespace Gladiators.Battle {
         //2.鏡頭左右偏移效果
         // 1.PC版本
         // 2.手機版本
+        
+        /*
+        1.神址卡牌演出調用
+        2.蠟燭演出調用 >> 前兩種隨機選用 撥放完後呼叫方法去隨機挑選下一次演出的動畫 該方法也要能設定初始值 第一次起始值隨機 第二次後一律從頭放
+         1.candle_combustion >> 第一種燃燒方式
+         2.candle_combustion01 >> 第二種燃燒方式
+         3.candle_go out >> 熄滅撥放此動畫
+        */
 
         public static DivineSelectUI Instance;
 
