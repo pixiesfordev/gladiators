@@ -95,7 +95,6 @@ namespace Gladiators.Main {
                 await HybridCLRManager.LoadAssembly();//載入GameDll
                 AddressablesLoader_UnityAssebly.GetPrefabByRef(GameManagerAsset, (gameManagerPrefab, handle) => {
                     var gameManager = Instantiate(gameManagerPrefab);
-                    WriteLog_UnityAssembly.Log("gameManager=" + gameManager);
                     //Addressables.Release(handle);
                 });
             });

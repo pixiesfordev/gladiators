@@ -1,17 +1,13 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using UnityEngine;
 using Scoz.Func;
-using Gladiators.Socket.Matchmaker;
 using Gladiators.Socket.Matchgame;
-using Service.Realms;
-
 namespace Gladiators.Socket {
     public class UdpSocket : MonoBehaviour, INetworkClient {
         private const float CONNECTION_CLOSE_TIME = 5.0f; // 設定X秒沒收到封包就斷線

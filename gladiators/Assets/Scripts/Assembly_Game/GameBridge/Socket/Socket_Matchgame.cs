@@ -3,17 +3,13 @@ using Gladiators.Battle;
 using Gladiators.Main;
 using Gladiators.Socket.Matchgame;
 using LitJson;
-using MongoDB.Bson;
-using Newtonsoft.Json;
 using Scoz.Func;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using UniRx;
-using UnityEditor.Sprites;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using static Gladiators.Socket.SocketContent;
 
 namespace Gladiators.Socket {
     public partial class GladiatorsSocket {
@@ -40,12 +36,12 @@ namespace Gladiators.Socket {
             }
             CMDCallback.Add(cmdID, _ac);
         }
-        public void JoinMatchgame(Action _onDisconnected, string _realmToken, string _tcpIP, string _udpIP, int _port) {
+        public void JoinMatchgame(Action _onDisconnected, string _connToken, string _tcpIP, string _udpIP, int _port) {
             CreateClientObject(ref TCP_MatchgameClient, _tcpIP, _port, "JoinMatchgame", "TCP_MatchgameClient");
             CreateClientObject(ref UDP_MatchgameClient, _udpIP, _port, "JoinMatchgame", "UDP_MatchgameClient");
             TCP_MatchgameClient.OnReceiveMsg += OnRecieveMatchgameTCPMsg;
 
-            TCP_MatchgameClient.StartConnect((bool connected) => OnMatchgameTCPConnect(connected, _realmToken));
+            TCP_MatchgameClient.StartConnect((bool connected) => OnMatchgameTCPConnect(connected, _connToken));
             TCP_MatchgameClient.RegistOnDisconnect(_onDisconnected);
         }
 
@@ -58,30 +54,28 @@ namespace Gladiators.Socket {
 
             UDP_MatchgameClient.Close();
             UDP_MatchgameClient = new GameObject("GameUdpSocket").AddComponent<UdpSocket>();
-            UniTask.Void(async () => {
-                try {
-                    var dbMatchgame = await GamePlayer.Instance.GetMatchGame();
-                    if (dbMatchgame == null) {
-                        WriteLog.LogError("OnMatchgameUDPDisconnect時重連失敗，dbMatchgame is null");
-                        this.MatchgameUDPEndWithDisconnection();
-                        return;
-                    } else UDP_MatchgameClient.Init(dbMatchgame.IP, dbMatchgame.Port ?? 0);
-                } catch (Exception _e) {
-                    WriteLog.LogError("OnMatchgameUDPDisconnect時嘗試重連失敗: " + _e);
-                    OnMatchgameUDPDisconnect();
+            try {
+                var dbMatchgame = GamePlayer.Instance.GetDBData<DBMatchgame>();
+                if (dbMatchgame == null) {
+                    WriteLog.LogError("OnMatchgameUDPDisconnect時重連失敗，dbMatchgame is null");
+                    this.MatchgameUDPEndWithDisconnection();
+                    return;
+                } else UDP_MatchgameClient.Init(dbMatchgame.IP, dbMatchgame.Port);
+            } catch (Exception _e) {
+                WriteLog.LogError("OnMatchgameUDPDisconnect時嘗試重連失敗: " + _e);
+                OnMatchgameUDPDisconnect();
+                return;
+            }
+            UDP_MatchgameClient.StartConnect(UDP_MatchgameConnToken, (bool connected) => {
+                WriteLog.LogColor("OnMatchgameUDPDisconnect後重連結果 :" + connected, WriteLog.LogType.Connection);
+                if (connected) {
+                    UDP_MatchgameClient.OnReceiveMsg += OnRecieveMatchgameUDPMsg;
+                } else {
+                    this.MatchgameUDPEndWithDisconnection();
                     return;
                 }
-                UDP_MatchgameClient.StartConnect(UDP_MatchgameConnToken, (bool connected) => {
-                    WriteLog.LogColor("OnMatchgameUDPDisconnect後重連結果 :" + connected, WriteLog.LogType.Connection);
-                    if (connected) {
-                        UDP_MatchgameClient.OnReceiveMsg += OnRecieveMatchgameUDPMsg;
-                    } else {
-                        this.MatchgameUDPEndWithDisconnection();
-                        return;
-                    }
-                });
-                UDP_MatchgameClient.RegistOnDisconnect(OnMatchgameUDPDisconnect);
             });
+            UDP_MatchgameClient.RegistOnDisconnect(OnMatchgameUDPDisconnect);
         }
         public void MatchgameUDPEndWithDisconnection() {
             WriteLog.LogColor("MatchgameUDPEndWithDisconnection", WriteLog.LogType.Connection);

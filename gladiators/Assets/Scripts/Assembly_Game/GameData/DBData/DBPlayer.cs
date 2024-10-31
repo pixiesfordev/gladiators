@@ -4,12 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace Gladiators.Main {
-    public class DBPlayer {
-        [JsonProperty("id")]
-        public string ID { get; set; }
-
-        [JsonProperty("createdAt")]
-        public System.DateTime CreatedAt { get; set; }
+    public class DBPlayer : DBData {
 
         [JsonProperty("authDatas")]
         public Dictionary<string, string> AuthDatas { get; set; }
@@ -49,5 +44,7 @@ namespace Gladiators.Main {
 
         [JsonProperty("myGladiatorID")]
         public string MyGladiatorID { get; set; }
+
     }
+
 }
