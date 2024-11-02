@@ -89,13 +89,18 @@ MonoBehaviour:
   skillArea: {fileID: 980406719335467535}
   skillBall: {fileID: 1056164926751785, guid: 432440bddfae88f4ba673cc220bacea5, type: 3}
   SideRotationParent: {fileID: 2168189493600221619}
-  damagePrefab: {fileID: 1259023133563206875, guid: c4a99d43960701d48a6a90ecb48cb276,
+  damageShowYPos: 5
+  defaultDamagePrefab: {fileID: 1633523022951624263, guid: 412f05a481110b34bb94bc66bcc72d21,
     type: 3}
-  effectDamagePrefab: {fileID: 1259023133563206875, guid: a5448cd0847bccc45a1cc9db236a95ca,
+  bleedDamagePrefab: {fileID: 3947794330242538849, guid: 91805f4f8cf935c4e8885585d6c41643,
     type: 3}
-  recoveryHPPrefab: {fileID: 1259023133563206875, guid: 01b4e586e1b11d34d802e16cc75a01d7,
+  poisonDamagePrefab: {fileID: 5351138656306467322, guid: 513465173935c484989b6be75815d28b,
     type: 3}
-  recoveryPhysicalPrefab: {fileID: 1259023133563206875, guid: 9266649564cf06243ac4747233b001b3,
+  burningDamagePrefab: {fileID: 4317867330331993555, guid: d2de5f72ce081554d8eb6e5d737af708,
+    type: 3}
+  recoveryHPPrefab: {fileID: 978616148074226370, guid: a25f28ee1e5e8b047b3adfc55af44c44,
+    type: 3}
+  recoveryPhysicalPrefab: {fileID: 2515543820834242609, guid: ab7ae98edb10ad74f8fdaf869ce6ae37,
     type: 3}
 --- !u!1 &1797717852724952814
 GameObject:
