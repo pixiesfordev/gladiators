@@ -216,8 +216,11 @@ public class Character : MonoBehaviour {
         });
     }
 
-    [SerializeField] DamageNumber damagePrefab;
-    [SerializeField] DamageNumber effectDamagePrefab;
+    [SerializeField] float damageShowYPos = 5f;
+    [SerializeField] DamageNumber defaultDamagePrefab;
+    [SerializeField] DamageNumber bleedDamagePrefab;
+    [SerializeField] DamageNumber poisonDamagePrefab;
+    [SerializeField] DamageNumber burningDamagePrefab;
     [SerializeField] DamageNumber recoveryHPPrefab;
     [SerializeField] DamageNumber recoveryPhysicalPrefab;
     public void ShowBattleNumber(NumType type, int value) {
@@ -227,34 +230,38 @@ public class Character : MonoBehaviour {
         switch (type) {
             default:
             case NumType.Damage_Small:
-                damagePopup = damagePrefab.Spawn(this.transform.position + new Vector3(0, 5f, -1), value);
+                damagePopup = defaultDamagePrefab.Spawn(this.transform.position + new Vector3(0, damageShowYPos, -1), value);
+                damagePopup.SetFollowedTarget(this.transform);
                 break;
             case NumType.Damage_Medium:
-                damagePopup = damagePrefab.Spawn(this.transform.position + new Vector3(0, 5f, -1), value);
-                damagePopup.SetScale(2.5f);
+                damagePopup = defaultDamagePrefab.Spawn(this.transform.position + new Vector3(0, damageShowYPos, -1), value);
+                damagePopup.SetScale(2.4f);
+                damagePopup.SetFollowedTarget(this.transform);
                 break;
             case NumType.Damage_Large:
-                damagePopup = damagePrefab.Spawn(this.transform.position + new Vector3(0, 5f, -1), value);
-                damagePopup.SetScale(3f);
+                damagePopup = defaultDamagePrefab.Spawn(this.transform.position + new Vector3(0, damageShowYPos, -1), value);
+                damagePopup.SetScale(2.8f);
+                damagePopup.SetFollowedTarget(this.transform);
                 break;
             case NumType.Damage_Bleed:
-                damagePopup = damagePrefab.Spawn(this.transform.position + new Vector3(0, 5f, -1), value);
+                damagePopup = bleedDamagePrefab.Spawn(this.transform.position + new Vector3(0, damageShowYPos, -1), value);
                 break;
             case NumType.Damage_Poison:
-                damagePopup = effectDamagePrefab.Spawn(this.transform.position + new Vector3(0, 5f, -1), value);
+                damagePopup = poisonDamagePrefab.Spawn(this.transform.position + new Vector3(0, damageShowYPos, -1), value);
                 break;
             case NumType.Damage_Burning:
-                damagePopup = effectDamagePrefab.Spawn(this.transform.position + new Vector3(0, 5f, -1), value);
+                damagePopup = burningDamagePrefab.Spawn(this.transform.position + new Vector3(0, damageShowYPos, -1), value);
                 break;
             case NumType.Recovery_HP:
-                damagePopup = recoveryHPPrefab.Spawn(this.transform.position + new Vector3(0, 5f, -1), value);
+                damagePopup = recoveryHPPrefab.Spawn(this.transform.position + new Vector3(0, damageShowYPos + 0.5f, -1), value);
+                damagePopup.SetFollowedTarget(this.transform);
                 break;
             case NumType.Recovery_Physical:
-                damagePopup = recoveryPhysicalPrefab.Spawn(this.transform.position + new Vector3(0, 5f, -1), value);
+                damagePopup = recoveryPhysicalPrefab.Spawn(this.transform.position + new Vector3(0, damageShowYPos + 0.5f, -1), value);
+                damagePopup.SetFollowedTarget(this.transform);
                 break;
         }
 
-        damagePopup.SetFollowedTarget(this.transform);
         damagePopup.transform.SetParent(this.transform);
         damagePopup.transform.localRotation = Quaternion.Euler(0, 0, 0);
     }

@@ -1,22 +1,20 @@
+using Newtonsoft.Json;
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using Realms;
-using MongoDB.Bson;
-using Service.Realms;
+using UnityEngine;
 
-[MapTo("map")]
-public partial class DBMap : IRealmObject {
-    [MapTo("_id")]
-    [Required]
-    [PrimaryKey]
-    public string Id { get; set; }
-    [MapTo("createdAt")]
-    public DateTimeOffset CreatedAt { get; set; }
-    [MapTo("enable")]
-    public bool? Enable { get; set; }
-    [MapTo("jsonMapID")]
-    public int? JsonMapID { get; set; }
-    [MapTo("matchType")]
-    public string MatchType { get; set; }
+namespace Gladiators.Main {
+    public class DBMap : DBData {
+
+        [JsonProperty("matchType")]
+        public string MatchType { get; set; }
+
+        [JsonProperty("jsonMapID")]
+        public int JsonMapID { get; set; }
+
+        [JsonProperty("enable")]
+        public bool Enable { get; set; }
+    }
 
 }

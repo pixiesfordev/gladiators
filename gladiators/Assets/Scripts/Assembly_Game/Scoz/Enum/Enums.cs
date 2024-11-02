@@ -37,12 +37,12 @@ namespace Scoz.Func {
     }
     public enum AuthType {
         NotSigninYet,//尚未登入
-        Guest,//訪客註冊
-        Official,//官方註冊
-        Google,//Google註冊
-        Facebook,//Facebook,
-        Apple,//Apple
-        Line,//Line
+        GUEST,//訪客註冊
+        GOOGLE,
+        APPLE,
+        X,
+        TIKTOK,
+        WECHAT,
     }
     public enum ThirdPartLink {
         Facebook,

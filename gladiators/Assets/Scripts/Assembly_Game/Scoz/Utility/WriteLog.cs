@@ -8,25 +8,24 @@ namespace Scoz.Func {
 
         public enum LogType {
             Player,
-            Realm,
             Addressable,
             Connection,
             Loco,
             Json,
             Debug,
-            Poster,
             Flutter,
+            ServerAPI,
         }
         public static Dictionary<LogType, string> LocColorCodes = new Dictionary<LogType, string>() {
             { LogType.Player,"db7777"},//紅
-            { LogType.Realm,"db77c9"},//粉紅
+            { LogType.ServerAPI,"db77c9"},//粉紅
             { LogType.Connection,"dbdb77"},//黃
             { LogType.Addressable,"83a5d9"},//藍
 			{ LogType.Loco,"d9ad83"},//橘
 			{ LogType.Json,"398000"},//綠
 			{ LogType.Debug,"bcbcbc"},//灰
-			{ LogType.Poster,"008080"},//藍綠
 			{ LogType.Flutter,"805400"},//土黃
+			//{ LogType.Poster,"008080"},//藍綠
         };
 
 

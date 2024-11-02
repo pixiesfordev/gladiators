@@ -3,9 +3,9 @@ using UnityEngine.SceneManagement;
 using UnityEngine.AddressableAssets;
 using System;
 using UnityEngine.Rendering.Universal;
-using Service.Realms;
 using Gladiators.Main;
 using Gladiators.Socket;
+using Cysharp.Threading.Tasks;
 
 namespace Scoz.Func {
     public enum DataLoad {
@@ -116,7 +116,6 @@ namespace Scoz.Func {
             QualitySettings.vSyncCount = 0;
             Application.targetFrameRate = TargetFPS;
 #endif
-            RealmManager.NewApp();//初始化Realm
             //產生一個新玩家
             new GamePlayer();
             //建立FirebaseManager
@@ -137,6 +136,7 @@ namespace Scoz.Func {
             gameObject.AddComponent<UniTaskManager>().Init();
             //建立GameConnector
             gameObject.AddComponent<GameConnector>().Init();
+
             //Permission請求
 #if UNITY_ANDROID
             gameObject.AddComponent<AndroidPermission>().RequestLaunchPermissions();
