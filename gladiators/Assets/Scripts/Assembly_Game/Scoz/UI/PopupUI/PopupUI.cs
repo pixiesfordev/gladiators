@@ -10,7 +10,12 @@ using UnityEngine.AddressableAssets;
 
 namespace Scoz.Func {
     public class PopupEventSpawner : ItemSpawner<PopupEventItem> {
+        public static PopupEventSpawner Instance { get; private set; }
         public override void RefreshText() {
+        }
+
+        protected override void SetInstance() {
+            Instance = this;
         }
     }
     public partial class PopupUI : MonoBehaviour {

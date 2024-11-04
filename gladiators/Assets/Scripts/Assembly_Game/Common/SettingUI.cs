@@ -6,6 +6,9 @@ using UnityEngine.UI;
 
 namespace Gladiators.Main {
     public class SettingUI : BaseUI {
+
+        public SettingUI Instance { get; private set; }
+
         [SerializeField] Slider MusicSlider = null;
         [SerializeField] Slider SoundSlider = null;
         [SerializeField] Slider VoiceSlider = null;
@@ -41,7 +44,13 @@ namespace Gladiators.Main {
 
         public override void RefreshText() {
         }
+        protected override void SetInstance() {
+            Instance = this;
+        }
 
+        public override void Init() {
+            base.Init();
+        }
 
         Language CurLanguage;
 

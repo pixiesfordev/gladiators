@@ -4,8 +4,13 @@ using UnityEngine;
 using UnityEngine.UI;
 namespace Scoz.Func {
     public class PopupTextSpawner : ItemSpawner<PopupTextItem> {
+        public static PopupTextSpawner Instance { get; private set; }
+        protected override void SetInstance() {
+            Instance = this;
+        }
         public override void RefreshText() {
         }
+
     }
     public class PopupText : MonoBehaviour {
         public enum AniName {

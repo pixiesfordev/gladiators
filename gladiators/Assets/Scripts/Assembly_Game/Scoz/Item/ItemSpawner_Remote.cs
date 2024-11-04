@@ -5,7 +5,7 @@ using UnityEngine.AddressableAssets;
 using System;
 
 namespace Scoz.Func {
-    public class ItemSpawner_Remote<T> : BaseUI where T : MonoBehaviour, IItem {
+    public abstract class ItemSpawner_Remote<T> : BaseUI where T : MonoBehaviour, IItem {
         public AssetReference ItemAsset;
         public Transform ParentTrans = null;
         T ItemPrefab;
@@ -63,8 +63,9 @@ namespace Scoz.Func {
                 }
             }
         }
-
+        protected override abstract void SetInstance();
         public override void RefreshText() {
         }
+
     }
 }

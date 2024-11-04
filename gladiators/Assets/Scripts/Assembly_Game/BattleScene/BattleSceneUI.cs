@@ -58,11 +58,14 @@ public class BattleSceneUI : BaseUI {
     private void Start() {
         Init();
     }
+
+    protected override void SetInstance() {
+        Instance = this;
+    }
     public override void Init() {
         base.Init();
         MyDivineSelectUI.Init();
         SpawnBattleManager();
-        Instance = this;
         InitGladiator(true, myGladiator.MaxHP, myGladiator.CurHp, myGladiator.JsonID);
         InitGladiator(false, opponentGladiator.MaxHP, opponentGladiator.CurHp, opponentGladiator.JsonID);
         SetSkillDatas(handSKillIDs, 0);
@@ -185,4 +188,5 @@ public class BattleSceneUI : BaseUI {
     public void CheckVigor(float val) {
         SprintBtn.CheckVigor(val);
     }
+
 }

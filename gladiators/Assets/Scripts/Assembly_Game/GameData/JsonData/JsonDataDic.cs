@@ -111,22 +111,61 @@ namespace Scoz.Func {
             }
         }
         /// <summary>
+        /// 取得T類型的JsonDic
+        /// </summary>
+        public static Dictionary<int, T> GetJsonDic<T>() where T : JsonBase {
+            if (IntKeyJsonDic == null) {
+                WriteLog.LogError("尚未初始化IntKeyJsonDic");
+                return null;
+            }
+            string dataName = GetDataName<T>();
+            if (!IntKeyJsonDic.ContainsKey(dataName)) {
+                WriteLog.LogError($"IntKeyJsonDic不包含{dataName}的字典");
+                return null;
+            }
+            if (IntKeyJsonDic[dataName] == null) {
+                WriteLog.LogError($"IntKeyJsonDic的{dataName}字典為null");
+                return null;
+            }
+            try {
+                return IntKeyJsonDic[dataName].ToDictionary(
+                    pair => pair.Key,
+                    pair => (T)pair.Value
+                );
+            } catch (InvalidCastException) {
+                WriteLog.LogError($"轉型失敗：無法將 IntKeyJsonDic 的 Value 轉型為指定類型 {dataName}");
+                return null;
+            }
+        }
+        /// <summary>
         /// 取得T類型的JsonData, T為Json+Json表格名稱, 例如Json表示Skill.json 那就可以用GetJsonData<JsonSkill>(1)就是取Skill表技能ID為1的技能
         /// </summary>
         public static T GetJsonData<T>(int _id, bool showErrorMsg = true) where T : JsonBase {
-            if (IntKeyJsonDic == null)
-                return null;
-            string dataName = GetDataName<T>();
-            if (IntKeyJsonDic.ContainsKey(dataName) && IntKeyJsonDic[dataName] != null && IntKeyJsonDic[dataName].ContainsKey(_id))
-                return IntKeyJsonDic[dataName][_id] as T;
-            else {
-                string log = string.Format("{0}表不存在ID:{1}的資料", dataName, _id);
-                if (showErrorMsg) {
-                    PopupUI.ShowClickCancel(log, null);
-                }
-                WriteLog.LogErrorFormat(log);
+            if (IntKeyJsonDic == null) {
+                WriteLog.LogError("尚未初始化IntKeyJsonDic");
                 return null;
             }
+            string dataName = GetDataName<T>();
+            if (!IntKeyJsonDic.ContainsKey(dataName)) {
+                WriteLog.LogError($"IntKeyJsonDic不包含{dataName}的字典");
+                return null;
+            }
+            if (IntKeyJsonDic[dataName] == null) {
+                WriteLog.LogError($"IntKeyJsonDic的{dataName}字典為null");
+                return null;
+            }
+            var dic = IntKeyJsonDic[dataName];
+            if (!dic.ContainsKey(_id)) {
+                if (showErrorMsg) {
+                    string log = string.Format("{0}表不存在ID:{1}的資料", dataName, _id);
+                    if (showErrorMsg) {
+                        PopupUI.ShowClickCancel(log, null);
+                    }
+                    WriteLog.LogErrorFormat(log);
+                }
+                return null;
+            }
+            return dic[_id] as T;
         }
         /// <summary>
         /// 取得T類型的JsonData, T為Json+Json表格名稱, 例如Json表示SkillEffect.json 那就可以用GetJsonData<JsonSkillEffect>("1_1")就是取SkillEffect表技能ID為"1_1"的技能效果

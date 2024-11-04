@@ -46,7 +46,7 @@ namespace Gladiators.Battle {
         //2.鏡頭左右偏移效果
         // 1.PC版本
         // 2.手機版本
-        
+
         /*
         1.神址卡牌演出調用
         2.蠟燭演出調用 >> 前兩種隨機選用 撥放完後呼叫方法去隨機挑選下一次演出的動畫 該方法也要能設定初始值 第一次起始值隨機 第二次後一律從頭放
@@ -74,10 +74,16 @@ namespace Gladiators.Battle {
             GoldNotEnough,//金錢不足
         }
 
+        public override void RefreshText() {
+
+        }
+
+        protected override void SetInstance() {
+            Instance = this;
+        }
+
         public override void Init() {
             base.Init();
-
-            Instance = this;
 
             SelectedDivineSkills = new JsonSkill[2];
 
@@ -402,8 +408,6 @@ namespace Gladiators.Battle {
 
         //敵方資料來源 >> AllocatedRoom的ReceiveSetPlayer下的GotOpponent
 
-        public override void RefreshText() {
 
-        }
     }
 }

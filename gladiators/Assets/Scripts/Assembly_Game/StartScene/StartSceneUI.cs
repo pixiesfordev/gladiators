@@ -30,10 +30,11 @@ namespace Gladiators.Main {
             BackFromLobby_ShowLogoutBtn,//從大廳返回主介面 且 已經是登入狀態，會顯示登出按鈕與返回大廳按鈕
             BackFromLobby_ShowLoginBtn,//從大廳返回主介面 且 已經是登入狀態，會顯示登出按鈕與返回大廳按鈕
         }
-
+        protected override void SetInstance() {
+            Instance = this;
+        }
         public override void Init() {
             base.Init();
-            Instance = this;
         }
         public override void RefreshText() {
         }
@@ -112,7 +113,7 @@ namespace Gladiators.Main {
             //繞過正式流程
             FirstTimeLaunchGame = false;
             PopupUI.InitSceneTransitionProgress(0);
-            PopupUI.CallSceneTransition(MyScene.LobbyScene);
+            PopupUI.CallSceneTransition(MyScene.BattleSimulationScene);
             return;
 
             /// 根據是否能進行遊戲來執行各種狀態
@@ -379,7 +380,5 @@ namespace Gladiators.Main {
             //});
 
         }
-
-
     }
 }

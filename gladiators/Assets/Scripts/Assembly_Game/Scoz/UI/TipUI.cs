@@ -18,11 +18,12 @@ namespace Scoz.Func {
 
         public static TipUI Instance { get; private set; }
         static bool IsShowing = true;
-
+        protected override void SetInstance() {
+            Instance = this;
+        }
         public override void Init() {
             base.Init();
             SetActive(false);
-            Instance = this;
         }
         void Update() {
             if (!IsShowing) return;

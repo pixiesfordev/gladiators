@@ -29,11 +29,14 @@ namespace Gladiators.Main {
         private void Start() {
             Init();
         }
+        public override void RefreshText() {
+        }
+        protected override void SetInstance() {
+            Instance = this;
+        }
 
         public override void Init() {
             base.Init();
-            Instance = this;
-
 
             var dbPlayer = GamePlayer.Instance.GetDBData<DBPlayer>();
             if (dbPlayer == null) {//尚無登入帳戶
@@ -73,8 +76,7 @@ namespace Gladiators.Main {
             }
         }
 
-        public override void RefreshText() {
-        }
+
 
         public void OnPlayClick() {
             Action connFunc = null;
@@ -91,6 +93,8 @@ namespace Gladiators.Main {
             });
             connFunc();
         }
+
+
 
         //void LoadAssets(AdventureUIs _ui, Action _cb) {
         //    switch (_ui) {

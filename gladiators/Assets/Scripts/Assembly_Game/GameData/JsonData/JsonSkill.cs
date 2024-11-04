@@ -15,6 +15,7 @@ namespace Gladiators.Main {
         Passive,//被動
     }
     public enum SkillType {
+        Talent,//天賦技能
         Normal,//一般技能
         Divine,//神祉技能
     }
@@ -29,6 +30,11 @@ namespace Gladiators.Main {
         public string Name {
             get {
                 return JsonString.GetString_static(DataName + "_" + ID, "Name");
+            }
+        }
+        public string Description {
+            get {
+                return JsonString.GetString_static(DataName + "_" + ID, "Description");
             }
         }
         public string Ref { get; private set; }

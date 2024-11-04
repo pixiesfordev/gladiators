@@ -87,6 +87,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 605122b47cb953b478b9189249dda530
+    m_Address: Assets/AddressableAssets/Images
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 63c170fee4e75764a94e3182ae26de63
     m_Address: Assets/CartoonGrass/Materials/CartoonGrass_Grass_07_LOD1.mat
     m_ReadOnly: 0

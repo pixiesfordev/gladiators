@@ -8,6 +8,9 @@ using Scoz.Func;
 
 namespace Scoz.Func {
     public class SettingUI : BaseUI {
+
+        public static SettingUI Instance { get; private set; }
+
         [SerializeField]
         Dropdown LanguageDropDown = null;
         [SerializeField]
@@ -16,6 +19,13 @@ namespace Scoz.Func {
         Slider SoundSlider = null;
         [SerializeField]
         Slider VoiceSlider = null;
+
+        public override void RefreshText() {
+        }
+
+        protected override void SetInstance() {
+            Instance = this;
+        }
 
         private void Awake() {
             InitLanguageDropdown();
@@ -70,7 +80,6 @@ namespace Scoz.Func {
             PlayerPrefs.DeleteAll();
         }
 
-        public override void RefreshText() {
-        }
+
     }
 }
