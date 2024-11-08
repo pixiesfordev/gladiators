@@ -1,5 +1,7 @@
 using Gladiators.Main;
+using Gladiators.Socket;
 using Scoz.Func;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -100,6 +102,30 @@ namespace Gladiators.BattleSimulation {
             var jsonSkills = GameDictionary.GetJsonDic<JsonSkill>().Values.ToList();
             jsonSkills = jsonSkills.FindAll(a => a.MySkillType == SkillType.Normal);
             MySkillSelectionUI.ShowUI(jsonSkills, curSkillIDs);
+        }
+        public void OnClick() {
+            Action connFunc = null;
+            PopupUI.ShowLoading(JsonString.GetUIString("Loading"));
+            connFunc = () => GameConnector.Instance.ConnectToMatchgameTestVer(() => {
+                PopupUI.HideLoading();
+            }, () => {
+                WriteLog.LogError("連線遊戲房失敗");
+            }, () => {
+                if (AllocatedRoom.Instance.CurGameState == AllocatedRoom.GameState.GameState_Fighting) {
+                    WriteLog.LogError("需要斷線重連");
+                    connFunc();
+                }
+            });
+            connFunc();
+        }
+        public void SendSimulationSetting() {
+            List<int> skills = new List<int>(curSkillIDs);
+            var jsonSkill = GameDictionary.GetJsonData<JsonSkill>(CurGladiator.ID);
+            skills.Add(jsonSkill.ID);
+            for (int i = 0; i < skills.Count; i++) {
+                WriteLog.Log(skills[i]);
+            }
+            AllocatedRoom.Instance.GMSetGladiator(CurGladiator.ID, skills.ToArray());
         }
 
 

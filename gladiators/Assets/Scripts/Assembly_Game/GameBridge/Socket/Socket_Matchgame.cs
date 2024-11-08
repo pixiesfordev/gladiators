@@ -10,6 +10,7 @@ using System.Linq;
 using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static Gladiators.Socket.SocketContent;
 
 namespace Gladiators.Socket {
     public partial class GladiatorsSocket {
@@ -190,8 +191,8 @@ namespace Gladiators.Socket {
                 } else {
                     // 不輸出的Conn Log加到清單中
                     List<string> dontShowLogCMDs = new List<string>();
-                    //dontShowLogCMDs.Add(MatchgameCMD_TCP.PING_TOCLIENT.ToString());
-                    //dontShowLogCMDs.Add(MatchgameCMD_TCP.GLADIATORSTATES_TOCLIENT.ToString());
+                    dontShowLogCMDs.Add(MatchgameCMD_TCP.PING_TOCLIENT.ToString());
+                    dontShowLogCMDs.Add(MatchgameCMD_TCP.GLADIATORSTATES_TOCLIENT.ToString());
                     if (!dontShowLogCMDs.Contains(data.CMD)) WriteLog.LogColorFormat("(TCP)接收: {0}", WriteLog.LogType.Connection, _msg);
                 }
                 if (CMDCallback.TryGetValue(cmdID, out Action<string> _cb)) {
@@ -233,6 +234,10 @@ namespace Gladiators.Socket {
                         var meleePacket = LitJson.JsonMapper.ToObject<SocketCMD<MELEE_TOCLIENT>>(_msg);
                         HandlerMelee(meleePacket);
                         break;
+                    case SocketContent.MatchgameCMD_TCP.BEFORE_MELEE_TOCLIENT:
+                        var beforeMeleePacket = LitJson.JsonMapper.ToObject<SocketCMD<BEFORE_MELEE_TOCLIENT>>(_msg);
+                        HandlerBeforeMelee(beforeMeleePacket);
+                        break;
                     case SocketContent.MatchgameCMD_TCP.GLADIATORSTATES_TOCLIENT:
                         var gStatePacket = LitJson.JsonMapper.ToObject<SocketCMD<GLADIATORSTATES_TOCLIENT>>(_msg);
                         HandlerGladiatorStates(gStatePacket);
@@ -240,6 +245,12 @@ namespace Gladiators.Socket {
                     case SocketContent.MatchgameCMD_TCP.HP_TOCLIENT:
                         var hpPacket = LitJson.JsonMapper.ToObject<SocketCMD<Hp_TOCLIENT>>(_msg);
                         HandlerHp(hpPacket);
+                        break;
+                    case SocketContent.MatchgameCMD_TCP.GMACTION_TOCLIENT:
+                        //收到封包要先進行GMACTION_TOCLIENT反序列化之後再根據ActionType類型來使用泛型解析成正確的ActionContent
+                        var gmActionBasePacket = JsonMapper.ToObject<SocketCMD<GMACTION_TOCLIENT<JsonData>>>(_msg);
+                        var gmActionContentJson = gmActionBasePacket.Content.ActionContent.ToJson();
+                        HandlerGMAction(gmActionBasePacket.Content.ActionType, gmActionBasePacket.Content.PlayerDBID, gmActionContentJson);
                         break;
                     default:
                         WriteLog.LogErrorFormat("收到尚未定義的命令類型: {0}", cmdType);
@@ -285,13 +296,34 @@ namespace Gladiators.Socket {
             PLAYERACTION.PackActionType actionType;
             if (MyEnum.TryParseEnum(_actionType, out actionType)) {
                 switch (actionType) {
-                    case PLAYERACTION.PackActionType.ACTION_SKILL:
-                        var skill = JsonMapper.ToObject<PackAction_Skill_ToClient>(_jsonStr);
-                        AllocatedRoom.Instance.ReceiveSkill(skill.HandSkillIDs, skill.SkillOnID);
+                    case PLAYERACTION.PackActionType.ACTIVE_MELEE_SKILL:
+                        var activeMeleeSkill = JsonMapper.ToObject<PackAction_ActiveMeleeSkill_ToClient>(_jsonStr);
+                        AllocatedRoom.Instance.ReceiveActiveMeleeSkill(activeMeleeSkill.SKillID, activeMeleeSkill.On);
                         break;
-                    case PLAYERACTION.PackActionType.ACTION_OPPONENTSKILL:
-                        var opponentSkill = JsonMapper.ToObject<PackAction_OpponentSkill_ToClient>(_jsonStr);
+                    case PLAYERACTION.PackActionType.INSTANT_SKILL:
+                        var opponentSkill = JsonMapper.ToObject<PackAction_InstantSkill_ToClient>(_jsonStr);
+                        AllocatedRoom.Instance.ReceiveActiveInstantSkill(opponentSkill.SKillID, opponentSkill.NewSkilID, opponentSkill.HandSkills);
                         break;
+                    default:
+                        Debug.LogError($"收到未實作處理的 PackActionType: {_actionType}");
+                        break;
+                }
+            }
+
+        }
+        void HandlerGMAction(string _actionType, string _playerID, string _jsonStr) {
+            GMACTION.GMActionType actionType;
+            if (MyEnum.TryParseEnum(_actionType, out actionType)) {
+                switch (actionType) {
+                    case GMACTION.GMActionType.GMACTION_SETGLADIATOR:
+                    //var setGladiator = JsonMapper.ToObject<PackGMAction_SetGladiator_ToClient>(_jsonStr);
+                    //string skillStr = "";
+                    //for (int i = 0; i < setGladiator.SkillIDs.Length; i++) {
+                    //    if (i != 0) skillStr += ", ";
+                    //    skillStr += setGladiator.SkillIDs[i];
+                    //}
+                    //WriteLog.LogError($"GMAction回傳設定角鬥士ID: {setGladiator.GladiatorID} 技能: {skillStr}");
+                    //break;
                     default:
                         Debug.LogError($"收到未實作處理的 PackActionType: {_actionType}");
                         break;
@@ -309,6 +341,10 @@ namespace Gladiators.Socket {
         void HandlerMelee(SocketCMD<MELEE_TOCLIENT> _packet) {
             if (SceneManager.GetActiveScene().name != MyScene.BattleScene.ToString() || BattleManager.Instance == null) return;
             AllocatedRoom.Instance.ReceiveMelee(_packet.Content);
+        }
+        void HandlerBeforeMelee(SocketCMD<BEFORE_MELEE_TOCLIENT> _packet) {
+            if (SceneManager.GetActiveScene().name != MyScene.BattleScene.ToString() || BattleManager.Instance == null) return;
+            AllocatedRoom.Instance.ReceiveBeforeMelee(_packet.Content);
         }
     }
 }

@@ -42,6 +42,7 @@ namespace Scoz.Func {
 
 
             if (Input.GetKeyDown(KeyCode.Q)) {
+
                 Action connFunc = null;
                 PopupUI.ShowLoading(JsonString.GetUIString("Loading"));
                 connFunc = () => GameConnector.Instance.ConnectToMatchgameTestVer(() => {

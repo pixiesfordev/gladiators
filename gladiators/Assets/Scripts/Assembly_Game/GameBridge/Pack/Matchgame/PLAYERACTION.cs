@@ -2,6 +2,8 @@ namespace Gladiators.Socket.Matchgame {
     public class PLAYERACTION : SocketContent {
         public enum PackActionType {
             ACTION_SKILL,
+            ACTIVE_MELEE_SKILL,
+            INSTANT_SKILL,
             ACTION_OPPONENTSKILL,
             ACTION_RUSH,
             ACTION_DIVINESKILL,
@@ -30,12 +32,15 @@ namespace Gladiators.Socket.Matchgame {
             SkillID = _skillID;
         }
     }
-    public class PackAction_Skill_ToClient {
-        public int SkillOnID { get; private set; } // 啟用中肉搏技能
-        public int[] HandSkillIDs { get; private set; } // 手牌技能
+    // 啟用肉搏技能
+    public class PackAction_ActiveMeleeSkill_ToClient {
+        public bool On { get; private set; } // 啟用或關閉
+        public int SKillID { get; private set; } // 肉搏技能ID
     }
-    public class PackAction_OpponentSkill_ToClient {
-        public int SkillID { get; private set; }
+    public class PackAction_InstantSkill_ToClient {
+        public int SKillID { get; private set; }  // 施放的即時技能ID
+        public int NewSkilID { get; private set; } // 新抽到的技能(對手不會收到)
+        public int[] HandSkills { get; private set; } // 手牌(對手不會收到)
     }
     public class PackAction_DivineSkill {
         public bool On { get; private set; }

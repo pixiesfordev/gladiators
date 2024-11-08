@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Numerics;
 
 namespace Gladiators.Socket.Matchgame {
     public class MELEE_TOCLIENT : SocketContent {
@@ -7,6 +6,11 @@ namespace Gladiators.Socket.Matchgame {
         public PackMelee MyAttack { get; private set; }
         public PackMelee OpponentAttack { get; private set; }
         public int[] MyHandSkillIDs { get; private set; }
+    }
+    public class BEFORE_MELEE_TOCLIENT : SocketContent {
+        //class名稱就是封包的CMD名稱
+        public int MySkillID { get; private set; }
+        public int OpponentSkillID { get; private set; }
     }
 
     public class PackMelee {

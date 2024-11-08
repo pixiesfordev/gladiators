@@ -1,5 +1,6 @@
 using Cysharp.Threading.Tasks;
 using Gladiators.Battle;
+using Gladiators.BattleSimulation;
 using Gladiators.Socket;
 using Gladiators.Socket.Matchgame;
 using Newtonsoft.Json.Linq;
@@ -175,7 +176,14 @@ namespace Gladiators.Main {
         /// 設定技能
         /// </summary>
         public void ActiveSkill(int _skillID, bool _on) {
-            var cmd = new SocketCMD<PLAYERACTION>(new PLAYERACTION("Action_Skill", new PackAction_Skill(_on, _skillID)));
+            var cmd = new SocketCMD<PLAYERACTION>(new PLAYERACTION(PLAYERACTION.PackActionType.ACTION_SKILL.ToString(), new PackAction_Skill(_on, _skillID)));
+            GameConnector.Instance.SendTCP(cmd);
+        }
+        /// <summary>
+        /// (GM)設定角鬥士
+        /// </summary>
+        public void GMSetGladiator(int _gladiatorID, int[] _skillIDs) {
+            var cmd = new SocketCMD<GMACTION>(new GMACTION(GMACTION.GMActionType.GMACTION_SETGLADIATOR.ToString(), new PackGMAction_SetGladiator(_gladiatorID, _skillIDs)));
             GameConnector.Instance.SendTCP(cmd);
         }
         /// <summary>
@@ -183,7 +191,19 @@ namespace Gladiators.Main {
         /// </summary>
         public void ReceiveAuth() {
             SetGameState(GameState.GameState_WaitingPlayersData);
-            SetPlayer("660926d4d0b8e0936ddc6afe");
+            //SetPlayer("660926d4d0b8e0936ddc6afe");
+            SimulationUI.Instance.SendSimulationSetting();
+        }
+        /// <summary>
+        /// 收到肉搏技能啟用
+        /// </summary>
+        public void ReceiveActiveMeleeSkill(int _skillID, bool _on) {
+
+        }
+        /// <summary>
+        /// 收到即時技能發動
+        /// </summary>
+        public void ReceiveActiveInstantSkill(int _skillID, int _newSkillID, int[] _handSkills) {
         }
         /// <summary>
         /// 收到雙方玩家資料後, 將目前狀態設定為GotEnemy並通知BattleScene送Ready
@@ -308,6 +328,12 @@ namespace Gladiators.Main {
             TestTool.Instance.UpdateSkills(_melee.MyHandSkillIDs, 0);
         }
         /// <summary>
+        /// 收到肉搏前封包
+        /// </summary>
+        public void ReceiveBeforeMelee(BEFORE_MELEE_TOCLIENT _melee) {
+            if (BattleManager.Instance == null) return;
+        }
+        /// <summary>
         /// 收到角鬥士血量更新
         /// </summary>
         public void ReceiveGladiatorHP(Hp_TOCLIENT _hpPack) {
@@ -316,7 +342,7 @@ namespace Gladiators.Main {
             }
         }
 
-        public void ReceiveSkill(int[] _skills, int _skillOnID) {
+        public void ReceiveMeleeSkillActive(int[] _skills, int _skillOnID) {
             if (BattleController.Instance != null) BattleController.Instance.UpdateMySkills(_skills, _skillOnID);
             BattleSceneUI.Instance.SetSkillDatas(_skills, _skillOnID);
             TestTool.Instance.UpdateSkills(_skills, _skillOnID);
