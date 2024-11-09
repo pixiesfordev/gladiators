@@ -1,3 +1,5 @@
+using Cysharp.Threading.Tasks;
+using DG.Tweening;
 using Scoz.Func;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,13 +12,14 @@ public class BattleStaminaObj : MonoBehaviour {
     [SerializeField] Image Icon;
     [SerializeField] Text CurrentVal;
     [SerializeField] Text MaxVal;
-    [SerializeField] MyTextPro SkillCostVal1;
-    [SerializeField] MyTextPro SkillCostVal2;
-    [SerializeField] MyTextPro SkillCostVal3;
-    [SerializeField] MyTextPro SkillCostValNext;
+    [SerializeField] MyTextPro SkillVigorVal1;
+    [SerializeField] MyTextPro SkillVigorVal2;
+    [SerializeField] MyTextPro SkillVigorVal3;
+    [SerializeField] MyTextPro SkillVigorValNext;
     [SerializeField] Image[] Bar_lattices;
 
-    float CurrentMaxVal = 0f; //目前最大能量值 
+    float CurrentMaxVal = 0f; //目前最大能量值
+    Color ValOriginColor; 
 
     [HeaderAttribute("==============TEST==============")]
     [Tooltip("測試更新體力值")][SerializeField] bool TestLattices;
@@ -28,6 +31,10 @@ public class BattleStaminaObj : MonoBehaviour {
     //1.體力條消耗演出
     //2.體力條補充演出
     //3.技能消耗數值
+
+    void Start() {
+        ValOriginColor = SkillVigorVal1.color;
+    }
 
     void Update() {
         if (TestLattices) {
@@ -68,11 +75,12 @@ public class BattleStaminaObj : MonoBehaviour {
     public void SetVigor(float val) {
         SetLattices(val);
         SetValText(val, CurrentVal);
-        BattleSceneUI.Instance?.CheckVigor(val);
+        //BattleSceneUI.Instance?.CheckVigor(val);
     }
 
     void SetLattices(float val) {
         //TODO:之後修改 添加自動恢復等計算數值 目前只對應server數值直接更新
+        //TODO:添加一組比較淡色的Lattices 修改這組的FillAmount 原本的那組則是滿則SetActive(true)並撥放動畫 不滿1就SetActive(false)
         //根據格子的物件數換算體力數值 對應演出格子數
         float realVal = GetRealVal(val);
         //設定格子顯示數量
@@ -89,20 +97,52 @@ public class BattleStaminaObj : MonoBehaviour {
         return val > 1 ? 1 : val < 0 ? 0 : val;
     }
 
-    public void SetCostVal(int pos, int val) {
+    public void SetSkillVigorVal(int pos, int val) {
         switch (pos) {
             case 1:
-                SkillCostVal1.text = val.ToString();
+                SkillVigorVal1.text = val.ToString();
                 break;
             case 2:
-                SkillCostVal2.text = val.ToString();
+                SkillVigorVal2.text = val.ToString();
                 break;
             case 3:
-                SkillCostVal3.text = val.ToString();
+                SkillVigorVal3.text = val.ToString();
                 break;
             default:
-                SkillCostValNext.text = val.ToString();
+                SkillVigorValNext.text = val.ToString();
                 break;
         }
+    }
+
+    public void FadeOutSkillVigorVal(int pos)
+    {
+        switch(pos) {
+            case 1:
+                DoFadeOut(SkillVigorVal1);
+                break;
+            case 2:
+                DoFadeOut(SkillVigorVal2);
+                break;
+            case 3:
+                DoFadeOut(SkillVigorVal3);
+                break;
+            default:
+                Debug.LogErrorFormat("Fade out skill vigor val index error!");
+                break;
+        }
+    }
+
+    void DoFadeOut(MyTextPro _text) {
+        //TODO:改用Lerp
+        Color endColor = ValOriginColor;
+        endColor.a = 0f;
+        //Tweener outTween = _text.DOColor(ValOriginColor, endColor, 0.15f);
+        //outTween.Pause();
+        //outTween.SetAutoKill(true);
+    }
+
+    public void FadeInSkillVigorVal()
+    {
+
     }
 }

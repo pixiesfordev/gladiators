@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.Entities.UniversalDelegates;
+using System.Threading;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -27,9 +28,25 @@ public class TestShader : MonoBehaviour
     [SerializeField] bool UpdateImage2;
     [SerializeField] bool UpdateImage3;
 
+    [SerializeField] float StartVal;
+    [SerializeField] float EndtVal;
+    [SerializeField] float CountTime;
+    [SerializeField] bool TestLerp;
+
+    [SerializeField] float FirstVal;
+    [SerializeField] float SecondVal;
+    [SerializeField] float ThirdVal;
+    [SerializeField] float Time1;
+    [SerializeField] float Time2;
+    [SerializeField] bool TestMultiUniTask;
+    [SerializeField] bool TestStopTask;
+
     Material _SkillMaterial1;
     Material _SkillMaterial2;
     Material _SkillMaterial3;
+
+    CancellationTokenSource CTS;
+    CancellationToken CT;
 
     // Start is called before the first frame update
     void Start()
@@ -37,6 +54,8 @@ public class TestShader : MonoBehaviour
         _SkillMaterial1 = Instantiate(TestMaterial);
         _SkillMaterial2 = Instantiate(TestMaterial);
         _SkillMaterial3 = Instantiate(TestMaterial);
+        CTS = new CancellationTokenSource();
+        CT = CTS.Token;
     }
 
     // Update is called once per frame
@@ -56,6 +75,80 @@ public class TestShader : MonoBehaviour
         {
             UpdateImage3 = false;
             UpdateTargetImage(TestImage3, _SkillMaterial3);
+        }
+        if (TestLerp)
+        {
+            TestLerp = false;
+            UniTask.Void(async () => {
+                TryLerp().Forget();
+            });
+        }
+        if (TestMultiUniTask)
+        {
+            TestMultiUniTask = false;
+            UniTask.Void(async () => {
+                TryWaitTask().Forget();
+            });
+        }
+        if (TestStopTask)
+        {
+            TestStopTask = false;
+            StopTask();
+        }
+    }
+    
+    async UniTaskVoid TryLerp()
+    {
+        float resultVal = 0f;
+        float passTime = 0f;
+        while (passTime <= CountTime) {
+            passTime += Time.deltaTime;
+            resultVal = Mathf.Lerp(StartVal, EndtVal, passTime / CountTime);
+            Debug.LogFormat("Pass time: {0} CurVal: {1}", passTime, resultVal);
+            await UniTask.Yield(CT);
+        }
+    }
+
+    async UniTaskVoid TryWaitTask()
+    {
+        Debug.LogWarningFormat("Before do first: {0}", Time.time);
+        await FirstWaitTask();
+        Debug.LogWarningFormat("Before do second: {0}", Time.time);
+        await SecondWaitTask();
+        Debug.LogWarningFormat("All done: {0}", Time.time);
+    }
+
+    async UniTask FirstWaitTask()
+    {
+        float resultVal = 0f;
+        float passTime = 0f;
+        while (passTime <= Time1) {
+            passTime += Time.deltaTime;
+            resultVal = Mathf.Lerp(FirstVal, SecondVal, passTime / Time1);
+            Debug.LogFormat("First wait Pass time: {0} CurVal: {1}", passTime, resultVal);
+            await UniTask.Yield(CT);
+        }
+    }
+
+    async UniTask SecondWaitTask()
+    {
+        float resultVal = 0f;
+        float passTime = 0f;
+        while (passTime <= Time2) {
+            passTime += Time.deltaTime;
+            resultVal = Mathf.Lerp(SecondVal, ThirdVal, passTime / Time2);
+            Debug.LogFormat("Second wait Pass time: {0} CurVal: {1}", passTime, resultVal);
+            await UniTask.Yield(CT);
+        }
+    }
+
+    void StopTask()
+    {
+        //測試停止UniTask.Yield()
+        if (CT != null) {
+            CTS.Cancel();
+            CTS = new CancellationTokenSource();
+            CT = CTS.Token;
         }
     }
 

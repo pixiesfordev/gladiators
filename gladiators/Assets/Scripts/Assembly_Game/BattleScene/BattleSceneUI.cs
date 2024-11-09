@@ -10,6 +10,9 @@ using Gladiators.Main;
 using Cysharp.Threading.Tasks;
 using Gladiators.Socket.Matchgame;
 using Unity.Entities.UniversalDelegates;
+using System.Linq;
+using Castle.Core.Internal;
+using System;
 
 public class BattleSceneUI : BaseUI {
     [HeaderAttribute("==============AddressableAssets==============")]
@@ -30,6 +33,7 @@ public class BattleSceneUI : BaseUI {
 
     //技能手牌
     [SerializeField] BattleSkillButton[] SkillBtns;
+    [SerializeField] NextBattleSkillButton NextSkillBtn;
 
     [SerializeField] BattleDivineSkill[] DivineSkills;//神址卡牌
 
@@ -38,7 +42,13 @@ public class BattleSceneUI : BaseUI {
 
     [SerializeField] GameObject SettingBtn;//設定按鈕
 
+    public bool IsCastingInstantSkill { get; private set;} //是否施放立即釋放技能中
+    int CastingSkillPos; //正在施放技能的按鈕位置
 
+    [HeaderAttribute("==============Test==============")]
+    [SerializeField] bool TriggerCastMeleeSkill = false;
+    int[] fakeSkills = new int[]{1001, 1003, 1004, 1005, 1006};
+    int fakeIndex = 0;
 
     [Header("Settings")]
     private bool _isSpellTest;
@@ -53,6 +63,14 @@ public class BattleSceneUI : BaseUI {
         myGladiator = _myGladiator;
         opponentGladiator = _opponentGladiator;
         handSKillIDs = _handSKillIDs;
+    }
+
+    void Update() {
+        if (IsCastingInstantSkill) {
+            TriggerCastMeleeSkill = false;
+            CastMeleeSkill(fakeSkills[fakeIndex]);
+            fakeIndex = fakeIndex < fakeSkills.Length - 1 ? fakeIndex++ : 0;
+        }
     }
 
     private void Start() {
@@ -78,7 +96,8 @@ public class BattleSceneUI : BaseUI {
     /// <param name="_handSKillIDs">手牌技能</param>
     /// <param name="_handOnID">選中技能(近戰啟動中)</param>
     public void SetSkillDatas(int[] _handSKillIDs, int _skillOnID) {
-        if (_handSKillIDs.Length != SkillBtns.Length) {
+        //這邊要+1是因為有一個是nextSkill
+        if (_handSKillIDs.Length != SkillBtns.Length + 1) {
             WriteLog.LogError("_handSKillIDs封包格式錯誤");
             return;
         }
@@ -87,7 +106,19 @@ public class BattleSceneUI : BaseUI {
             var jsonSkill = GameDictionary.GetJsonData<JsonSkill>(_handSKillIDs[i]);
             SkillBtns[i].SetData(jsonSkill);
             SkillBtns[i].SetSkillOn(_handSKillIDs[i] == _skillOnID);
+            MyBattleStaminaObj.SetSkillVigorVal(i, jsonSkill != null ? jsonSkill.Vigor : 0);
         }
+        var nextJsonSkill = GameDictionary.GetJsonData<JsonSkill>(_handSKillIDs[_handSKillIDs.Length - 1]);
+        NextSkillBtn.SetData(nextJsonSkill);
+        SetNextSkillVigorCost(nextJsonSkill != null ? nextJsonSkill.Vigor : 0);
+    }
+
+    public int GetHandSkillId(BattleSkillButton _btn) {
+        for(int i = 0; i < SkillBtns.Length; i++){
+            if (SkillBtns[i] == _btn)
+                return handSKillIDs[i];
+        }
+        return 0;
     }
 
 
@@ -185,8 +216,134 @@ public class BattleSceneUI : BaseUI {
         CheckVigor(val);
     }
 
+    /// <summary>
+    /// 檢查是否能量足夠
+    /// </summary>
+    /// <param name="val">能量值</param>
     public void CheckVigor(float val) {
         SprintBtn.CheckVigor(val);
+        for (int i = 0; i < SkillBtns.Length; i++) {
+            SkillBtns[i].SetEnergy(val);
+        }
     }
 
+    public void FadeOutSkillVigorVal(BattleSkillButton _btn)
+    {
+        //TODO:讓BattleSkillButton的ModelCastSkill呼叫開始做淡出 時間要配合
+        for(int i = 0; i < SkillBtns.Length; i++) {
+            if (_btn == SkillBtns[i]) {
+                MyBattleStaminaObj.FadeOutSkillVigorVal(i);
+            }
+        }
+    }
+
+    public void FadeInSkillVigorVal()
+    {
+
+    }
+
+    /// <summary>
+    /// 更新技能消耗能量
+    /// </summary>
+    /// <param name="_btn">更換技能的按鈕物件</param>
+    /// <param name="_val">能量消耗值</param>
+    public void SetSKillVigorCost(BattleSkillButton _btn, int _val)
+    {
+        for(int i = 0; i < SkillBtns.Length; i++) {
+            if (_btn == SkillBtns[i]) {
+                MyBattleStaminaObj.SetSkillVigorVal(i, _val);
+                break;
+            }
+        }
+    }
+
+    /// <summary>
+    /// 設定夏禕技能的能量消耗值
+    /// </summary>
+    /// <param name="_val"></param>
+    public void SetNextSkillVigorCost(int _val)
+    {
+        MyBattleStaminaObj.SetSkillVigorVal(4, _val);
+    }
+
+    /// <summary>
+    /// 施放技能
+    /// </summary>
+    /// <param name="_btn">發動技能的按鈕物件</param>
+    /// <param name="_skillId">該按鈕的技能ID</param>
+    public void CastingInstantSKill(BattleSkillButton _btn, int _skillId)
+    {
+        //施放技能後鎖定 不能連續施放技能
+        IsCastingInstantSkill = true;
+        //找出釋放技能的按鈕位置
+        for(int i = 0; i < SkillBtns.Length; i++) {
+            if (SkillBtns[i] == _btn) {
+                CastingSkillPos = i;
+                break;
+            }
+        }
+        AllocatedRoom.Instance.ActiveSkill(_skillId, true);
+        ReleasedSkillLock().Forget();
+    }
+
+    /// <summary>
+    /// 解除技能施放鎖定
+    /// </summary>
+    /// <returns></returns>
+    async UniTaskVoid ReleasedSkillLock()
+    {
+        //鎖定0.5秒後才能放下一個技能
+        await UniTask.WaitForSeconds(0.5f);
+        IsCastingInstantSkill = false;
+    }
+
+    /// <summary>
+    /// 取消其他發動中的近戰/肉搏技能按鈕
+    /// </summary>
+    /// <param name="_selectedBtn">被選中的技能按鈕</param>
+    public void CancelOtherSelectedSKill(BattleSkillButton _selectedBtn)
+    {
+        for(int i = 0; i < SkillBtns.Length; i++) {
+            if (SkillBtns[i].SkillSelected && SkillBtns[i] != _selectedBtn) {
+                SkillBtns[i].CancelSelected();
+            }
+        }
+    }
+
+    /// <summary>
+    /// 釋放技能後更新技能資料
+    /// </summary>
+    /// <param name="_skillId">下一個技能ID</param>
+    public void ChangeSkillDataAfterCast(int _skillId)
+    {
+        SkillBtns[CastingSkillPos].CacheNextSkill(NextSkillBtn.GetNextSkillId());
+        NextSkillBtn.CacheSkillId(_skillId);
+    }
+
+    /// <summary>
+    /// 釋放肉搏技能
+    /// </summary>
+    /// <param name="_skillId">下一個技能ID</param>
+    public void CastMeleeSkill(int _skillId)
+    {
+        //遍歷技能按鈕找到現在On的按鈕
+        for(int i = 0; i < SkillBtns.Length; i++) {
+            if (SkillBtns[i].SkillSelected) {
+                SkillBtns[i].CastMeleeSkill(NextSkillBtn.GetNextSkillId());
+                break;
+            }
+        }
+        NextSkillBtn.CacheSkillId(_skillId);
+        //施放技能後鎖定 不能連續施放技能
+        IsCastingInstantSkill = true;
+        ReleasedSkillLock().Forget();
+    }
+
+    /// <summary>
+    /// 通知NextSkillBtn演出換技能
+    /// </summary>
+    public void NextSkillBtnChangeSkill()
+    {
+        NextSkillBtn.ChangeSkill();
+    }
 }

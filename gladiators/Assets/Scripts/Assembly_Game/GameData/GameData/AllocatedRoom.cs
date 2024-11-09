@@ -204,6 +204,7 @@ namespace Gladiators.Main {
         /// 收到即時技能發動
         /// </summary>
         public void ReceiveActiveInstantSkill(int _skillID, int _newSkillID, int[] _handSkills) {
+            BattleSceneUI.Instance.ChangeSkillDataAfterCast(_newSkillID);
         }
         /// <summary>
         /// 收到雙方玩家資料後, 將目前狀態設定為GotEnemy並通知BattleScene送Ready
