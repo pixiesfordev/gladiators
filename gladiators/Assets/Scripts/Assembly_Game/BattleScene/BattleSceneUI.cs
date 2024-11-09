@@ -65,13 +65,15 @@ public class BattleSceneUI : BaseUI {
         handSKillIDs = _handSKillIDs;
     }
 
+    /*
     void Update() {
-        if (IsCastingInstantSkill) {
+        if (TriggerCastMeleeSkill) {
             TriggerCastMeleeSkill = false;
             CastMeleeSkill(fakeSkills[fakeIndex]);
             fakeIndex = fakeIndex < fakeSkills.Length - 1 ? fakeIndex++ : 0;
         }
     }
+    */
 
     private void Start() {
         Init();
