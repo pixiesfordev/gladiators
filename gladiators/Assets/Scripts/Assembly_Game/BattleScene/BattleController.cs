@@ -262,9 +262,4 @@ public class BattleController : MonoBehaviour {
         if (CharDic.ContainsKey(_playerID)) CharDic[_playerID].SetRush(_run);
     }
 
-    public void UpdateMySkills(int[] _skills, int _skillOnID) {
-    }
-    public void OpponentUseSkill(int _skillID) {
-    }
-
 }

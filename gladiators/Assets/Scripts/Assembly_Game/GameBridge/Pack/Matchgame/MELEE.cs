@@ -5,7 +5,9 @@ namespace Gladiators.Socket.Matchgame {
         //class名稱就是封包的CMD名稱
         public PackMelee MyAttack { get; private set; }
         public PackMelee OpponentAttack { get; private set; }
-        public int[] MyHandSkillIDs { get; private set; }
+        public int NewSkilID { get; private set; }   // 新抽到的技能
+        public int SkillOnID { get; private set; }   // 啟用中的肉搏技能        
+        public int[] MyHandSkillIDs { get; private set; } // 目前手牌
     }
     public class BEFORE_MELEE_TOCLIENT : SocketContent {
         //class名稱就是封包的CMD名稱

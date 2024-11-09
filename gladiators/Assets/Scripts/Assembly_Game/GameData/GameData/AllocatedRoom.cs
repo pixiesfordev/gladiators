@@ -324,9 +324,8 @@ namespace Gladiators.Main {
         public void ReceiveMelee(MELEE_TOCLIENT _melee) {
             if (BattleManager.Instance == null) return;
             BattleManager.Instance.Melee(_melee);
-            BattleController.Instance.UpdateMySkills(_melee.MyHandSkillIDs, 0);
-            BattleSceneUI.Instance.SetSkillDatas(_melee.MyHandSkillIDs, 0);
-            TestTool.Instance.UpdateSkills(_melee.MyHandSkillIDs, 0);
+            BattleSceneUI.Instance.CastMeleeSkill(_melee.NewSkilID);
+            TestTool.Instance.UpdateSkills(_melee.MyHandSkillIDs, _melee.SkillOnID);
         }
         /// <summary>
         /// 收到肉搏前封包
@@ -341,12 +340,6 @@ namespace Gladiators.Main {
             if (BattleManager.Instance != null) {
                 BattleSceneUI.Instance.UpdateGladiatorHP(_hpPack.PlayerID, _hpPack.HPChange);
             }
-        }
-
-        public void ReceiveMeleeSkillActive(int[] _skills, int _skillOnID) {
-            if (BattleController.Instance != null) BattleController.Instance.UpdateMySkills(_skills, _skillOnID);
-            BattleSceneUI.Instance.SetSkillDatas(_skills, _skillOnID);
-            TestTool.Instance.UpdateSkills(_skills, _skillOnID);
         }
 
     }
