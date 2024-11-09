@@ -324,8 +324,9 @@ namespace Gladiators.Main {
         public void ReceiveMelee(MELEE_TOCLIENT _melee) {
             if (BattleManager.Instance == null) return;
             BattleManager.Instance.Melee(_melee);
-            BattleSceneUI.Instance.CastMeleeSkill(_melee.NewSkilID);
-            TestTool.Instance.UpdateSkills(_melee.MyHandSkillIDs, _melee.SkillOnID);
+            if (_melee.NewSkilID != 0) // NewSkilID是0代表沒有施放肉搏技能 所以也沒有抽新的技能
+                BattleSceneUI.Instance.CastMeleeSkill(_melee.NewSkilID);
+            //TestTool.Instance.UpdateSkills(_melee.MyHandSkillIDs, _melee.SkillOnID);
         }
         /// <summary>
         /// 收到肉搏前封包

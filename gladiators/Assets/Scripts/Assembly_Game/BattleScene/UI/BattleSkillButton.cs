@@ -159,7 +159,7 @@ public class BattleSkillButton : MonoBehaviour {
     /// <param name="_skill">技能資料</param>
     public void SetData(JsonSkill _skill) {
         SkillData = _skill;
-        Debug.LogWarningFormat("技能物件:{0}設定技能資料! 技能ID: {1}", gameObject.name, SkillData != null ? SkillData.ID : 0);
+        //Debug.LogWarningFormat("技能物件:{0}設定技能資料! 技能ID: {1}", gameObject.name, SkillData != null ? SkillData.ID : 0);
         if (SkillData != null && !string.IsNullOrEmpty(SkillData.Ref)) {
             //設定SkillIcon
             AssetGet.GetSpriteFromAtlas("SpellIcon", SkillData.Ref, (sprite) => {
@@ -571,6 +571,7 @@ public class BattleSkillButton : MonoBehaviour {
                 BattleSceneUI.Instance?.CancelOtherSelectedSKill(this);
             }
             SkillSelected = !SkillSelected;
+            AllocatedRoom.Instance.ActiveSkill(SkillData.ID, SkillSelected);
         }
     }
 
