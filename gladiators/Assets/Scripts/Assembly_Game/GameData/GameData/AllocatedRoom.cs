@@ -338,9 +338,9 @@ namespace Gladiators.Main {
         /// 收到角鬥士血量更新
         /// </summary>
         public void ReceiveGladiatorHP(Hp_TOCLIENT _hpPack) {
-            if (BattleManager.Instance != null) {
-                BattleSceneUI.Instance.UpdateGladiatorHP(_hpPack.PlayerID, _hpPack.HPChange);
-            }
+            if (BattleManager.Instance == null) return;
+            BattleSceneUI.Instance.UpdateGladiatorHP(_hpPack.PlayerID, _hpPack.HPChange);
+            BattleController.Instance.ShowBattleNumber(_hpPack.PlayerID, _hpPack.HPChange, _hpPack.EffectType);
         }
 
     }
