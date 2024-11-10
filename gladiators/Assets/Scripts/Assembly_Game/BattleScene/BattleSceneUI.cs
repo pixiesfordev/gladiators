@@ -229,8 +229,13 @@ public class BattleSceneUI : BaseUI {
         }
     }
 
+    /// <summary>
+    /// 體力條釋放技能演出
+    /// </summary>
+    /// <param name="_btn"></param>
+    /// <param name="_consumeVigor"></param>
     public void StaminaObjDoCastAni(BattleSkillButton _btn, int _consumeVigor) {
-        //TODO:讓BattleSkillButton的ModelCastSkill呼叫開始做演出
+        //BattleSkillButton的ModelCastSkill呼叫開始做演出
         for (int i = 0; i < SkillBtns.Length; i++) {
             if (_btn == SkillBtns[i]) {
                 MyBattleStaminaObj.FadeOutSkillVigorVal(i);
@@ -252,6 +257,7 @@ public class BattleSceneUI : BaseUI {
         for (int i = 0; i < SkillBtns.Length; i++) {
             if (_btn == SkillBtns[i]) {
                 MyBattleStaminaObj.SetSkillVigorVal(i, _val);
+                MyBattleStaminaObj.FadeInSkillVigorVal(i);
                 break;
             }
         }

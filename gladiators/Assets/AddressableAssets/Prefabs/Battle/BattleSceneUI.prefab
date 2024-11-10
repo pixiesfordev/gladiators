@@ -3690,7 +3690,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: d4ffc51d8de2ab042a2ce21fd128338b, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -4184,7 +4184,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2242771754970130502
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5248,7 +5248,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &992956864174042528
 RectTransform:
   m_ObjectHideFlags: 0
@@ -14737,7 +14737,6 @@ MonoBehaviour:
   - {fileID: 3756264542844957122}
   SprintBtn: {fileID: 2889831527381263165}
   SettingBtn: {fileID: 6614019982269878782}
-  TriggerCastMeleeSkill: 0
 --- !u!1 &7261653907666183505
 GameObject:
   m_ObjectHideFlags: 0
@@ -16373,10 +16372,15 @@ MonoBehaviour:
   Icon: {fileID: 4306554823124584853}
   CurrentVal: {fileID: 2876549983657037353}
   MaxVal: {fileID: 6303453600204268380}
-  SkillVigorVal1: {fileID: 2929440656008143953}
-  SkillVigorVal2: {fileID: 83195050737394664}
-  SkillVigorVal3: {fileID: 7616556968463657904}
+  SkillVigorVals:
+  - {fileID: 2929440656008143953}
+  - {fileID: 83195050737394664}
+  - {fileID: 7616556968463657904}
   SkillVigorValNext: {fileID: 2057000050403930376}
+  SkillMasks:
+  - {fileID: 4560657745479706438}
+  - {fileID: 6848417939189617486}
+  - {fileID: 424812943983720020}
   Bar_lattices:
   - {fileID: 2889317837055787698}
   - {fileID: 1980205182482099223}
@@ -16398,6 +16402,7 @@ MonoBehaviour:
   - {fileID: 2004630389850262491}
   - {fileID: 6389625267721006591}
   - {fileID: 2833664328729698884}
+  Bar_lattices_pre: []
   TestLattices: 0
   TestLatticeVal: 0
   TestInitLattices: 0

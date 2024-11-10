@@ -12,15 +12,15 @@ public class BattleStaminaObj : MonoBehaviour {
     [SerializeField] Image Icon;
     [SerializeField] Text CurrentVal;
     [SerializeField] Text MaxVal;
-    [SerializeField] MyTextPro SkillVigorVal1;
-    [SerializeField] MyTextPro SkillVigorVal2;
-    [SerializeField] MyTextPro SkillVigorVal3;
+    [SerializeField] MyTextPro[] SkillVigorVals;
     [SerializeField] MyTextPro SkillVigorValNext;
-    [SerializeField] MyTextPro SkillVal;
+    [SerializeField] Image[] SkillMasks;
     [SerializeField] Image[] Bar_lattices;
+    [SerializeField] Image[] Bar_lattices_pre;
 
     float CurrentMaxVal = 0f; //目前最大能量值
-    Color ValOriginColor; 
+    Color ValOriginColor;
+    Color MaskOriginColor;
 
     [HeaderAttribute("==============TEST==============")]
     [Tooltip("測試更新體力值")][SerializeField] bool TestLattices;
@@ -34,7 +34,8 @@ public class BattleStaminaObj : MonoBehaviour {
     //3.技能消耗數值
 
     void Start() {
-        ValOriginColor = SkillVigorVal1.color;
+        ValOriginColor = SkillVigorVals[0].color;
+        MaskOriginColor = SkillMasks[0].color;
     }
 
     void Update() {
@@ -98,55 +99,73 @@ public class BattleStaminaObj : MonoBehaviour {
     }
 
     public void SetSkillVigorVal(int pos, int val) {
-        switch (pos) {
-            case 1:
-                SkillVigorVal1.text = val.ToString();
-                break;
-            case 2:
-                SkillVigorVal2.text = val.ToString();
-                break;
-            case 3:
-                SkillVigorVal3.text = val.ToString();
-                break;
-            default:
-                SkillVigorValNext.text = val.ToString();
-                break;
-        }
+        if (pos < SkillVigorVals.Length && pos >= 0)
+            SkillVigorVals[pos].text = val.ToString();
+        else
+            SkillVigorValNext.text = val.ToString();
     }
 
     public void ConsumeVigorBySkill(int vigor) {
         //TODO:取出最後幾個能量條打亮並消耗掉
+        //需要做左右方Fill方向切換
     }
 
     public void FadeOutSkillVigorVal(int pos) {
-        switch(pos) {
-            case 1:
-                DoSkillVigorValFadeOut(SkillVigorVal1);
-                break;
-            case 2:
-                DoSkillVigorValFadeOut(SkillVigorVal2);
-                break;
-            case 3:
-                DoSkillVigorValFadeOut(SkillVigorVal3);
-                break;
-            default:
-                Debug.LogErrorFormat("Fade out skill vigor val index error!");
-                break;
+        if (pos < SkillVigorVals.Length && pos >= 0) {
+            DoSkillVigorValFadeOut(SkillVigorVals[pos], SkillMasks[pos]).Forget();
+        } else {
+            Debug.LogErrorFormat("Fade out skill vigor val index error!");
         }
     }
 
-    void DoSkillVigorValFadeOut(MyTextPro _text) {
-        //TODO:改用Lerp
-        //體力消耗數字淡出
-        //體力遮罩變暗
-        Color endColor = ValOriginColor;
-        endColor.a = 0f;
-        //float passTime = 0f;
-        //while (passTime <)
+    async UniTaskVoid DoSkillVigorValFadeOut(MyTextPro _text, Image _mask) {
+        //體力消耗數字淡出 & 體力遮罩變暗(淡入)
+        Color textColor = ValOriginColor;
+        Color maskColor = MaskOriginColor;
+        float duration = 0.14f;
+        float passTime = 0f;
+        float textAlpha;
+        float maskAlpha;
+        while (passTime < duration) {
+            passTime += Time.deltaTime;
+
+            textAlpha = Mathf.Lerp(ValOriginColor.a, 0f, passTime / duration);
+            textColor.a = textAlpha;
+            _text.color = textColor;
+
+            maskAlpha = Mathf.Lerp(0f, 0.9f, passTime / duration);
+            maskColor.a = maskAlpha;
+            _mask.color = maskColor;
+            
+            await UniTask.Yield();
+        }
     }
 
-    public void FadeInSkillVigorVal()
-    {
+    /// <summary>
+    /// 消耗數字淡入
+    /// </summary>
+    /// <param name="pos">技能位置</param>
+    public void FadeInSkillVigorVal(int pos) {
+        WriteLog.LogErrorFormat("Fade in skill vigor val. Pos: {0}", pos);
+        if (pos < SkillVigorVals.Length && pos >= 0) {
+            DoSkillVigorValFadeIn(SkillVigorVals[pos]).Forget();
+        } else {
+            Debug.LogErrorFormat("Fade in skill vigor val index error!");
+        }
+    }
 
+    async UniTaskVoid DoSkillVigorValFadeIn(MyTextPro _text) {
+        //體力消耗數字淡入
+        Color textColor = ValOriginColor;
+        float duration = 0.26f;
+        float passTime = 0f;
+        float textAlpha;
+        while (passTime < duration) {
+            passTime += Time.deltaTime;
+            textAlpha = Mathf.Lerp(0f, ValOriginColor.a, passTime / duration);
+            textColor.a = textAlpha;
+            _text.color = textColor;
+            await UniTask.Yield();
+        }
     }
 }

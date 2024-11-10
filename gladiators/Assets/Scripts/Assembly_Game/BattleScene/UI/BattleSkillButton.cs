@@ -247,7 +247,8 @@ public class BattleSkillButton : MonoBehaviour {
     public void ModelCastSkill() {
         //由start_cast播放到0.22秒的時候呼叫 美術要求 在按鈕最亮的時候才讓模型開始發動技能演出
         //TODO:發送命令給BattleManager去放技能
-        //TODO:技能消耗值淡出
+        //技能體力值釋放技能演出
+        BattleSceneUI.Instance.StaminaObjDoCastAni(this, SkillData.Vigor);
         Debug.LogError("要求模型播放技能動畫");
     }
 
@@ -559,15 +560,15 @@ public class BattleSkillButton : MonoBehaviour {
         } else if (SkillData.Activation == SkillActivation.Melee) {
             //TODO:
             //測試 >>
-            //1.寫測試Func模擬碰撞技能釋放
-            //2.測試放立即技能(但能量似乎現在還不會正常扣)
+            //1.測試放近戰技能
+            //2.測試放立即技能
             //3.看切換技能演出有沒有正常
             //4.處理找不到技能圖可以加載的情況
             //5.提醒修正體力條沒有初始化界面
             //6.有發現一個奇怪的現象 能量不足的情況下 點下技能 移開滑鼠到技能按鈕外放開 不觸發Click的事件情況下
             //  有機率會發生停止抖動 不確定是不是後端資料的問題 因為在腳色卡住不會再移動時就不會再發生了
             //7.補充體力條相關細節
-            // 1.能量不足狀態下 mask得是暗色 所以要看有變色相關的要做變色演出或者直接打暗
+            // 1.能量不足狀態下 mask得是暗色 所以要看有變色相關的要做變色演出或者直接打暗(檢視所有狀態來確保要打暗或打亮)
             // 2.注意cast數字要淡出 change數字要淡入
             // 3.消耗體力條要打亮
             // 4.體力自然恢復
