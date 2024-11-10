@@ -57,12 +57,12 @@ public class BattleController : MonoBehaviour {
 
         leftChar.name = _myPlayerPack.DBID;
         leftChar.tag = "leftobj";
-        leftChar.Init((float)_myPlayerPack.MyPackGladiator.CurPos, rightChar, RightLeft.Right, curKnockAngle);
+        leftChar.Init(_myPlayerPack.MyPackGladiator.JsonID, (float)_myPlayerPack.MyPackGladiator.CurPos, rightChar, RightLeft.Right, curKnockAngle);
         BattleSceneUI.Instance.InitVigor((float)_myPlayerPack.MyPackGladiator.CurVigor, 20);
         BattleManager.Instance.vTargetGroup.AddMember(leftChar.transform, 1.8f, 8);
         rightChar.name = _opponentPack.DBID;
         rightChar.tag = "rightobj";
-        rightChar.Init((float)_opponentPack.MyPackGladiator.CurPos, leftChar, RightLeft.Left, curKnockAngle);
+        rightChar.Init(_opponentPack.MyPackGladiator.JsonID, (float)_opponentPack.MyPackGladiator.CurPos, leftChar, RightLeft.Left, curKnockAngle);
         BattleManager.Instance.vTargetGroup.AddMember(rightChar.transform, 1, 8);
 
         CharDic = new Dictionary<string, Character>();

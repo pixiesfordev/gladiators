@@ -80,6 +80,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Base: {fileID: 8928958586304762752}
+  rotate: {fileID: 5751186689137934131}
   Baseturntable: {fileID: 5736816231627140569}
   BOARD: {fileID: 6010600535063512694}
   CamLook_Left: {fileID: 8041596203408771044}
@@ -482,6 +483,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5751186689137934131}
     m_Modifications:
+    - target: {fileID: 9185084012728686511, guid: d2de5f72ce081554d8eb6e5d737af708,
+        type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 50d08f295685a1a4284563769b4fe241,
         type: 3}
       propertyPath: m_LocalScale.x
@@ -542,16 +548,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.y
       value: -90
       objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 50d08f295685a1a4284563769b4fe241,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: -7511558181221131132, guid: 50d08f295685a1a4284563769b4fe241,
         type: 3}
       propertyPath: m_RenderingLayerMask
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: -5754084199372789682, guid: 50d08f295685a1a4284563769b4fe241,
+        type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 7738731679932517039, guid: 8bb9094048849794bbe1f45c8d6cc6d8,
+        type: 3}
     - target: {fileID: 919132149155446097, guid: 50d08f295685a1a4284563769b4fe241,
         type: 3}
       propertyPath: m_Name

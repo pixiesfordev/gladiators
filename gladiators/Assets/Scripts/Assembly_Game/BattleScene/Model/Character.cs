@@ -1,10 +1,13 @@
 using Cysharp.Threading.Tasks;
 using DamageNumbersPro;
 using DG.Tweening;
+using Gladiators.Main;
 using Scoz.Func;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Unity.Entities;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 public enum EffectType {
     PDmg,
@@ -76,6 +79,7 @@ public enum NumType {
 
 public class Character : MonoBehaviour {
     public Transform Base;
+    public Transform rotate;
     public Transform Baseturntable;
     public Transform BOARD;
     public Transform CamLook_Left;
@@ -109,7 +113,22 @@ public class Character : MonoBehaviour {
         }
     }
 
-    public void Init(float _pos, Character _opponent, RightLeft _faceDir, float _knockAngle) {
+    public void Init(int heroID, float _pos, Character _opponent, RightLeft _faceDir, float _knockAngle) {
+        AddressablesLoader.GetPrefab($"Gladiator/{heroID}/BOARD", (boardPrefab, handle) => {
+            if (boardPrefab != null) {
+                if (BOARD != null) {
+                    Destroy(BOARD.gameObject);
+                }
+
+                GameObject newBoard = Instantiate(boardPrefab, Vector3.zero, Quaternion.identity);
+                BOARD = newBoard.transform;
+                BOARD.SetParent(rotate);
+                BOARD.SetPositionAndRotation(new Vector3(0, 0, 0), new Quaternion(-90, -90, 0, 0));
+                BOARD.localScale = new Vector3(100, 100, 100);
+                BOARD.name = "BOARD";
+            }
+        });
+
         enemy = _opponent;
         FaceDir = _faceDir;
         MoveClientToPos(new Vector3(_pos, 0, 0), 0).Forget();
