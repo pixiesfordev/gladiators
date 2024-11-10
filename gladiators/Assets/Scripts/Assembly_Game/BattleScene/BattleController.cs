@@ -279,5 +279,61 @@ public class BattleController : MonoBehaviour {
 
     }
 
+    // Server收到血量變化封包後，呼叫此Func顯示跳血
+    public void ShowBattleNumber(string _playerID, int _value, string _effectTypeStr) {
+        if (!CharDic.ContainsKey(_playerID) || CharDic[_playerID] == null) return;
+
+        EffectType effectType;
+        if (!MyEnum.TryParseEnum(_effectTypeStr, out effectType)) {
+            WriteLog.LogError($"收到HPChange封包的effectType({_effectTypeStr})錯誤，需要更新Enum EffectType");
+            return;
+        }
+        NumType numType = NumType.Dmg_Small;
+        switch (effectType) {
+            case EffectType.PDmg:
+            case EffectType.MDmg:
+            case EffectType.TrueDmg:
+                if (_value > 0) {
+                    WriteLog.LogError($"收到HPChange封包的格式錯誤 effectType: {effectType}  Value: {_value}");
+                }
+                int absDmgValue = Mathf.Abs(_value);
+                if (absDmgValue <= 30)
+                    numType = NumType.Dmg_Small;
+                else if (absDmgValue <= 60)
+                    numType = NumType.Dmg_Medium;
+                else
+                    numType = NumType.Dmg_Large;
+                break;
+            case EffectType.RestoreHP:
+                if (_value < 0) {
+                    WriteLog.LogError($"收到HPChange封包的格式錯誤 effectType: {effectType}  Value: {_value}");
+                }
+                numType = NumType.Restore_Hp;
+                break;
+            case EffectType.Bleeding:
+            case EffectType.Poison:
+            case EffectType.Burning:
+                if (_value > 0) {
+                    WriteLog.LogError($"收到HPChange封包的格式錯誤 effectType: {effectType}  Value: {_value}");
+                }
+                switch (effectType) {
+                    case EffectType.Bleeding:
+                        numType = NumType.Dmg_Bleeding;
+                        break;
+                    case EffectType.Poison:
+                        numType = NumType.Dmg_Poison;
+                        break;
+                    case EffectType.Burning:
+                        numType = NumType.Dmg_Burning;
+                        break;
+                }
+                break;
+            default:
+                WriteLog.LogError($"收到HPChange封包的，{effectType}要顯示的NumType尚未定義");
+                return;
+        }
+        CharDic[_playerID].ShowBattleNumber(numType, _value);
+    }
+
 
 }

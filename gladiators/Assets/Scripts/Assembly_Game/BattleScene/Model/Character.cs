@@ -12,8 +12,20 @@ using UnityEngine.AddressableAssets;
 public enum EffectType {
     PDmg,
     MDmg,
+    TrueDmg,
     RestoreHP,
     RestoreVigor,
+    Rush,
+    Pull,
+    Purge,
+    Shuffle,
+    Fortune,
+    PermanentHp,
+    MeleeDmgReflect,
+    Block,
+    Intuition,
+    Enraged,
+    Dodge_RangeAttack,
     RegenHP,
     RegenVigor,
     Dizzy,
@@ -27,54 +39,41 @@ public enum EffectType {
     Protection,
     MeleeSkillReflect,
     RangeSkillReflect,
-    MeleeDmgReflect,
-    Rush,
-    Pull,
-    Enraged,
-    Block,
     PDefUp,
     MDefUp,
     StrUp,
     KnockbackUp,
-    Purge,
     Barrier,
     Poisoning,
     ComboAttack,
     Vampire,
     CriticalUp,
-    Condition_SkillVigorBelow,
-    Condition_FirstAttack,
-    Condition_Charge,
-    Dodge_RangeAttack,
     InitUp,
-    TriggerEffect_BeAttack,
-    TriggerEffect_Time,
-    TriggerEffect_WaitTime,
-    TriggerEffect_BattleResult,
     Indomitable,
     Berserk,
     StrUpByHp,
     Chaos,
     SkillVigorUp,
-    Shuffle,
-    Seal,
-    Fortune,
-    SkillChange,
-    Intuition,
-    PermanentHp,
+    StrBurst,
+    TriggerEffect_BeAttack_StrUp,
+    TriggerEffect_Time_Fortune,
+    TriggerEffect_WaitTime_RestoreVigor,
+    TriggerEffect_BattleResult_PermanentHp,
+    TriggerEffect_SkillVigorBelow_ComboAttack,
+    TriggerEffect_FirstAttack_Dodge,
 }
 
-public enum NumType { 
-    Damage_Small,
-    Damage_Medium,
-    Damage_Large,
+public enum NumType {
+    Dmg_Small,
+    Dmg_Medium,
+    Dmg_Large,
 
-    Damage_Bleed,
-    Damage_Poison,
-    Damage_Burning,
+    Dmg_Bleeding,
+    Dmg_Poison,
+    Dmg_Burning,
 
-    Recovery_HP,
-    Recovery_Physical,
+    Restore_Hp,
+    Restore_Vigor,
 }
 
 public class Character : MonoBehaviour {
@@ -251,34 +250,34 @@ public class Character : MonoBehaviour {
 
         switch (type) {
             default:
-            case NumType.Damage_Small:
+            case NumType.Dmg_Small:
                 damagePopup = defaultDamagePrefab.Spawn(this.transform.position + new Vector3(0, damageShowYPos, -1), value);
                 damagePopup.SetFollowedTarget(this.transform);
                 break;
-            case NumType.Damage_Medium:
+            case NumType.Dmg_Medium:
                 damagePopup = defaultDamagePrefab.Spawn(this.transform.position + new Vector3(0, damageShowYPos, -1), value);
                 damagePopup.SetScale(2.4f);
                 damagePopup.SetFollowedTarget(this.transform);
                 break;
-            case NumType.Damage_Large:
+            case NumType.Dmg_Large:
                 damagePopup = defaultDamagePrefab.Spawn(this.transform.position + new Vector3(0, damageShowYPos, -1), value);
                 damagePopup.SetScale(2.8f);
                 damagePopup.SetFollowedTarget(this.transform);
                 break;
-            case NumType.Damage_Bleed:
+            case NumType.Dmg_Bleeding:
                 damagePopup = bleedDamagePrefab.Spawn(this.transform.position + new Vector3(0, damageShowYPos, -1), value);
                 break;
-            case NumType.Damage_Poison:
+            case NumType.Dmg_Poison:
                 damagePopup = poisonDamagePrefab.Spawn(this.transform.position + new Vector3(0, damageShowYPos, -1), value);
                 break;
-            case NumType.Damage_Burning:
+            case NumType.Dmg_Burning:
                 damagePopup = burningDamagePrefab.Spawn(this.transform.position + new Vector3(0, damageShowYPos, -1), value);
                 break;
-            case NumType.Recovery_HP:
+            case NumType.Restore_Hp:
                 damagePopup = recoveryHPPrefab.Spawn(this.transform.position + new Vector3(0, damageShowYPos + 0.5f, -1), value);
                 damagePopup.SetFollowedTarget(this.transform);
                 break;
-            case NumType.Recovery_Physical:
+            case NumType.Restore_Vigor:
                 damagePopup = recoveryPhysicalPrefab.Spawn(this.transform.position + new Vector3(0, damageShowYPos + 0.5f, -1), value);
                 damagePopup.SetFollowedTarget(this.transform);
                 break;

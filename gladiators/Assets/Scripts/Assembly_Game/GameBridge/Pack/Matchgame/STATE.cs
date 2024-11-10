@@ -31,11 +31,11 @@ namespace Gladiators.Socket.Matchgame {
         public bool Rush { get; private set; }
         public List<string> EffectTypes { get; private set; }
     }
-
     public class Hp_TOCLIENT : SocketContent {
         //class名稱就是封包的CMD名稱
         public string PlayerID { get; private set; }
         public int HPChange { get; private set; }
+        public string EffectType { get; private set; } // 對應EffectType列舉
         public int CurHp { get; private set; }
         public int MaxHp { get; private set; }
 
