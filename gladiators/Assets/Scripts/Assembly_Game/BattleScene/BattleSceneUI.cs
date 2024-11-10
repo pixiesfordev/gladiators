@@ -42,13 +42,13 @@ public class BattleSceneUI : BaseUI {
 
     [SerializeField] GameObject SettingBtn;//設定按鈕
 
-    public bool IsCastingInstantSkill { get; private set; } //是否施放立即釋放技能中
+    public bool IsCastingSkill { get; private set; } //是否施放立即釋放技能中
     int CastingSkillPos; //正在施放技能的按鈕位置
 
-    [HeaderAttribute("==============Test==============")]
-    [SerializeField] bool TriggerCastMeleeSkill = false;
-    int[] fakeSkills = new int[] { 1001, 1003, 1004, 1005, 1006 };
-    int fakeIndex = 0;
+    //[HeaderAttribute("==============Test==============")]
+    //[SerializeField] bool TriggerCastMeleeSkill = false;
+    //int[] fakeSkills = new int[] { 1001, 1003, 1004, 1005, 1006 };
+    //int fakeIndex = 0;
 
     [Header("Settings")]
     private bool _isSpellTest;
@@ -229,11 +229,12 @@ public class BattleSceneUI : BaseUI {
         }
     }
 
-    public void FadeOutSkillVigorVal(BattleSkillButton _btn) {
-        //TODO:讓BattleSkillButton的ModelCastSkill呼叫開始做淡出 時間要配合
+    public void StaminaObjDoCastAni(BattleSkillButton _btn, int _consumeVigor) {
+        //TODO:讓BattleSkillButton的ModelCastSkill呼叫開始做演出
         for (int i = 0; i < SkillBtns.Length; i++) {
             if (_btn == SkillBtns[i]) {
                 MyBattleStaminaObj.FadeOutSkillVigorVal(i);
+                MyBattleStaminaObj.ConsumeVigorBySkill(_consumeVigor);
             }
         }
     }
@@ -271,7 +272,7 @@ public class BattleSceneUI : BaseUI {
     /// <param name="_skillId">該按鈕的技能ID</param>
     public void CastingInstantSKill(BattleSkillButton _btn, int _skillId) {
         //施放技能後鎖定 不能連續施放技能
-        IsCastingInstantSkill = true;
+        IsCastingSkill = true;
         //找出釋放技能的按鈕位置
         for (int i = 0; i < SkillBtns.Length; i++) {
             if (SkillBtns[i] == _btn) {
@@ -280,7 +281,6 @@ public class BattleSceneUI : BaseUI {
             }
         }
         AllocatedRoom.Instance.ActiveSkill(_skillId, true);
-        ReleasedSkillLock().Forget();
     }
 
     /// <summary>
@@ -290,7 +290,7 @@ public class BattleSceneUI : BaseUI {
     async UniTaskVoid ReleasedSkillLock() {
         //鎖定0.5秒後才能放下一個技能
         await UniTask.WaitForSeconds(0.5f);
-        IsCastingInstantSkill = false;
+        IsCastingSkill = false;
     }
 
     /// <summary>
@@ -306,12 +306,13 @@ public class BattleSceneUI : BaseUI {
     }
 
     /// <summary>
-    /// 釋放技能後更新技能資料
+    /// 施展立即技能後接到Server回傳 開始施放技能
     /// </summary>
     /// <param name="_skillId">下一個技能ID</param>
-    public void ChangeSkillDataAfterCast(int _skillId) {
-        SkillBtns[CastingSkillPos].CacheNextSkill(NextSkillBtn.GetNextSkillId());
+    public void CastInstantSkill(int _skillId) {
+        SkillBtns[CastingSkillPos].CastInstantSkill(NextSkillBtn.GetNextSkillId());
         NextSkillBtn.CacheSkillId(_skillId);
+        ReleasedSkillLock().Forget();
     }
 
     /// <summary>
@@ -327,8 +328,8 @@ public class BattleSceneUI : BaseUI {
             }
         }
         NextSkillBtn.CacheSkillId(_skillId);
-        //施放技能後鎖定 不能連續施放技能
-        IsCastingInstantSkill = true;
+        //server驅動施放技能後鎖定 不能連續施放技能
+        IsCastingSkill = true;
         ReleasedSkillLock().Forget();
     }
 

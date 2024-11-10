@@ -71,6 +71,7 @@ public class BattleSkillButton : MonoBehaviour {
         START_SCALE,
         START_VIBRATE,
         END_CHANGE_SKILL,
+        INSTANT_WAIT_SERVER,
     }
     SkillAniState curAniState = SkillAniState.IDLE;
     SkillAniState oldAniState = SkillAniState.IDLE;
@@ -232,11 +233,10 @@ public class BattleSkillButton : MonoBehaviour {
     public void AfterVibruteEvent() {
         //由start_vibrate與start_vibrate_Insufficient播放完畢後呼叫 
         if (SkillData.Activation == SkillActivation.Instant) {
-            //立即施放類 只有能量足夠情況下才會抖動一次後就開始施法
+            //立即施放類 等待後端發送的封包後才演出
             if (IsEnergyEnough) {
-                curAniState = SkillAniState.START_CAST;
-                BtnAni.Play("start_cast");
-                Debug.LogError("立即釋放技能 抖動完畢");
+                curAniState = SkillAniState.INSTANT_WAIT_SERVER;
+                Debug.LogError("立即釋放技能 等待Server送包");
             }
         } else if (SkillData.Activation == SkillActivation.Melee) {
             //近戰類到此就解鎖 因為後續觸發碰撞發動是由後端發送 非前端觸發
@@ -299,6 +299,17 @@ public class BattleSkillButton : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// 收到Server回傳後 施展立即技能
+    /// </summary>
+    /// <param name="_skillId"></param>
+    public void CastInstantSkill(int _skillId) {
+        curAniState = SkillAniState.START_CAST;
+        BtnAni.Play("start_cast");
+        CacheSKillId = _skillId;
+        WriteLog.LogError("收到立即釋放技能回傳封包 開始施展技能!");
+    }
+
     void PlayButtonNormal() {
         SetSkillIconGray(false);
         curAniState = SkillAniState.ENOUGH_ENERGY_NORMAL;
@@ -350,7 +361,8 @@ public class BattleSkillButton : MonoBehaviour {
             curAniState == SkillAniState.START_CAST ||
             curAniState == SkillAniState.START_SCALE ||
             curAniState == SkillAniState.START_CANCEL ||
-            curAniState == SkillAniState.AVALIABLE) {
+            curAniState == SkillAniState.AVALIABLE ||
+            curAniState == SkillAniState.INSTANT_WAIT_SERVER) {
             return;
         }
         //Debug.LogErrorFormat("Set energy. cur val: {0} cost val: {1}", val, SkillData.Vigor);
@@ -518,7 +530,7 @@ public class BattleSkillButton : MonoBehaviour {
             return;
         }
         //判斷是否已經有其他技能在施放中
-        if (BattleSceneUI.Instance.IsCastingInstantSkill) {
+        if (BattleSceneUI.Instance.IsCastingSkill) {
             Debug.LogWarning("Other skill is casting!");
             return;
         }
@@ -531,7 +543,7 @@ public class BattleSkillButton : MonoBehaviour {
         //檢查技能型態
         if (SkillData.Activation == SkillActivation.Instant) {
             //立即施放 >> 判斷EnergyEnough >> 足夠就Start Scale並送包給後端告知開始施法 不夠就沒事
-            //StartScale >> AfterScaleEvent >> Start vibrute >> AfterVibruteEvent >> 
+            //StartScale >> AfterScaleEvent >> Start vibrute >> AfterVibruteEvent >> CastInstantSkill
             //start_cast(0.22秒時ModelCastSkill 0.28秒時CastSkillSetIconGrayEvent) >>
             //AfterCastSkillEvent >> Change skills(ChangeSkillEvent) >> AfterChangeSkillEvent 
             if (IsEnergyEnough) {
@@ -554,7 +566,11 @@ public class BattleSkillButton : MonoBehaviour {
             //5.提醒修正體力條沒有初始化界面
             //6.有發現一個奇怪的現象 能量不足的情況下 點下技能 移開滑鼠到技能按鈕外放開 不觸發Click的事件情況下
             //  有機率會發生停止抖動 不確定是不是後端資料的問題 因為在腳色卡住不會再移動時就不會再發生了
-            //7.以上都完成就可以先上傳
+            //7.補充體力條相關細節
+            // 1.能量不足狀態下 mask得是暗色 所以要看有變色相關的要做變色演出或者直接打暗
+            // 2.注意cast數字要淡出 change數字要淡入
+            // 3.消耗體力條要打亮
+            // 4.體力自然恢復
 
             //判斷是否已經被選上
             if (SkillSelected) {
@@ -627,14 +643,5 @@ public class BattleSkillButton : MonoBehaviour {
             _material.SetFloat("_color_saturation", saturationVal);
             await UniTask.Yield();
         }
-    }
-
-    /// <summary>
-    /// 存放下一個技能ID
-    /// </summary>
-    /// <param name="_skillId">技能ID</param>
-    public void CacheNextSkill(int _skillId) {
-        CacheSKillId = _skillId;
-        Debug.LogErrorFormat("Cache next skill. ID: {0}", _skillId);
     }
 }
