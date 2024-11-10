@@ -263,18 +263,18 @@ public class BattleController : MonoBehaviour {
     }
 
     /// <summary>
-    /// 呼叫腳色播放肉搏技能，收到肉搏技能演出封包時會呼叫此Func
+    /// 呼叫腳色播放肉搏技能，收到肉搏技能施放封包時會呼叫此Func
     /// </summary>
-    /// <param name="_playerID"></param>
-    /// <param name="_run"></param>
+    /// <param name="_playerID">玩家DBID</param>
+    /// <param name="_skillID">技能JsonID</param>
     public void PlayMeleeSKill(string _playerID, int _skillID) {
 
     }
     /// <summary>
-    /// 呼叫腳色播放立即技能
+    /// 呼叫腳色播放立即技能，收到即時技能施放封包時會呼叫此Func
     /// </summary>
-    /// <param name="_playerID"></param>
-    /// <param name="_run"></param>
+    /// <param name="_playerID">玩家DBID</param>
+    /// <param name="_skillID">技能JsonID</param>
     public void PlayInstantSkill(string _playerID, int _skillID) {
 
     }
