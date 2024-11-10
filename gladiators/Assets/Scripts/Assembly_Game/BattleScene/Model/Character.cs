@@ -120,12 +120,14 @@ public class Character : MonoBehaviour {
                     Destroy(BOARD.gameObject);
                 }
 
-                GameObject newBoard = Instantiate(boardPrefab, Vector3.zero, Quaternion.identity);
+                GameObject newBoard = Instantiate(boardPrefab);
                 BOARD = newBoard.transform;
                 BOARD.SetParent(rotate);
-                BOARD.SetPositionAndRotation(new Vector3(0, 0, 0), new Quaternion(-90, -90, 0, 0));
-                BOARD.localScale = new Vector3(100, 100, 100);
+                BOARD.localPosition = new Vector3(0f, 0f, 0f);
                 BOARD.name = "BOARD";
+
+                float sideRotationdAngle = (FaceDir == RightLeft.Right) ? 90 : -90;
+                SideRotationParent.localRotation = Quaternion.Euler(0, sideRotationdAngle, 0);
             }
         });
 
@@ -134,6 +136,7 @@ public class Character : MonoBehaviour {
         MoveClientToPos(new Vector3(_pos, 0, 0), 0).Forget();
         SetRush(false);
         MoveSmoke.Stop();
+
         SetFaceToTarget(_knockAngle);
     }
 
