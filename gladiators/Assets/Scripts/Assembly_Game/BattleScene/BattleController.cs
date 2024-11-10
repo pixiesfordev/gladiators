@@ -262,4 +262,22 @@ public class BattleController : MonoBehaviour {
         if (CharDic.ContainsKey(_playerID)) CharDic[_playerID].SetRush(_run);
     }
 
+    /// <summary>
+    /// 呼叫腳色播放肉搏技能，收到肉搏技能演出封包時會呼叫此Func
+    /// </summary>
+    /// <param name="_playerID"></param>
+    /// <param name="_run"></param>
+    public void PlayMeleeSKill(string _playerID, int _skillID) {
+
+    }
+    /// <summary>
+    /// 呼叫腳色播放立即技能
+    /// </summary>
+    /// <param name="_playerID"></param>
+    /// <param name="_run"></param>
+    public void PlayInstantSkill(string _playerID, int _skillID) {
+
+    }
+
+
 }
