@@ -321,7 +321,7 @@ public class BattleSkillButton : MonoBehaviour {
     /// </summary>
     /// <param name="val">體力值</param>
     public void SetEnergy(float val) {
-        //這個方法幾乎是每秒都會被呼叫到 所以盡量不要做太多事情 以免太吃效能
+        //這個方法幾乎是每秒都會被呼叫數次 所以盡量不要在裡面宣告物件
         if (SkillData == null) {
             Debug.LogWarningFormat("Set energy fail! Skill Data null! Obj: {0}", name);
             return;

@@ -17,6 +17,14 @@ public class BattleStaminaObj : MonoBehaviour {
     [SerializeField] Image[] SkillMasks;
     [SerializeField] Image[] Bar_lattices;
     [SerializeField] Image[] Bar_lattices_pre;
+    [SerializeField] Transform BarFxTrans;
+    [SerializeField] Animator BarFxAni;
+
+    float RealLatticVal;
+    float OldLatticVal;
+    Quaternion zeroQuaternion;
+    Quaternion halfQuaternion;
+    Quaternion verticalQuaternion;
 
     float CurrentMaxVal = 0f; //目前最大能量值
     Color ValOriginColor;
@@ -38,6 +46,9 @@ public class BattleStaminaObj : MonoBehaviour {
     void Start() {
         ValOriginColor = SkillVigorVals[0].color;
         MaskOriginColor = SkillMasks[0].color;
+        zeroQuaternion = Quaternion.Euler(new Vector3(0f, 180f, 0f));
+        halfQuaternion = Quaternion.Euler(new Vector3(0f, 180f, 45f));
+        verticalQuaternion = Quaternion.Euler(new Vector3(0f, 180f, 90f));
     }
 
     void Update() {
@@ -84,11 +95,16 @@ public class BattleStaminaObj : MonoBehaviour {
 
     void SetLattices(float val) {
         //TODO:添加一組比較淡色的Lattices 修改這組的FillAmount 原本的那組則是滿則SetActive(true)並撥放動畫 不滿1就SetActive(false)
+        //這個function每秒都會被呼叫數次 所以盡量不要在裡面宣告物件
         //根據格子的物件數換算體力數值 對應演出格子數
-        float realVal = GetRealVal(val);
+        RealLatticVal = GetRealVal(val);
         //設定格子顯示數量
-        for (int i = 0; i < Bar_lattices.Length; i++)
-            Bar_lattices[i].fillAmount = CountLatticeVal(realVal - i);
+        for (int i = 0; i < Bar_lattices.Length; i++) {
+            OldLatticVal = Bar_lattices[i].fillAmount;
+            Bar_lattices[i].fillAmount = CountLatticeVal(RealLatticVal - i);
+            if (OldLatticVal < 1 && Bar_lattices[i].fillAmount == 1)
+                PlayFx(i);
+        }
     }
 
     float GetRealVal(float val) {
@@ -98,6 +114,18 @@ public class BattleStaminaObj : MonoBehaviour {
 
     float CountLatticeVal(float val) {
         return val > 1 ? 1 : val < 0 ? 0 : val;
+    }
+
+    void PlayFx(int indexOfLattices) {
+        BarFxTrans.localPosition = Bar_lattices[indexOfLattices].transform.localPosition;
+        if (indexOfLattices < 7 && indexOfLattices >= 0)
+            BarFxTrans.localRotation = verticalQuaternion;
+        else if (indexOfLattices < 14 && indexOfLattices >= 7)
+            BarFxTrans.localRotation = halfQuaternion;
+        else
+            BarFxTrans.localRotation = zeroQuaternion;
+        BarFxAni.Play("Energy bar recovery", -1, 0.0f);
+        //WriteLog.LogErrorFormat("Play Fx! index: {0}", indexOfLattices);
     }
 
     public void SetSkillVigorVal(int pos, int val) {
