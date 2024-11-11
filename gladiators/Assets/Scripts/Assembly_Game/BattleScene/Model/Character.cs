@@ -231,13 +231,13 @@ public class Character : MonoBehaviour {
     }
 
     void knockWall() {
-        AddressablesLoader.GetParticle("Battle/CFXR _BOOM_", (prefab, handle) => {
-            var go = Instantiate(prefab);
-            go.transform.position = transform.position + Vector3.up * 6;
-        });
+        //AddressablesLoader.GetParticle("Battle/CFXR _BOOM_", (prefab, handle) => {
+        //    var go = Instantiate(prefab);
+        //    go.transform.position = transform.position + Vector3.up * 6;
+        //});
     }
 
-    [SerializeField] float damageShowYPos = 5f;
+    [SerializeField] float damageShowYPos = 6f;
     [SerializeField] DamageNumber defaultDamagePrefab;
     [SerializeField] DamageNumber bleedDamagePrefab;
     [SerializeField] DamageNumber poisonDamagePrefab;
@@ -251,39 +251,40 @@ public class Character : MonoBehaviour {
         switch (type) {
             default:
             case NumType.Dmg_Small:
-                damagePopup = defaultDamagePrefab.Spawn(this.transform.position + new Vector3(0, damageShowYPos, -1), value);
+                damagePopup = defaultDamagePrefab.Spawn(this.transform.position + new Vector3(0, damageShowYPos, 1), value);
                 damagePopup.SetFollowedTarget(this.transform);
                 break;
             case NumType.Dmg_Medium:
-                damagePopup = defaultDamagePrefab.Spawn(this.transform.position + new Vector3(0, damageShowYPos, -1), value);
-                damagePopup.SetScale(2.4f);
+                damagePopup = defaultDamagePrefab.Spawn(this.transform.position + new Vector3(0, damageShowYPos, 1), value);
+                damagePopup.SetScale(1.8f);
                 damagePopup.SetFollowedTarget(this.transform);
                 break;
             case NumType.Dmg_Large:
-                damagePopup = defaultDamagePrefab.Spawn(this.transform.position + new Vector3(0, damageShowYPos, -1), value);
-                damagePopup.SetScale(2.8f);
+                damagePopup = defaultDamagePrefab.Spawn(this.transform.position + new Vector3(0, damageShowYPos, 1), value);
+                damagePopup.SetScale(2f);
                 damagePopup.SetFollowedTarget(this.transform);
                 break;
             case NumType.Dmg_Bleeding:
-                damagePopup = bleedDamagePrefab.Spawn(this.transform.position + new Vector3(0, damageShowYPos, -1), value);
+                damagePopup = bleedDamagePrefab.Spawn(this.transform.position + new Vector3(0, damageShowYPos, 1), value);
                 break;
             case NumType.Dmg_Poison:
-                damagePopup = poisonDamagePrefab.Spawn(this.transform.position + new Vector3(0, damageShowYPos, -1), value);
+                damagePopup = poisonDamagePrefab.Spawn(this.transform.position + new Vector3(0, damageShowYPos, 1), value);
                 break;
             case NumType.Dmg_Burning:
-                damagePopup = burningDamagePrefab.Spawn(this.transform.position + new Vector3(0, damageShowYPos, -1), value);
+                damagePopup = burningDamagePrefab.Spawn(this.transform.position + new Vector3(0, damageShowYPos, 1), value);
                 break;
             case NumType.Restore_Hp:
-                damagePopup = recoveryHPPrefab.Spawn(this.transform.position + new Vector3(0, damageShowYPos + 0.5f, -1), value);
+                damagePopup = recoveryHPPrefab.Spawn(this.transform.position + new Vector3(0, damageShowYPos + 0.5f, 1), value);
                 damagePopup.SetFollowedTarget(this.transform);
                 break;
             case NumType.Restore_Vigor:
-                damagePopup = recoveryPhysicalPrefab.Spawn(this.transform.position + new Vector3(0, damageShowYPos + 0.5f, -1), value);
+                damagePopup = recoveryPhysicalPrefab.Spawn(this.transform.position + new Vector3(0, damageShowYPos + 0.5f, 1), value);
                 damagePopup.SetFollowedTarget(this.transform);
                 break;
         }
 
         damagePopup.transform.SetParent(this.transform);
-        damagePopup.transform.localRotation = Quaternion.Euler(0, 0, 0);
+        float sideRotationdAngle = (FaceDir == RightLeft.Right) ? 0 : 180;
+        damagePopup.transform.localRotation = Quaternion.Euler(0, sideRotationdAngle, 0);
     }
 }
