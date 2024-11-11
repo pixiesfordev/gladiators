@@ -45,14 +45,27 @@ public class NextBattleSkillButton : MonoBehaviour
             //設定SkillIcon
             AssetGet.GetSpriteFromAtlas("SpellIcon", SkillData.Ref, (sprite) => {
                 if (sprite != null) {
-                    SkillIcon.gameObject.SetActive(true);
-                    CloneMaterial.SetTexture("_main_Tex", sprite.texture);
+                    SetMaterialIcon(sprite);
                 }
-                else
-                    SetIconFail();
+                else {
+                    AssetGet.GetSpriteFromAtlas("SpellIcon", "sprint", (sprite) => { 
+                        SetMaterialIcon(sprite);
+                        WriteLog.LogWarningFormat("設定圖片不存在! 用衝刺圖替代! ID: {0}", SkillData.Ref);
+                    } );
+                }
             });
         } else
             SetIconFail();
+    }
+
+    void SetMaterialIcon(Sprite sprite) {
+        SkillIcon.gameObject.SetActive(true);
+        //TODO:SetPixels32會更快 之後有時間再改
+        Texture2D target =  new Texture2D((int)sprite.textureRect.width, (int)sprite.textureRect.height);
+        target.SetPixels(sprite.texture.GetPixels((int)sprite.textureRect.x, (int)sprite.textureRect.y, 
+            (int)sprite.textureRect.width, (int)sprite.textureRect.height));
+        target.Apply();
+        CloneMaterial.SetTexture("_main_Tex", target);
     }
 
     void SetIconFail()

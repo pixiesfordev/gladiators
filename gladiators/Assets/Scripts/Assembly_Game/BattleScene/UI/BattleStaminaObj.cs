@@ -21,6 +21,8 @@ public class BattleStaminaObj : MonoBehaviour {
     float CurrentMaxVal = 0f; //目前最大能量值
     Color ValOriginColor;
     Color MaskOriginColor;
+    float MaskLightAlpha = 0f;
+    float MaskDarkAlpha = 0.9f;
 
     [HeaderAttribute("==============TEST==============")]
     [Tooltip("測試更新體力值")][SerializeField] bool TestLattices;
@@ -61,7 +63,7 @@ public class BattleStaminaObj : MonoBehaviour {
         SetValText(curVal, CurrentVal);
         SetValText(maxVal, MaxVal);
         CurrentMaxVal = maxVal;
-        BattleSceneUI.Instance?.CheckVigor(curVal);
+        BattleSceneUI.Instance.CheckVigor(curVal);
     }
 
     void SetValText(float val, Text obj) {
@@ -77,7 +79,7 @@ public class BattleStaminaObj : MonoBehaviour {
     public void SetVigor(float val) {
         SetLattices(val);
         SetValText(val, CurrentVal);
-        //BattleSceneUI.Instance?.CheckVigor(val);
+        //BattleSceneUI.Instance.CheckVigor(val);
     }
 
     void SetLattices(float val) {
@@ -99,22 +101,34 @@ public class BattleStaminaObj : MonoBehaviour {
     }
 
     public void SetSkillVigorVal(int pos, int val) {
-        if (pos < SkillVigorVals.Length && pos >= 0)
+        if (CheckSkillPosVaild(pos))
             SkillVigorVals[pos].text = val.ToString();
         else
             SkillVigorValNext.text = val.ToString();
     }
 
+    /// <summary>
+    /// 消耗體力條
+    /// </summary>
+    /// <param name="vigor">消耗體力</param>
     public void ConsumeVigorBySkill(int vigor) {
         //TODO:取出最後幾個能量條打亮並消耗掉
         //需要做左右方Fill方向切換
     }
 
+    bool CheckSkillPosVaild(int pos) {
+        return pos < SkillVigorVals.Length && pos >= 0;
+    }
+
+    /// <summary>
+    /// 消耗能量淡出與體力值遮罩淡入(數字隱藏與變暗)
+    /// </summary>
+    /// <param name="pos">技能位置</param>
     public void FadeOutSkillVigorVal(int pos) {
-        if (pos < SkillVigorVals.Length && pos >= 0) {
+        if (CheckSkillPosVaild(pos)) {
             DoSkillVigorValFadeOut(SkillVigorVals[pos], SkillMasks[pos]).Forget();
         } else {
-            Debug.LogErrorFormat("Fade out skill vigor val index error!");
+            WriteLog.LogErrorFormat("Fade out skill vigor val index error! Pos: {0}", pos);
         }
     }
 
@@ -133,7 +147,7 @@ public class BattleStaminaObj : MonoBehaviour {
             textColor.a = textAlpha;
             _text.color = textColor;
 
-            maskAlpha = Mathf.Lerp(0f, 0.9f, passTime / duration);
+            maskAlpha = Mathf.Lerp(MaskLightAlpha, MaskDarkAlpha, passTime / duration);
             maskColor.a = maskAlpha;
             _mask.color = maskColor;
             
@@ -142,15 +156,15 @@ public class BattleStaminaObj : MonoBehaviour {
     }
 
     /// <summary>
-    /// 消耗數字淡入
+    /// 消耗能量數字淡入(數字出現)
     /// </summary>
     /// <param name="pos">技能位置</param>
     public void FadeInSkillVigorVal(int pos) {
         WriteLog.LogErrorFormat("Fade in skill vigor val. Pos: {0}", pos);
-        if (pos < SkillVigorVals.Length && pos >= 0) {
+        if (CheckSkillPosVaild(pos)) {
             DoSkillVigorValFadeIn(SkillVigorVals[pos]).Forget();
         } else {
-            Debug.LogErrorFormat("Fade in skill vigor val index error!");
+            WriteLog.LogErrorFormat("Fade in skill vigor val index error! Pos: {0}", pos);
         }
     }
 
@@ -166,6 +180,50 @@ public class BattleStaminaObj : MonoBehaviour {
             textColor.a = textAlpha;
             _text.color = textColor;
             await UniTask.Yield();
+        }
+    }
+
+    /// <summary>
+    /// 消耗體力值打亮
+    /// </summary>
+    /// <param name="pos">技能位置</param>
+    public void BrigtenMask(int pos) {
+        if (CheckSkillPosVaild(pos)) {
+            DoBrigtenMask(SkillMasks[pos]).Forget();
+        } else {
+            WriteLog.LogErrorFormat("Brigten mask index error! Pos: {0}", pos);
+        }
+    }
+
+    async UniTaskVoid DoBrigtenMask(Image _mask) {
+        //體力遮罩變亮(淡出)
+        Color maskColor = MaskOriginColor;
+        float duration = 0.31f;
+        float passTime = 0f;
+        float maskAlpha;
+        while (passTime < duration) {
+            passTime += Time.deltaTime;
+
+            maskAlpha = Mathf.Lerp(MaskDarkAlpha, MaskLightAlpha, passTime / duration);
+            maskColor.a = maskAlpha;
+            _mask.color = maskColor;
+            
+            await UniTask.Yield();
+        }
+    }
+
+    /// <summary>
+    /// 設定體力遮罩亮度
+    /// </summary>
+    /// <param name="pos">技能位置</param>
+    /// <param name="bright">是否打亮</param>
+    public void SetVigorMaskBrightness(int pos, bool bright) {
+        if (CheckSkillPosVaild(pos)) {
+            Color maskColor = MaskOriginColor;
+            maskColor.a = bright ? MaskLightAlpha : MaskDarkAlpha;
+            SkillMasks[pos].color = maskColor;
+        } else {
+            WriteLog.LogErrorFormat("Set mask color index error! Pos: {0}", pos);
         }
     }
 }

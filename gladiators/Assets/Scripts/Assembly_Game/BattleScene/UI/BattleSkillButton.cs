@@ -58,7 +58,7 @@ public class BattleSkillButton : MonoBehaviour {
 
     enum SkillAniState {
         IDLE,
-        AVALIABLE,
+        AVAILABLE,
         CHANGE_SKILL,
         ENOUGH_ENERGY_PRESS,
         ENOUGH_ENERGY_NORMAL,
@@ -78,46 +78,6 @@ public class BattleSkillButton : MonoBehaviour {
 
     bool btnLocking = false;
     int CacheSKillId;
-
-    /*
-    材質球相關
-    Insufficient Energy_Normal >> 材質球掛在Icon上
-    Insufficient energy_rotation >> 程式製作 動畫只是一個示意圖 要去加白色底圖 這樣才能做轉圈fill方式
-                                    icon要降低亮度(如果Shader改不出來就用Color)
-                                    Button3要改Color為黑色
-    Insufficient energy_click >> 材質球額外掛一個圖層物件 點擊就打開顯示 不要掛Icon 這樣狀態太複雜了 一定會亂
-    available >> 材質球掛在Icon上
-    */
-
-    /*
-    技能演出動畫相關
-    1.要用成狀態機器(動畫本來就是用狀態機器控 但這裡沒有要搭配Transition 所以狀態直接寫在腳本內)
-    2.狀態一覽:
-      1.avaliable
-      2.Change skills
-      3.Enough energy_click
-      4.Enough energy_Normal
-      5.insufficient Energy_click
-      X6.insufficient Energy_Normal >> 這個狀態其實用不到 能量不足夠 就是insufficient Energy_rotation
-      7.insufficient Energy_rotation
-      8.Start_Cancel
-      9.Start_cast
-      10.Start_Scale
-      11.Start_Vibrate
-    3.合併完上傳後整理名稱統一大小寫+移除空格 讓狀態列舉可以直接對上名稱方便管理維護
-    4.Insufficient Energy_Normal掛材質球處理
-    5.Insufficient energy_rotation要額外處理 動畫不要使用 只是示意圖 要用程式去控制 黑色區域是Icon掛材質球 白色圖層要額外掛材質球
-    6.Insufficient energy_click要額外做縮放 動畫不要使用 只有示意圖 要掛材質球(額外多掛一個Icon物件 不要用Icon去表演 會很難控)
-    7.avaliable演出完狀態接到Enough_energy_Normal 要掛材質球 不過要考慮演出到一半又因為使用技能而跳回不能用轉圈的情況
-    8.Start_Scale要掛材質球演出
-    9.Start_Vibrate要掛材質球演出
-    10.Start_Cancel要掛材質球演出
-    11.Start_Cast演出完狀態接到change Skills 要掛材質球演出
-    12.change Skills要掛材質球演出 演出完後根據下一張技能卡與目前能量值接回insufficient Energy_Normal或Enough energy_Normal
-    13.SkillButton4(Next)要掛材質球 直接掛著就好 這個按鈕演出只有淡入淡出 在其他技能按鈕演出Change Skill的時候同時淡入淡出換圖
-    14.設定測試情境 這個會相當複雜 功能完成後再進行測試與設想 可以配流程圖
-    V15.時間足夠的話 重新畫一個流程圖 目前文件上的流程還有一些缺稀(這部分可以畫在Animator)
-    */
 
     void Start() {
         //初始化演出用材質球副本 避免每次演出一直產生新的object
@@ -160,12 +120,18 @@ public class BattleSkillButton : MonoBehaviour {
     /// <param name="_skill">技能資料</param>
     public void SetData(JsonSkill _skill) {
         SkillData = _skill;
-        //Debug.LogWarningFormat("技能物件:{0}設定技能資料! 技能ID: {1}", gameObject.name, SkillData != null ? SkillData.ID : 0);
+        Debug.LogWarningFormat("技能物件:{0}設定技能資料! 技能ID: {1}", gameObject.name, SkillData != null ? SkillData.ID : 0);
         if (SkillData != null && !string.IsNullOrEmpty(SkillData.Ref)) {
             //設定SkillIcon
             AssetGet.GetSpriteFromAtlas("SpellIcon", SkillData.Ref, (sprite) => {
                 SkillIcon.gameObject.SetActive(true);
-                SkillIcon.sprite = sprite;
+                if (sprite != null)
+                    SkillIcon.sprite = sprite;
+                else
+                    AssetGet.GetSpriteFromAtlas("SpellIcon", "sprint", (sprite) => { 
+                        SkillIcon.sprite = sprite; 
+                        WriteLog.LogWarningFormat("圖片缺少! 用衝刺圖代替顯示! ID: {0}", SkillData.Ref);
+                        } );
             });
         } else {
             SkillIcon.gameObject.SetActive(false);
@@ -245,10 +211,10 @@ public class BattleSkillButton : MonoBehaviour {
     }
 
     public void ModelCastSkill() {
-        //由start_cast播放到0.22秒的時候呼叫 美術要求 在按鈕最亮的時候才讓模型開始發動技能演出
+        //由start_cast播放到0.22秒的時候呼叫 配合按鈕最亮的時候才讓模型開始發動技能演出
         //TODO:發送命令給BattleManager去放技能
         //技能體力值釋放技能演出
-        BattleSceneUI.Instance.StaminaObjDoCastAni(this, SkillData.Vigor);
+        BattleSceneUI.Instance.BattleSkillBtnCast(this, SkillData.Vigor);
         Debug.LogError("要求模型播放技能動畫");
     }
 
@@ -262,7 +228,7 @@ public class BattleSkillButton : MonoBehaviour {
         curAniState = SkillAniState.CHANGE_SKILL;
         BtnAni.Play("Change skills");
         //通知BattleSceneUI開始更換NextSkillBtn 演出時間要一致
-        BattleSceneUI.Instance?.NextSkillBtnChangeSkill();
+        BattleSceneUI.Instance.NextSkillBtnChangeSkill();
         Debug.LogError("釋放技能播放完畢");
     }
 
@@ -314,12 +280,14 @@ public class BattleSkillButton : MonoBehaviour {
     void PlayButtonNormal() {
         SetSkillIconGray(false);
         curAniState = SkillAniState.ENOUGH_ENERGY_NORMAL;
+        BattleSceneUI.Instance.BattleSkillBtnSetVigorEnergyState(this, true);
         BtnAni.Play("Enough energy_Normal");
     }
 
     void PlayButtonInsufficientNormal() {
         SetSkillIconGray(true);
         curAniState = SkillAniState.INSUFFICIENT_ENERGY_ROTATION;
+        BattleSceneUI.Instance.BattleSkillBtnSetVigorEnergyState(this, false);
         BtnAni.Play("Insufficient Energy_Normal");
     }
 
@@ -362,7 +330,7 @@ public class BattleSkillButton : MonoBehaviour {
             curAniState == SkillAniState.START_CAST ||
             curAniState == SkillAniState.START_SCALE ||
             curAniState == SkillAniState.START_CANCEL ||
-            curAniState == SkillAniState.AVALIABLE ||
+            curAniState == SkillAniState.AVAILABLE ||
             curAniState == SkillAniState.INSTANT_WAIT_SERVER) {
             return;
         }
@@ -401,7 +369,7 @@ public class BattleSkillButton : MonoBehaviour {
                 if (!OldEnergyEnough) {
                     //能量從不足變足夠 >> 演出available
                     SetSkillIconGray(false);
-                    curAniState = SkillAniState.AVALIABLE;
+                    curAniState = SkillAniState.AVAILABLE;
                     SetAvailableMaterial().Forget();
                     BtnAni.Play("available");
                     Debug.LogWarning("能量足夠 演出Available!");
@@ -585,7 +553,7 @@ public class BattleSkillButton : MonoBehaviour {
                 BtnAni.Play(IsEnergyEnough ? "Start_Scale" : "Start_Scale_Insufficient");
                 Debug.LogError("選上近戰技能!");
                 //檢查其他按鈕取消選上
-                BattleSceneUI.Instance?.CancelOtherSelectedSKill(this);
+                BattleSceneUI.Instance.CancelOtherSelectedSKill(this);
             }
             SkillSelected = !SkillSelected;
             AllocatedRoom.Instance.ActiveSkill(SkillData.ID, SkillSelected);

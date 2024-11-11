@@ -109,6 +109,8 @@ public class BattleSceneUI : BaseUI {
             SkillBtns[i].SetData(jsonSkill);
             SkillBtns[i].SetSkillOn(_handSKillIDs[i] == _skillOnID);
             MyBattleStaminaObj.SetSkillVigorVal(i, jsonSkill != null ? jsonSkill.Vigor : 0);
+            //TODO:目前體力預設值是5 這裡先判斷一次預設值 但日後應該添加一個判斷是否為初始化的旗標 包含技能起始狀態都要判斷
+            MyBattleStaminaObj.SetVigorMaskBrightness(i, jsonSkill != null ? jsonSkill.Vigor < 5 : false);
         }
         var nextJsonSkill = GameDictionary.GetJsonData<JsonSkill>(_handSKillIDs[_handSKillIDs.Length - 1]);
         NextSkillBtn.SetData(nextJsonSkill);
@@ -230,22 +232,47 @@ public class BattleSceneUI : BaseUI {
     }
 
     /// <summary>
-    /// 體力條釋放技能演出
+    /// 戰鬥技能按鈕設定體力消耗值能量狀態(能量足夠/不足)
     /// </summary>
-    /// <param name="_btn"></param>
-    /// <param name="_consumeVigor"></param>
-    public void StaminaObjDoCastAni(BattleSkillButton _btn, int _consumeVigor) {
+    /// <param name="_btn">技能按鈕</param>
+    /// <param name="energyEnough">能量足夠為True 否則為false</param>
+    public void BattleSkillBtnSetVigorEnergyState(BattleSkillButton _btn, bool energyEnough) {
+        for (int i = 0; i < SkillBtns.Length; i++) {
+            if (_btn == SkillBtns[i]) {
+                MyBattleStaminaObj.SetVigorMaskBrightness(i, energyEnough);
+                break;
+            }
+        }
+    }
+
+    /// <summary>
+    /// 戰鬥技能按鈕能量足夠其他相關演出
+    /// </summary>
+    /// <param name="_btn">要演出的技能按鈕</param>
+    public void BattleSkillBtnAvailable(BattleSkillButton _btn) {
+        //BattleSkillButton的AniState變成Available時呼叫
+        for (int i = 0; i < SkillBtns.Length; i++) {
+            if (_btn == SkillBtns[i]) {
+                MyBattleStaminaObj.BrigtenMask(i);
+                break;
+            }
+        }
+    }
+
+    /// <summary>
+    /// 戰鬥技能按鈕釋放其他相關演出
+    /// </summary>
+    /// <param name="_btn">要演出的技能按鈕</param>
+    /// <param name="_consumeVigor">消耗體力值</param>
+    public void BattleSkillBtnCast(BattleSkillButton _btn, int _consumeVigor) {
         //BattleSkillButton的ModelCastSkill呼叫開始做演出
         for (int i = 0; i < SkillBtns.Length; i++) {
             if (_btn == SkillBtns[i]) {
                 MyBattleStaminaObj.FadeOutSkillVigorVal(i);
                 MyBattleStaminaObj.ConsumeVigorBySkill(_consumeVigor);
+                break;
             }
         }
-    }
-
-    public void FadeInSkillVigorVal() {
-
     }
 
     /// <summary>
