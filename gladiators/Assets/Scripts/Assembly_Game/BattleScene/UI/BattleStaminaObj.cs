@@ -15,8 +15,9 @@ public class BattleStaminaObj : MonoBehaviour {
     [SerializeField] MyTextPro[] SkillVigorVals;
     [SerializeField] MyTextPro SkillVigorValNext;
     [SerializeField] Image[] SkillMasks;
-    [SerializeField] Image[] Bar_lattices;
-    [SerializeField] Image[] Bar_lattices_pre;
+    [SerializeField] Image[] Bar_lattices; //體力條(fillAmount滿1)
+    [SerializeField] Image[] Bar_lattices_pre; //恢復體力條(fillAmount未滿1)
+    [SerializeField] Image[] Bar_lattices_cost; //消耗體力條
     [SerializeField] Transform BarFxTrans;
     [SerializeField] Animator BarFxAni;
 
@@ -37,11 +38,6 @@ public class BattleStaminaObj : MonoBehaviour {
     [Tooltip("測試設定目前體力值 值為0~20")][SerializeField] float TestLatticeVal;
     [Tooltip("測試更新體力值")][SerializeField] bool TestInitLattices;
     [Tooltip("測試設定最大體力值 值為10~20")][SerializeField] float TestMaxLatticeVal;
-
-    //TODO:
-    //1.體力條消耗演出
-    //2.體力條補充演出
-    //3.技能消耗數值
 
     void Start() {
         ValOriginColor = SkillVigorVals[0].color;
@@ -94,16 +90,16 @@ public class BattleStaminaObj : MonoBehaviour {
     }
 
     void SetLattices(float val) {
-        //TODO:添加一組比較淡色的Lattices 修改這組的FillAmount 原本的那組則是滿則SetActive(true)並撥放動畫 不滿1就SetActive(false)
         //這個function每秒都會被呼叫數次 所以盡量不要在裡面宣告物件
         //根據格子的物件數換算體力數值 對應演出格子數
         RealLatticVal = GetRealVal(val);
         //設定格子顯示數量
         for (int i = 0; i < Bar_lattices.Length; i++) {
-            OldLatticVal = Bar_lattices[i].fillAmount;
-            Bar_lattices[i].fillAmount = CountLatticeVal(RealLatticVal - i);
-            if (OldLatticVal < 1 && Bar_lattices[i].fillAmount == 1)
+            OldLatticVal = Bar_lattices_pre[i].fillAmount;
+            Bar_lattices_pre[i].fillAmount = CountLatticeVal(RealLatticVal - i);
+            if (OldLatticVal < 1 && Bar_lattices_pre[i].fillAmount == 1)
                 PlayFx(i);
+            Bar_lattices[i].gameObject.SetActive(Bar_lattices_pre[i].fillAmount == 1);
         }
     }
 
@@ -141,6 +137,7 @@ public class BattleStaminaObj : MonoBehaviour {
     /// <param name="vigor">消耗體力</param>
     public void ConsumeVigorBySkill(int vigor) {
         //TODO:取出最後幾個能量條打亮並消耗掉
+        //TODO:體力條消耗演出
         //需要做左右方Fill方向切換
     }
 
@@ -254,4 +251,5 @@ public class BattleStaminaObj : MonoBehaviour {
             WriteLog.LogErrorFormat("Set mask color index error! Pos: {0}", pos);
         }
     }
+
 }
