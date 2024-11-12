@@ -260,16 +260,22 @@ public class BattleSceneUI : BaseUI {
     }
 
     /// <summary>
-    /// 戰鬥技能按鈕釋放其他相關演出
+    /// 戰鬥技能按鈕釋放技能體力值消耗演出
+    /// </summary>
+    /// <param name="_consumeVigor"></param>
+    public void BattleSkillBtnCastStaminaConsume(int _consumeVigor) {
+        MyBattleStaminaObj.ConsumeVigorBySkill(_consumeVigor);
+    }
+
+    /// <summary>
+    /// 戰鬥技能按鈕釋放技能隱藏對應技能位置的體力消耗值
     /// </summary>
     /// <param name="_btn">要演出的技能按鈕</param>
-    /// <param name="_consumeVigor">消耗體力值</param>
-    public void BattleSkillBtnCast(BattleSkillButton _btn, int _consumeVigor) {
+    public void BattleSkillBtnCastHideVigorVal(BattleSkillButton _btn) {
         //BattleSkillButton的ModelCastSkill呼叫開始做演出
         for (int i = 0; i < SkillBtns.Length; i++) {
             if (_btn == SkillBtns[i]) {
                 MyBattleStaminaObj.FadeOutSkillVigorVal(i);
-                MyBattleStaminaObj.ConsumeVigorBySkill(_consumeVigor);
                 break;
             }
         }

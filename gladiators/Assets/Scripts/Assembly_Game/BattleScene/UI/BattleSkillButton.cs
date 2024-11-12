@@ -214,7 +214,7 @@ public class BattleSkillButton : MonoBehaviour {
         //由start_cast播放到0.22秒的時候呼叫 配合按鈕最亮的時候才讓模型開始發動技能演出
         //TODO:發送命令給BattleManager去放技能
         //技能體力值釋放技能演出
-        BattleSceneUI.Instance.BattleSkillBtnCast(this, SkillData.Vigor);
+        BattleSceneUI.Instance.BattleSkillBtnCastHideVigorVal(this);
         Debug.LogError("要求模型播放技能動畫");
     }
 
@@ -271,10 +271,15 @@ public class BattleSkillButton : MonoBehaviour {
     /// </summary>
     /// <param name="_skillId"></param>
     public void CastInstantSkill(int _skillId) {
-        curAniState = SkillAniState.START_CAST;
-        BtnAni.Play("start_cast");
+        PlayButtonCast();
         CacheSKillId = _skillId;
         WriteLog.LogError("收到立即釋放技能回傳封包 開始施展技能!");
+    }
+
+    void PlayButtonCast() {
+        curAniState = SkillAniState.START_CAST;
+        BtnAni.Play("start_cast");
+        BattleSceneUI.Instance.BattleSkillBtnCastStaminaConsume(SkillData.Vigor);
     }
 
     void PlayButtonNormal() {
@@ -308,8 +313,7 @@ public class BattleSkillButton : MonoBehaviour {
         Debug.LogErrorFormat("Cast melee skill. Cache next skill. ID: {0}", _nextSkillId);
         //start cast(0.22秒時ModelCastSkill 0.28秒時CastSkillSetIconGrayEvent) >> AfterCastSkillEvent >>
         //Change skills(ChangeSkillEvent) >> AfterChangeSkillEvent 
-        curAniState = SkillAniState.START_CAST;
-        BtnAni.Play("start_cast");
+        PlayButtonCast();
     }
 
     void SetSkillIconGray(bool _bGray) {

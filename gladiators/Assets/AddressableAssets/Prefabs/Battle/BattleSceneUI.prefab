@@ -14055,6 +14055,9 @@ MonoBehaviour:
   - {fileID: 861903713081144840}
   BarFxTrans: {fileID: 2025690954472866482}
   BarFxAni: {fileID: 543870223531063694}
+  EnergyAni: {fileID: 7766175832110171277}
+  BarLatticesConsumeMaterial: {fileID: 2100000, guid: 20a37a3235aac9246931ac11dc4421c0,
+    type: 2}
   TestLattices: 0
   TestLatticeVal: 0
   TestInitLattices: 0
