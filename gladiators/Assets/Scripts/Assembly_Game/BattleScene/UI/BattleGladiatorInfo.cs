@@ -283,7 +283,7 @@ public class BattleGladiatorInfo : MonoBehaviour {
                     lastAfterImageHPRate = HeroDisplayHPRate;
                     GenerateHPBarChangeAfterImage();
                 }
-                Debug.LogFormat("數值減少 目前百分比值: {0}.", HeroDisplayHPRate);
+                //Debug.LogFormat("數值減少 目前百分比值: {0}.", HeroDisplayHPRate);
             }
         } else {
             while (HeroDisplayHPRate <= BarFinalVal) {
@@ -296,7 +296,7 @@ public class BattleGladiatorInfo : MonoBehaviour {
                     lastAfterImageHPRate = HeroDisplayHPRate;
                     GenerateHPBarChangeAfterImage();
                 }
-                Debug.LogFormat("數值增加 目前百分比值: {0}.", HeroDisplayHPRate);
+                //Debug.LogFormat("數值增加 目前百分比值: {0}.", HeroDisplayHPRate);
             }
         }
         await UniTask.Yield(ctk.Token);

@@ -23,8 +23,8 @@ public class BattleSceneUI : BaseUI {
     [SerializeField] DivineSelectUI MyDivineSelectUI;
     //TODO:考慮是否之後改腳本產生物件
     //上方角鬥士資訊
-    [SerializeField] BattleGladiatorInfo PlayerGladiatorInfo;
-    [SerializeField] BattleGladiatorInfo EnemyGladiatorInfo;
+    public BattleGladiatorInfo PlayerGladiatorInfo;
+    public BattleGladiatorInfo EnemyGladiatorInfo;
 
     [SerializeField] Text PlayerGoldText;//玩家持有金錢
 

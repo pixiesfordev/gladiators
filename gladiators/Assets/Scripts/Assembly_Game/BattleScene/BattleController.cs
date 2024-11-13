@@ -91,7 +91,8 @@ public class BattleController : MonoBehaviour {
 
         leftChar.UpdateEffectTypes(_leftState.EffectTypes);
         rightChar.UpdateEffectTypes(_rightState.EffectTypes);
-
+        BattleSceneUI.Instance.PlayerGladiatorInfo.SetBufferIcon(_leftState.EffectTypes);
+        BattleSceneUI.Instance.EnemyGladiatorInfo.SetBufferIcon(_rightState.EffectTypes);
         // 新增移動插植緩衝
         ServerStatePack pack = new ServerStatePack();
         pack.PackID = _packID;
