@@ -298,11 +298,11 @@ namespace Gladiators.Socket {
                 switch (actionType) {
                     case PLAYERACTION.PackActionType.ACTIVE_MELEE_SKILL:
                         var activeMeleeSkill = JsonMapper.ToObject<PackAction_ActiveMeleeSkill_ToClient>(_jsonStr);
-                        AllocatedRoom.Instance.ReceiveActiveMeleeSkill(activeMeleeSkill.SKillID, activeMeleeSkill.On);
+                        AllocatedRoom.Instance.ReceiveActiveMeleeSkill(activeMeleeSkill.SkillID, activeMeleeSkill.On);
                         break;
                     case PLAYERACTION.PackActionType.INSTANT_SKILL:
-                        var opponentSkill = JsonMapper.ToObject<PackAction_InstantSkill_ToClient>(_jsonStr);
-                        AllocatedRoom.Instance.ReceiveActiveInstantSkill(opponentSkill.SKillID, opponentSkill.NewSkilID, opponentSkill.HandSkills);
+                        var instantSkillPack = JsonMapper.ToObject<PackAction_InstantSkill_ToClient>(_jsonStr);
+                        AllocatedRoom.Instance.ReceiveActiveInstantSkill(_playerID, instantSkillPack.SkillID, instantSkillPack.NewSkilID, instantSkillPack.HandSkills);
                         break;
                     default:
                         Debug.LogError($"收到未實作處理的 PackActionType: {_actionType}");

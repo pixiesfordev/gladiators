@@ -6,6 +6,15 @@ namespace Gladiators.Main {
         Myself,
         Enemy,
     }
+    public enum Space {
+        Local,
+        World,
+    }
+    public enum RoleSpace {
+        Top,
+        Center,
+        Bot
+    }
     public enum Currency {
         Gold,
         Point,

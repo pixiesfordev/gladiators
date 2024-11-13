@@ -116,8 +116,7 @@ MonoBehaviour:
   - m_GUID: 8364aee01ec99214f887a1b54eabf862
     m_Address: Assets/AddressableAssets/Prefabs
     m_ReadOnly: 0
-    m_SerializedLabels:
-    - Prefab
+    m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 863df0004e588234db3542069897c6a4
     m_Address: Assets/CartoonGrass/Materials/CartoonGrass_Grass_01_LOD2.mat

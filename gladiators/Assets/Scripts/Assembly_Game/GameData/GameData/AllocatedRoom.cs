@@ -203,8 +203,26 @@ namespace Gladiators.Main {
         /// <summary>
         /// 收到即時技能發動
         /// </summary>
-        public void ReceiveActiveInstantSkill(int _skillID, int _newSkillID, int[] _handSkills) {
+        public void ReceiveActiveInstantSkill(string _playerID, int _skillID, int _newSkillID, int[] _handSkills) {
             BattleSceneUI.Instance.CastInstantSkill(_newSkillID);
+            BattleController.Instance.PlayInstantSkill(_playerID, _skillID);
+        }
+        /// <summary>
+        /// 收到肉搏封包, 存儲封包資料
+        /// </summary>
+        public void ReceiveMelee(MELEE_TOCLIENT _melee) {
+            if (BattleManager.Instance == null) return;
+            BattleManager.Instance.Melee(_melee);
+            if (_melee.NewSkilID != 0) // NewSkilID是0代表沒有施放肉搏技能 所以也沒有抽新的技能
+                BattleSceneUI.Instance.CastMeleeSkill(_melee.NewSkilID);
+            //TestTool.Instance.UpdateSkills(_melee.MyHandSkillIDs, _melee.SkillOnID);
+        }
+        /// <summary>
+        /// 收到肉搏前封包
+        /// </summary>
+        public void ReceiveBeforeMelee(BEFORE_MELEE_TOCLIENT _melee) {
+            if (BattleManager.Instance == null) return;
+            BattleController.Instance.PlayMeleeSkill(_melee);
         }
         /// <summary>
         /// 收到雙方玩家資料後, 將目前狀態設定為GotEnemy並通知BattleScene送Ready
@@ -318,22 +336,7 @@ namespace Gladiators.Main {
         public void ReceiveGladiatorStates(long _packID, GLADIATORSTATES_TOCLIENT _gladiatorStats) {
             if (BattleManager.Instance != null) BattleController.Instance.UpdateGladiatorsState(_packID, _gladiatorStats.Time, _gladiatorStats.MyState, _gladiatorStats.OpponentState);
         }
-        /// <summary>
-        /// 收到肉搏封包, 存儲封包資料
-        /// </summary>
-        public void ReceiveMelee(MELEE_TOCLIENT _melee) {
-            if (BattleManager.Instance == null) return;
-            BattleManager.Instance.Melee(_melee);
-            if (_melee.NewSkilID != 0) // NewSkilID是0代表沒有施放肉搏技能 所以也沒有抽新的技能
-                BattleSceneUI.Instance.CastMeleeSkill(_melee.NewSkilID);
-            //TestTool.Instance.UpdateSkills(_melee.MyHandSkillIDs, _melee.SkillOnID);
-        }
-        /// <summary>
-        /// 收到肉搏前封包
-        /// </summary>
-        public void ReceiveBeforeMelee(BEFORE_MELEE_TOCLIENT _melee) {
-            if (BattleManager.Instance == null) return;
-        }
+
         /// <summary>
         /// 收到角鬥士血量更新
         /// </summary>

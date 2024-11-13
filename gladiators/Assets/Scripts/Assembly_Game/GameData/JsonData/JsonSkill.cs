@@ -25,6 +25,32 @@ namespace Gladiators.Main {
         Bear,//巨熊
         Deer,//靈鹿
     }
+
+    public class SpellEffect {
+        public Space MySpace { get; private set; }
+        public RoleSpace MyRoleSpace { get; private set; }
+        public string Name { get; private set; }
+        public SpellEffect(string _effectStr) {
+            var strs = _effectStr.Split(',');
+            if (strs.Length != 3) {
+                WriteLog.LogError($"SpellEffect建構失敗: {_effectStr}");
+                return;
+            }
+            Space space;
+            if (!MyEnum.TryParseEnum(strs[0], out space)) {
+                WriteLog.LogError($"SpellEffect建構失敗: {_effectStr}");
+                return;
+            }
+            RoleSpace roleSpace;
+            if (!MyEnum.TryParseEnum(strs[1], out roleSpace)) {
+                WriteLog.LogError($"SpellEffect建構失敗: {_effectStr}");
+                return;
+            }
+            MySpace = space;
+            MyRoleSpace = roleSpace;
+            Name = strs[2];
+        }
+    }
     public class JsonSkill : JsonBase {
         public static string DataName { get; set; }
         public string Name {
@@ -45,6 +71,10 @@ namespace Gladiators.Main {
         public double Knockback { get; private set; }
         public SkillType MySkillType { get; private set; }
         public Divine MyDivine { get; private set; }
+        public SpellEffect Effect_Self { get; private set; }
+        public SpellEffect Effect_Target { get; private set; }
+        public SpellEffect Effect_Projector { get; private set; }
+        public SpellEffect Effect_ProjectorHit { get; private set; }
         public List<JsonSkillEffect> Effects { get { return JsonSkillEffect.GetSkillEffectDatas(ID); } }
 
         protected override void SetDataFromJson(JsonData _item) {
@@ -91,6 +121,26 @@ namespace Gladiators.Main {
                     case "Divine":
                         Divine divine;
                         if (MyEnum.TryParseEnum(item[key].ToString(), out divine)) MyDivine = divine;
+                        break;
+                    case "Effect_Self":
+                        var effectSelf = new SpellEffect(item[key].ToString());
+                        Effect_Self = effectSelf;
+                        break;
+                    case "Effect_Target":
+                        var effectTarget = new SpellEffect(item[key].ToString());
+                        Effect_Target = effectTarget;
+                        break;
+                    case "Effect_Shot":
+                        var effectShot = item[key].ToString();
+                        var strs = effectShot.Split('&');
+                        if (strs.Length != 2) {
+                            WriteLog.LogError($"{DataName}表的ID({key})的 Effect_Shot 欄位填錯{effectShot}");
+                            continue;
+                        }
+                        var effectProjector = new SpellEffect(strs[0]);
+                        Effect_Projector = effectProjector;
+                        var effectProjectorHit = new SpellEffect(strs[1]);
+                        Effect_ProjectorHit = effectProjectorHit;
                         break;
                     default:
                         WriteLog.LogWarning(string.Format("{0}表有不明屬性:{1}", DataName, key));

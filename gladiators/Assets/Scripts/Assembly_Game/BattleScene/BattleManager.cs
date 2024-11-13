@@ -25,6 +25,7 @@ namespace Gladiators.Battle {
         [SerializeField] public CinemachineVirtualCamera vCam;
         [SerializeField] public CinemachineTargetGroup vTargetGroup;
         [SerializeField] Camera MyCam;
+        public Transform WorldEffectParent; // 放特效的位置
         public Camera BattleCam => MyCam;
 
         [SerializeField] int BattleDefaultTime = 60;//設定戰鬥時間

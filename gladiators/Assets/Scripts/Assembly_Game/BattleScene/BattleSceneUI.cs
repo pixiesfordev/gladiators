@@ -153,7 +153,7 @@ public class BattleSceneUI : BaseUI {
     /// <param name="_addHP">目前血量</param>
     public void UpdateGladiatorHP(string _playerID, int _addHP) {
         var playerDoc = GamePlayer.Instance.GetDBData<DBPlayer>();
-        WriteLog.LogError("_playerID=" + _playerID + " playerDoc.ID=" + playerDoc.ID + "  _addHP=" + _addHP);
+        //WriteLog.LogError("_playerID=" + _playerID + " playerDoc.ID=" + playerDoc.ID + "  _addHP=" + _addHP);
         if (_playerID == playerDoc.ID) PlayerGladiatorInfo.AddHP(_addHP);
         else EnemyGladiatorInfo.AddHP(_addHP);
     }

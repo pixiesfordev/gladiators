@@ -77,6 +77,8 @@ public enum NumType {
 }
 
 public class Character : MonoBehaviour {
+
+
     public Transform Base;
     public Transform rotate;
     public Transform Baseturntable;
@@ -84,12 +86,28 @@ public class Character : MonoBehaviour {
     public Transform CamLook_Left;
     public Transform CamLook_Right;
     public ParticleSystem MoveSmoke;
+    public EffectSpeller MyEffectSpeller;
+    public Transform EffectParent;
+    [SerializeField] Transform CenterTrans;
+    public Vector3 CenterPos {
+        get {
+            return new Vector3(transform.position.x, transform.position.y + modelCenter, transform.position.z);
+        }
+    }
+    public Vector3 TopPos {
+        get {
+            return new Vector3(transform.position.x, transform.position.y + modelCenter * 2, transform.position.z);
+        }
+    }
+    float modelCenter;
+    public Vector3 BotPos {
+        get {
+            return new Vector3(transform.position.x, transform.position.y, transform.position.z);
+        }
+    }
 
 
     public Animator animator;
-
-    public GameObject skillArea;
-    public GameObject skillBall;
 
     public RightLeft FaceDir { get; private set; }// 玩家面相方向(玩家看到自己都是在左方且面相右方)
 
@@ -112,8 +130,26 @@ public class Character : MonoBehaviour {
         }
     }
 
-    public void Init(int heroID, float _pos, Character _opponent, RightLeft _faceDir, float _knockAngle) {
-        AddressablesLoader.GetPrefab($"Gladiator/{heroID}/BOARD", (boardPrefab, handle) => {
+    public void Init(int _jsonID, float _pos, Character _opponent, RightLeft _faceDir, float _knockAngle) {
+        MyEffectSpeller.Init(_opponent);
+        var jsonGladiator = GameDictionary.GetJsonData<JsonGladiator>(_jsonID);
+        enemy = _opponent;
+        FaceDir = _faceDir;
+        transform.localPosition = new Vector3(_pos, 0, 0);
+        SetRush(false);
+        MoveSmoke.Stop();
+        setModel(jsonGladiator);
+        SetFaceToTarget(_knockAngle);
+    }
+
+    void setModel(JsonGladiator _json) {
+        if (_json == null) {
+            WriteLog.LogError($"setModel錯誤，json為null");
+            return;
+        }
+        modelCenter = (float)_json.ModelCenter;
+        CenterTrans.localPosition = new Vector3(0, modelCenter, 0);
+        AddressablesLoader.GetPrefab($"Gladiator/{_json.Ref}/BOARD", (boardPrefab, handle) => {
             if (boardPrefab != null) {
                 if (BOARD != null) {
                     Destroy(BOARD.gameObject);
@@ -129,14 +165,6 @@ public class Character : MonoBehaviour {
                 SideRotationParent.localRotation = Quaternion.Euler(0, sideRotationdAngle, 0);
             }
         });
-
-        enemy = _opponent;
-        FaceDir = _faceDir;
-        MoveClientToPos(new Vector3(_pos, 0, 0), 0).Forget();
-        SetRush(false);
-        MoveSmoke.Stop();
-
-        SetFaceToTarget(_knockAngle);
     }
 
 

@@ -7,7 +7,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.Entities.UniversalDelegates;
 using UnityEngine;
 
 public class BattleController : MonoBehaviour {
@@ -263,19 +262,37 @@ public class BattleController : MonoBehaviour {
     }
 
     /// <summary>
-    /// 呼叫腳色播放肉搏技能，收到肉搏技能施放封包時會呼叫此Func
-    /// </summary>
-    /// <param name="_playerID">玩家DBID</param>
-    /// <param name="_skillID">技能JsonID</param>
-    public void PlayMeleeSKill(string _playerID, int _skillID) {
-
-    }
-    /// <summary>
     /// 呼叫腳色播放立即技能，收到即時技能施放封包時會呼叫此Func
     /// </summary>
     /// <param name="_playerID">玩家DBID</param>
     /// <param name="_skillID">技能JsonID</param>
     public void PlayInstantSkill(string _playerID, int _skillID) {
+        if (CharDic == null || !CharDic.ContainsKey(_playerID)) {
+            WriteLog.LogError("PlayInstantSkill錯誤");
+            return;
+        }
+        var jsonSkill = GameDictionary.GetJsonData<JsonSkill>(_skillID);
+        if (jsonSkill == null) return;
+        CharDic[_playerID].MyEffectSpeller.PlaySpellEffect(jsonSkill);
+    }
+    /// <summary>
+    /// 呼叫腳色播放肉搏技能，收到肉搏技能施放封包時會呼叫此Func
+    /// </summary>
+    public void PlayMeleeSkill(BEFORE_MELEE_TOCLIENT _pack) {
+        if (leftChar == null || rightChar == null) {
+            WriteLog.LogError("PlayMeleeSkill錯誤");
+            return;
+        }
+        if (_pack.MySkillID != 0) {
+            var jsonSkill = GameDictionary.GetJsonData<JsonSkill>(_pack.MySkillID);
+            if (jsonSkill == null) return;
+            leftChar.MyEffectSpeller.PlaySpellEffect(jsonSkill);
+        }
+        if (_pack.OpponentSkillID != 0) {
+            var jsonSkill = GameDictionary.GetJsonData<JsonSkill>(_pack.OpponentSkillID);
+            if (jsonSkill == null) return;
+            rightChar.MyEffectSpeller.PlaySpellEffect(jsonSkill);
+        }
 
     }
 
@@ -333,6 +350,15 @@ public class BattleController : MonoBehaviour {
                 return;
         }
         CharDic[_playerID].ShowBattleNumber(numType, _value);
+    }
+
+    public float GetDistBetweenChars() {
+        if (leftChar == null || rightChar == null) {
+            WriteLog.LogError($"character為null leftChar: {leftChar}   rightChar: {rightChar}");
+            return 0f;
+        }
+        float dist = Vector3.Distance(leftChar.transform.position, rightChar.transform.position);
+        return dist;
     }
 
 

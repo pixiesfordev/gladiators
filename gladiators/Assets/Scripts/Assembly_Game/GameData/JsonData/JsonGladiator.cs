@@ -24,6 +24,8 @@ namespace Gladiators.Main {
         public double CRIT { get; private set; }
         public int INIT { get; private set; }
         public double VigorRegen { get; private set; }
+        public double ModelCenter { get; private set; }
+
 
         protected override void SetDataFromJson(JsonData _item) {
             JsonData item = _item;
