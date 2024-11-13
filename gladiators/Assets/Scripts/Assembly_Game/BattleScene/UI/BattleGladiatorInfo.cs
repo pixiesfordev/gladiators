@@ -7,6 +7,8 @@ using Unity.Mathematics;
 using DG.Tweening;
 using System;
 using Gladiators.Main;
+using System.Collections.Generic;
+using System.Linq;
 
 /// <summary>
 /// 上方角鬥士資訊
@@ -25,10 +27,8 @@ public class BattleGladiatorInfo : MonoBehaviour {
     [SerializeField] Image HeartBeatIcon;
     [SerializeField] Transform HeartBeatGrayIconTrans;
     [SerializeField] Image HeartBeatGrayIcon;
-    [SerializeField] Transform BuffIconTrans;
-
-    //TODO:buff管理集合
-    //Dictionary<
+    [SerializeField] Transform BuffIconGridTrans;
+    [SerializeField] Image BufferIcon;
 
     [HeaderAttribute("==============TEST==============")]
     [HeaderAttribute("=========受擊血量變動測試=========")]
@@ -60,6 +60,10 @@ public class BattleGladiatorInfo : MonoBehaviour {
     [Tooltip("測試變更英雄頭像 要搭配英雄最大&目前血量一起設定")][SerializeField] bool UpdateHeroIcon = false;
     [Tooltip("測試英雄頭像ID")][SerializeField] int HeroTestID = 0;
 
+    [HeaderAttribute("==============測試Buffer==============")]
+    [Tooltip("測試bufferIcon")][SerializeField] string[] TestEffect;
+    [Tooltip("測試bufferIcon")][SerializeField] bool ShowTestEffect;
+
     //TODO:
     //1.扣血/回血 血條(Bar)演出 血條總長度396 Right值越大長度越短 396就等於0% >> 已完成(9/17改版)
     //1.心臟跳動效果(公式:100~1 >> Min~Max) >> 已完成(4/9)
@@ -85,10 +89,13 @@ public class BattleGladiatorInfo : MonoBehaviour {
     int HeroCurHP = 0; //英雄目前血量
     float HeroDisplayHPRate = 0f; //英雄顯示血量百分比
 
+    List<Image> BufferIconList;
+
     private void Start() {
         ChangeBarRect = HPChangeBar.GetComponent<RectTransform>();
         ChangeBarOriginPos = ChangeBarRect.anchoredPosition3D;
         SetHeartBeatParameter();
+        BufferIconList = new List<Image> { BufferIcon };
     }
 
     void Update() {
@@ -113,6 +120,12 @@ public class BattleGladiatorInfo : MonoBehaviour {
         if (UpdateHeroIcon) {
             Init(HeroTestMaxHP, HeroTestCurHP, HeroTestID);
             UpdateHeroIcon = false;
+        }
+
+        //測試用 顯示bufferIcon
+        if (ShowTestEffect) {
+            ShowTestEffect = false;
+            SetBufferIcon(TestEffect.ToList());
         }
     }
 
@@ -505,4 +518,41 @@ public class BattleGladiatorInfo : MonoBehaviour {
         HideTween.SetEase(Ease.Linear);
         HideTween.Restart();
     }
+
+    public void SetBufferIcon(List<string> effectTypes) {
+        for (int i = 0; i < effectTypes.Count; i++) {
+            //WriteLog.LogErrorFormat("type cnt: {0} effect cnt: {1} cur index: {2} Effect: {3}", 
+            //    effectTypes.Count, BufferIconList.Count, i, effectTypes[i]);
+
+            Image _icon;
+            if (i >= BufferIconList.Count) {
+                _icon = Instantiate(BufferIcon);
+                _icon.name = string.Format("BufferIcon" + i);
+                _icon.transform.SetParent(BuffIconGridTrans);
+                _icon.transform.localPosition = Vector3.zero;
+                _icon.transform.localScale = Vector3.one;
+                BufferIconList.Add(_icon);
+            } else {
+                _icon = BufferIconList[i];
+            }
+            AssetGet.GetSpriteFromAtlas("BufferIcon", effectTypes[i], (sprite) => {
+                _icon.gameObject.SetActive(true);
+                if (sprite != null) {
+                    _icon.sprite = sprite;        
+                } else {
+                    AssetGet.GetSpriteFromAtlas("BufferIcon", "defaultBufferIcon", (sprite) => { 
+                        _icon.sprite = sprite; 
+                        WriteLog.LogWarningFormat("圖片缺少! 用替用圖代替顯示!");
+                        } );
+                }
+            });
+        }
+        //WriteLog.LogErrorFormat("effect type cnt: {0}. icon list cnt: {1}", effectTypes.Count, BufferIconList.Count);
+        //其他沒顯示的要關閉
+        for (int i = effectTypes.Count; i < BufferIconList.Count; i++) {
+            //WriteLog.LogErrorFormat("close icon index: {0}", i);
+            BufferIconList[i].gameObject.SetActive(false);
+        }
+    }
+
 }
