@@ -519,6 +519,10 @@ public class BattleGladiatorInfo : MonoBehaviour {
         HideTween.Restart();
     }
 
+    /// <summary>
+    /// 更新Buffer
+    /// </summary>
+    /// <param name="effectTypes">Buffer列表</param>
     public void SetBufferIcon(List<string> effectTypes) {
         for (int i = 0; i < effectTypes.Count; i++) {
             //WriteLog.LogErrorFormat("type cnt: {0} effect cnt: {1} cur index: {2} Effect: {3}", 
