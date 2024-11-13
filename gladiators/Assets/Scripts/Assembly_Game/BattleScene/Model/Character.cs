@@ -7,61 +7,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Unity.Entities;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
-
-public enum EffectType {
-    PDmg,
-    MDmg,
-    TrueDmg,
-    RestoreHP,
-    RestoreVigor,
-    Rush,
-    Pull,
-    Purge,
-    Shuffle,
-    Fortune,
-    PermanentHp,
-    MeleeDmgReflect,
-    Block,
-    Intuition,
-    Enraged,
-    Dodge_RangeAttack,
-    RegenHP,
-    RegenVigor,
-    Dizzy,
-    Poison,
-    Bleeding,
-    Burning,
-    Fearing,
-    Vulnerable,
-    Weak,
-    Fatigue,
-    Protection,
-    MeleeSkillReflect,
-    RangeSkillReflect,
-    PDefUp,
-    MDefUp,
-    StrUp,
-    KnockbackUp,
-    Barrier,
-    Poisoning,
-    ComboAttack,
-    Vampire,
-    CriticalUp,
-    InitUp,
-    Indomitable,
-    Berserk,
-    StrUpByHp,
-    Chaos,
-    SkillVigorUp,
-    StrBurst,
-    TriggerEffect_BeAttack_StrUp,
-    TriggerEffect_Time_Fortune,
-    TriggerEffect_WaitTime_RestoreVigor,
-    TriggerEffect_BattleResult_PermanentHp,
-    TriggerEffect_SkillVigorBelow_ComboAttack,
-    TriggerEffect_FirstAttack_Dodge,
-}
 
 public enum NumType {
     Dmg_Small,
@@ -87,24 +32,12 @@ public class Character : MonoBehaviour {
     public Transform CamLook_Right;
     public ParticleSystem MoveSmoke;
     public EffectSpeller MyEffectSpeller;
-    public Transform EffectParent;
+    public Transform BuffParent;
     [SerializeField] Transform CenterTrans;
-    public Vector3 CenterPos {
-        get {
-            return new Vector3(transform.position.x, transform.position.y + modelCenter, transform.position.z);
-        }
-    }
-    public Vector3 TopPos {
-        get {
-            return new Vector3(transform.position.x, transform.position.y + modelCenter * 2, transform.position.z);
-        }
-    }
+    public Vector3 CenterPos { get { return new Vector3(transform.position.x, transform.position.y + modelCenter, transform.position.z); } }
+    public Vector3 TopPos { get { return new Vector3(transform.position.x, transform.position.y + modelCenter * 2, transform.position.z); } }
     float modelCenter;
-    public Vector3 BotPos {
-        get {
-            return new Vector3(transform.position.x, transform.position.y, transform.position.z);
-        }
-    }
+    public Vector3 BotPos { get { return new Vector3(transform.position.x, transform.position.y, transform.position.z); } }
 
 
     public Animator animator;
@@ -122,11 +55,11 @@ public class Character : MonoBehaviour {
 
     // 狀態
     public int MeleeSkillID { get; private set; }
-    List<Skill.EffectType> EffectTypes = new List<Skill.EffectType>();
+    List<EffectType> effectTypes = new List<EffectType>();
     public bool CanMove {
         get {
             if (IsKnockback) return false;
-            return !EffectTypes.IsMobileRestriction();
+            return !effectTypes.IsMobileRestriction();
         }
     }
 
@@ -202,8 +135,10 @@ public class Character : MonoBehaviour {
 
 
     public void UpdateEffectTypes(List<string> _effectTypStrs) {
-        EffectTypes = Skill.ConvertStrListToEffectTypes(_effectTypStrs);
+        effectTypes = Skill.ConvertStrListToEffectTypes(_effectTypStrs);
+        MyEffectSpeller.PlayBuffEffect(effectTypes);
     }
+
     void SetFaceToTarget(float _knockAngle) {
         // 調整角度根據角色的面向方向(左右)
         float adjustedAngle = (FaceDir == RightLeft.Right) ? -_knockAngle : -(_knockAngle + 180f);

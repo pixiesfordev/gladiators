@@ -57,7 +57,7 @@ MonoBehaviour:
   CamLook_Right: {fileID: 5488404779650223459}
   MoveSmoke: {fileID: 7052043346960849981}
   MyEffectSpeller: {fileID: 5996496001789048552}
-  EffectParent: {fileID: 7017112316976729839}
+  BuffParent: {fileID: 3595498384123392660}
   CenterTrans: {fileID: 7017112316976729839}
   animator: {fileID: 439293456559096948}
   SideRotationParent: {fileID: 2168189493600221619}
@@ -311,7 +311,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3595498384123392660}
   m_Layer: 8
-  m_Name: EffectParent
+  m_Name: BuffParent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -1,7 +1,9 @@
 using Gladiators.Battle;
 using Scoz.Func;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Gladiators.Main {
@@ -46,6 +48,50 @@ namespace Gladiators.Main {
             if (_jsonSkill.Effect_Self != null) playSelfEffect(_jsonSkill.Effect_Self);
             if (_jsonSkill.Effect_Target != null) playTargetEffect(_jsonSkill.Effect_Target);
             if (_jsonSkill.Effect_Projector != null) playProjectorEffect(_jsonSkill);
+        }
+        Dictionary<EffectType, GameObject> buffs = new Dictionary<EffectType, GameObject>();
+        public void PlayBuffEffect(List<EffectType> _types) {
+            HashSet<EffectType> effectsSet = new HashSet<EffectType>(_types);
+            // 移除Buff
+            foreach (var key in buffs.Keys.ToList()) {
+                if (!effectsSet.Contains(key)) {
+                    Destroy(buffs[key]);
+                    buffs.Remove(key);
+                }
+            }
+
+            // 新增Buff
+            foreach (var effect in _types) {
+                if (!buffs.ContainsKey(effect)) {
+                    var effectType = effect;
+                    buffs[effectType] = null;
+                    //WriteLog.LogError("effect=" + effect);
+                    AddressablesLoader.GetPrefab($"Particles/Buff/{effect}", (prefab, handle) => {
+                        if (prefab == null || !myslef || !myslef.BuffParent) return;
+                        var go = Instantiate(prefab);
+                        go.transform.SetParent(myslef.BuffParent);
+                        setBuffPos(go.transform, effectType);
+                        buffs[effectType] = go;
+                    });
+                }
+            }
+        }
+        void setBuffPos(Transform _trans, EffectType _type) {
+            switch (_type) {
+                case EffectType.Bleeding:
+                case EffectType.Burning:
+                case EffectType.Poison:
+                    _trans.position = myslef.CenterPos;
+                    break;
+                case EffectType.Dizzy:
+                    _trans.position = myslef.TopPos;
+                    break;
+                default:
+                    WriteLog.LogError($"setBuffPos尚未定義此Buff類型({_type})的位置");
+                    _trans.position = myslef.CenterPos;
+                    break;
+
+            }
         }
         /// <summary>
         /// 播放自身特效

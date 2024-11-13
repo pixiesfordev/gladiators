@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8986373650415270347}
   - component: {fileID: 2485318339336502025}
   - component: {fileID: 7892852767981553501}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: du1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4853,7 +4853,7 @@ GameObject:
   - component: {fileID: 7086441261400749281}
   - component: {fileID: 2098349929402516757}
   - component: {fileID: 1061747894400694879}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: du
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9695,7 +9695,7 @@ GameObject:
   - component: {fileID: 712014893779112423}
   - component: {fileID: 4612870891425313132}
   - component: {fileID: 4318895743544971448}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: lizi
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14537,7 +14537,7 @@ GameObject:
   - component: {fileID: 3111771074068764911}
   - component: {fileID: 725720361765697739}
   - component: {fileID: 2587415735448739669}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Poison
   m_TagString: Untagged
   m_Icon: {fileID: 0}

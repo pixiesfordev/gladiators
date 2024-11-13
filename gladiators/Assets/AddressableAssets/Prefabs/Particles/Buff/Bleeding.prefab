@@ -34330,7 +34330,7 @@ GameObject:
   - component: {fileID: 330830721117227072}
   - component: {fileID: 8582994035084570841}
   m_Layer: 0
-  m_Name: Bleed
+  m_Name: Bleeding
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
