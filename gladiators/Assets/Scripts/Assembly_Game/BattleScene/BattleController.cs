@@ -91,8 +91,19 @@ public class BattleController : MonoBehaviour {
 
         leftChar.UpdateEffectTypes(_leftState.EffectTypes);
         rightChar.UpdateEffectTypes(_rightState.EffectTypes);
-        BattleSceneUI.Instance.PlayerGladiatorInfo.SetBufferIcon(_leftState.EffectTypes);
-        BattleSceneUI.Instance.EnemyGladiatorInfo.SetBufferIcon(_rightState.EffectTypes);
+        //TODO:請改這裡的輸入參數
+        List<BufferIconData> selfBuffer = new List<BufferIconData>(_leftState.EffectTypes.Count);
+        List<BufferIconData> enemyBuffer = new List<BufferIconData>(_rightState.EffectTypes.Count);
+        for (int i = 0; i < selfBuffer.Count; i++) {
+            //後面數字先塞0進去
+            selfBuffer[i] = new BufferIconData(_leftState.EffectTypes[i], 0);
+        }
+        for (int i = 0; i < selfBuffer.Count; i++) {
+            //後面數字先塞0進去
+            enemyBuffer[i] = new BufferIconData(_rightState.EffectTypes[i], 0);
+        }
+        BattleSceneUI.Instance.PlayerGladiatorInfo.SetBufferIcon(selfBuffer);
+        BattleSceneUI.Instance.EnemyGladiatorInfo.SetBufferIcon(enemyBuffer);
         // 新增移動插植緩衝
         ServerStatePack pack = new ServerStatePack();
         pack.PackID = _packID;

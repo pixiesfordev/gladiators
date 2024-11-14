@@ -9,6 +9,7 @@ using System;
 using Gladiators.Main;
 using System.Collections.Generic;
 using System.Linq;
+using Loxodon.Framework.Binding;
 
 /// <summary>
 /// 上方角鬥士資訊
@@ -28,7 +29,7 @@ public class BattleGladiatorInfo : MonoBehaviour {
     [SerializeField] Transform HeartBeatGrayIconTrans;
     [SerializeField] Image HeartBeatGrayIcon;
     [SerializeField] Transform BuffIconGridTrans;
-    [SerializeField] Image BufferIcon;
+    [SerializeField] BattleBufferIcon BufferIcon;
 
     [HeaderAttribute("==============TEST==============")]
     [HeaderAttribute("=========受擊血量變動測試=========")]
@@ -61,7 +62,8 @@ public class BattleGladiatorInfo : MonoBehaviour {
     [Tooltip("測試英雄頭像ID")][SerializeField] int HeroTestID = 0;
 
     [HeaderAttribute("==============測試Buffer==============")]
-    [Tooltip("測試bufferIcon")][SerializeField] string[] TestEffect;
+    [Tooltip("測試bufferIcon")][SerializeField] string[] TestEffectStr;
+    [Tooltip("測試bufferIcon")][SerializeField] int[] TestEffectNum;
     [Tooltip("測試bufferIcon")][SerializeField] bool ShowTestEffect;
 
     //TODO:
@@ -89,13 +91,14 @@ public class BattleGladiatorInfo : MonoBehaviour {
     int HeroCurHP = 0; //英雄目前血量
     float HeroDisplayHPRate = 0f; //英雄顯示血量百分比
 
-    List<Image> BufferIconList;
+    List<BattleBufferIcon> BufferIconObjList;
 
     private void Start() {
         ChangeBarRect = HPChangeBar.GetComponent<RectTransform>();
         ChangeBarOriginPos = ChangeBarRect.anchoredPosition3D;
         SetHeartBeatParameter();
-        BufferIconList = new List<Image> { BufferIcon };
+        BufferIconObjList = new List<BattleBufferIcon> { BufferIcon };
+        BufferIcon.gameObject.SetActive(false);
     }
 
     void Update() {
@@ -125,7 +128,11 @@ public class BattleGladiatorInfo : MonoBehaviour {
         //測試用 顯示bufferIcon
         if (ShowTestEffect) {
             ShowTestEffect = false;
-            SetBufferIcon(TestEffect.ToList());
+            BufferIconData[] datas = new BufferIconData[TestEffectStr.Length];
+            for(int i = 0 ; i < datas.Length; i++) {
+                datas[i] = new BufferIconData(TestEffectStr[i], TestEffectNum[i]);
+            }
+            SetBufferIcon(datas.ToList());
         }
     }
 
@@ -523,39 +530,29 @@ public class BattleGladiatorInfo : MonoBehaviour {
     /// 更新Buffer
     /// </summary>
     /// <param name="effectTypes">Buffer列表</param>
-    public void SetBufferIcon(List<string> effectTypes) {
+    public void SetBufferIcon(List<BufferIconData> effectTypes) {
         for (int i = 0; i < effectTypes.Count; i++) {
             //WriteLog.LogErrorFormat("type cnt: {0} effect cnt: {1} cur index: {2} Effect: {3}", 
-            //    effectTypes.Count, BufferIconList.Count, i, effectTypes[i]);
-
-            Image _icon;
-            if (i >= BufferIconList.Count) {
-                _icon = Instantiate(BufferIcon);
-                _icon.name = string.Format("BufferIcon" + i);
-                _icon.transform.SetParent(BuffIconGridTrans);
-                _icon.transform.localPosition = Vector3.zero;
-                _icon.transform.localScale = Vector3.one;
-                BufferIconList.Add(_icon);
+            //    effectTypes.Count, BufferIconObjList.Count, i, effectTypes[i]);
+            BattleBufferIcon _obj;
+            if (i >= BufferIconObjList.Count) {
+                _obj = Instantiate(BufferIcon);
+                _obj.name = string.Format("BufferIcon" + i);
+                _obj.transform.SetParent(BuffIconGridTrans);
+                _obj.transform.localPosition = Vector3.zero;
+                _obj.transform.localScale = Vector3.one;
+                BufferIconObjList.Add(_obj);
             } else {
-                _icon = BufferIconList[i];
+                _obj = BufferIconObjList[i];
             }
-            AssetGet.GetSpriteFromAtlas("BufferIcon", effectTypes[i], (sprite) => {
-                _icon.gameObject.SetActive(true);
-                if (sprite != null) {
-                    _icon.sprite = sprite;        
-                } else {
-                    AssetGet.GetSpriteFromAtlas("BufferIcon", "defaultBufferIcon", (sprite) => { 
-                        _icon.sprite = sprite; 
-                        WriteLog.LogWarningFormat("圖片缺少! 用替用圖代替顯示!");
-                        } );
-                }
-            });
+            _obj.SetEffect(effectTypes[i]);
+            _obj.gameObject.SetActive(true);
         }
-        //WriteLog.LogErrorFormat("effect type cnt: {0}. icon list cnt: {1}", effectTypes.Count, BufferIconList.Count);
+        //WriteLog.LogErrorFormat("effect type cnt: {0}. icon list cnt: {1}", effectTypes.Count, BufferIconObjList.Count);
         //其他沒顯示的要關閉
-        for (int i = effectTypes.Count; i < BufferIconList.Count; i++) {
+        for (int i = effectTypes.Count; i < BufferIconObjList.Count; i++) {
             //WriteLog.LogErrorFormat("close icon index: {0}", i);
-            BufferIconList[i].gameObject.SetActive(false);
+            BufferIconObjList[i].gameObject.SetActive(false);
         }
     }
 

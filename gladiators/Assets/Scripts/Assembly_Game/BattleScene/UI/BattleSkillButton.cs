@@ -157,7 +157,7 @@ public class BattleSkillButton : MonoBehaviour {
         SkillSelected = false;
         curAniState = SkillAniState.START_CANCEL;
         BtnAni.Play(IsEnergyEnough ? "Start_Cancel" : "Start_Cancel_Insufficient");
-        Debug.LogErrorFormat("其他技能被選上 取消已選上技能: {0}", name);
+        //Debug.LogErrorFormat("其他技能被選上 取消已選上技能: {0}", name);
     }
 
     public void AfterCancelEvent() {
@@ -165,11 +165,11 @@ public class BattleSkillButton : MonoBehaviour {
         if (IsEnergyEnough) {
             //能量足夠普通狀態
             PlayButtonNormal();
-            Debug.LogError("取消動畫播放完畢 能量足夠");
+            //Debug.LogError("取消動畫播放完畢 能量足夠");
         } else {
             //能量不足普通狀態
             PlayButtonInsufficientNormal();
-            Debug.LogError("取消動畫播放完畢 能量不足");
+            //Debug.LogError("取消動畫播放完畢 能量不足");
         }
         //解鎖按鈕
         btnLocking = false;
@@ -178,7 +178,7 @@ public class BattleSkillButton : MonoBehaviour {
     public void AfterScaleEvent() {
         //由Start_Scale和Start_Scale_Insufficient播放完畢後呼叫 >> 開始抖動
         PlayButtonVibrate();
-        Debug.LogErrorFormat("放大動畫播放完畢 能量是否足夠? {0}", IsEnergyEnough);
+        //Debug.LogErrorFormat("放大動畫播放完畢 能量是否足夠? {0}", IsEnergyEnough);
     }
 
     public void AfterReleasedEvent() {
@@ -187,7 +187,7 @@ public class BattleSkillButton : MonoBehaviour {
         //因為有可能玩家點了技能後悔不想施放 這時候如果拖曳滑鼠沒觸發OnClick事件會導致抖動直接不正常停止
         if (SkillSelected) {
             PlayButtonVibrate();
-            Debug.LogError("點了按鈕後放開按鈕 但不取消技能 恢復抖動狀態!");
+            //Debug.LogError("點了按鈕後放開按鈕 但不取消技能 恢復抖動狀態!");
         }
         //如果是能量不足還需要關閉物件
         if (!IsEnergyEnough) {
@@ -202,7 +202,7 @@ public class BattleSkillButton : MonoBehaviour {
             //立即施放類 等待後端發送的封包後才演出
             if (IsEnergyEnough) {
                 curAniState = SkillAniState.INSTANT_WAIT_SERVER;
-                Debug.LogError("立即釋放技能 等待Server送包");
+                //Debug.LogError("立即釋放技能 等待Server送包");
             }
         } else if (SkillData.Activation == SkillActivation.Melee) {
             //近戰類到此就解鎖 因為後續觸發碰撞發動是由後端發送 非前端觸發
@@ -215,7 +215,7 @@ public class BattleSkillButton : MonoBehaviour {
         //TODO:發送命令給BattleManager去放技能
         //技能體力值釋放技能演出
         BattleSceneUI.Instance.BattleSkillBtnCastHideVigorVal(this);
-        Debug.LogError("要求模型播放技能動畫");
+        Debug.LogWarning("要求模型播放技能動畫");
     }
 
     public void CastSkillSetIconGrayEvent() {
@@ -229,7 +229,7 @@ public class BattleSkillButton : MonoBehaviour {
         BtnAni.Play("Change skills");
         //通知BattleSceneUI開始更換NextSkillBtn 演出時間要一致
         BattleSceneUI.Instance.NextSkillBtnChangeSkill();
-        Debug.LogError("釋放技能播放完畢");
+        //Debug.LogError("釋放技能播放完畢");
     }
 
     public void ChangeSkillEvent() {
@@ -237,31 +237,31 @@ public class BattleSkillButton : MonoBehaviour {
         var _jsonSkill = GameDictionary.GetJsonData<JsonSkill>(CacheSKillId);
         SetData(_jsonSkill);
         BattleSceneUI.Instance.SetSKillVigorCost(this, _jsonSkill != null ? _jsonSkill.Vigor : 0);
-        Debug.LogErrorFormat("更換技能資料! ID: {0}", CacheSKillId);
+        //Debug.LogErrorFormat("更換技能資料! ID: {0}", CacheSKillId);
     }
 
     public void AfterChangeSkillEvent() {
         //由BtnAni的Change skills播放完畢後呼叫
         //設定狀態 準備讓SetEnergy重新判斷狀態
         curAniState = SkillAniState.END_CHANGE_SKILL;
-        Debug.LogError("技能更換完畢 解鎖按鈕");
+        //Debug.LogError("技能更換完畢 解鎖按鈕");
     }
 
     public void AfterAvailableEvent() {
         //播放完此狀態要判斷撥放前是否為抖動狀態 是則要恢復抖動狀態演出
         if (oldAniState == SkillAniState.START_VIBRATE) {
             PlayButtonVibrate();
-            Debug.LogErrorFormat("After available event! energy enough? {0}", IsEnergyEnough);
+            //Debug.LogErrorFormat("After available event! energy enough? {0}", IsEnergyEnough);
         } else {
             //其他情況一定只有能量足夠普通/能量不足普通狀態 會有不足狀態是因為可能播放動畫期間有其他技能施放 導致能量又不足
             if (IsEnergyEnough) {
                 //能量足夠普通狀態
                 PlayButtonNormal();
-                Debug.LogError("After available event! 能量足夠");
+                //Debug.LogError("After available event! 能量足夠");
             } else {
                 //能量不足普通狀態
                 PlayButtonInsufficientNormal();
-                Debug.LogError("After available event! 能量不足");
+                //Debug.LogError("After available event! 能量不足");
             }
         }
     }
@@ -310,7 +310,7 @@ public class BattleSkillButton : MonoBehaviour {
         SkillSelected = false;
         btnLocking = true;
         CacheSKillId = _nextSkillId;
-        Debug.LogErrorFormat("Cast melee skill. Cache next skill. ID: {0}", _nextSkillId);
+        //Debug.LogErrorFormat("Cast melee skill. Cache next skill. ID: {0}", _nextSkillId);
         //start cast(0.22秒時ModelCastSkill 0.28秒時CastSkillSetIconGrayEvent) >> AfterCastSkillEvent >>
         //Change skills(ChangeSkillEvent) >> AfterChangeSkillEvent 
         PlayButtonCast();
@@ -357,11 +357,11 @@ public class BattleSkillButton : MonoBehaviour {
             if (IsEnergyEnough) {
                 //能量足夠
                 PlayButtonNormal();
-                Debug.LogError("轉換完技能 能量足夠施放技能!");
+                //Debug.LogError("轉換完技能 能量足夠施放技能!");
             } else {
                 //能量不足
                 PlayButtonInsufficientNormal();
-                Debug.LogError("轉換完技能 能量不夠施放技能!");
+                //Debug.LogError("轉換完技能 能量不夠施放技能!");
             }
             //按鈕解鎖(不在AfterChangeSkillEvent就解鎖 因為還要跑一次判定能量重設按鈕狀態 不然可能會有無法預期的演出錯誤)
             btnLocking = false;
@@ -376,12 +376,12 @@ public class BattleSkillButton : MonoBehaviour {
                     curAniState = SkillAniState.AVAILABLE;
                     SetAvailableMaterial().Forget();
                     BtnAni.Play("available");
-                    Debug.LogWarning("能量足夠 演出Available!");
+                    //Debug.LogWarning("能量足夠 演出Available!");
                 } else {
                     //能量從足夠變不足
                     //先把使用自訂Material相關的邏輯註解掉 因為無法正常裁切 需要找方法正確裁切
                     PlayButtonInsufficientNormal();
-                    Debug.LogWarning("能量不足 按鈕變回不足狀態!");
+                    //Debug.LogWarning("能量不足 按鈕變回不足狀態!");
                 }
             }
         }
@@ -410,7 +410,7 @@ public class BattleSkillButton : MonoBehaviour {
     }
 
     public void PressSkill() {
-        Debug.LogErrorFormat("press skill. Time: {0}", Time.time);
+        //Debug.LogErrorFormat("press skill. Time: {0}", Time.time);
         if (btnLocking) {
             Debug.LogWarningFormat("Press skill but btn is locking!");
             return;
@@ -422,13 +422,13 @@ public class BattleSkillButton : MonoBehaviour {
     }
 
     void EnoughEnergyPress() {
-        Debug.LogErrorFormat("enough energy press! Time: {0}", Time.time);
+        //Debug.LogErrorFormat("enough energy press! Time: {0}", Time.time);
         curAniState = SkillAniState.ENOUGH_ENERGY_PRESS;
         BtnAni.Play("Enough_Energy_Press");
     }
 
     void InsufficientEnergyPress() {
-        Debug.LogErrorFormat("Insufficient energy press! Time: {0}", Time.time);
+        //Debug.LogErrorFormat("Insufficient energy press! Time: {0}", Time.time);
         curAniState = SkillAniState.INSUFFICIENT_ENERGY_PRESS;
         BtnAni.Play("Insufficient_Energy_Press");
         //現在先把使用自訂Material相關的邏輯註解掉 因為無法正常裁切 需要找方法正確裁切
@@ -460,7 +460,7 @@ public class BattleSkillButton : MonoBehaviour {
     */
 
     public void ReleasedSkill() {
-        Debug.LogErrorFormat("released skill Time: {0}", Time.time);
+        //Debug.LogErrorFormat("released skill Time: {0}", Time.time);
         if (btnLocking) {
             Debug.LogWarningFormat("Released skill but btn is locking!");
             return;
@@ -476,13 +476,13 @@ public class BattleSkillButton : MonoBehaviour {
     }
 
     void EnoughEnergyReleased() {
-        Debug.LogErrorFormat("enough energy released! Time: {0}", Time.time);
+        //Debug.LogErrorFormat("enough energy released! Time: {0}", Time.time);
         curAniState = SkillAniState.ENOUGH_ENERGY_RELEASED;
         BtnAni.Play("Enough_Energy_Released");
     }
 
     void InsufficientEnergyReleased() {
-        Debug.LogErrorFormat("insufficient energy released! Time: {0}", Time.time);
+        //Debug.LogErrorFormat("insufficient energy released! Time: {0}", Time.time);
         curAniState = SkillAniState.INSUFFICIENT_ENERGY_RELEASED;
         BtnAni.Play("Insufficient_Energy_Released");
         /*先把材質相關設定註解掉 目前沒辦法正確在Mask下使用Material
@@ -499,7 +499,7 @@ public class BattleSkillButton : MonoBehaviour {
         await UniTask.WaitForSeconds(clickWaitDuration);
         //判斷技能是否存在
         if (SkillData == null) {
-            Debug.LogError("Skill Data is null!");
+            Debug.LogWarning("Skill Data is null!");
             return;
         }
         //判斷是否已經有其他技能在施放中
@@ -509,7 +509,7 @@ public class BattleSkillButton : MonoBehaviour {
         }
         //判斷按鈕是否鎖定中 比如放開按鈕演出完到判斷施法之間發生Available的演出動畫 美術要求必須重新點按鈕 所以視為無效點擊
         if (btnLocking) {
-            Debug.LogError("Cast skill! 但按鈕被鎖定了!");
+            Debug.LogWarning("Cast skill! 但按鈕被鎖定了!");
             return;
         }
         btnLocking = true;
@@ -523,39 +523,24 @@ public class BattleSkillButton : MonoBehaviour {
                 BattleSceneUI.Instance.CastingInstantSKill(this, SkillData.ID);
                 curAniState = SkillAniState.START_SCALE;
                 BtnAni.Play("Start_Scale");
-                Debug.LogError("開始釋放立即施放技能!");
+                //Debug.LogError("開始釋放立即施放技能!");
             } else {
                 //能量不足以施放技能 按鈕解鎖
                 btnLocking = false;
-                Debug.LogError("立即釋放類技能 能量不足 無法施放技能!");
+                //Debug.LogError("立即釋放類技能 能量不足 無法施放技能!");
             }
         } else if (SkillData.Activation == SkillActivation.Melee) {
-            //TODO:
-            //測試 >>
-            //1.測試放近戰技能
-            //2.測試放立即技能
-            //3.看切換技能演出有沒有正常
-            //4.處理找不到技能圖可以加載的情況
-            //5.提醒修正體力條沒有初始化界面
-            //6.有發現一個奇怪的現象 能量不足的情況下 點下技能 移開滑鼠到技能按鈕外放開 不觸發Click的事件情況下
-            //  有機率會發生停止抖動 不確定是不是後端資料的問題 因為在腳色卡住不會再移動時就不會再發生了
-            //7.補充體力條相關細節
-            // 1.能量不足狀態下 mask得是暗色 所以要看有變色相關的要做變色演出或者直接打暗(檢視所有狀態來確保要打暗或打亮)
-            // 2.注意cast數字要淡出 change數字要淡入
-            // 3.消耗體力條要打亮
-            // 4.體力自然恢復
-
             //判斷是否已經被選上
             if (SkillSelected) {
                 //已選上 >> Start Cancel >> AfterCancelEvent
                 curAniState = SkillAniState.START_CANCEL;
                 BtnAni.Play(IsEnergyEnough ? "Start_Cancel" : "Start_Cancel_Insufficient");
-                Debug.LogError("取消近戰技能!");
+                //Debug.LogError("取消近戰技能!");
             } else {
                 //未選上 >> Start Scale >> AfterScaleEvent >> Start vibrute >> AfterVibruteEvent
                 curAniState = SkillAniState.START_SCALE;
                 BtnAni.Play(IsEnergyEnough ? "Start_Scale" : "Start_Scale_Insufficient");
-                Debug.LogError("選上近戰技能!");
+                //Debug.LogError("選上近戰技能!");
                 //檢查其他按鈕取消選上
                 BattleSceneUI.Instance.CancelOtherSelectedSKill(this);
             }
@@ -567,7 +552,7 @@ public class BattleSkillButton : MonoBehaviour {
     public void OnClick() {
         //準備判斷點擊事件 因為要配合點錯技能拖曳滑鼠或手指到按鈕外取消施法的操作 所以不在Released判斷 而是在Click事件判斷
         CastSkill().Forget();
-        Debug.LogErrorFormat("觸發點擊按鈕! Time: {0}", Time.time);
+        //Debug.LogErrorFormat("觸發點擊按鈕! Time: {0}", Time.time);
     }
 
     /*配合Shader材質的演出 先註解 因為現在Shader有問題
