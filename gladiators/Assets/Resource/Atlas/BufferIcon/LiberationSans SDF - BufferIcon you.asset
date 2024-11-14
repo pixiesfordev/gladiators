@@ -103,11 +103,11 @@ Material:
     - _FaceColor: {r: 1, g: 1, b: 1, a: 1}
     - _GlowColor: {r: 0, g: 1, b: 0, a: 0.5}
     - _MaskCoord: {r: 0, g: 0, b: 32767, a: 32767}
-    - _OutlineColor: {r: 0.07227186, g: 0.056128494, b: 0.004391442, a: 1}
+    - _OutlineColor: {r: 0.07818743, g: 0.003676507, b: 0.07818743, a: 1}
     - _ReflectFaceColor: {r: 0, g: 0, b: 0, a: 1}
     - _ReflectOutlineColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}
-    - _UnderlayColor: {r: 0.5840786, g: 0.5332766, b: 0.3515327, a: 1}
+    - _UnderlayColor: {r: 1, g: 0, b: 0.4661932, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &11400000
 MonoBehaviour:
@@ -119,11 +119,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 71c1514a6bd24e1e882cebbe1904ce04, type: 3}
-  m_Name: LiberationSans SDF - BufferIcon
+  m_Name: LiberationSans SDF - BufferIcon you
   m_EditorClassIdentifier: 
-  hashCode: -1116413707
+  hashCode: 1044853846
   material: {fileID: 2180264}
-  materialHashCode: 1178915893
+  materialHashCode: 74930358
   m_Version: 1.1.0
   m_SourceFontFileGUID: e3265ab4bf004d28a9537516768c1c75
   m_SourceFontFile_EditorRef: {fileID: 12800000, guid: e3265ab4bf004d28a9537516768c1c75,
