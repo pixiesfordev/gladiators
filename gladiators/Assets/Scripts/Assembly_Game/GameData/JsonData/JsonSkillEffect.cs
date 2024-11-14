@@ -3,6 +3,7 @@ using Scoz.Func;
 using LitJson;
 using System;
 using Unity.Entities.UniversalDelegates;
+using static Gladiators.Main.JsonSkillEffect;
 
 
 namespace Gladiators.Main {
@@ -134,6 +135,15 @@ namespace Gladiators.Main {
             if (SkillEffectDataDic.ContainsKey(_id)) return SkillEffectDataDic[_id];
             return null;
         }
+
+        public static (bool, EffectType) ConvertStrToEffectType(string _str) {
+            if (MyEnum.TryParseEnum(_str, out EffectType type)) {
+                return (true, type);
+            } else {
+                WriteLog.LogError($"ConvertStrToEffectType失敗: {_str}");
+                return (false, EffectType.Dizzy);
+            }
+        }
     }
     public class SkillEffect {
         public EffectType EffectType { get; private set; }
@@ -144,6 +154,91 @@ namespace Gladiators.Main {
             EffectType = _type;
             Prob = _prob;
             ValueStr = _value;
+        }
+    }
+    public static class SkillExtension {
+        /// <summary>
+        /// BuffIcon顯示數值類型
+        /// </summary>
+        public enum BuffIconValType {
+            Time, // 時間: 顯示數值(剩餘1秒Icon要閃爍)
+            Stack, // 層數: 顯示數值
+            Passive // 被動: 不須顯示Icon數值
+        }
+        /// <summary>
+        /// 根據EffectType取得BuffIcon顯示數值類型
+        /// </summary>
+        public static BuffIconValType GetStackType(this EffectType _type) {
+            switch (_type) {
+                case EffectType.Enraged:
+                case EffectType.RegenHP:
+                case EffectType.RegenVigor:
+                case EffectType.Dizzy:
+                case EffectType.Fearing:
+                case EffectType.Protection:
+                case EffectType.PDefUp:
+                case EffectType.MDefUp:
+                case EffectType.StrUp:
+                case EffectType.KnockbackUp:
+                case EffectType.Barrier:
+                case EffectType.Poisoning:
+                case EffectType.CriticalUp:
+                case EffectType.InitUp:
+                case EffectType.Indomitable:
+                case EffectType.Berserk:
+                case EffectType.Chaos:
+                    return BuffIconValType.Time;
+                case EffectType.Intuition:
+                case EffectType.Dodge_RangeAttack:
+                case EffectType.Poison:
+                case EffectType.Bleeding:
+                case EffectType.Burning:
+                case EffectType.MeleeSkillReflect:
+                case EffectType.RangeSkillReflect:
+                case EffectType.ComboAttack:
+                case EffectType.Vampire:
+                case EffectType.SkillVigorUp:
+                case EffectType.StrBurst:
+                case EffectType.TriggerEffect_BeAttack_StrUp:
+                case EffectType.TriggerEffect_Time_Fortune:
+                case EffectType.TriggerEffect_FirstAttack_Dodge:
+                    return BuffIconValType.Stack;
+                case EffectType.StrUpByHp:
+                case EffectType.TriggerEffect_WaitTime_RestoreVigor:
+                case EffectType.TriggerEffect_BattleResult_PermanentHp:
+                case EffectType.TriggerEffect_SkillVigorBelow_ComboAttack:
+                    return BuffIconValType.Passive;
+                default:
+                    return BuffIconValType.Passive;
+            }
+        }
+
+        /// <summary>
+        /// 是否為移動限制類效果
+        /// </summary>
+        public static bool IsMobileRestriction(this List<EffectType> _effectTypes) {
+            return _effectTypes.CheckEnumsExistInList(EffectType.Dizzy, EffectType.Fearing, EffectType.Pull);
+        }
+
+        /// <summary>
+        /// 是否為玩家操控限制類效果
+        /// </summary>
+        public static bool IsPlayerControlRestriction(this List<EffectType> _effectTypes) {
+            return _effectTypes.CheckEnumsExistInList(EffectType.Berserk);
+        }
+
+        /// <summary>
+        /// 是否為立即技能限制類效果
+        /// </summary>
+        public static bool IsInstantSkillRestriction(this List<EffectType> _effectTypes) {
+            return _effectTypes.CheckEnumsExistInList(EffectType.Fearing, EffectType.Fearing, EffectType.Pull);
+        }
+
+        /// <summary>
+        /// 是否為擊退免疫類效果
+        /// </summary>
+        public static bool IsImmuneToKnockback(this List<EffectType> _effectTypes) {
+            return _effectTypes.CheckEnumsExistInList(EffectType.Barrier);
         }
     }
 

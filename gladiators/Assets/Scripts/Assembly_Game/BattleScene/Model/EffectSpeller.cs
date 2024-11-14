@@ -55,9 +55,8 @@ namespace Gladiators.Main {
         public void PlayBuffEffect(List<PackEffect> _effectDatas) {
             HashSet<EffectType> effectsSet = new HashSet<EffectType>();
             foreach (var effectData in _effectDatas) {
-                if (MyEnum.TryParseEnum(effectData.EffectName, out EffectType type)) {
-                    effectsSet.Add(type);
-                }
+                var (success, effectType) = JsonSkillEffect.ConvertStrToEffectType(effectData.EffectName);
+                if (success) effectsSet.Add(effectType);
             }
 
             // 移除 Buff

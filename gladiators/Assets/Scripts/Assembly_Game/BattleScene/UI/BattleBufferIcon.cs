@@ -13,11 +13,13 @@ public class BufferIconData {
     /// Buffer數值(時間/層數)
     /// </summary>
     public int Val { get; set; }
+    public SkillExtension.BuffIconValType ValType { get; private set; }
 
-    public BufferIconData (string effectType, int val)
-    {
+
+    public BufferIconData(string effectType, int val, SkillExtension.BuffIconValType valType) {
         Name = effectType;
         Val = val;
+        ValType = valType;
     }
 }
 
@@ -29,17 +31,16 @@ public class BattleBufferIcon : MonoBehaviour {
     [SerializeField] Image Icon;
     [SerializeField] MyTextPro Val;
 
-    public void SetEffect(BufferIconData bufferData)
-    {
+    public void SetEffect(BufferIconData bufferData) {
         AssetGet.GetSpriteFromAtlas("BufferIcon", bufferData.Name, (sprite) => {
             gameObject.SetActive(true);
             if (sprite != null) {
-                Icon.sprite = sprite;        
+                Icon.sprite = sprite;
             } else {
-                AssetGet.GetSpriteFromAtlas("BufferIcon", "defaultBufferIcon", (sprite) => { 
-                    Icon.sprite = sprite; 
+                AssetGet.GetSpriteFromAtlas("BufferIcon", "defaultBufferIcon", (sprite) => {
+                    Icon.sprite = sprite;
                     WriteLog.LogWarningFormat("圖片缺少! 用替用圖代替顯示!");
-                } );
+                });
             }
         });
         Val.text = bufferData.Val > 0 ? bufferData.Val.ToString() : "";

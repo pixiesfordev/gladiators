@@ -93,11 +93,17 @@ public class BattleController : MonoBehaviour {
         rightChar.UpdateEffectTypes(_rightState.EffectDatas);
         List<BufferIconData> selfBuffer = new List<BufferIconData>();
         foreach (var effectData in _leftState.EffectDatas) {
-            selfBuffer.Add(new BufferIconData(effectData.EffectName, (int)effectData.Duration));
+            var (success, effectType) = JsonSkillEffect.ConvertStrToEffectType(effectData.EffectName);
+            if (success) {
+                selfBuffer.Add(new BufferIconData(effectData.EffectName, (int)effectData.Duration, effectType.GetStackType()));
+            }
         }
         List<BufferIconData> enemyBuffer = new List<BufferIconData>();
         foreach (var effectData in _rightState.EffectDatas) {
-            enemyBuffer.Add(new BufferIconData(effectData.EffectName, (int)effectData.Duration));
+            var (success, effectType) = JsonSkillEffect.ConvertStrToEffectType(effectData.EffectName);
+            if (success) {
+                enemyBuffer.Add(new BufferIconData(effectData.EffectName, (int)effectData.Duration, effectType.GetStackType()));
+            }
         }
         BattleSceneUI.Instance.PlayerGladiatorInfo.SetBufferIcon(selfBuffer);
         BattleSceneUI.Instance.EnemyGladiatorInfo.SetBufferIcon(enemyBuffer);

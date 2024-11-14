@@ -129,8 +129,8 @@ public class BattleGladiatorInfo : MonoBehaviour {
         if (ShowTestEffect) {
             ShowTestEffect = false;
             BufferIconData[] datas = new BufferIconData[TestEffectStr.Length];
-            for(int i = 0 ; i < datas.Length; i++) {
-                datas[i] = new BufferIconData(TestEffectStr[i], TestEffectNum[i]);
+            for (int i = 0; i < datas.Length; i++) {
+                datas[i] = new BufferIconData(TestEffectStr[i], TestEffectNum[i], SkillExtension.BuffIconValType.Time);
             }
             SetBufferIcon(datas.ToList());
         }
