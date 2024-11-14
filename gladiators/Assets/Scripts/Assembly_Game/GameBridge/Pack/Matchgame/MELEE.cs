@@ -20,6 +20,6 @@ namespace Gladiators.Socket.Matchgame {
         public double MeleePos { get; private set; }
         public double Knockback { get; private set; }
         public double CurPos { get; private set; }
-        public List<string> EffectTypes { get; private set; }
+        public List<PackEffect> EffectDatas { get; private set; }
     }
 }

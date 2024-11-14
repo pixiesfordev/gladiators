@@ -1,17 +1,11 @@
 using Gladiators.Main;
+using Gladiators.Socket.Matchgame;
 using Scoz.Func;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public static class Skill {
-    public static List<EffectType> ConvertStrListToEffectTypes(List<string> _effectTypes) {
-        List<EffectType> lsit = new List<EffectType>();
-        foreach (var str in _effectTypes) {
-            if (MyEnum.TryParseEnum(str, out EffectType _type)) lsit.Add(_type);
-        }
-        return lsit;
-    }
 
     /// <summary>
     /// 是否為移動限制類效果

@@ -89,18 +89,15 @@ public class BattleController : MonoBehaviour {
     public void UpdateGladiatorsState(long _packID, long _time, PACKGLADIATORSTATE _leftState, PACKGLADIATORSTATE _rightState) {
         if (_leftState == null || _rightState == null) return;
 
-        leftChar.UpdateEffectTypes(_leftState.EffectTypes);
-        rightChar.UpdateEffectTypes(_rightState.EffectTypes);
-        //TODO:請改這裡的輸入參數
-        List<BufferIconData> selfBuffer = new List<BufferIconData>(_leftState.EffectTypes.Count);
-        List<BufferIconData> enemyBuffer = new List<BufferIconData>(_rightState.EffectTypes.Count);
-        for (int i = 0; i < selfBuffer.Count; i++) {
-            //後面數字先塞0進去
-            selfBuffer[i] = new BufferIconData(_leftState.EffectTypes[i], 0);
+        leftChar.UpdateEffectTypes(_leftState.EffectDatas);
+        rightChar.UpdateEffectTypes(_rightState.EffectDatas);
+        List<BufferIconData> selfBuffer = new List<BufferIconData>();
+        foreach (var effectData in _leftState.EffectDatas) {
+            selfBuffer.Add(new BufferIconData(effectData.EffectName, (int)effectData.Duration));
         }
-        for (int i = 0; i < selfBuffer.Count; i++) {
-            //後面數字先塞0進去
-            enemyBuffer[i] = new BufferIconData(_rightState.EffectTypes[i], 0);
+        List<BufferIconData> enemyBuffer = new List<BufferIconData>();
+        foreach (var effectData in _rightState.EffectDatas) {
+            enemyBuffer.Add(new BufferIconData(effectData.EffectName, (int)effectData.Duration));
         }
         BattleSceneUI.Instance.PlayerGladiatorInfo.SetBufferIcon(selfBuffer);
         BattleSceneUI.Instance.EnemyGladiatorInfo.SetBufferIcon(enemyBuffer);
@@ -258,8 +255,8 @@ public class BattleController : MonoBehaviour {
         curKnockAngle += UnityEngine.Random.Range(-KnockAngleRange, KnockAngleRange);
         BattleManager.Instance.SetVCamTargetRot(-curKnockAngle);
         var clientPos = ConvertTo3DPos((float)_leftMelee.CurPos, (float)_rightMelee.CurPos);
-        leftChar.HandleMelee(clientPos.Item1, _leftMelee.EffectTypes, (float)_leftMelee.Knockback, (float)_leftMelee.CurPos, curKnockAngle, _leftMelee.SkillID);
-        rightChar.HandleMelee(clientPos.Item2, _rightMelee.EffectTypes, (float)_rightMelee.Knockback, (float)_rightMelee.CurPos, curKnockAngle, _rightMelee.SkillID);
+        leftChar.HandleMelee(clientPos.Item1, _leftMelee.EffectDatas, (float)_leftMelee.Knockback, (float)_leftMelee.CurPos, curKnockAngle, _leftMelee.SkillID);
+        rightChar.HandleMelee(clientPos.Item2, _rightMelee.EffectDatas, (float)_rightMelee.Knockback, (float)_rightMelee.CurPos, curKnockAngle, _rightMelee.SkillID);
 
         //產生特效
         AddressablesLoader.GetParticle("Battle/MeleeHit", (prefab, handle) => {

@@ -1,4 +1,5 @@
 using Gladiators.Battle;
+using Gladiators.Socket.Matchgame;
 using Scoz.Func;
 using System;
 using System.Collections;
@@ -49,24 +50,28 @@ namespace Gladiators.Main {
             if (_jsonSkill.Effect_Target != null) playTargetEffect(_jsonSkill.Effect_Target);
             if (_jsonSkill.Effect_Projector != null) playProjectorEffect(_jsonSkill);
         }
+
         Dictionary<EffectType, GameObject> buffs = new Dictionary<EffectType, GameObject>();
-        public void PlayBuffEffect(List<EffectType> _types) {
-            HashSet<EffectType> effectsSet = new HashSet<EffectType>(_types);
-            // 移除Buff
-            foreach (var key in buffs.Keys.ToList()) {
-                if (!effectsSet.Contains(key)) {
-                    Destroy(buffs[key]);
-                    buffs.Remove(key);
+        public void PlayBuffEffect(List<PackEffect> _effectDatas) {
+            HashSet<EffectType> effectsSet = new HashSet<EffectType>();
+            foreach (var effectData in _effectDatas) {
+                if (MyEnum.TryParseEnum(effectData.EffectName, out EffectType type)) {
+                    effectsSet.Add(type);
                 }
             }
 
-            // 新增Buff
-            foreach (var effect in _types) {
-                if (!buffs.ContainsKey(effect)) {
-                    var effectType = effect;
-                    buffs[effectType] = null;
-                    //WriteLog.LogError("effect=" + effect);
-                    AddressablesLoader.GetPrefab($"Particles/Buff/{effect}", (prefab, handle) => {
+            // 移除 Buff
+            var keysToRemove = buffs.Keys.Where(k => !effectsSet.Contains(k)).ToList();
+            foreach (var key in keysToRemove) {
+                Destroy(buffs[key]);
+                buffs.Remove(key);
+            }
+
+            // 新增 Buff
+            foreach (var effectType in effectsSet) {
+                if (!buffs.ContainsKey(effectType)) {
+                    buffs[effectType] = null; // 先設為 null 表示正在載入中
+                    AddressablesLoader.GetPrefab($"Particles/Buff/{effectType}", (prefab, handle) => {
                         if (prefab == null || !myslef || !myslef.BuffParent) return;
                         var go = Instantiate(prefab);
                         go.transform.SetParent(myslef.BuffParent);

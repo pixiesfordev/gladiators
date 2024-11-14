@@ -2,6 +2,7 @@ using Cysharp.Threading.Tasks;
 using DamageNumbersPro;
 using DG.Tweening;
 using Gladiators.Main;
+using Gladiators.Socket.Matchgame;
 using Scoz.Func;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -134,9 +135,8 @@ public class Character : MonoBehaviour {
     }
 
 
-    public void UpdateEffectTypes(List<string> _effectTypStrs) {
-        effectTypes = Skill.ConvertStrListToEffectTypes(_effectTypStrs);
-        MyEffectSpeller.PlayBuffEffect(effectTypes);
+    public void UpdateEffectTypes(List<PackEffect> _effectDatas) {
+        MyEffectSpeller.PlayBuffEffect(_effectDatas);
     }
 
     void SetFaceToTarget(float _knockAngle) {
@@ -144,8 +144,8 @@ public class Character : MonoBehaviour {
         float adjustedAngle = (FaceDir == RightLeft.Right) ? -_knockAngle : -(_knockAngle + 180f);
         transform.localRotation = Quaternion.Euler(0, adjustedAngle, 0);
     }
-    public void HandleMelee(Vector3 _finalPos, List<string> _effectTypes, float _serverKnockDist, float _serverResultPos, float _knockAngl, int _skilID) {
-        UpdateEffectTypes(_effectTypes);
+    public void HandleMelee(Vector3 _finalPos, List<PackEffect> _effectDatas, float _serverKnockDist, float _serverResultPos, float _knockAngl, int _skilID) {
+        UpdateEffectTypes(_effectDatas);
         MeleeSkillID = _skilID;
         SetFaceToTarget(_knockAngl);
         knockback(_finalPos, _serverKnockDist, _serverResultPos, _knockAngl);

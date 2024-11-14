@@ -29,7 +29,11 @@ namespace Gladiators.Socket.Matchgame {
         public double CurSpd { get; private set; }
         public double CurVigor { get; private set; }
         public bool Rush { get; private set; }
-        public List<string> EffectTypes { get; private set; }
+        public List<PackEffect> EffectDatas { get; private set; }
+    }
+    public class PackEffect {
+        public string EffectName { get; private set; }
+        public double Duration { get; private set; }
     }
     public class Hp_TOCLIENT : SocketContent {
         //class名稱就是封包的CMD名稱
