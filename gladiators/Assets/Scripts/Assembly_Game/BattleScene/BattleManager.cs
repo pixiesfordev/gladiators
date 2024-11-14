@@ -1,30 +1,21 @@
 using Gladiators.Main;
-using Gladiators.Socket;
 using Gladiators.Socket.Matchgame;
 using Scoz.Func;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Threading;
-using Unity.Collections;
-using Unity.Entities;
-using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using Cysharp.Threading.Tasks;
-using Unity.Entities.UniversalDelegates;
-using Loxodon.Framework.Binding;
 using Cinemachine;
-using Cysharp.Threading.Tasks.Triggers;
-using System.Linq;
-using Unity.VisualScripting;
 
 namespace Gladiators.Battle {
     public class BattleManager : MonoBehaviour {
         public static BattleManager Instance;
         [SerializeField] public CinemachineVirtualCamera vCam;
         [SerializeField] public CinemachineTargetGroup vTargetGroup;
+        [SerializeField] Transform camPosTarget;
         [SerializeField] Camera MyCam;
+        MinMax camFOV = new MinMax(20, 70); // FOV最小與最大值
+        MinMax camPosTargetY = new MinMax(2, 8);// camPosTarget的Y座標最小與最大值
+        const float MAX_DIST = 40; // 雙方腳色最大距離
         public Transform WorldEffectParent; // 放特效的位置
         public Camera BattleCam => MyCam;
 
@@ -87,7 +78,17 @@ namespace Gladiators.Battle {
 
         public void SetVCamTargetRot(float _angle) {
             vTargetGroup.transform.localRotation = Quaternion.Euler(0, -90 + _angle, 0);
-            WriteLog.Log("vTargetGroup.transform.localRotation=" + vTargetGroup.transform.localRotation);
+        }
+
+        /// <summary>
+        /// 根據雙方距離改變攝影機FOV
+        /// </summary>
+        public void SetCamFov(float _charsDist) {
+            float ratio = (_charsDist / MAX_DIST);
+            float fov = ratio * (camFOV.Y - camFOV.X) + camFOV.X;
+            vCam.m_Lens.FieldOfView = fov;
+            float targetGroupY = ratio * (camPosTargetY.Y - camPosTargetY.X) + camPosTargetY.X;
+            camPosTarget.localPosition = new Vector3(camPosTarget.localPosition.x, targetGroupY, camPosTarget.localPosition.z);
         }
 
         void SetCam() {

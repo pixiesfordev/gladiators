@@ -58,15 +58,18 @@ public class BattleController : MonoBehaviour {
         leftChar.tag = "leftobj";
         leftChar.Init(_myPlayerPack.MyPackGladiator.JsonID, (float)_myPlayerPack.MyPackGladiator.CurPos, rightChar, RightLeft.Right, curKnockAngle);
         BattleSceneUI.Instance.InitVigor((float)_myPlayerPack.MyPackGladiator.CurVigor, 20);
-        BattleManager.Instance.vTargetGroup.AddMember(leftChar.transform, 1.8f, 8);
+        BattleManager.Instance.vTargetGroup.AddMember(leftChar.transform, 1f, 8);
         rightChar.name = _opponentPack.DBID;
         rightChar.tag = "rightobj";
         rightChar.Init(_opponentPack.MyPackGladiator.JsonID, (float)_opponentPack.MyPackGladiator.CurPos, leftChar, RightLeft.Left, curKnockAngle);
-        BattleManager.Instance.vTargetGroup.AddMember(rightChar.transform, 1, 8);
+        BattleManager.Instance.vTargetGroup.AddMember(rightChar.transform, 1.1f, 8);
 
         CharDic = new Dictionary<string, Character>();
         CharDic.Add(_myPlayerPack.DBID, leftChar);
         CharDic.Add(_opponentPack.DBID, rightChar);
+
+        BattleManager.Instance.SetVCamTargetRot(-curKnockAngle);
+        BattleManager.Instance.SetCamFov(GetDistBetweenChars());
     }
 
 
@@ -183,7 +186,7 @@ public class BattleController : MonoBehaviour {
                 // 更新角色位置
                 leftChar.MoveClientToPos(clientPos.Item1, MOVE_DURATION_SECS, true).Forget();
                 rightChar.MoveClientToPos(clientPos.Item2, MOVE_DURATION_SECS, true).Forget();
-
+                BattleManager.Instance.SetCamFov(GetDistBetweenChars());
 
                 // <<<<<<<<體力>>>>>>>>>
                 float leftVigor = Mathf.Lerp(before.LeftVigor, after.LeftVigor, alpha);

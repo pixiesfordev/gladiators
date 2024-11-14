@@ -13,6 +13,9 @@ public class BufferIconData {
     /// Buffer數值(時間/層數)
     /// </summary>
     public int Val { get; set; }
+    /// <summary>
+    /// 數值類型
+    /// </summary>
     public SkillExtension.BuffIconValType ValType { get; private set; }
 
 
