@@ -19,7 +19,6 @@ namespace Gladiators.Battle {
         [SerializeField] Image BGFore;
         [SerializeField] Button ConfirmBtn;
         [SerializeField] Text PlayerMoney;
-        [SerializeField] GameObject[] Candles;
         [SerializeField] DivineSkill[] DivineSkills;
         [SerializeField] Transform DropCoinTrans;
         [SerializeField] Text SureBtnText;
@@ -28,10 +27,11 @@ namespace Gladiators.Battle {
         [SerializeField] RectTransform LeftArrowRT;
         [SerializeField] RectTransform RightArrowRT;
         [SerializeField] RectTransform BtnBGMaskRT;
+        [SerializeField] Image BtnBGDecoration;
         [SerializeField] Material GrayMaterial;
 
         [SerializeField] Transform[] BGMoveWithCameraTiers; //會跟著鏡頭移動的分層 拆五層 五層移動量會不一樣 做出深度感
-        [SerializeField] Animator[] CandleAnis; //蠟燭動畫
+        [SerializeField] DivineCandle[] CandleObjs; //蠟燭動畫
 
         [HeaderAttribute("==============TEST==============")]
         [Tooltip("每根蠟燭倒數時間")][SerializeField] float PerCandleCountDownTime = 1f;
@@ -118,12 +118,10 @@ namespace Gladiators.Battle {
         }
 
         void CountDownCandleTime() {
-            UniTask.Void(async () => {
-                CandleCountDownCTS?.Cancel();
-                StopApertureDoScale();
-                CandleCountDownCTS = new CancellationTokenSource();
-                PlayCountDownCandleTime(CandleCountDownCTS).Forget();
-            });
+            CandleCountDownCTS?.Cancel();
+            StopApertureDoScale();
+            CandleCountDownCTS = new CancellationTokenSource();
+            PlayCountDownCandleTime(CandleCountDownCTS).Forget();
         }
 
         //停止蠟燭倒數
@@ -133,8 +131,10 @@ namespace Gladiators.Battle {
             StopApertureDoScale();
 
             //全蠟燭熄滅
-            foreach (var c in Candles)
-                c.gameObject.SetActive(false);
+            foreach(var c in CandleObjs) {
+                if (c.IsCombusting())
+                    c.GoOutCandle();
+            }
 
             //設定光圈&亮度(變至最小&最暗)
             ApertureRT.localScale = new Vector3(ApertureMinSize, ApertureMinSize, 1f);
@@ -144,8 +144,9 @@ namespace Gladiators.Battle {
 
         //重置蠟燭
         void ResetCandles() {
-            foreach (var c in Candles)
-                c.gameObject.SetActive(true);
+            foreach (var c in CandleObjs) {
+                c.ResetCandle();
+            }
             Confirmed = false;
         }
 
@@ -180,7 +181,7 @@ namespace Gladiators.Battle {
             ResetBGFore();
             ResetApeture();
 
-            int CandleNum = Candles.Length;
+            int CandleNum = CandleObjs.Length;
 
             //背景色彩相關參數(變暗演出)
             float bgColorDelta = (1f - BGDarkestBrightness) / CandleNum; //每次亮度變化量
@@ -197,7 +198,7 @@ namespace Gladiators.Battle {
             while (CandleNum > 0) {
                 await UniTask.WaitForSeconds(PerCandleCountDownTime, cancellationToken: ctk.Token);
                 //熄滅蠟燭
-                Candles[CandleNum - 1].gameObject.SetActive(false);
+                CandleObjs[CandleNum - 1].GoOutCandle();
                 CandleNum -= 1;
                 //光圈大小調整(類比式 一秒變一次)
                 curApertureSize -= apertureDigitalDelta;
@@ -213,7 +214,7 @@ namespace Gladiators.Battle {
             Confirmed = true;
             await UniTask.Yield();
             //TODO:這裡先註解掉 因為要測試演出效果 等確定後這裡就應該要按照流程自動送出封包
-            //SendDivineSkill();
+            SendDivineSkill();
         }
 
         //卡牌選擇判斷
@@ -349,6 +350,7 @@ namespace Gladiators.Battle {
                 RightArrowPosTween = RightArrowRT.DOAnchorPos3D(new Vector3(-292f, 0f, 0f), BtnAniTime);
                 if (RightArrowImage != null)
                     RightArrowImage.material = GrayMaterial;
+                BtnBGDecoration.material = GrayMaterial;
             } else {
                 //還原所有按鈕相關UI
                 if (btnRT != null)
@@ -364,6 +366,7 @@ namespace Gladiators.Battle {
                 RightArrowRT.anchoredPosition = new Vector2(-154f, 0f);
                 if (RightArrowImage != null)
                     RightArrowImage.material = null;
+                BtnBGDecoration.material = null;
             }
         }
 
@@ -395,7 +398,7 @@ namespace Gladiators.Battle {
             EndCandleCountDown();
             //更新玩家金錢(之後要實際接封包 目前先重新抓一次資料)
             UpdatePlayerGold();
-            //等待演出結束 先設定暴力等待三秒 之後有完整演出改等待正確演出時間
+            //等待演出結束 先設定等待三秒 之後有完整演出改等待正確演出時間
             await UniTask.WaitForSeconds(3f);
             WriteLog.Log("關閉介面 進入戰鬥!");
             base.SetActive(false);

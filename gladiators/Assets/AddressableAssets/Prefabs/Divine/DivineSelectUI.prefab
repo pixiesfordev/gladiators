@@ -8445,12 +8445,12 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 3027141493224377588}
   - {fileID: 3935022262074173155}
   - {fileID: 3664628435485584769}
   - {fileID: 6453701123592414572}
   - {fileID: 3609144844341644496}
   - {fileID: 5511241691368430992}
-  - {fileID: 3027141493224377588}
   - {fileID: 4857320198963021935}
   - {fileID: 3214141938275677898}
   - {fileID: 1218302555832746966}
@@ -8480,17 +8480,6 @@ MonoBehaviour:
   BGFore: {fileID: 2097940379707643030}
   ConfirmBtn: {fileID: 4107300877610855747}
   PlayerMoney: {fileID: 5341430621719109994}
-  Candles:
-  - {fileID: 8554818453659756668}
-  - {fileID: 8856956439627411222}
-  - {fileID: 1953658600593804149}
-  - {fileID: 6702674151208552437}
-  - {fileID: 788480750870525627}
-  - {fileID: 5578018078238891525}
-  - {fileID: 7877311884189369964}
-  - {fileID: 5789687480710312534}
-  - {fileID: 3027403515195848772}
-  - {fileID: 8702043359760929086}
   DivineSkills:
   - {fileID: 9217041416209165376}
   - {fileID: 9069707028601883893}
@@ -8503,14 +8492,16 @@ MonoBehaviour:
   LeftArrowRT: {fileID: 4171719460322341804}
   RightArrowRT: {fileID: 7075125007328220761}
   BtnBGMaskRT: {fileID: 6221739004746196173}
+  BtnBGDecoration: {fileID: 0}
   GrayMaterial: {fileID: 2100000, guid: 6bbe2c983e390cc47b55f7b320b6d0ff, type: 2}
   BGMoveWithCameraTiers: []
-  CandleAnis: []
+  CandleObjs: []
   PerCandleCountDownTime: 1
   PerformCandleCountDown: 0
   ApertureModeDigital: 0
   ApertureMinSize: 0.3
   BGDarkestBrightness: 0.3
+  PerformSureBtnAni: 0
 --- !u!1 &8702043359760929086
 GameObject:
   m_ObjectHideFlags: 0
