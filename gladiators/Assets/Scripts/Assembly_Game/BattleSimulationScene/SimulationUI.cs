@@ -103,7 +103,22 @@ namespace Gladiators.BattleSimulation {
             jsonSkills = jsonSkills.FindAll(a => a.MySkillType == SkillType.Normal);
             MySkillSelectionUI.ShowUI(jsonSkills, curSkillIDs);
         }
-        public void OnClick() {
+        public void OnVsBot() {
+            Action connFunc = null;
+            PopupUI.ShowLoading(JsonString.GetUIString("Loading"));
+            connFunc = () => GameConnector.Instance.ConnectToMatchgameTestVer(() => {
+                PopupUI.HideLoading();
+            }, () => {
+                WriteLog.LogError("連線遊戲房失敗");
+            }, () => {
+                if (AllocatedRoom.Instance.CurGameState == AllocatedRoom.GameState.GameState_Fighting) {
+                    WriteLog.LogError("需要斷線重連");
+                    connFunc();
+                }
+            });
+            connFunc();
+        }
+        public void OnVsPlayer() {
             Action connFunc = null;
             PopupUI.ShowLoading(JsonString.GetUIString("Loading"));
             connFunc = () => GameConnector.Instance.ConnectToMatchgameTestVer(() => {

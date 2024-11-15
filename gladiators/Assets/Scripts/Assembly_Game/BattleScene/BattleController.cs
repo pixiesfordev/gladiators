@@ -18,7 +18,7 @@ public class BattleController : MonoBehaviour {
 
     [SerializeField] bool BattleIsEnd = false;
 
-    public Character leftChar = null;
+    [HideInInspector] public Character leftChar = null;
     Character rightChar = null;
     Dictionary<string, Character> CharDic;
 
@@ -69,7 +69,7 @@ public class BattleController : MonoBehaviour {
         CharDic.Add(_opponentPack.DBID, rightChar);
 
         BattleManager.Instance.SetVCamTargetRot(-curKnockAngle);
-        BattleManager.Instance.SetCamFov(GetDistBetweenChars());
+        BattleManager.Instance.SetCamValues(GetDistBetweenChars());
     }
 
 
@@ -186,7 +186,7 @@ public class BattleController : MonoBehaviour {
                 // 更新角色位置
                 leftChar.MoveClientToPos(clientPos.Item1, MOVE_DURATION_SECS, true).Forget();
                 rightChar.MoveClientToPos(clientPos.Item2, MOVE_DURATION_SECS, true).Forget();
-                BattleManager.Instance.SetCamFov(GetDistBetweenChars());
+                BattleManager.Instance.SetCamValues(GetDistBetweenChars());
 
                 // <<<<<<<<體力>>>>>>>>>
                 float leftVigor = Mathf.Lerp(before.LeftVigor, after.LeftVigor, alpha);

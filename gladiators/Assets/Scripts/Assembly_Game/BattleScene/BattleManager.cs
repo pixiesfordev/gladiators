@@ -13,8 +13,8 @@ namespace Gladiators.Battle {
         [SerializeField] public CinemachineTargetGroup vTargetGroup;
         [SerializeField] Transform camPosTarget;
         [SerializeField] Camera MyCam;
-        MinMax camFOV = new MinMax(20, 70); // FOV最小與最大值
-        MinMax camPosTargetY = new MinMax(2, 8);// camPosTarget的Y座標最小與最大值
+        MinMax camFOV = new MinMax(20, 60); // FOV最小與最大值
+        MinMax camPosTargetY = new MinMax(2, 7);// camPosTarget的Y座標最小與最大值
         const float MAX_DIST = 40; // 雙方腳色最大距離
         public Transform WorldEffectParent; // 放特效的位置
         public Camera BattleCam => MyCam;
@@ -81,14 +81,29 @@ namespace Gladiators.Battle {
         }
 
         /// <summary>
-        /// 根據雙方距離改變攝影機FOV
+        /// 根據雙方距離改變攝影機鏡頭
         /// </summary>
-        public void SetCamFov(float _charsDist) {
+        public void SetCamValues(float _charsDist) {
             float ratio = (_charsDist / MAX_DIST);
+            // 更改FOV
             float fov = ratio * (camFOV.Y - camFOV.X) + camFOV.X;
-            vCam.m_Lens.FieldOfView = fov;
+            changeFovAsync(fov, 0.5f).Forget();
+            // 更改targetGroup的Y值
             float targetGroupY = ratio * (camPosTargetY.Y - camPosTargetY.X) + camPosTargetY.X;
             camPosTarget.localPosition = new Vector3(camPosTarget.localPosition.x, targetGroupY, camPosTarget.localPosition.z);
+        }
+
+        async UniTask changeFovAsync(float _targetFov, float _lerpDuration) {
+            float startFov = vCam.m_Lens.FieldOfView;
+            float elapsedTime = 0f;
+
+            while (elapsedTime < _lerpDuration) {
+                vCam.m_Lens.FieldOfView = Mathf.Lerp(startFov, _targetFov, elapsedTime / _lerpDuration);
+                elapsedTime += Time.deltaTime;
+                await UniTask.Yield(PlayerLoopTiming.Update);
+            }
+
+            vCam.m_Lens.FieldOfView = _targetFov;
         }
 
         void SetCam() {
