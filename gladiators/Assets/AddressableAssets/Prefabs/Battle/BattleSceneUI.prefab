@@ -2211,6 +2211,7 @@ MonoBehaviour:
   HeroTestID: 0
   TestEffectStr: []
   TestEffectNum: 
+  TestValTypes: 
   ShowTestEffect: 0
 --- !u!1 &1118799572130801537
 GameObject:
@@ -4315,7 +4316,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 390c76f5672df094cbc8b2bd76711ee6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Bg: {fileID: 738929141901794251}
   Icon: {fileID: 7607410912071805726}
+  Border: {fileID: 8190000368004145547}
   Val: {fileID: 6321630748723031088}
 --- !u!1 &2428501028695676162
 GameObject:
@@ -5250,7 +5253,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 390c76f5672df094cbc8b2bd76711ee6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Bg: {fileID: 2447388271840183742}
   Icon: {fileID: 2895506437082939612}
+  Border: {fileID: 7634880169854010402}
   Val: {fileID: 3778741660020471307}
 --- !u!1 &2951713406070385655
 GameObject:
@@ -16274,6 +16279,7 @@ MonoBehaviour:
   HeroTestID: 0
   TestEffectStr: []
   TestEffectNum: 
+  TestValTypes: 
   ShowTestEffect: 0
 --- !u!1 &8623779788583494866
 GameObject:

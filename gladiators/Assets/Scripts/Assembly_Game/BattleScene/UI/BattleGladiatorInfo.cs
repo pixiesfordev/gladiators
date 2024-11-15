@@ -64,6 +64,7 @@ public class BattleGladiatorInfo : MonoBehaviour {
     [HeaderAttribute("==============測試Buffer==============")]
     [Tooltip("測試bufferIcon")][SerializeField] string[] TestEffectStr;
     [Tooltip("測試bufferIcon")][SerializeField] int[] TestEffectNum;
+    [Tooltip("測試bufferIcon")][SerializeField] SkillExtension.BuffIconValType[] TestValTypes;
     [Tooltip("測試bufferIcon")][SerializeField] bool ShowTestEffect;
 
     //TODO:
@@ -130,7 +131,7 @@ public class BattleGladiatorInfo : MonoBehaviour {
             ShowTestEffect = false;
             BufferIconData[] datas = new BufferIconData[TestEffectStr.Length];
             for (int i = 0; i < datas.Length; i++) {
-                datas[i] = new BufferIconData(TestEffectStr[i], TestEffectNum[i], SkillExtension.BuffIconValType.Time);
+                datas[i] = new BufferIconData(TestEffectStr[i], TestEffectNum[i], TestValTypes[i]);
             }
             SetBufferIcon(datas.ToList());
         }

@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using Scoz.Func;
 using Gladiators.Main;
 using Cysharp.Threading.Tasks;
+using System.Threading;
 
 public class BufferIconData {
     /// <summary>
@@ -31,8 +32,19 @@ public class BufferIconData {
 /// </summary>
 public class BattleBufferIcon : MonoBehaviour {
 
+    [SerializeField] Image Bg;
     [SerializeField] Image Icon;
+    [SerializeField] Image Border;
     [SerializeField] MyTextPro Val;
+
+    CancellationTokenSource ShineCTS;
+
+    private void OnDestroy() {
+        if (ShineCTS != null) {
+            ShineCTS.Cancel();
+            ShineCTS.Dispose();
+        }
+    }
 
     public void SetEffect(BufferIconData bufferData) {
         AssetGet.GetSpriteFromAtlas("BufferIcon", bufferData.Name, (sprite) => {
@@ -46,6 +58,66 @@ public class BattleBufferIcon : MonoBehaviour {
                 });
             }
         });
-        Val.text = bufferData.Val > 0 ? bufferData.Val.ToString() : "";
+
+        //停止閃爍並還原色彩
+        if (ShineCTS != null) {
+            ShineCTS.Cancel();
+            Bg.color = Color.white;
+            Icon.color = Color.white;
+            Border.color = Color.white;
+            Val.color = Color.white;
+        }
+
+        switch (bufferData.ValType) {
+            case SkillExtension.BuffIconValType.Passive:
+                //被動 不顯示數值
+                Val.text = "";
+                break;
+            case SkillExtension.BuffIconValType.Stack:
+                //層數 顯示數值
+                Val.text = bufferData.Val.ToString();
+                break;
+            case SkillExtension.BuffIconValType.Time:
+                //時間 顯示數值(剩下一秒要閃爍)
+                int leftTime = bufferData.Val;
+                Val.text = leftTime.ToString();
+                if (leftTime == 1)
+                    Shine().Forget();
+                break;
+            default:
+                Val.text = "";
+                break;    
+        }
+    }
+
+    /// <summary>
+    /// 閃爍演出
+    /// </summary>
+    /// <returns></returns>
+    async UniTaskVoid Shine() {
+        ShineCTS = new CancellationTokenSource();
+        float duration = 0.25f;
+        float passTime = 0f;
+        float startAlpha = 1f;
+        float endAlpha = 0f;
+        Color tempColor = Color.white;
+        while (true) {
+            passTime += Time.deltaTime;
+            tempColor.a = Mathf.Lerp(startAlpha, endAlpha, passTime / duration);
+            Bg.color = tempColor;
+            Icon.color = tempColor;
+            Border.color = tempColor;
+            Val.color = tempColor;
+            await UniTask.Yield(ShineCTS.Token);
+            if (tempColor.a == 1f) {
+                startAlpha = 0f;
+                endAlpha = 1f;
+                passTime = 0f;
+            } else if (tempColor.a == 0f) {
+                startAlpha = 1f;
+                endAlpha = 0f;
+                passTime = 0f;
+            }
+        }
     }
 }
