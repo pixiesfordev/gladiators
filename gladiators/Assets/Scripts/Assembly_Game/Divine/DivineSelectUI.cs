@@ -49,10 +49,14 @@ namespace Gladiators.Battle {
 
         /*
         1.神址卡牌演出調用
-        2.蠟燭演出調用 >> 前兩種隨機選用 撥放完後呼叫方法去隨機挑選下一次演出的動畫 該方法也要能設定初始值 第一次起始值隨機 第二次後一律從頭放
-         1.candle_combustion >> 第一種燃燒方式
-         2.candle_combustion01 >> 第二種燃燒方式
-         3.candle_go out >> 熄滅撥放此動畫
+        Relics_ Normal >> 神址常態性
+        Relics_floating >> 神址牌飄動
+        Relics_Click >> 神址點選
+        Relics_bigger >> 神址放大
+        Relics_bigger Normal >> 神址放大_常態
+        Relics_Cancelled >> 神址取消
+        ruins_decision_selection >> 神址_決定_選取
+        Ruins_Decision_Not Selected >> 神址_決定_未選取
         */
 
         public static DivineSelectUI Instance;
@@ -95,9 +99,9 @@ namespace Gladiators.Battle {
 
             //讀取技能並設定技能進來 先用預設的技能
             DivineSkills[0].SetData(GameDictionary.GetJsonData<JsonSkill>(10001));
-            DivineSkills[1].SetData(GameDictionary.GetJsonData<JsonSkill>(10101));
+            DivineSkills[1].SetData(GameDictionary.GetJsonData<JsonSkill>(10110));
             DivineSkills[2].SetData(GameDictionary.GetJsonData<JsonSkill>(10201));
-            DivineSkills[3].SetData(GameDictionary.GetJsonData<JsonSkill>(10301));
+            DivineSkills[3].SetData(GameDictionary.GetJsonData<JsonSkill>(10203));
 
             //倒數蠟燭
             CountDownCandleTime();
@@ -213,7 +217,7 @@ namespace Gladiators.Battle {
             //時間到直接發送封包 先鎖定按鈕 等待一禎再發送 避免重複發送封包
             Confirmed = true;
             await UniTask.Yield();
-            //TODO:這裡先註解掉 因為要測試演出效果 等確定後這裡就應該要按照流程自動送出封包
+            //TODO:如果要測試演出效果這裡就註解 這樣倒數結束也不會送出封包 可以看演出效果
             SendDivineSkill();
         }
 
@@ -303,6 +307,18 @@ namespace Gladiators.Battle {
             //讀取選中技能
             int selectedSkillID1 = SelectedDivineSkills[0] != null ? SelectedDivineSkills[0].ID : 0;
             int selectedSkillID2 = SelectedDivineSkills[1] != null ? SelectedDivineSkills[1].ID : 0;
+
+            //播放神祇技能選擇動畫
+            int checkId = 0;
+            for (int i = 0; i < DivineSkills.Length; i++) {
+                checkId = DivineSkills[i].GetSkillDataID();
+                if (checkId != 0 && (checkId == selectedSkillID1 || checkId == selectedSkillID2)) {
+                    DivineSkills[i].PlayDecisionSelected();
+                } else {
+                    DivineSkills[i].PlayDecisionNotSelected();
+                }
+            }
+
             //發送Socket
             AllocatedRoom.Instance.SetDivineSkills(new int[] { selectedSkillID1, selectedSkillID2 });
         }
