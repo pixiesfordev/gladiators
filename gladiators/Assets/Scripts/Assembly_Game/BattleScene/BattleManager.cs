@@ -67,11 +67,9 @@ namespace Gladiators.Battle {
         }
 
         void SetStage() {
-            WriteLog.LogError("讀取Stage1");
             string sceneName = "Stage1";
             //讀取子場景
             AddressablesLoader.GetAdditiveScene($"{sceneName}/{sceneName}", (scene, handle) => {
-                SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName));
                 PostProcessingManager.Instance.SetVolumeProfile("VolumeProfile_Stage1");
             });
         }
@@ -80,7 +78,6 @@ namespace Gladiators.Battle {
         ///  雙方選完神祉技能 可以開始戰鬥
         /// </summary>
         public void StartSelectDivineSkill() {
-            WriteLog.Log($"開始選擇神祉技能");
             //叫出神址選擇介面這裡顯示介面讓玩家選擇
             if (DivineSelectUI.Instance != null)
                 DivineSelectUI.Instance.SetActive(true);

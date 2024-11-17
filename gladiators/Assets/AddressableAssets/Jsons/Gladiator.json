@@ -1,5 +1,4 @@
 {"Gladiator":[
-	{	"ID": 3,	"Ref": "3",	"Hp": 300,	"Str": 20,	"PDef": 5,	"MDef": 5,	"Crit": 0.05,	"CritDmg": 1.5,	"VigorRegen": 1.0,	"Knockback": 10.0,	"Init": 0.0,	"Spd": 6.0,	"RushSpd": 4.0,	"ModelCenter": 4.0},
 	{	"ID": 6,	"Ref": "6",	"Hp": 300,	"Str": 20,	"PDef": 5,	"MDef": 5,	"Crit": 0.05,	"CritDmg": 1.5,	"VigorRegen": 1.0,	"Knockback": 10.0,	"Init": 0.0,	"Spd": 6.0,	"RushSpd": 4.0,	"ModelCenter": 3.38},
 	{	"ID": 7,	"Ref": "7",	"Hp": 300,	"Str": 20,	"PDef": 5,	"MDef": 5,	"Crit": 0.05,	"CritDmg": 1.5,	"VigorRegen": 1.0,	"Knockback": 10.0,	"Init": 0.0,	"Spd": 6.0,	"RushSpd": 4.0,	"ModelCenter": 4.08},
 	{	"ID": 9,	"Ref": "9",	"Hp": 300,	"Str": 20,	"PDef": 5,	"MDef": 5,	"Crit": 0.05,	"CritDmg": 1.5,	"VigorRegen": 1.0,	"Knockback": 10.0,	"Init": 0.0,	"Spd": 6.0,	"RushSpd": 4.0,	"ModelCenter": 4.0},

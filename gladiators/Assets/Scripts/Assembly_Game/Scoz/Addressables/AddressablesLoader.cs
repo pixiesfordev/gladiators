@@ -353,6 +353,26 @@ namespace Scoz.Func {
                 }
             };
         }
+        public static void GetLightingSetting(string _path, Action<LightingSettings> _cb) {
+            if (string.IsNullOrEmpty(_path)) {
+                WriteLog.LogError("GetLightingSetting 傳入Path為空");
+                _cb?.Invoke(null);
+                return;
+            }
+            _path = string.Format("Assets/AddressableAssets/Scenes/{0}.lighting", _path);
+            Addressables.LoadAssetAsync<LightingSettings>(_path).Completed += handle => {
+                switch (handle.Status) {
+                    case AsyncOperationStatus.Succeeded:
+                        _cb?.Invoke(handle.Result);
+                        handle.Release();
+                        break;
+                    default:
+                        WriteLog.LogError("讀取LightingSetting失敗:" + _path);
+                        _cb?.Invoke(null);
+                        break;
+                }
+            };
+        }
 
 
 

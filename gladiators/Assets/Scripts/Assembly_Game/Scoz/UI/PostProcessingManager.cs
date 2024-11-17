@@ -1,13 +1,7 @@
-using Cysharp.Threading.Tasks;
-using Gladiators.Main;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
-using UnityEngine.Rendering.Universal;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
+
 namespace Scoz.Func {
 
     public class PostProcessingManager : MonoBehaviour {
