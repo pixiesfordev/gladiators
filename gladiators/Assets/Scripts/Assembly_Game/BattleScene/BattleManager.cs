@@ -5,6 +5,8 @@ using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using Cysharp.Threading.Tasks;
 using Cinemachine;
+using System.Runtime.Remoting.Metadata.W3cXsd2001;
+using UnityEngine.SceneManagement;
 
 namespace Gladiators.Battle {
     public class BattleManager : MonoBehaviour {
@@ -41,6 +43,7 @@ namespace Gladiators.Battle {
         public async UniTask Init() {
             Instance = this;
             SetCam();//設定攝影機模式
+            SetStage();
             await CheckGameState();
         }
         public async UniTask CheckGameState() {
@@ -62,6 +65,17 @@ namespace Gladiators.Battle {
             }
             await UniTask.Yield();
         }
+
+        void SetStage() {
+            WriteLog.LogError("讀取Stage1");
+            string sceneName = "Stage1";
+            //讀取子場景
+            AddressablesLoader.GetAdditiveScene($"{sceneName}/{sceneName}", (scene, handle) => {
+                SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName));
+                PostProcessingManager.Instance.SetVolumeProfile("VolumeProfile_Stage1");
+            });
+        }
+
         /// <summary>
         ///  雙方選完神祉技能 可以開始戰鬥
         /// </summary>
@@ -72,7 +86,6 @@ namespace Gladiators.Battle {
                 DivineSelectUI.Instance.SetActive(true);
         }
         public void StartGame() {
-            ResetBattle();
             battleModelController.BattleStart();
         }
 
@@ -129,7 +142,7 @@ namespace Gladiators.Battle {
         }
 
         //重啟戰鬥
-        void ResetBattle() {
+        public void ResetBattle() {
             GameTime = 0;
             //相關參數在此重設 設定完才去更新UI
             BattleIsEnd = false;

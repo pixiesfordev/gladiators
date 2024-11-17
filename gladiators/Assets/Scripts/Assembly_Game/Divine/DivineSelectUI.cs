@@ -135,7 +135,7 @@ namespace Gladiators.Battle {
             StopApertureDoScale();
 
             //全蠟燭熄滅
-            foreach(var c in CandleObjs) {
+            foreach (var c in CandleObjs) {
                 if (c.IsCombusting())
                     c.GoOutCandle();
             }
@@ -403,7 +403,6 @@ namespace Gladiators.Battle {
 
         //接回傳關閉介面(寫在這裡比較方便追蹤 不然不知道誰會在哪裡關閉 且重設介面邏輯寫在此)
         public void CloseUI(Action _afterCloseAct) {
-            WriteLog.Log("接到回傳 準備進入戰鬥!");
             UniTask.Void(async () => {
                 DoCloseAni(_afterCloseAct).Forget();
             });

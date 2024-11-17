@@ -42,6 +42,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 11c28de34a3210b42a6ddfadf57458c4
+    m_Address: Assets/AddressableAssets/Scenes
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 25f6428ebfc239e4dbd5eb1eddff7e23
     m_Address: Assets/CartoonGrass/Materials/CartoonGrass_Plant_01_LOD2.mat
     m_ReadOnly: 0
@@ -49,6 +54,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 26c13c1b292ae3846b37a8e3d5b956de
     m_Address: Assets/CartoonGrass/Materials/CartoonGrass_Grass_03_LOD2.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 286c9d055b9bbd54ba8d759c728389bf
+    m_Address: Assets/AddressableAssets/Settings
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

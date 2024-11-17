@@ -339,7 +339,7 @@ namespace Scoz.Func {
             });
         }
 
-        public static void PlayAudioByAudioAsset(MyAudioType _type, AssetReference _clip, bool _loop = false, float _pitch = 1, Action<AudioClip, AsyncOperationHandle> _cb = null) {
+        public static void PlayAudioByAudioAsset(MyAudioType _type, AssetReference _clip, bool _loop = false, float _pitch = 1, Action<AudioClip, AsyncOperationHandle?> _cb = null) {
             if (!IsInit)
                 return;
             if (_clip == null) {

@@ -10,11 +10,8 @@ using System.Linq;
 using UnityEngine;
 
 public class BattleController : MonoBehaviour {
-    [SerializeField] GameObject terrainPrefab;
     [SerializeField] Character characterPrefab;
-
-    [SerializeField] GameObject terrainArea;
-    [SerializeField] GameObject charactersArea;
+    [SerializeField] GameObject charactersParent;
 
     [SerializeField] bool BattleIsEnd = false;
 
@@ -51,8 +48,8 @@ public class BattleController : MonoBehaviour {
 
 
     public void CreateCharacter(PackPlayer _myPlayerPack, PackPlayer _opponentPack) {
-        leftChar = Instantiate(characterPrefab, charactersArea.transform);
-        rightChar = Instantiate(characterPrefab, charactersArea.transform);
+        leftChar = Instantiate(characterPrefab, charactersParent.transform);
+        rightChar = Instantiate(characterPrefab, charactersParent.transform);
 
         leftChar.name = _myPlayerPack.DBID;
         leftChar.tag = "leftobj";

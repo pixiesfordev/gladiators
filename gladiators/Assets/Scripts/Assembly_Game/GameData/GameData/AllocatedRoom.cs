@@ -311,9 +311,6 @@ namespace Gladiators.Main {
             if (_setDivineSkillToClient == null) return;
             //更新介面神祉技能卡牌
             BattleSceneUI.Instance?.SetDivineSkillData(_setDivineSkillToClient.JsonSkillIDs);
-            //關閉神祇技能選擇介面(做完演出後才去執行後續動作)
-            DivineSelectUI.Instance?.CloseUI(() => {
-            });
         }
         /// <summary>
         /// 收到戰鬥階段設定封包
@@ -323,6 +320,12 @@ namespace Gladiators.Main {
             if (MyEnum.TryParseEnum(_gameState.State, out gameState)) {
                 WriteLog.LogColor($"SERVER狀態: {gameState}", WriteLog.LogType.Connection);
                 switch (gameState) {
+                    case PackGameState.GAMESTATE_COUNTINGDOWN:
+                        BattleManager.Instance.ResetBattle();
+                        //關閉神祇技能選擇介面(做完演出後才去執行後續動作)
+                        DivineSelectUI.Instance?.CloseUI(() => {
+                        });
+                        break;
                     case PackGameState.GAMESTATE_FIGHTING:
                         BattleManager.Instance.StartGame();
                         break;
