@@ -3,8 +3,6 @@ using Gladiators.Battle;
 using Gladiators.BattleSimulation;
 using Gladiators.Socket;
 using Gladiators.Socket.Matchgame;
-using Newtonsoft.Json.Linq;
-using PlasticPipe.PlasticProtocol.Server.Stubs;
 using Scoz.Func;
 using System;
 using System.Collections.Generic;
@@ -12,7 +10,6 @@ using System.Linq;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using static Gladiators.Main.AllocatedRoom;
 
 namespace Gladiators.Main {
     /// <summary>

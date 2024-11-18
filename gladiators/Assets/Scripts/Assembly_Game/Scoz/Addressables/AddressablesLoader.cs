@@ -1,9 +1,6 @@
 
 using Cysharp.Threading.Tasks;
-using GluonGui.WorkspaceWindow.Views.WorkspaceExplorer;
 using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Rendering;
@@ -169,7 +166,7 @@ namespace Scoz.Func {
                 return;
             }
 
-            _path = string.Format("Assets/AddressableAssets/Particles/{0}.prefab", _path);
+            _path = string.Format("Assets/AddressableAssets/Prefabs/Particles/{0}.prefab", _path);
 
             Addressables.LoadAssetAsync<GameObject>(_path).Completed += handle => {
                 switch (handle.Status) {

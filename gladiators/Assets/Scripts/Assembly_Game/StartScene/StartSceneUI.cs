@@ -2,7 +2,6 @@ using UnityEngine;
 using Scoz.Func;
 using UnityEngine.UI;
 using Cysharp.Threading.Tasks;
-using PlasticGui.Configuration.CloudEdition.Welcome;
 
 namespace Gladiators.Main {
     public class StartSceneUI : BaseUI {

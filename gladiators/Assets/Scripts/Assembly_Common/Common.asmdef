@@ -5,7 +5,9 @@
     "includePlatforms": [
         "Android",
         "Editor",
-        "iOS"
+        "iOS",
+        "macOSStandalone",
+        "WindowsStandalone64"
     ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
