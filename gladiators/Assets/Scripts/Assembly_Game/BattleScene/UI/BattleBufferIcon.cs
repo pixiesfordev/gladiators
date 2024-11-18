@@ -18,6 +18,10 @@ public class BufferIconData {
     /// 數值類型
     /// </summary>
     public SkillExtension.BuffIconValType ValType { get; private set; }
+    /// <summary>
+    /// 是否需要更新
+    /// </summary>
+    public bool NeedUpdate { get; set; } = false;
 
 
     public BufferIconData(string effectType, int val, SkillExtension.BuffIconValType valType) {
@@ -38,6 +42,12 @@ public class BattleBufferIcon : MonoBehaviour {
     [SerializeField] MyTextPro Val;
 
     CancellationTokenSource ShineCTS;
+    bool isShining = false;
+
+    private void OnDisable() {
+        if (ShineCTS != null)
+            StopShine();
+        }
 
     private void OnDestroy() {
         if (ShineCTS != null) {
@@ -59,13 +69,15 @@ public class BattleBufferIcon : MonoBehaviour {
             }
         });
 
+        
         //停止閃爍並還原色彩
         if (ShineCTS != null) {
-            ShineCTS.Cancel();
-            Bg.color = Color.white;
-            Icon.color = Color.white;
-            Border.color = Color.white;
-            Val.color = Color.white;
+            //判斷是否已經在閃爍 已經在閃爍就不重設
+            if (bufferData.ValType == SkillExtension.BuffIconValType.Time && bufferData.Val <= 1) {
+                //Debug.LogError("buffer需要閃爍!");
+            } else {
+                StopShine();
+            }
         }
 
         switch (bufferData.ValType) {
@@ -81,7 +93,7 @@ public class BattleBufferIcon : MonoBehaviour {
                 //時間 顯示數值(剩下一秒要閃爍)
                 int leftTime = bufferData.Val;
                 Val.text = leftTime.ToString();
-                if (leftTime == 1)
+                if (leftTime <= 1 && !isShining)
                     Shine().Forget();
                 break;
             default:
@@ -95,12 +107,14 @@ public class BattleBufferIcon : MonoBehaviour {
     /// </summary>
     /// <returns></returns>
     async UniTaskVoid Shine() {
+        //Debug.LogError("buffer閃爍!");
         ShineCTS = new CancellationTokenSource();
         float duration = 0.25f;
         float passTime = 0f;
         float startAlpha = 1f;
         float endAlpha = 0f;
         Color tempColor = Color.white;
+        isShining = true;
         while (true) {
             passTime += Time.deltaTime;
             tempColor.a = Mathf.Lerp(startAlpha, endAlpha, passTime / duration);
@@ -119,5 +133,15 @@ public class BattleBufferIcon : MonoBehaviour {
                 passTime = 0f;
             }
         }
+    }
+
+    void StopShine() {
+        ShineCTS.Cancel();
+        isShining = false;
+        Bg.color = Color.white;
+        Icon.color = Color.white;
+        Border.color = Color.white;
+        Val.color = Color.white;
+        //WriteLog.LogError("停止閃爍!");
     }
 }
