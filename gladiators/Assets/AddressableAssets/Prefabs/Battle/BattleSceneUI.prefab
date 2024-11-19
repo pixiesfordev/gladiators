@@ -2868,23 +2868,23 @@ MonoBehaviour:
   HeroTestMaxHP: 0
   HeroTestCurHP: 0
   PerformHPChangeFlag: 0
-  HeroChangeHP: 0
-  BarChangeSecDelay: 0
-  BarChangeSecNeed: 0
+  HeroChangeHP: -10
+  BarChangeSecDelay: 0.3
+  BarChangeSecNeed: 0.2
   BarChangeFrame: 60
   HittedRotateAngle: {x: 0, y: 0, z: 10}
-  HittedRotateDuration: 1
-  HittedColorDuration: 1
-  HittedHPBarWhiteDuration: 0.5
+  HittedRotateDuration: 0.2
+  HittedColorDuration: 0.1
+  HittedHPBarWhiteDuration: 0.2
   HPRateGenerateAfterImage: 0.05
-  AfterImageDuration: 0.5
-  BarGrayChangeSecDelay: 0.4
-  BarGrayChangeSecNeed: 0.4
+  AfterImageDuration: 0.2
+  BarGrayChangeSecDelay: 0.3
+  BarGrayChangeSecNeed: 0.25
   UpdateHeartBeatParameter: 0
-  HeartBeatDelayMax: 1
-  HeartBeatDelayMin: 0.2
+  HeartBeatDelayMax: 5
+  HeartBeatDelayMin: 1
   HeartBeatTweenScale: 1.3
-  HeartBeatDuration: 0.5
+  HeartBeatDuration: 0.35
   HeartBeatReverse: 1
   UpdateHeroIcon: 0
   HeroTestID: 0
@@ -23708,23 +23708,23 @@ MonoBehaviour:
   HeroTestMaxHP: 0
   HeroTestCurHP: 0
   PerformHPChangeFlag: 0
-  HeroChangeHP: 0
-  BarChangeSecDelay: 0
-  BarChangeSecNeed: 0
+  HeroChangeHP: -10
+  BarChangeSecDelay: 0.3
+  BarChangeSecNeed: 0.2
   BarChangeFrame: 60
   HittedRotateAngle: {x: 0, y: 0, z: 10}
-  HittedRotateDuration: 1
-  HittedColorDuration: 1
-  HittedHPBarWhiteDuration: 0.5
+  HittedRotateDuration: 0.2
+  HittedColorDuration: 0.1
+  HittedHPBarWhiteDuration: 0.2
   HPRateGenerateAfterImage: 0.05
-  AfterImageDuration: 0.5
-  BarGrayChangeSecDelay: 0.4
-  BarGrayChangeSecNeed: 0.4
+  AfterImageDuration: 0.2
+  BarGrayChangeSecDelay: 0.3
+  BarGrayChangeSecNeed: 0.25
   UpdateHeartBeatParameter: 0
-  HeartBeatDelayMax: 1
-  HeartBeatDelayMin: 0.2
+  HeartBeatDelayMax: 5
+  HeartBeatDelayMin: 1
   HeartBeatTweenScale: 1.3
-  HeartBeatDuration: 0.5
+  HeartBeatDuration: 0.35
   HeartBeatReverse: 0
   UpdateHeroIcon: 0
   HeroTestID: 0
