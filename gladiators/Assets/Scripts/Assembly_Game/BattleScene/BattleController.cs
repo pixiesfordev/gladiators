@@ -13,8 +13,6 @@ public class BattleController : MonoBehaviour {
     [SerializeField] Character characterPrefab;
     [SerializeField] GameObject charactersParent;
 
-    [SerializeField] bool BattleIsEnd = false;
-
     [HideInInspector] public Character leftChar = null;
     Character rightChar = null;
     Dictionary<string, Character> CharDic;
@@ -78,13 +76,7 @@ public class BattleController : MonoBehaviour {
     }
 
     public void BattleStart() {
-        BattleIsEnd = false;
         StateUpdateLoop().Forget();
-    }
-
-    public void BattleEnd() {
-        if (BattleIsEnd) return;
-        BattleIsEnd = true;
     }
     public void UpdateGladiatorsState(long _packID, long _time, PACKGLADIATORSTATE _leftState, PACKGLADIATORSTATE _rightState) {
         if (_leftState == null || _rightState == null) return;
@@ -124,7 +116,7 @@ public class BattleController : MonoBehaviour {
     /// 狀態更新循環
     /// </summary>
     private async UniTaskVoid StateUpdateLoop() {
-        while (!BattleIsEnd) {
+        while (AllocatedRoom.Instance.CurGameState == AllocatedRoom.GameState.GameState_Fighting) {
             // 計算渲染時間戳
             long renderTimestamp = AllocatedRoom.Instance.RenderTimestamp;
             // 找緩衝區中兩個相鄰的封包

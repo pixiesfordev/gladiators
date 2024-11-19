@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
 namespace Gladiators.BattleSimulation {
     public class SimulationUI : BaseUI {
@@ -39,6 +40,10 @@ namespace Gladiators.BattleSimulation {
 
         private void Start() {
             Init();
+            SetCam();
+        }
+        void SetCam() {
+            UICam.Instance.SetRendererMode(CameraRenderType.Base);
         }
 
         public override void Init() {

@@ -17,6 +17,7 @@ namespace Gladiators.Socket {
         public void Init() {
         }
         public void Release() {
+            WriteLog.LogColor("關閉Socket連線", WriteLog.LogType.Connection);
             if (Instance != null)
                 Instance.Dispose();
             Instance = null;

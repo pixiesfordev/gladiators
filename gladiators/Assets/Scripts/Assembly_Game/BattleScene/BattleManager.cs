@@ -23,8 +23,6 @@ namespace Gladiators.Battle {
 
         [SerializeField] int BattleDefaultTime = 60;//設定戰鬥時間
 
-        [SerializeField] bool BattleIsEnd = false;//控制戰鬥是否結束 先序列化出來供測試用
-
         public float GameTime { get; private set; }//遊戲時間
         public int LeftGameTime { get { return Mathf.RoundToInt((float)BattleDefaultTime - GameTime); } }//遊戲剩餘時間
 
@@ -59,7 +57,6 @@ namespace Gladiators.Battle {
                     break;
                 case AllocatedRoom.GameState.GameState_WaitingPlayersReady:
                     BattleManager.Instance.InitBattleModelController().Forget();
-                    ResetBattle();
                     AllocatedRoom.Instance.SetReady();
                     break;
             }
@@ -136,13 +133,6 @@ namespace Gladiators.Battle {
             battleModelController.Init();
             battleModelController.CreateCharacter(AllocatedRoom.Instance.MyPackPlayer, AllocatedRoom.Instance.OpponentPackPlayer);
             await battleModelController.WaitCharacterCreate();
-        }
-
-        //重啟戰鬥
-        public void ResetBattle() {
-            GameTime = 0;
-            //相關參數在此重設 設定完才去更新UI
-            BattleIsEnd = false;
         }
 
 
@@ -228,13 +218,11 @@ namespace Gladiators.Battle {
             battleModelController.Melee(_melee.MyAttack, _melee.OpponentAttack);
         }
 
-        //戰鬥結束
-        void BattleEnd() {
-            //進入結算環節 避免出bug 如果已經開始結算就不要重複執行
-            if (BattleIsEnd) return;
-            BattleIsEnd = true;
-            battleModelController.BattleEnd();
-            Debug.Log("戰鬥結束");
+        /// <summary>
+        /// 戰鬥結束時呼叫
+        /// </summary>
+        public void BattleEnd() {
+
         }
     }
 }
