@@ -43,19 +43,6 @@ namespace Scoz.Func {
 
             if (Input.GetKeyDown(KeyCode.Q)) {
 
-                Action connFunc = null;
-                PopupUI.ShowLoading(JsonString.GetUIString("Loading"));
-                connFunc = () => GameConnector.Instance.ConnectToMatchgameTestVer(() => {
-                    PopupUI.HideLoading();
-                }, () => {
-                    WriteLog.LogError("連線遊戲房失敗");
-                }, () => {
-                    if (AllocatedRoom.Instance.CurGameState == AllocatedRoom.GameState.GameState_Fighting) {
-                        WriteLog.LogError("需要斷線重連");
-                        connFunc();
-                    }
-                });
-                connFunc();
 
             } else if (Input.GetKeyDown(KeyCode.W)) {
                 clickSkill(0);

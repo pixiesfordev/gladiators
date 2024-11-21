@@ -76,53 +76,5 @@ namespace Gladiators.Main {
             }
         }
 
-
-
-        public void OnPlayClick() {
-            Action connFunc = null;
-            PopupUI.ShowLoading(JsonString.GetUIString("Loading"));
-            connFunc = () => GameConnector.Instance.ConnectToMatchgameTestVer(() => {
-                PopupUI.HideLoading();
-            }, () => {
-                WriteLog.LogError("連線遊戲房失敗");
-            }, () => {
-                if (AllocatedRoom.Instance.CurGameState == AllocatedRoom.GameState.GameState_Fighting) {
-                    WriteLog.LogError("需要斷線重連");
-                    connFunc();
-                }
-            });
-            connFunc();
-        }
-
-
-
-        //void LoadAssets(AdventureUIs _ui, Action _cb) {
-        //    switch (_ui) {
-        //        case AdventureUIs.Battle:
-        //            PopupUI.ShowLoading(StringData.GetUIString("WaitForLoadingUI"));
-        //            //初始化UI
-        //            AddressablesLoader.GetPrefabByRef(BattleUIAsset, (prefab, handle) => {
-        //                PopupUI.HideLoading();
-        //                GameObject go = Instantiate(prefab);
-        //                go.transform.SetParent(BattleUIParent);
-
-        //                RectTransform rect = go.GetComponent<RectTransform>();
-        //                go.transform.localPosition = prefab.transform.localPosition;
-        //                go.transform.localScale = prefab.transform.localScale;
-        //                rect.offsetMin = Vector2.zero;//Left、Bottom
-        //                rect.offsetMax = Vector2.zero;//Right、Top
-
-        //                MyBattleUI = go.GetComponent<BattleUI>();
-        //                MyBattleUI.Init();
-        //                MyBattleUI.SetBattle();
-        //                _cb?.Invoke();
-        //            }, () => { WriteLog.LogError("載入BattleUIAsset失敗"); });
-        //            break;
-        //    }
-        //}
-
-
-
-
     }
 }
