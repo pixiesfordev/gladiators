@@ -7,6 +7,7 @@ using Cysharp.Threading.Tasks;
 using Cinemachine;
 using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using UnityEngine.SceneManagement;
+using System;
 
 namespace Gladiators.Battle {
     public class BattleManager : MonoBehaviour {
@@ -221,8 +222,11 @@ namespace Gladiators.Battle {
         /// <summary>
         /// 戰鬥結束時呼叫
         /// </summary>
-        public void BattleEnd() {
-
+        public void BattleEnd(Action afterKo) {
+            //TODO:請偉軒修改這段邏輯 新富的要求有兩個
+            //1.背景全白 模型跟UI在白色背景前面 還有白色是要淡入還是直接出現請再跟新富確認
+            //2.KO要慢動作 可能要改TimeScale 如果要改TimeScale請記得用UnScaleTime跑演出(但我不確定這樣Animator會不會不能播)
+            BattleSceneUI.Instance.PlayKO(afterKo);
         }
     }
 }

@@ -337,7 +337,11 @@ namespace Gladiators.Main {
         }
         public void LeaveRoom() {
             stopPingLoop();
-            BattleManager.Instance.BattleEnd();
+            //TODO:為了讓新富看演出結果 先暫時這樣寫 請偉軒or孟璋再修改一下這邊的寫法
+            BattleManager.Instance.BattleEnd(AfterKo);
+        }
+
+        void AfterKo() {
             GameConnector.Instance.Close();
             PopupUI.InitSceneTransitionProgress(0);
             PopupUI.CallSceneTransition(MyScene.BattleSimulationScene);
