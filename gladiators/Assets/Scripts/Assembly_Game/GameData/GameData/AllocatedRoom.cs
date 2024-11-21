@@ -248,7 +248,13 @@ namespace Gladiators.Main {
         }
         public void LeaveRoom() {
             clearRoom();
-            BattleManager.Instance.BattleEnd();
+            BattleManager.Instance.BattleEnd(afterKO);
+            PopupUI.InitSceneTransitionProgress(0);
+            PopupUI.CallSceneTransition(MyScene.BattleSimulationScene);
+            SetGameState(GameState.GameState_NotInGame);
+        }
+
+        void afterKO() {
             PopupUI.InitSceneTransitionProgress(0);
             PopupUI.CallSceneTransition(MyScene.BattleSimulationScene);
             SetGameState(GameState.GameState_NotInGame);

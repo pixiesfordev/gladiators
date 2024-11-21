@@ -204,12 +204,10 @@ public class BattleGladiatorInfo : MonoBehaviour {
 
     //執行血條演出
     void PerformHPChange() {
-        UniTask.Void(async () => {
-            if (CurrentCTS != null)
-                CurrentCTS.Cancel();
-            CurrentCTS = new CancellationTokenSource();
-            HPChange(CurrentCTS).Forget();
-        });
+        if (CurrentCTS != null)
+            CurrentCTS.Cancel();
+        CurrentCTS = new CancellationTokenSource();
+        HPChange(CurrentCTS).Forget();
     }
 
     //血條演出內容
@@ -292,7 +290,7 @@ public class BattleGladiatorInfo : MonoBehaviour {
         float grayDuration = 1f / BarChangeFrame;//黑白血條演出每次間隔時間
         //紀錄上次殘影出現血量百分比
         float lastAfterImageHPRate = 0f;
-        UniTask.Void(async () => { HPGrayChange(CurrentCTS, isReduce, HeroDisplayHPRate, BarFinalVal, grayDuration, grayDelta).Forget(); });
+        HPGrayChange(CurrentCTS, isReduce, HeroDisplayHPRate, BarFinalVal, grayDuration, grayDelta).Forget();
         if (isReduce) {
             while (HeroDisplayHPRate >= BarFinalVal) {
                 await UniTask.WaitForSeconds(duration, cancellationToken: ctk.Token);
