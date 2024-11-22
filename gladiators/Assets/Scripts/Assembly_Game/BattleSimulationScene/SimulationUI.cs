@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using Gladiators.Main;
 using Gladiators.Socket;
 using Scoz.Func;
@@ -109,34 +110,18 @@ namespace Gladiators.BattleSimulation {
             MySkillSelectionUI.ShowUI(jsonSkills, curSkillIDs);
         }
         public void OnVsBot() {
-            Action connFunc = null;
-            PopupUI.ShowLoading(JsonString.GetUIString("Loading"));
-            connFunc = () => GameConnector.Instance.ConnectToMatchgameTestVer(() => {
-                PopupUI.HideLoading();
-            }, () => {
-                WriteLog.LogError("連線遊戲房失敗");
-            }, () => {
-                if (AllocatedRoom.Instance.CurGameState == AllocatedRoom.GameState.GameState_Fighting) {
-                    WriteLog.LogError("需要斷線重連");
-                    connFunc();
+            var gameState = GamePlayer.Instance.GetDBData<DBGameState>();
+            string serverName = "Matchgame_TestVer";
+            GameConnector.NewConnector(serverName, gameState.MatchgameTestverTcpIp, gameState.MatchgameTestverPort, () => {
+                var connector = GameConnector.GetConnector(serverName);
+                if (connector != null) {
+                    AllocatedRoom.Instance.SetRoom(connector, "testCreater", gameState.MatchgameTestverRoomName, gameState.MatchgameTestverTcpIp, gameState.MatchgameTestverPort);
+                    AllocatedRoom.Instance.Auth();
                 }
-            });
-            connFunc();
+            }, null).Forget();
         }
         public void OnVsPlayer() {
-            Action connFunc = null;
-            PopupUI.ShowLoading(JsonString.GetUIString("Loading"));
-            connFunc = () => GameConnector.Instance.ConnectToMatchgameTestVer(() => {
-                PopupUI.HideLoading();
-            }, () => {
-                WriteLog.LogError("連線遊戲房失敗");
-            }, () => {
-                if (AllocatedRoom.Instance.CurGameState == AllocatedRoom.GameState.GameState_Fighting) {
-                    WriteLog.LogError("需要斷線重連");
-                    connFunc();
-                }
-            });
-            connFunc();
+
         }
         public void SendSimulationSetting() {
             List<int> skills = new List<int>(curSkillIDs);
