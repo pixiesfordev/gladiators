@@ -17306,11 +17306,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: BattleKO
       objectReference: {fileID: 0}
-    - target: {fileID: 5949297631992949435, guid: 3ccb507063bc78c4cbffe1818585b3ea,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
