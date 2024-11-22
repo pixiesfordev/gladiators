@@ -76,6 +76,8 @@ namespace Gladiators.Battle {
         Tweener RightArrowPosTween; //按鈕右邊箭頭位移動畫控件
         float BtnAniTime = 2f; //按鈕動畫時間
 
+        Vector2 LightMaskOriginSizeDelta;
+
         enum DivineSkillSelectState : short {
             Choose,//選擇
             Cancel,//取消選擇
@@ -107,6 +109,9 @@ namespace Gladiators.Battle {
             DivineSkills[1].SetData(GameDictionary.GetJsonData<JsonSkill>(10110));
             DivineSkills[2].SetData(GameDictionary.GetJsonData<JsonSkill>(10201));
             DivineSkills[3].SetData(GameDictionary.GetJsonData<JsonSkill>(10203));
+
+            //取出遮罩原本大小
+            LightMaskOriginSizeDelta = LightMaskRT.sizeDelta;
 
             //倒數蠟燭
             CountDownCandleTime();
@@ -151,7 +156,7 @@ namespace Gladiators.Battle {
             //設定光圈&亮度(變至最小&最暗)
             ApertureRT.localScale = new Vector3(ApertureMinSize, ApertureMinSize, 1f);
             ApertureRT2.localScale = new Vector3(ApertureMinSize, ApertureMinSize, 1f);
-            LightMaskRT.localScale = new Vector3(ApertureMinSize, ApertureMinSize, 1f);
+            LightMaskRT.sizeDelta = LightMaskOriginSizeDelta * ApertureMinSize;
             BGFore.color = new Color(BGDarkestBrightness, BGDarkestBrightness, BGDarkestBrightness);
             //ApertureImage.color = new Color(BGDarkestBrightness, BGDarkestBrightness, BGDarkestBrightness);
             //ApertureImage2.color = new Color(BGDarkestBrightness, BGDarkestBrightness, BGDarkestBrightness);
@@ -174,7 +179,7 @@ namespace Gladiators.Battle {
         void ResetApeture() {
             ApertureRT.localScale = Vector3.one;
             ApertureRT2.localScale = Vector3.one;
-            LightMaskRT.localScale = Vector3.one;
+            LightMaskRT.sizeDelta = LightMaskOriginSizeDelta;
             //ApertureImage.color = Color.white;
             //ApertureImage2.color = Color.white;
         }
@@ -221,7 +226,7 @@ namespace Gladiators.Battle {
             if (!ApertureModeDigital) {
                 ApertureScaleTween = ApertureRT.DOScale(new Vector3(ApertureMinSize, ApertureMinSize, 1f), CandleNum + 1f);
                 ApertureScale2Tween = ApertureRT2.DOScale(new Vector3(ApertureMinSize, ApertureMinSize, 1f), CandleNum + 1f);
-                LightMaskScaleTween = LightMaskRT.DOScale(new Vector3(ApertureMinSize, ApertureMinSize, 1f), CandleNum + 1f);
+                LightMaskScaleTween = LightMaskRT.DOSizeDelta(LightMaskOriginSizeDelta * ApertureMinSize, CandleNum + 1f);
             }
 
             while (CandleNum > 0) {
