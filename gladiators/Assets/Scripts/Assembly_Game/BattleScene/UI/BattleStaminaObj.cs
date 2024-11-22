@@ -174,6 +174,11 @@ public class BattleStaminaObj : MonoBehaviour {
 
     async UniTaskVoid DoCastLattices(int vigor, int lastLatticeStartIndex) {
         for (int i = lastLatticeStartIndex; i > lastLatticeStartIndex - vigor; i--) {
+            if (i < 0 || i >= Bar_lattices_pre.Length)  {
+                //測試有出現過indexOutOfRange 但後來測試發現沒辦法重現 理論上這情況不可能發生
+                WriteLog.LogErrorFormat("能量消耗演出異常! indexOutOfRange! 消耗能量: {0} 最後一格已滿體力格Index: {1}", vigor, lastLatticeStartIndex);
+                continue;
+            }
             //恢復體力圖圖關閉
             Bar_lattices_pre[i].fillAmount = 0f;
             //賦予material準備演出

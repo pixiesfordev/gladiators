@@ -24,6 +24,7 @@ public class DivineCandle : MonoBehaviour
     }
 
     public void NextCandleClipEvent() {
+        //TODO:需要判斷重新回到神祉介面時會不會再播放 還有disable的時候就不要播放
         PlayCombustion(Random.Range(0, 2), 0f);
     }
 

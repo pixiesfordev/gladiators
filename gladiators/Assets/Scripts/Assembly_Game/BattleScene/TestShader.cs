@@ -79,16 +79,12 @@ public class TestShader : MonoBehaviour
         if (TestLerp)
         {
             TestLerp = false;
-            UniTask.Void(async () => {
-                TryLerp().Forget();
-            });
+            TryLerp().Forget();
         }
         if (TestMultiUniTask)
         {
             TestMultiUniTask = false;
-            UniTask.Void(async () => {
-                TryWaitTask().Forget();
-            });
+            TryWaitTask().Forget();
         }
         if (TestStopTask)
         {

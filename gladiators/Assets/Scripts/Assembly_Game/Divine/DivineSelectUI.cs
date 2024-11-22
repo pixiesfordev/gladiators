@@ -403,9 +403,7 @@ namespace Gladiators.Battle {
 
         //接回傳關閉介面(寫在這裡比較方便追蹤 不然不知道誰會在哪裡關閉 且重設介面邏輯寫在此)
         public void CloseUI(Action _afterCloseAct) {
-            UniTask.Void(async () => {
-                DoCloseAni(_afterCloseAct).Forget();
-            });
+            DoCloseAni(_afterCloseAct).Forget();
         }
 
         async UniTaskVoid DoCloseAni(Action _afterCloseAct) {

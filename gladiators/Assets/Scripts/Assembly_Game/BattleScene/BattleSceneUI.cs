@@ -323,6 +323,7 @@ public class BattleSceneUI : BaseUI {
             }
         }
         AllocatedRoom.Instance.ActiveSkill(_skillId, true);
+        WriteLog.LogWarningFormat("施放立即技能! 正在施展技能中 上鎖! 要求按鈕: {0} 技能ID: {1}", _btn.name, _skillId);
     }
 
     /// <summary>
@@ -333,6 +334,7 @@ public class BattleSceneUI : BaseUI {
         //鎖定0.5秒後才能放下一個技能
         await UniTask.WaitForSeconds(0.5f);
         IsCastingSkill = false;
+        WriteLog.LogWarningFormat("施展技能結束 解鎖!");
     }
 
     /// <summary>
@@ -373,6 +375,23 @@ public class BattleSceneUI : BaseUI {
         //server驅動施放技能後鎖定 不能連續施放技能
         IsCastingSkill = true;
         ReleasedSkillLock().Forget();
+        WriteLog.LogWarningFormat("施放近戰技能! 正在施展技能中 上鎖! 技能ID: {0}", _skillId);
+    }
+
+    /// <summary>
+    /// 鎖定技能施放
+    /// </summary>
+    public void LockSkillCasting() {
+        IsCastingSkill = true;
+        WriteLog.Log("鎖住技能施放!");
+    }
+
+    /// <summary>
+    /// 立即釋放技能施放鎖定
+    /// </summary>
+    public void ReleaseSkillLockImmediately() {
+        IsCastingSkill = false;
+        WriteLog.Log("立即釋放技能施放鎖定!");
     }
 
     /// <summary>
