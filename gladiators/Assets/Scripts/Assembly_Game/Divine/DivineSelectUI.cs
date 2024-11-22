@@ -153,8 +153,8 @@ namespace Gladiators.Battle {
             ApertureRT2.localScale = new Vector3(ApertureMinSize, ApertureMinSize, 1f);
             LightMaskRT.localScale = new Vector3(ApertureMinSize, ApertureMinSize, 1f);
             BGFore.color = new Color(BGDarkestBrightness, BGDarkestBrightness, BGDarkestBrightness);
-            ApertureImage.color = new Color(BGDarkestBrightness, BGDarkestBrightness, BGDarkestBrightness);
-            ApertureImage2.color = new Color(BGDarkestBrightness, BGDarkestBrightness, BGDarkestBrightness);
+            //ApertureImage.color = new Color(BGDarkestBrightness, BGDarkestBrightness, BGDarkestBrightness);
+            //ApertureImage2.color = new Color(BGDarkestBrightness, BGDarkestBrightness, BGDarkestBrightness);
         }
 
         //重置蠟燭
@@ -175,8 +175,8 @@ namespace Gladiators.Battle {
             ApertureRT.localScale = Vector3.one;
             ApertureRT2.localScale = Vector3.one;
             LightMaskRT.localScale = Vector3.one;
-            ApertureImage.color = Color.white;
-            ApertureImage2.color = Color.white;
+            //ApertureImage.color = Color.white;
+            //ApertureImage2.color = Color.white;
         }
 
         //中止光圈演出
@@ -237,8 +237,8 @@ namespace Gladiators.Battle {
                 //背景亮度調整
                 curBgColor -= bgColorDelta;
                 BGFore.color = new Color(curBgColor, curBgColor, curBgColor);
-                ApertureImage.color = new Color(curBgColor, curBgColor, curBgColor);
-                ApertureImage2.color = new Color(curBgColor, curBgColor, curBgColor);
+                //ApertureImage.color = new Color(curBgColor, curBgColor, curBgColor);
+                //ApertureImage2.color = new Color(curBgColor, curBgColor, curBgColor);
             }
 
             //時間到直接發送封包 先鎖定按鈕 等待一禎再發送 避免重複發送封包
