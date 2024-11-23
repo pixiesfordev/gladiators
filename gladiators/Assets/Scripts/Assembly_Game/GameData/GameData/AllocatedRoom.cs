@@ -249,9 +249,6 @@ namespace Gladiators.Main {
         public void LeaveRoom() {
             clearRoom();
             BattleManager.Instance.BattleEnd(afterKO);
-            PopupUI.InitSceneTransitionProgress(0);
-            PopupUI.CallSceneTransition(MyScene.BattleSimulationScene);
-            SetGameState(GameState.GameState_NotInGame);
         }
 
         void afterKO() {
@@ -297,7 +294,6 @@ namespace Gladiators.Main {
                 if (SceneManager.GetActiveScene().name != MyScene.BattleScene.ToString())
                     PopupUI.CallSceneTransition(MyScene.BattleScene);
                 BattleSceneUI.InitPlayerData(MyPackPlayer.MyPackGladiator, OpponentPackPlayer.MyPackGladiator, MyPackPlayer.MyPackGladiator.HandSkillIDs);
-                TestTool.Instance.UpdateSkills(MyPackPlayer.MyPackGladiator.HandSkillIDs, 0);
             }
 
             // 開始PingLoop
@@ -353,7 +349,7 @@ namespace Gladiators.Main {
                         break;
                     case PLAYERACTION.PackActionType.INSTANT_SKILL: // 收到即時技能發動
                         var instantSkillPack = JsonMapper.ToObject<PackAction_InstantSkill_ToClient>(_jsonStr);
-                        BattleSceneUI.Instance.CastInstantSkill(instantSkillPack.NewSkilID);
+                        if (MyPackPlayer.DBID == _playerID) BattleSceneUI.Instance.CastInstantSkill(instantSkillPack.NewSkilID);
                         BattleController.Instance.PlayInstantSkill(_playerID, instantSkillPack.SkillID);
                         break;
                     default:
