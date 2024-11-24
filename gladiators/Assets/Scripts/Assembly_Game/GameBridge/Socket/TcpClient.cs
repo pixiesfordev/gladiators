@@ -87,7 +87,7 @@ namespace Gladiators.Socket {
         }
 
         public void Close() {
-            WriteLog.LogColor("Socket close", WriteLog.LogType.Connection);
+            WriteLog.LogColor("Close TCP Socket", WriteLog.LogType.Connection);
             try {
                 if (thread_connect != null)
                     thread_connect.Abort();

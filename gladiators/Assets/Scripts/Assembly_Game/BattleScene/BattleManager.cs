@@ -5,6 +5,9 @@ using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using Cysharp.Threading.Tasks;
 using Cinemachine;
+using System.Runtime.Remoting.Metadata.W3cXsd2001;
+using UnityEngine.SceneManagement;
+using System;
 
 namespace Gladiators.Battle {
     public class BattleManager : MonoBehaviour {
@@ -13,15 +16,13 @@ namespace Gladiators.Battle {
         [SerializeField] public CinemachineTargetGroup vTargetGroup;
         [SerializeField] Transform camPosTarget;
         [SerializeField] Camera MyCam;
-        MinMax camFOV = new MinMax(20, 70); // FOV最小與最大值
-        MinMax camPosTargetY = new MinMax(2, 8);// camPosTarget的Y座標最小與最大值
+        MinMax camFOV = new MinMax(20, 60); // FOV最小與最大值
+        MinMax camPosTargetY = new MinMax(2, 7);// camPosTarget的Y座標最小與最大值
         const float MAX_DIST = 40; // 雙方腳色最大距離
         public Transform WorldEffectParent; // 放特效的位置
         public Camera BattleCam => MyCam;
 
         [SerializeField] int BattleDefaultTime = 60;//設定戰鬥時間
-
-        [SerializeField] bool BattleIsEnd = false;//控制戰鬥是否結束 先序列化出來供測試用
 
         public float GameTime { get; private set; }//遊戲時間
         public int LeftGameTime { get { return Mathf.RoundToInt((float)BattleDefaultTime - GameTime); } }//遊戲剩餘時間
@@ -41,6 +42,7 @@ namespace Gladiators.Battle {
         public async UniTask Init() {
             Instance = this;
             SetCam();//設定攝影機模式
+            SetStage();
             await CheckGameState();
         }
         public async UniTask CheckGameState() {
@@ -56,23 +58,29 @@ namespace Gladiators.Battle {
                     break;
                 case AllocatedRoom.GameState.GameState_WaitingPlayersReady:
                     BattleManager.Instance.InitBattleModelController().Forget();
-                    ResetBattle();
                     AllocatedRoom.Instance.SetReady();
                     break;
             }
             await UniTask.Yield();
         }
+
+        void SetStage() {
+            string sceneName = "Stage1";
+            //讀取子場景
+            AddressablesLoader.GetAdditiveScene($"{sceneName}/{sceneName}", (scene, handle) => {
+                PostProcessingManager.Instance.SetVolumeProfile("VolumeProfile_Stage1");
+            });
+        }
+
         /// <summary>
         ///  雙方選完神祉技能 可以開始戰鬥
         /// </summary>
         public void StartSelectDivineSkill() {
-            WriteLog.Log($"開始選擇神祉技能");
             //叫出神址選擇介面這裡顯示介面讓玩家選擇
             if (DivineSelectUI.Instance != null)
                 DivineSelectUI.Instance.SetActive(true);
         }
         public void StartGame() {
-            ResetBattle();
             battleModelController.BattleStart();
         }
 
@@ -81,14 +89,29 @@ namespace Gladiators.Battle {
         }
 
         /// <summary>
-        /// 根據雙方距離改變攝影機FOV
+        /// 根據雙方距離改變攝影機鏡頭
         /// </summary>
-        public void SetCamFov(float _charsDist) {
+        public void SetCamValues(float _charsDist) {
             float ratio = (_charsDist / MAX_DIST);
+            // 更改FOV
             float fov = ratio * (camFOV.Y - camFOV.X) + camFOV.X;
-            vCam.m_Lens.FieldOfView = fov;
+            changeFovAsync(fov, 0.5f).Forget();
+            // 更改targetGroup的Y值
             float targetGroupY = ratio * (camPosTargetY.Y - camPosTargetY.X) + camPosTargetY.X;
             camPosTarget.localPosition = new Vector3(camPosTarget.localPosition.x, targetGroupY, camPosTarget.localPosition.z);
+        }
+
+        async UniTask changeFovAsync(float _targetFov, float _lerpDuration) {
+            float startFov = vCam.m_Lens.FieldOfView;
+            float elapsedTime = 0f;
+
+            while (elapsedTime < _lerpDuration) {
+                vCam.m_Lens.FieldOfView = Mathf.Lerp(startFov, _targetFov, elapsedTime / _lerpDuration);
+                elapsedTime += Time.deltaTime;
+                await UniTask.Yield(PlayerLoopTiming.Update);
+            }
+
+            vCam.m_Lens.FieldOfView = _targetFov;
         }
 
         void SetCam() {
@@ -111,13 +134,6 @@ namespace Gladiators.Battle {
             battleModelController.Init();
             battleModelController.CreateCharacter(AllocatedRoom.Instance.MyPackPlayer, AllocatedRoom.Instance.OpponentPackPlayer);
             await battleModelController.WaitCharacterCreate();
-        }
-
-        //重啟戰鬥
-        void ResetBattle() {
-            GameTime = 0;
-            //相關參數在此重設 設定完才去更新UI
-            BattleIsEnd = false;
         }
 
 
@@ -203,13 +219,14 @@ namespace Gladiators.Battle {
             battleModelController.Melee(_melee.MyAttack, _melee.OpponentAttack);
         }
 
-        //戰鬥結束
-        void BattleEnd() {
-            //進入結算環節 避免出bug 如果已經開始結算就不要重複執行
-            if (BattleIsEnd) return;
-            BattleIsEnd = true;
-            battleModelController.BattleEnd();
-            Debug.Log("戰鬥結束");
+        /// <summary>
+        /// 戰鬥結束時呼叫
+        /// </summary>
+        public void BattleEnd(Action afterKo) {
+            //TODO:請偉軒修改這段邏輯 新富的要求有兩個
+            //1.背景全白 模型跟UI在白色背景前面 還有白色是要淡入還是直接出現請再跟新富確認
+            //2.KO要慢動作 可能要改TimeScale 如果要改TimeScale請記得用UnScaleTime跑演出(但我不確定這樣Animator會不會不能播)
+            BattleSceneUI.Instance.PlayKO(afterKo);
         }
     }
 }

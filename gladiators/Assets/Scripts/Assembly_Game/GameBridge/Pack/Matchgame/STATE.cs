@@ -8,9 +8,9 @@ namespace Gladiators.Socket.Matchgame {
         public string State { get; private set; }
     }
     public enum PackGameState {
-        GAMESTATE_INITIALIZING,         // 初始化中
-        GAMESTATE_INITED,               // 初始化完成
-        GAMESTATE_WAITINGPLAYERS,      // 等待雙方玩家入場
+        GAMESTATE_INITIALIZING,         // SERVER初始化中
+        GAMESTATE_INITED,               // SERVER初始化完成
+        GAMESTATE_WAITINGPLAYERS,      // SERVER等待雙方玩家入場
         GAMESTATE_SELECTINGDIVINESKILL, // 選擇神祉技能
         GAMESTATE_COUNTINGDOWN,        // 戰鬥倒數開始中
         GAMESTATE_FIGHTING,             // 戰鬥中

@@ -10,6 +10,7 @@ using Gladiators.Main;
 using System.Collections.Generic;
 using System.Linq;
 using Loxodon.Framework.Binding;
+using Unity.Collections;
 
 /// <summary>
 /// 上方角鬥士資訊
@@ -92,6 +93,7 @@ public class BattleGladiatorInfo : MonoBehaviour {
     int HeroCurHP = 0; //英雄目前血量
     float HeroDisplayHPRate = 0f; //英雄顯示血量百分比
 
+    List<BufferIconData> BufferDatas = new List<BufferIconData>();
     List<BattleBufferIcon> BufferIconObjList;
 
     private void Start() {
@@ -157,7 +159,14 @@ public class BattleGladiatorInfo : MonoBehaviour {
         if (!string.IsNullOrEmpty(heroData.Ref)) {
             HeroIcon.gameObject.SetActive(true);
             AssetGet.GetSpriteFromAtlas("HeroIcon", heroData.Ref, (sprite) => {
-                HeroIcon.sprite = sprite;
+                if (sprite != null)
+                    HeroIcon.sprite = sprite;
+                else {
+                    AssetGet.GetSpriteFromAtlas("HeroIcon", "1", (sprite) => {
+                        HeroIcon.sprite = sprite;
+                        WriteLog.LogErrorFormat("英雄頭像不存在 使用替用圖案.英雄ID:{0}", heroID);
+                    });
+                }
             });
         } else {
             HeroIcon.gameObject.SetActive(false);
@@ -183,6 +192,10 @@ public class BattleGladiatorInfo : MonoBehaviour {
     }
 
     void InitHP(int maxHP, int curHP) {
+        if (maxHP == 0) {
+            maxHP = 1;
+            WriteLog.LogError("血量最大值為0! 請檢查資料是否有問題");
+        }
         HeroMaxHP = maxHP;
         HeroCurHP = curHP;
         HeroDisplayHPRate = curHP / maxHP;
@@ -191,12 +204,10 @@ public class BattleGladiatorInfo : MonoBehaviour {
 
     //執行血條演出
     void PerformHPChange() {
-        UniTask.Void(async () => {
-            if (CurrentCTS != null)
-                CurrentCTS.Cancel();
-            CurrentCTS = new CancellationTokenSource();
-            HPChange(CurrentCTS).Forget();
-        });
+        if (CurrentCTS != null)
+            CurrentCTS.Cancel();
+        CurrentCTS = new CancellationTokenSource();
+        HPChange(CurrentCTS).Forget();
     }
 
     //血條演出內容
@@ -279,7 +290,7 @@ public class BattleGladiatorInfo : MonoBehaviour {
         float grayDuration = 1f / BarChangeFrame;//黑白血條演出每次間隔時間
         //紀錄上次殘影出現血量百分比
         float lastAfterImageHPRate = 0f;
-        UniTask.Void(async () => { HPGrayChange(CurrentCTS, isReduce, HeroDisplayHPRate, BarFinalVal, grayDuration, grayDelta).Forget(); });
+        HPGrayChange(CurrentCTS, isReduce, HeroDisplayHPRate, BarFinalVal, grayDuration, grayDelta).Forget();
         if (isReduce) {
             while (HeroDisplayHPRate >= BarFinalVal) {
                 await UniTask.WaitForSeconds(duration, cancellationToken: ctk.Token);
@@ -532,9 +543,28 @@ public class BattleGladiatorInfo : MonoBehaviour {
     /// </summary>
     /// <param name="effectTypes">Buffer列表</param>
     public void SetBufferIcon(List<BufferIconData> effectTypes) {
+        int oldDataIndex = -1; 
         for (int i = 0; i < effectTypes.Count; i++) {
             //WriteLog.LogErrorFormat("type cnt: {0} effect cnt: {1} cur index: {2} Effect: {3}", 
             //    effectTypes.Count, BufferIconObjList.Count, i, effectTypes[i]);
+            //比對新舊資料
+            effectTypes[i].NeedUpdate = true;
+            oldDataIndex = BufferDatas.FindIndex(x => x.Name.Equals(effectTypes[i].Name));
+            if (oldDataIndex >= 0) {
+                //舊資料已經有就更新資料
+                BufferDatas[oldDataIndex] = effectTypes[i];
+            } else {
+                //舊資料沒有則代表是新增資料
+                BufferDatas.Add(effectTypes[i]);
+            }
+        }
+        for (int i = BufferDatas.Count -1; i >= 0; i--) {
+            //遍歷資料集合 不需要更新者表示需要移除
+            if (!BufferDatas[i].NeedUpdate)
+                BufferDatas.Remove(BufferDatas[i]);
+        }
+        for (int i = 0; i < BufferDatas.Count; i++) {
+            //將資料賦予給物件
             BattleBufferIcon _obj;
             if (i >= BufferIconObjList.Count) {
                 _obj = Instantiate(BufferIcon);
@@ -546,10 +576,12 @@ public class BattleGladiatorInfo : MonoBehaviour {
             } else {
                 _obj = BufferIconObjList[i];
             }
-            _obj.SetEffect(effectTypes[i]);
+            BufferDatas[i].NeedUpdate = false;
+            _obj.SetEffect(BufferDatas[i]);
             _obj.gameObject.SetActive(true);
         }
-        //WriteLog.LogErrorFormat("effect type cnt: {0}. icon list cnt: {1}", effectTypes.Count, BufferIconObjList.Count);
+        //WriteLog.LogErrorFormat("effect type cnt: {0}. buff data cnt: {1} icon list cnt: {2}", effectTypes.Count
+        // , BufferDatas.Count, BufferIconObjList.Count);
         //其他沒顯示的要關閉
         for (int i = effectTypes.Count; i < BufferIconObjList.Count; i++) {
             //WriteLog.LogErrorFormat("close icon index: {0}", i);

@@ -1,15 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
-using Codice.Utils;
 using Cysharp.Threading.Tasks;
 using Gladiators.Main;
 using Scoz.Func;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class NextBattleSkillButton : MonoBehaviour
-{
+public class NextBattleSkillButton : MonoBehaviour {
     [SerializeField] Image SkillIcon;
     [SerializeField] Image Mask;
     [SerializeField] Material IconMaterial;
@@ -24,8 +22,7 @@ public class NextBattleSkillButton : MonoBehaviour
     Color IconColor;
 
     // Start is called before the first frame update
-    void Start()
-    {
+    void Start() {
         CloneMaterial = Instantiate(IconMaterial);
         CTS = new CancellationTokenSource();
         CT = CTS.Token;
@@ -46,12 +43,11 @@ public class NextBattleSkillButton : MonoBehaviour
             AssetGet.GetSpriteFromAtlas("SpellIcon", SkillData.Ref, (sprite) => {
                 if (sprite != null) {
                     SetMaterialIcon(sprite);
-                }
-                else {
-                    AssetGet.GetSpriteFromAtlas("SpellIcon", "sprint", (sprite) => { 
+                } else {
+                    AssetGet.GetSpriteFromAtlas("SpellIcon", "sprint", (sprite) => {
                         SetMaterialIcon(sprite);
                         WriteLog.LogWarningFormat("設定圖片不存在! 用衝刺圖替代! ID: {0}", SkillData.Ref);
-                    } );
+                    });
                 }
             });
         } else
@@ -61,15 +57,14 @@ public class NextBattleSkillButton : MonoBehaviour
     void SetMaterialIcon(Sprite sprite) {
         SkillIcon.gameObject.SetActive(true);
         //TODO:SetPixels32會更快 之後有時間再改
-        Texture2D target =  new Texture2D((int)sprite.textureRect.width, (int)sprite.textureRect.height);
-        target.SetPixels(sprite.texture.GetPixels((int)sprite.textureRect.x, (int)sprite.textureRect.y, 
+        Texture2D target = new Texture2D((int)sprite.textureRect.width, (int)sprite.textureRect.height);
+        target.SetPixels(sprite.texture.GetPixels((int)sprite.textureRect.x, (int)sprite.textureRect.y,
             (int)sprite.textureRect.width, (int)sprite.textureRect.height));
         target.Apply();
         CloneMaterial.SetTexture("_main_Tex", target);
     }
 
-    void SetIconFail()
-    {
+    void SetIconFail() {
         SkillIcon.gameObject.SetActive(false);
         Debug.LogWarning("Next battle skill button try set skill icon fail!");
     }
@@ -78,22 +73,19 @@ public class NextBattleSkillButton : MonoBehaviour
     /// 存放下一個技能
     /// </summary>
     /// <param name="_skillId">技能ID</param>
-    public void CacheSkillId(int _skillId)
-    {
+    public void CacheSkillId(int _skillId) {
         NextSkillID = _skillId;
         Debug.LogErrorFormat("Next skill cache next skill. ID: {0}", _skillId);
     }
 
-    public int GetNextSkillId()
-    {
+    public int GetNextSkillId() {
         //取得ID後要把SkillData空掉 為了應對發生施放立即技能後立刻碰到發動近戰技能 而包還沒回來的情況(發生機率極低)
         int id = SkillData != null ? SkillData.ID : 0;
         SkillData = null;
         return id;
     }
 
-    public void ChangeSkill()
-    {
+    public void ChangeSkill() {
         if (CT != null) {
             CTS.Cancel();
             CTS = new CancellationTokenSource();
@@ -102,8 +94,7 @@ public class NextBattleSkillButton : MonoBehaviour
         PlayChangeSkill().Forget();
     }
 
-    async UniTaskVoid PlayChangeSkill()
-    {
+    async UniTaskVoid PlayChangeSkill() {
         //只淡出淡入Icon跟Val(背景那些如果美術要求要淡出入 必須跟美術說明因為遮罩導致沒辦法正常淡出淡入)
         float alpha = 0f;
         float passTime = 0f;
@@ -129,7 +120,7 @@ public class NextBattleSkillButton : MonoBehaviour
         passTime = 0f;
         //TODO:能量值淡入
         //淡入
-        while(passTime < duration) {
+        while (passTime < duration) {
             passTime += Time.deltaTime;
             alpha = Mathf.Lerp(0f, 1f, passTime / duration);
             IconColor.a = alpha;

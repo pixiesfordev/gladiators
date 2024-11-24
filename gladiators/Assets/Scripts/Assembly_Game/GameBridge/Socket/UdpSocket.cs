@@ -70,7 +70,7 @@ namespace Gladiators.Socket {
         }
 
         public void Close() {
-            WriteLog.LogColorFormat("Socket close", WriteLog.LogType.Connection);
+            WriteLog.LogColorFormat("Close UDP Scoekt", WriteLog.LogType.Connection);
             OnDisConnectEvent = null;
             try {
                 if (thread_connect != null)

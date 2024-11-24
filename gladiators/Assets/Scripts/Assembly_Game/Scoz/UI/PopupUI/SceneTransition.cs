@@ -21,7 +21,7 @@ namespace Scoz.Func {
         [SerializeField] float WaitSecAfterFinishProgressPercent = 0.8f;
         public static MyScene PreviousScene = MyScene.StartScene;
         MyScene GoScene;
-        AsyncOperationHandle TransitionBGHandle;
+        AsyncOperationHandle? TransitionBGHandle;
 
 
         float WaitSecAfterFinish = 0;//讀取完等待幾秒後才離開轉場 因為進到Lobby會載入UI到記憶中 這段時間會卡卡的 所以可以設定這個等待秒數讓讀取介面多停久一點再離開讀取介面
@@ -58,8 +58,7 @@ namespace Scoz.Func {
                 if (!string.IsNullOrEmpty(data.RefPic)) {
                     SceneTransitionImg.gameObject.SetActive(true);
                     AddressablesLoader.GetSprite(data.RefPic, (sprite, handle) => {
-                        if (TransitionBGHandle.IsValid())
-                            Addressables.Release(TransitionBGHandle);
+                        Addressables.Release(TransitionBGHandle);
                         TransitionBGHandle = handle;
                         SceneTransitionImg.sprite = sprite;
                     });
@@ -105,8 +104,7 @@ namespace Scoz.Func {
             End();
         }
         void End() {
-            if (TransitionBGHandle.IsValid())
-                Addressables.Release(TransitionBGHandle);
+            Addressables.Release(TransitionBGHandle);
             TransitionAni.SetTrigger("End");
             GameManager.UnloadUnusedAssets();//結束Transition就順便釋放記憶體
             FinishAC?.Invoke();

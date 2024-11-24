@@ -83,5 +83,8 @@ namespace Gladiators.Socket {
         public void SendUDP<T>(SocketCMD<T> cmd) where T : SocketContent {
             Socket.UDPSend(cmd);
         }
+        public void Close() {
+            Socket.Release();
+        }
     }
 }

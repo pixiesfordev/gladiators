@@ -289,7 +289,7 @@ public class BattleStaminaObj : MonoBehaviour {
     /// </summary>
     /// <param name="pos">技能位置</param>
     public void FadeInSkillVigorVal(int pos) {
-        WriteLog.LogErrorFormat("Fade in skill vigor val. Pos: {0}", pos);
+        //WriteLog.LogErrorFormat("Fade in skill vigor val. Pos: {0}", pos);
         if (CheckSkillPosVaild(pos)) {
             DoSkillVigorValFadeIn(SkillVigorVals[pos]).Forget();
         } else {

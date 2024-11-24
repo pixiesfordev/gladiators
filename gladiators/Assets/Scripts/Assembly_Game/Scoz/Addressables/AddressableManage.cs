@@ -61,11 +61,6 @@ namespace Scoz.Func {
 
 
         IEnumerator ClearAllCache(Action _cb) {
-            /*沒辦法清 常常會報錯 但偶爾又不會
-            AsyncOperationHandle handler = Addressables.ClearDependencyCacheAsync(Keys, false);
-            yield return handler;
-            Addressables.Release(handler);
-            */
             yield return null;
             //Addressables.ClearResourceLocators();
             //AssetBundle.UnloadAllAssetBundles(true);
@@ -159,7 +154,7 @@ namespace Scoz.Func {
                 //完成後跳出迴圈
 
                 if (curDownloading.GetDownloadStatus().IsDone) {
-                    Addressables.Release(curDownloading); // Addressable1.21.15版本更新後，必須要在載完資源後釋放，否則LoadAssetAsync會取不到資源
+                    Addressables.Release(curDownloading);
                     downloading = false;
                 }
                 yield return new WaitForSeconds(0.1f);
@@ -298,7 +293,7 @@ namespace Scoz.Func {
                 ProgressText.text = string.Format(JsonString.GetUIString("AssetUpdating"), MyMath.BytesToMB(curDownloadSize).ToString("0.00"), MyMath.BytesToMB(_totalSize).ToString("0.00"));
                 //完成後跳出迴圈
                 if (curDownloading.GetDownloadStatus().IsDone) {
-                    Addressables.Release(curDownloading); // Addressable1.21.15版本更新後，必須要在載完資源後釋放，否則LoadAssetAsync會取不到資源
+                    Addressables.Release(curDownloading);
                     downloading = false;
                 }
 
@@ -309,6 +304,5 @@ namespace Scoz.Func {
             BG.SetActive(false);
             _cb?.Invoke(true);
         }
-
     }
 }

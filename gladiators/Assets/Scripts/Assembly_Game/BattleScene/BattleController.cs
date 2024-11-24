@@ -10,15 +10,10 @@ using System.Linq;
 using UnityEngine;
 
 public class BattleController : MonoBehaviour {
-    [SerializeField] GameObject terrainPrefab;
     [SerializeField] Character characterPrefab;
+    [SerializeField] GameObject charactersParent;
 
-    [SerializeField] GameObject terrainArea;
-    [SerializeField] GameObject charactersArea;
-
-    [SerializeField] bool BattleIsEnd = false;
-
-    public Character leftChar = null;
+    [HideInInspector] public Character leftChar = null;
     Character rightChar = null;
     Dictionary<string, Character> CharDic;
 
@@ -51,8 +46,8 @@ public class BattleController : MonoBehaviour {
 
 
     public void CreateCharacter(PackPlayer _myPlayerPack, PackPlayer _opponentPack) {
-        leftChar = Instantiate(characterPrefab, charactersArea.transform);
-        rightChar = Instantiate(characterPrefab, charactersArea.transform);
+        leftChar = Instantiate(characterPrefab, charactersParent.transform);
+        rightChar = Instantiate(characterPrefab, charactersParent.transform);
 
         leftChar.name = _myPlayerPack.DBID;
         leftChar.tag = "leftobj";
@@ -69,7 +64,7 @@ public class BattleController : MonoBehaviour {
         CharDic.Add(_opponentPack.DBID, rightChar);
 
         BattleManager.Instance.SetVCamTargetRot(-curKnockAngle);
-        BattleManager.Instance.SetCamFov(GetDistBetweenChars());
+        BattleManager.Instance.SetCamValues(GetDistBetweenChars());
     }
 
 
@@ -81,13 +76,7 @@ public class BattleController : MonoBehaviour {
     }
 
     public void BattleStart() {
-        BattleIsEnd = false;
         StateUpdateLoop().Forget();
-    }
-
-    public void BattleEnd() {
-        if (BattleIsEnd) return;
-        BattleIsEnd = true;
     }
     public void UpdateGladiatorsState(long _packID, long _time, PACKGLADIATORSTATE _leftState, PACKGLADIATORSTATE _rightState) {
         if (_leftState == null || _rightState == null) return;
@@ -127,7 +116,7 @@ public class BattleController : MonoBehaviour {
     /// 狀態更新循環
     /// </summary>
     private async UniTaskVoid StateUpdateLoop() {
-        while (!BattleIsEnd) {
+        while (AllocatedRoom.Instance.CurGameState == AllocatedRoom.GameState.GameState_Fighting) {
             // 計算渲染時間戳
             long renderTimestamp = AllocatedRoom.Instance.RenderTimestamp;
             // 找緩衝區中兩個相鄰的封包
@@ -186,7 +175,7 @@ public class BattleController : MonoBehaviour {
                 // 更新角色位置
                 leftChar.MoveClientToPos(clientPos.Item1, MOVE_DURATION_SECS, true).Forget();
                 rightChar.MoveClientToPos(clientPos.Item2, MOVE_DURATION_SECS, true).Forget();
-                BattleManager.Instance.SetCamFov(GetDistBetweenChars());
+                BattleManager.Instance.SetCamValues(GetDistBetweenChars());
 
                 // <<<<<<<<體力>>>>>>>>>
                 float leftVigor = Mathf.Lerp(before.LeftVigor, after.LeftVigor, alpha);

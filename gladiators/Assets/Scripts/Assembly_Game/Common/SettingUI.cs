@@ -131,7 +131,7 @@ namespace Gladiators.Main {
 
         public void OnPostProcessingChange() {
             GamePlayer.Instance.SetPostProcessing(PostProcessingToggle.isOn);
-            PostProcessingManager.Instance.RefreshSetting();//更新後製效果
+            //PostProcessingManager.Instance.RefreshSetting();//更新後製效果
         }
         public void OnVibrationChange() {
             GamePlayer.Instance.SetVibration(VibrationToggle.isOn);

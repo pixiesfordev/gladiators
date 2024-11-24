@@ -198,6 +198,7 @@ namespace Scoz.Func {
                 var dicGO = Instantiate(prefab);
                 dicGO.GetComponent<GameDictionary>().InitDic();
                 Addressables.Release(handle);
+
                 GamePlayer.Instance.LoadLocoData();
                 GameDictionary.LoadJsonDataToDic(() => { //載入Bundle的json資料
                     AddressablesLoader.GetPrefabByRef(UICamAsset, (sceneUIPrefab, handle) => {//載入UICam

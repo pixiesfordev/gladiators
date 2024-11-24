@@ -42,6 +42,8 @@ public class BattleSceneUI : BaseUI {
 
     [SerializeField] GameObject SettingBtn;//設定按鈕
 
+    [SerializeField] Animator BattleKO;//KO演出
+
     public bool IsCastingSkill { get; private set; } //是否施放立即釋放技能中
     int CastingSkillPos; //正在施放技能的按鈕位置
 
@@ -90,6 +92,7 @@ public class BattleSceneUI : BaseUI {
         InitGladiator(false, opponentGladiator.MaxHP, opponentGladiator.CurHp, opponentGladiator.JsonID);
         SetSkillDatas(handSKillIDs, 0);
         CheckVigor(0f);
+        BattleKO.gameObject.SetActive(false);
     }
 
     /// <summary>
@@ -377,5 +380,17 @@ public class BattleSceneUI : BaseUI {
     /// </summary>
     public void NextSkillBtnChangeSkill() {
         NextSkillBtn.ChangeSkill();
+    }
+
+    public void PlayKO(Action afterKO) {
+        DoKOAni(afterKO).Forget();
+    }
+
+    async UniTask DoKOAni(Action afterKO) {
+        BattleKO.gameObject.SetActive(true);
+        BattleKO.Play("KO Animation", -1, 0f);
+        WriteLog.LogFormat("播放KO動畫 動畫時間長度: {0} 等待時間長度: {1}", 1.35f, 2f);
+        await UniTask.WaitForSeconds(2f);
+        afterKO();
     }
 }

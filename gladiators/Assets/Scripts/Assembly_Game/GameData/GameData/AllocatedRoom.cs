@@ -3,8 +3,6 @@ using Gladiators.Battle;
 using Gladiators.BattleSimulation;
 using Gladiators.Socket;
 using Gladiators.Socket.Matchgame;
-using Newtonsoft.Json.Linq;
-using PlasticPipe.PlasticProtocol.Server.Stubs;
 using Scoz.Func;
 using System;
 using System.Collections.Generic;
@@ -12,7 +10,6 @@ using System.Linq;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using static Gladiators.Main.AllocatedRoom;
 
 namespace Gladiators.Main {
     /// <summary>
@@ -87,6 +84,7 @@ namespace Gladiators.Main {
             GameState_WaitingPlayersData,//等待收到雙方玩家資料
             GameState_WaitingPlayersReady,//等待雙方玩家進入BattleScene
             GameState_SelectingDivineSkill,//等待選擇神祉技能中
+            GameState_CountingDown,//戰鬥倒數中
             GameState_Fighting,//戰鬥中
             GameState_End,//戰鬥結束
         }
@@ -241,11 +239,11 @@ namespace Gladiators.Main {
 
             // 開始PingLoop
             accumulator_Ping = new Accumulator();
-            PingLoop().Forget();
+            pingLoop().Forget();
             setFirstPackServerTimestamp(_serverTimestamp);
         }
 
-        async UniTaskVoid PingLoop() {
+        async UniTaskVoid pingLoop() {
             pingCancellationTokenSource = new CancellationTokenSource();
             var token = pingCancellationTokenSource.Token;
             try {
@@ -259,7 +257,7 @@ namespace Gladiators.Main {
                 WriteLog.LogError($"PingLoop error: {ex.Message}");
             }
         }
-        public void StopPingLoop() {
+        public void stopPingLoop() {
             pingCancellationTokenSource?.Cancel();
         }
         private void SendPing() {
@@ -311,9 +309,6 @@ namespace Gladiators.Main {
             if (_setDivineSkillToClient == null) return;
             //更新介面神祉技能卡牌
             BattleSceneUI.Instance?.SetDivineSkillData(_setDivineSkillToClient.JsonSkillIDs);
-            //關閉神祇技能選擇介面(做完演出後才去執行後續動作)
-            DivineSelectUI.Instance?.CloseUI(() => {
-            });
         }
         /// <summary>
         /// 收到戰鬥階段設定封包
@@ -323,11 +318,34 @@ namespace Gladiators.Main {
             if (MyEnum.TryParseEnum(_gameState.State, out gameState)) {
                 WriteLog.LogColor($"SERVER狀態: {gameState}", WriteLog.LogType.Connection);
                 switch (gameState) {
+                    case PackGameState.GAMESTATE_COUNTINGDOWN:
+                        SetGameState(GameState.GameState_CountingDown);
+                        //關閉神祇技能選擇介面(做完演出後才去執行後續動作)
+                        DivineSelectUI.Instance?.CloseUI(() => {
+                        });
+                        break;
                     case PackGameState.GAMESTATE_FIGHTING:
+                        SetGameState(GameState.GameState_Fighting);
                         BattleManager.Instance.StartGame();
+                        break;
+                    case PackGameState.GAMESTATE_END:
+                        SetGameState(GameState.GameState_End);
+                        LeaveRoom();
                         break;
                 }
             }
+        }
+        public void LeaveRoom() {
+            stopPingLoop();
+            //TODO:為了讓新富看演出結果 先暫時這樣寫 請偉軒or孟璋再修改一下這邊的寫法
+            BattleManager.Instance.BattleEnd(AfterKo);
+        }
+
+        void AfterKo() {
+            GameConnector.Instance.Close();
+            PopupUI.InitSceneTransitionProgress(0);
+            PopupUI.CallSceneTransition(MyScene.BattleSimulationScene);
+            SetGameState(GameState.GameState_NotInGame);
         }
 
         /// <summary>

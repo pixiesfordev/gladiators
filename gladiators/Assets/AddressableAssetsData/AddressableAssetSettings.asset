@@ -15,7 +15,7 @@ MonoBehaviour:
   m_DefaultGroup: 8eab9f5ad35901d439ff1a8e881c4ac0
   m_currentHash:
     serializedVersion: 2
-    Hash: dc0a38d849702163e091214841118b20
+    Hash: 6c0c5939f045aa853b634ffa0d55ea5c
   m_OptimizeCatalogSize: 0
   m_BuildRemoteCatalog: 1
   m_BundleLocalCatalog: 0
@@ -44,9 +44,9 @@ MonoBehaviour:
   m_BuildAddressablesWithPlayerBuild: 2
   m_overridePlayerVersion: '[Scoz.Func.VersionSetting.AppLargeVersion]'
   m_GroupAssets:
-  - {fileID: 11400000, guid: 82ad2fd6c8047da46a9b989fb2415f72, type: 2}
-  - {fileID: 11400000, guid: 6b96cbc8f9f8b7e469265537e54e54b1, type: 2}
   - {fileID: 11400000, guid: 8ca3310a5b028d8479886701339f2f73, type: 2}
+  - {fileID: 11400000, guid: 6b96cbc8f9f8b7e469265537e54e54b1, type: 2}
+  - {fileID: 11400000, guid: 82ad2fd6c8047da46a9b989fb2415f72, type: 2}
   m_BuildSettings:
     m_CompileScriptsInVirtualMode: 0
     m_CleanupStreamingAssetsAfterBuilds: 1
@@ -60,12 +60,12 @@ MonoBehaviour:
       m_Values:
       - m_Id: 70ea08ac60df3f441b7936eafe13894b
         m_Value: '[UnityEditor.EditorUserBuildSettings.activeBuildTarget]'
-      - m_Id: edfad19e3dcc43d448f7d51b6aab5e1e
-        m_Value: '[UnityEngine.AddressableAssets.Addressables.BuildPath]/[BuildTarget]'
-      - m_Id: d9ec07991c7ba014cb1a6164355bc88a
-        m_Value: '{UnityEngine.AddressableAssets.Addressables.RuntimePath}/[BuildTarget]'
       - m_Id: 7f02617a818e6a24b8a5ab56ac9d0800
         m_Value: ServerData/[BuildTarget]
+      - m_Id: d9ec07991c7ba014cb1a6164355bc88a
+        m_Value: '{UnityEngine.AddressableAssets.Addressables.RuntimePath}/[BuildTarget]'
+      - m_Id: edfad19e3dcc43d448f7d51b6aab5e1e
+        m_Value: '[UnityEngine.AddressableAssets.Addressables.BuildPath]/[BuildTarget]'
       - m_Id: fac4865583e4b494e886968136c18c53
         m_Value: http://localhost/[BuildTarget]
     - m_InheritedParent: 
@@ -74,54 +74,54 @@ MonoBehaviour:
       m_Values:
       - m_Id: 70ea08ac60df3f441b7936eafe13894b
         m_Value: '[UnityEditor.EditorUserBuildSettings.activeBuildTarget]'
-      - m_Id: edfad19e3dcc43d448f7d51b6aab5e1e
-        m_Value: '[UnityEngine.AddressableAssets.Addressables.BuildPath]/[BuildTarget]'
-      - m_Id: d9ec07991c7ba014cb1a6164355bc88a
-        m_Value: '{UnityEngine.AddressableAssets.Addressables.RuntimePath}/[BuildTarget]'
       - m_Id: 7f02617a818e6a24b8a5ab56ac9d0800
         m_Value: ServerData/[Scoz.Func.VersionSetting.AppLargeVersion]/[BuildTarget]
-      - m_Id: fac4865583e4b494e886968136c18c53
-        m_Value: https://storage.googleapis.com/herofishing_bundle_dev/{Scoz.Func.VersionSetting.AppLargeVersion}/[BuildTarget]
-    - m_InheritedParent: 
-      m_Id: c90af163892d86848ba3b1fed1777d1b
-      m_ProfileName: GoogleCloud-Release
-      m_Values:
-      - m_Id: 70ea08ac60df3f441b7936eafe13894b
-        m_Value: '[UnityEditor.EditorUserBuildSettings.activeBuildTarget]'
-      - m_Id: edfad19e3dcc43d448f7d51b6aab5e1e
-        m_Value: '[UnityEngine.AddressableAssets.Addressables.BuildPath]/[BuildTarget]'
       - m_Id: d9ec07991c7ba014cb1a6164355bc88a
         m_Value: '{UnityEngine.AddressableAssets.Addressables.RuntimePath}/[BuildTarget]'
-      - m_Id: 7f02617a818e6a24b8a5ab56ac9d0800
-        m_Value: ServerData/[Scoz.Func.VersionSetting.AppLargeVersion]/[BuildTarget]
+      - m_Id: edfad19e3dcc43d448f7d51b6aab5e1e
+        m_Value: '[UnityEngine.AddressableAssets.Addressables.BuildPath]/[BuildTarget]'
       - m_Id: fac4865583e4b494e886968136c18c53
-        m_Value: https://storage.googleapis.com/majampachinko_bundle_release/{Scoz.Func.VersionSetting.AppLargeVersion}/[BuildTarget]
+        m_Value: https://storage.googleapis.com/mygladiators_bundle_dev/{Scoz.Func.VersionSetting.AppLargeVersion}/[BuildTarget]
     - m_InheritedParent: 
       m_Id: 6010759c1da1dbc499bbd2d989c710bc
       m_ProfileName: GoogleCloud-Test
       m_Values:
       - m_Id: 70ea08ac60df3f441b7936eafe13894b
         m_Value: '[UnityEditor.EditorUserBuildSettings.activeBuildTarget]'
-      - m_Id: edfad19e3dcc43d448f7d51b6aab5e1e
-        m_Value: '[UnityEngine.AddressableAssets.Addressables.BuildPath]/[BuildTarget]'
-      - m_Id: d9ec07991c7ba014cb1a6164355bc88a
-        m_Value: '{UnityEngine.AddressableAssets.Addressables.RuntimePath}/[BuildTarget]'
       - m_Id: 7f02617a818e6a24b8a5ab56ac9d0800
         m_Value: ServerData/[Scoz.Func.VersionSetting.AppLargeVersion]/[BuildTarget]
+      - m_Id: d9ec07991c7ba014cb1a6164355bc88a
+        m_Value: '{UnityEngine.AddressableAssets.Addressables.RuntimePath}/[BuildTarget]'
+      - m_Id: edfad19e3dcc43d448f7d51b6aab5e1e
+        m_Value: '[UnityEngine.AddressableAssets.Addressables.BuildPath]/[BuildTarget]'
       - m_Id: fac4865583e4b494e886968136c18c53
         m_Value: https://storage.googleapis.com/majampachinko_bundle_test/{Scoz.Func.VersionSetting.AppLargeVersion}/[BuildTarget]
+    - m_InheritedParent: 
+      m_Id: c90af163892d86848ba3b1fed1777d1b
+      m_ProfileName: GoogleCloud-Release
+      m_Values:
+      - m_Id: 70ea08ac60df3f441b7936eafe13894b
+        m_Value: '[UnityEditor.EditorUserBuildSettings.activeBuildTarget]'
+      - m_Id: 7f02617a818e6a24b8a5ab56ac9d0800
+        m_Value: ServerData/[Scoz.Func.VersionSetting.AppLargeVersion]/[BuildTarget]
+      - m_Id: d9ec07991c7ba014cb1a6164355bc88a
+        m_Value: '{UnityEngine.AddressableAssets.Addressables.RuntimePath}/[BuildTarget]'
+      - m_Id: edfad19e3dcc43d448f7d51b6aab5e1e
+        m_Value: '[UnityEngine.AddressableAssets.Addressables.BuildPath]/[BuildTarget]'
+      - m_Id: fac4865583e4b494e886968136c18c53
+        m_Value: https://storage.googleapis.com/majampachinko_bundle_release/{Scoz.Func.VersionSetting.AppLargeVersion}/[BuildTarget]
     m_ProfileEntryNames:
     - m_Id: 70ea08ac60df3f441b7936eafe13894b
       m_Name: BuildTarget
       m_InlineUsage: 0
-    - m_Id: edfad19e3dcc43d448f7d51b6aab5e1e
-      m_Name: LocalBuildPath
+    - m_Id: 7f02617a818e6a24b8a5ab56ac9d0800
+      m_Name: RemoteBuildPath
       m_InlineUsage: 0
     - m_Id: d9ec07991c7ba014cb1a6164355bc88a
       m_Name: LocalLoadPath
       m_InlineUsage: 0
-    - m_Id: 7f02617a818e6a24b8a5ab56ac9d0800
-      m_Name: RemoteBuildPath
+    - m_Id: edfad19e3dcc43d448f7d51b6aab5e1e
+      m_Name: LocalBuildPath
       m_InlineUsage: 0
     - m_Id: fac4865583e4b494e886968136c18c53
       m_Name: RemoteLoadPath
@@ -135,9 +135,9 @@ MonoBehaviour:
     - Audio
     - Atlas
     - Particle
-    - MaJam
-    - ScriptableObject
-    - Dlls
+    - Scene
+    - Setting
+    - Dll
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: b52ca25ebe45b064584febea735e7172, type: 2}
