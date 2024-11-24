@@ -41,6 +41,8 @@ public class BattleBufferIcon : MonoBehaviour {
     [SerializeField] Image Border;
     [SerializeField] MyTextPro Val;
 
+    [Tooltip("buffer閃爍速度 淡出跟淡入各算一次 假設設置為0.4秒則為淡入0.4秒 淡出也0.4秒")][SerializeField] float ShineDuration = 0.4f;
+
     CancellationTokenSource ShineCTS;
     bool isShining = false;
 
@@ -109,7 +111,6 @@ public class BattleBufferIcon : MonoBehaviour {
     async UniTaskVoid Shine() {
         //Debug.LogError("buffer閃爍!");
         ShineCTS = new CancellationTokenSource();
-        float duration = 0.25f;
         float passTime = 0f;
         float startAlpha = 1f;
         float endAlpha = 0f;
@@ -117,7 +118,7 @@ public class BattleBufferIcon : MonoBehaviour {
         isShining = true;
         while (true) {
             passTime += Time.deltaTime;
-            tempColor.a = Mathf.Lerp(startAlpha, endAlpha, passTime / duration);
+            tempColor.a = Mathf.Lerp(startAlpha, endAlpha, passTime / ShineDuration);
             Bg.color = tempColor;
             Icon.color = tempColor;
             Border.color = tempColor;

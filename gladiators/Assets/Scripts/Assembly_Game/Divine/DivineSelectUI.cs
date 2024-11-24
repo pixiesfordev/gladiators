@@ -23,7 +23,10 @@ namespace Gladiators.Battle {
         [SerializeField] Transform DropCoinTrans;
         [SerializeField] Text SureBtnText;
         [SerializeField] Image ApertureImage;
+        [SerializeField] Image ApertureImage2;
         [SerializeField] RectTransform ApertureRT;
+        [SerializeField] RectTransform ApertureRT2;
+        [SerializeField] RectTransform LightMaskRT;
         [SerializeField] RectTransform LeftArrowRT;
         [SerializeField] RectTransform RightArrowRT;
         [SerializeField] RectTransform BtnBGMaskRT;
@@ -65,11 +68,15 @@ namespace Gladiators.Battle {
         CancellationTokenSource CandleCountDownCTS; //用來控制中斷蠟燭倒數
         bool Confirmed = false; //鎖定確認按鈕 避免重複發送
         Tweener ApertureScaleTween; //光圈動畫控件
+        Tweener ApertureScale2Tween; //光圈動畫控件
+        Tweener LightMaskScaleTween; //光圈遮罩控件
         Tweener BtnSizeTween; //按鈕延伸放大動畫控件
         Tweener BtnMaskSizeTween; //按鈕遮罩放大動畫控件
         Tweener LeftArrowPosTween; //按鈕左邊箭頭位移動畫控件
         Tweener RightArrowPosTween; //按鈕右邊箭頭位移動畫控件
         float BtnAniTime = 2f; //按鈕動畫時間
+
+        Vector2 LightMaskOriginSizeDelta;
 
         enum DivineSkillSelectState : short {
             Choose,//選擇
@@ -103,10 +110,16 @@ namespace Gladiators.Battle {
             DivineSkills[2].SetData(GameDictionary.GetJsonData<JsonSkill>(10201));
             DivineSkills[3].SetData(GameDictionary.GetJsonData<JsonSkill>(10203));
 
+            //取出遮罩原本大小
+            LightMaskOriginSizeDelta = LightMaskRT.sizeDelta;
+
             //倒數蠟燭
             CountDownCandleTime();
         }
 
+        //TODO:添加偏移效果 跟著游標/陀螺儀讓場景物件有偏移的效果
+        //1.手機板使用陀螺儀
+        //2.電腦版使用mouse position
         // Update is called once per frame
         void Update() {
             if (PerformCandleCountDown) {
@@ -142,8 +155,11 @@ namespace Gladiators.Battle {
 
             //設定光圈&亮度(變至最小&最暗)
             ApertureRT.localScale = new Vector3(ApertureMinSize, ApertureMinSize, 1f);
+            ApertureRT2.localScale = new Vector3(ApertureMinSize, ApertureMinSize, 1f);
+            LightMaskRT.sizeDelta = LightMaskOriginSizeDelta * ApertureMinSize;
             BGFore.color = new Color(BGDarkestBrightness, BGDarkestBrightness, BGDarkestBrightness);
-            ApertureImage.color = new Color(BGDarkestBrightness, BGDarkestBrightness, BGDarkestBrightness);
+            //ApertureImage.color = new Color(BGDarkestBrightness, BGDarkestBrightness, BGDarkestBrightness);
+            //ApertureImage2.color = new Color(BGDarkestBrightness, BGDarkestBrightness, BGDarkestBrightness);
         }
 
         //重置蠟燭
@@ -162,7 +178,10 @@ namespace Gladiators.Battle {
         //重設光圈大小
         void ResetApeture() {
             ApertureRT.localScale = Vector3.one;
-            ApertureImage.color = Color.white;
+            ApertureRT2.localScale = Vector3.one;
+            LightMaskRT.sizeDelta = LightMaskOriginSizeDelta;
+            //ApertureImage.color = Color.white;
+            //ApertureImage2.color = Color.white;
         }
 
         //中止光圈演出
@@ -170,6 +189,14 @@ namespace Gladiators.Battle {
             if (ApertureScaleTween != null) {
                 ApertureScaleTween.Pause();
                 ApertureScaleTween.Kill();
+            }
+            if (ApertureScale2Tween != null) {
+                ApertureScale2Tween.Pause();
+                ApertureScale2Tween.Kill();
+            }
+            if (LightMaskScaleTween != null) {
+                LightMaskScaleTween.Pause();
+                LightMaskScaleTween.Kill();
             }
         }
 
@@ -196,8 +223,11 @@ namespace Gladiators.Battle {
             float curApertureSize = 1f; //光圈目前尺寸
 
             //光圈類比式演出(逐漸縮小) 演出時間會+1秒是因為比較早開始演出
-            if (!ApertureModeDigital)
+            if (!ApertureModeDigital) {
                 ApertureScaleTween = ApertureRT.DOScale(new Vector3(ApertureMinSize, ApertureMinSize, 1f), CandleNum + 1f);
+                ApertureScale2Tween = ApertureRT2.DOScale(new Vector3(ApertureMinSize, ApertureMinSize, 1f), CandleNum + 1f);
+                LightMaskScaleTween = LightMaskRT.DOSizeDelta(LightMaskOriginSizeDelta * ApertureMinSize, CandleNum + 1f);
+            }
 
             while (CandleNum > 0) {
                 await UniTask.WaitForSeconds(PerCandleCountDownTime, cancellationToken: ctk.Token);
@@ -206,12 +236,14 @@ namespace Gladiators.Battle {
                 CandleNum -= 1;
                 //光圈大小調整(類比式 一秒變一次)
                 curApertureSize -= apertureDigitalDelta;
-                if (ApertureModeDigital)
+                if (ApertureModeDigital) {
                     ApertureRT.localScale = new Vector3(curApertureSize, curApertureSize, 1f);
+                }
                 //背景亮度調整
                 curBgColor -= bgColorDelta;
                 BGFore.color = new Color(curBgColor, curBgColor, curBgColor);
-                ApertureImage.color = new Color(curBgColor, curBgColor, curBgColor);
+                //ApertureImage.color = new Color(curBgColor, curBgColor, curBgColor);
+                //ApertureImage2.color = new Color(curBgColor, curBgColor, curBgColor);
             }
 
             //時間到直接發送封包 先鎖定按鈕 等待一禎再發送 避免重複發送封包
@@ -403,9 +435,7 @@ namespace Gladiators.Battle {
 
         //接回傳關閉介面(寫在這裡比較方便追蹤 不然不知道誰會在哪裡關閉 且重設介面邏輯寫在此)
         public void CloseUI(Action _afterCloseAct) {
-            UniTask.Void(async () => {
-                DoCloseAni(_afterCloseAct).Forget();
-            });
+            DoCloseAni(_afterCloseAct).Forget();
         }
 
         async UniTaskVoid DoCloseAni(Action _afterCloseAct) {

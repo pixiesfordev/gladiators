@@ -106,6 +106,7 @@ namespace Scoz.Func {
         /// <param name="_maxLoadingTime"></param>
         /// <param name="_loadingTimeOutStr"></param>
         public static void ShowLoading(string _text, float _maxLoadingTime = 999, string _loadingTimeOutStr = "") {
+            WriteLog.Log("ShowLoading");
             if (!Instance)
                 return;
             GameManager.UnloadUnusedAssets();//趁Loading時偷偷將null資源釋放
@@ -123,6 +124,7 @@ namespace Scoz.Func {
             }
         }
         public static void HideLoading() {
+            WriteLog.Log("HideLoading");
             if (!Instance)
                 return;
             CoroutineJob.Instance.StopCoroutine(LoadingCoroutineID);

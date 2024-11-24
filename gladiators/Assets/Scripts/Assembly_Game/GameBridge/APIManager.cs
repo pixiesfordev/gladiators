@@ -1,9 +1,6 @@
 using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
 using Scoz.Func;
-using System;
-using System.Security.Policy;
-using UnityEngine;
 
 
 namespace Gladiators.Main {

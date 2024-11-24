@@ -50,7 +50,6 @@ MonoBehaviour:
   characterPrefab: {fileID: 8777980665360889955, guid: e3a3ff7294793c343a0a70815a85f586,
     type: 3}
   charactersParent: {fileID: 7590910013932357930}
-  BattleIsEnd: 0
   leftChar: {fileID: 0}
 --- !u!1 &1860164198770155660
 GameObject:
@@ -545,7 +544,6 @@ MonoBehaviour:
   MyCam: {fileID: 2316466101126620663}
   WorldEffectParent: {fileID: 5647017998600098285}
   BattleDefaultTime: 60
-  BattleIsEnd: 0
   battleModelController: {fileID: 1833489690963368632}
   isRightPlayer: 0
   bResetBattle: 0
@@ -590,6 +588,7 @@ GameObject:
   m_Component:
   - component: {fileID: 382998234740706322}
   - component: {fileID: 2896679513101682643}
+  - component: {fileID: 3262613526128873283}
   m_Layer: 0
   m_Name: vCam
   m_TagString: Untagged
@@ -652,6 +651,19 @@ MonoBehaviour:
         m_Calls: []
   m_LegacyBlendHint: 0
   m_ComponentOwner: {fileID: 6845656777536393725}
+--- !u!114 &3262613526128873283
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7649430313357338200}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69cae82d46cba304c8a2fd071d8f022d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shakeTimer: 0
 --- !u!1 &8791508410065879494
 GameObject:
   m_ObjectHideFlags: 0

@@ -273,7 +273,7 @@ public class BattleSkillButton : MonoBehaviour {
     public void CastInstantSkill(int _skillId) {
         PlayButtonCast();
         CacheSKillId = _skillId;
-        WriteLog.LogError("收到立即釋放技能回傳封包 開始施展技能!");
+        WriteLog.LogWarning("收到立即釋放技能回傳封包 開始施展技能!");
     }
 
     void PlayButtonCast() {
@@ -330,6 +330,13 @@ public class BattleSkillButton : MonoBehaviour {
             Debug.LogWarningFormat("Set energy fail! Skill Data null! Obj: {0}", name);
             return;
         }
+
+        //確認能量狀態 這裡不能被下面演出狀態擋掉 不然會導致能量足夠與否的判斷錯誤
+        //Debug.LogErrorFormat("Set energy. cur val: {0} cost val: {1}", val, SkillData.Vigor);
+        EnergyRate = val / SkillData.Vigor;
+        IsEnergyEnough = EnergyRate >= 1f;
+
+        //判斷演出狀態 阻擋演出被中斷
         if (curAniState == SkillAniState.CHANGE_SKILL ||
             curAniState == SkillAniState.START_CAST ||
             curAniState == SkillAniState.START_SCALE ||
@@ -338,8 +345,7 @@ public class BattleSkillButton : MonoBehaviour {
             curAniState == SkillAniState.INSTANT_WAIT_SERVER) {
             return;
         }
-        //Debug.LogErrorFormat("Set energy. cur val: {0} cost val: {1}", val, SkillData.Vigor);
-        EnergyRate = val / SkillData.Vigor;
+
         if (EnergyRate < 1f && EnergyRate > 0f) {
             //介於0~1之間才填入fillAmount以免出錯
             WhiteRotate.fillAmount = EnergyRate;
@@ -350,8 +356,6 @@ public class BattleSkillButton : MonoBehaviour {
             WhiteRotate.fillAmount = 0f;
             ButtonLightRotate.fillAmount = 0f;
         }
-        //確認能量狀態
-        IsEnergyEnough = EnergyRate >= 1f;
         if (curAniState == SkillAniState.END_CHANGE_SKILL) {
             //剛結束轉換技能演出 這時候OldEnergyEnough肯定是True 因為True才能施放技能 必須要特別寫判定
             if (IsEnergyEnough) {
