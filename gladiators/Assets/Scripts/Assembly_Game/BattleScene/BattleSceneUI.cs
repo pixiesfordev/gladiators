@@ -42,6 +42,7 @@ public class BattleSceneUI : BaseUI {
 
     [SerializeField] GameObject SettingBtn;//設定按鈕
 
+    [SerializeField] BattleFIGHT BattleFightObj;//開場演出
     [SerializeField] Animator BattleKO;//KO演出
 
     public bool IsCastingSkill { get; private set; } //是否施放立即釋放技能中
@@ -412,4 +413,12 @@ public class BattleSceneUI : BaseUI {
         await UniTask.WaitForSeconds(2f);
         afterKO();
     }
+
+    /// <summary>
+    /// 播放開場動畫
+    /// </summary>
+    public void StartBattle() {
+        BattleFightObj.StartBattle();
+    }
+
 }

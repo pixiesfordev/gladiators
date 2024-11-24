@@ -392,6 +392,7 @@ namespace Gladiators.Main {
                         SetGameState(GameState.GameState_CountingDown);
                         //關閉神祇技能選擇介面(做完演出後才去執行後續動作)
                         DivineSelectUI.Instance?.CloseUI(() => {
+                            BattleSceneUI.Instance.StartBattle();
                         });
                         break;
                     case PackGameState.GAMESTATE_FIGHTING:
