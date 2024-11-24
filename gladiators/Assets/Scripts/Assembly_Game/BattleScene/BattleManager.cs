@@ -76,9 +76,9 @@ namespace Gladiators.Battle {
         ///  雙方選完神祉技能 可以開始戰鬥
         /// </summary>
         public void StartSelectDivineSkill() {
-            //叫出神址選擇介面這裡顯示介面讓玩家選擇
-            if (DivineSelectUI.Instance != null)
-                DivineSelectUI.Instance.SetActive(true);
+        //叫出神址選擇介面這裡顯示介面讓玩家選擇
+        if (DivineSelectUI.Instance != null)
+            DivineSelectUI.Instance.SetActive(true);
         }
         public void StartGame() {
             battleModelController.BattleStart();
