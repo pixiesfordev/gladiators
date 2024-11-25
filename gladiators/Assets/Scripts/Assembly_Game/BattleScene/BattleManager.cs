@@ -37,7 +37,6 @@ namespace Gladiators.Battle {
         [HeaderAttribute("==============TEST==============")]
         //測試參數區塊
         [Tooltip("重置戰鬥")][SerializeField] bool bResetBattle = false;
-        [Tooltip("測試戰鬥開始演出拉近鏡頭")][SerializeField] bool bTestCameraZoom = false;
         [Tooltip("戰鬥開始拉近鏡頭演出曲線")][SerializeField] AnimationCurve StartBattleZoomCurve;
         [Tooltip("戰鬥開始拉近鏡頭起始距離")][SerializeField] float StartBattleZoomFrom = 80f;
         [Tooltip("戰鬥開始拉近鏡頭演出時間")][SerializeField] float StartBattleZoomDuration = 3.15f;
