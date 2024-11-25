@@ -36,9 +36,10 @@ namespace Gladiators.Socket {
     /// </summary>
     public class SocketContent {
 
-        public enum MatchmakerCMD_TCP {
-            AUTH_TOCLIENT,//身分驗證
-            CREATEROOM_TOCLIENT,//加房間or開房
+        public enum LobbyCMD_TCP {
+            AUTH_TOCLIENT,// (TCP)身分驗證-送Client
+            PING_TOCLIENT,// (TCP)心跳-送Client(太久沒收到回傳會視玩家斷線)
+            MATCH_TOCLIENT,   // (TCP) 配對-送Client
         }
         public enum MatchgameCMD_TCP {
             AUTH_TOCLIENT,// (TCP)身分驗證-送Client

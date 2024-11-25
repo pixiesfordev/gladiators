@@ -92,7 +92,7 @@ namespace Gladiators.Main {
             TcpIP = _ip;
             Port = _port;
             firstPackServerTimestamp = 0;
-            WriteLog.LogColorFormat("設定被Matchmaker分配到的房間資料: {0}", WriteLog.LogType.Debug, DebugUtils.ObjToStr(Instance));
+            WriteLog.LogColorFormat("設定Matchgame資料: {0}", WriteLog.LogType.Connection, DebugUtils.ObjToStr(Instance));
         }
         void onReceiveMsg(string _msg) {
             try {
@@ -247,6 +247,7 @@ namespace Gladiators.Main {
             connector.Send(cmd);
         }
         public void LeaveRoom() {
+            WriteLog.LogColor($"呼叫離開 Matchgame Server", WriteLog.LogType.Connection);
             clearRoom();
             BattleManager.Instance.BattleEnd(afterKO);
         }
@@ -454,7 +455,7 @@ namespace Gladiators.Main {
                 sum += latency;
             }
             Lantency = sum / latencySamples.Count;
-            WriteLog.LogColor($"近{MaxLatencySamples}筆Ping計算出的網路延遲為: {MyMath.Round((float)Lantency, 2)} ms", WriteLog.LogType.Connection);
+            //WriteLog.LogColor($"近{MaxLatencySamples}筆Ping計算出的網路延遲為: {MyMath.Round((float)Lantency, 2)} ms", WriteLog.LogType.Connection);
         }
 
 

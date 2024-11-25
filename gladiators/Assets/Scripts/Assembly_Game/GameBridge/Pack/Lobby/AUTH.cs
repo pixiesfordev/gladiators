@@ -14,6 +14,7 @@ namespace Gladiators.Socket.Lobby {
         //class名稱就是封包的CMD名稱
 
         public bool IsAuth { get; private set; }
+        public long Time { get; private set; }
 
         public AUTH_TOCLIENT() {
         }

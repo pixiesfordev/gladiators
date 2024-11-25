@@ -2,6 +2,7 @@ using UnityEngine;
 using Scoz.Func;
 using UnityEngine.UI;
 using Cysharp.Threading.Tasks;
+using static Gladiators.Main.AllocatedRoom;
 
 namespace Gladiators.Main {
     public class StartSceneUI : BaseUI {
@@ -215,6 +216,8 @@ namespace Gladiators.Main {
             var dbGameState = await APIManager.GameState();
             GamePlayer.Instance.SetDBData(dbGameState);
 
+            await connectToLobby(); // 開始連線大廳
+
             //如果是編輯器不直接轉場景(正式機才會直接進Lobby)
 #if UNITY_EDITOR
             ShowUI(StartSceneUI.Condition.BackFromLobby_ShowLogoutBtn);
@@ -222,6 +225,17 @@ namespace Gladiators.Main {
             GoLobby();//進入下一個場景
 #endif
 
+        }
+        async UniTask connectToLobby() {
+            var dbGameState = await APIManager.GameState();
+            string serverName = "Lobby";
+            await GameConnector.NewConnector(serverName, dbGameState.LobbyIP, dbGameState.LobbyPort, () => {
+                var connector = GameConnector.GetConnector(serverName);
+                if (connector != null) {
+                    AllocatedLobby.Instance.SetLobby(connector);
+                    AllocatedLobby.Instance.Auth();
+                }
+            }, null);
         }
 
         /// <summary>

@@ -121,7 +121,7 @@ namespace Gladiators.BattleSimulation {
             }, null).Forget();
         }
         public void OnVsPlayer() {
-
+            AllocatedLobby.Instance.Match("TestMap");
         }
         public void SendSimulationSetting() {
             List<int> skills = new List<int>(curSkillIDs);

@@ -18,6 +18,7 @@ namespace Gladiators.Main {
         static HashSet<string> connectings = new HashSet<string>();
 
         public static async UniTask NewConnector(string _name, string _ip, int _port, Action _onConnectedAc, Action _onDisconnectedAc) {
+            WriteLog.LogColor($"建立 {_name} 連線 Ip: {_ip} Port: {_port}", WriteLog.LogType.Connection);
             var connector = new GameConnector();
             if (tcpClients.ContainsKey(_name)) {
                 WriteLog.LogError($"嘗試連線已連線中的Server({_name})");
@@ -32,6 +33,7 @@ namespace Gladiators.Main {
             connector.tcpClient = new TcpClientManager();
             connector.tcpClient.OnConnected = () => connector.onConnectedToMatchGame(connector);
             connector.tcpClient.OnDisconnected = () => connector.onDisconnectedToMatchGame(connector);
+            WriteLog.Log("_onConnectedAc=" + _onConnectedAc);
             if (_onConnectedAc != null) connector.onConnectedActions += _onConnectedAc;
             if (_onDisconnectedAc != null) connector.onDisconnectedActions += _onDisconnectedAc;
             // 連線到伺服器
@@ -69,6 +71,7 @@ namespace Gladiators.Main {
                 return;
             }
             WriteLog.LogColor($"成功連線到 {_connector.Name}！", WriteLog.LogType.Connection);
+            WriteLog.Log("onConnectedActions=" + onConnectedActions);
             onConnectedActions?.Invoke();
         }
         void onDisconnectedToMatchGame(GameConnector _connector) {
