@@ -235,7 +235,7 @@ namespace Gladiators.Main {
                     AllocatedLobby.Instance.SetLobby(connector);
                     AllocatedLobby.Instance.Auth();
                 }
-            }, null);
+            }, AllocatedLobby.Instance.LeaveRoom);
         }
 
         /// <summary>

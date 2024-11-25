@@ -118,7 +118,7 @@ namespace Gladiators.BattleSimulation {
                     AllocatedRoom.Instance.SetRoom(connector, "testCreater", gameState.MatchgameTestverRoomName, gameState.MatchgameTestverTcpIp, gameState.MatchgameTestverPort);
                     AllocatedRoom.Instance.Auth();
                 }
-            }, null).Forget();
+            }, AllocatedRoom.Instance.LeaveRoom).Forget();
         }
         public void OnVsPlayer() {
             AllocatedLobby.Instance.Match("TestMap");

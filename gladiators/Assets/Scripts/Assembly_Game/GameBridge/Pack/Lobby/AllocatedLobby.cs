@@ -193,7 +193,7 @@ namespace Gladiators.Main {
                     AllocatedRoom.Instance.SetRoom(connector, content.CreaterID, content.DBMatchgameID, content.IP, content.Port);
                     AllocatedRoom.Instance.Auth();
                 }
-            }, null).Forget();
+            }, AllocatedRoom.Instance.LeaveRoom).Forget();
         }
 
 
