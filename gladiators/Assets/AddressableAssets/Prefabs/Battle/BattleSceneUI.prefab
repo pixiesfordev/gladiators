@@ -13568,6 +13568,7 @@ MonoBehaviour:
   SettingBtn: {fileID: 6614019982269878782}
   BattleFightObj: {fileID: 4344494158718479891}
   BattleKO: {fileID: 3540136305290607615}
+  MoneyObj: {fileID: 8390731325744187977}
 --- !u!1 &7261653907666183505
 GameObject:
   m_ObjectHideFlags: 0
@@ -13727,6 +13728,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3214700814118358999}
+  - component: {fileID: 8390731325744187977}
   m_Layer: 5
   m_Name: Money
   m_TagString: Untagged
@@ -13755,6 +13757,56 @@ RectTransform:
   m_AnchoredPosition: {x: 130, y: -250}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &8390731325744187977
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7312053466708786651}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9854da292eb565c49aea9d9511acc992, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BgController: {fileID: 8158715437384117759}
+  MoneyText: {fileID: 4513145301553664397}
+  TestAddMoney: 0
+  AddMoneyCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.5
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: -2
+      outSlope: -2
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  AddMoneyAniDur: 0.15
+  AddMoneyTextJumDistance: 5
 --- !u!1 &7331310539844249179
 GameObject:
   m_ObjectHideFlags: 0
@@ -17575,6 +17627,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: DivineSelectUI
+      objectReference: {fileID: 0}
+    - target: {fileID: 8640825839032587235, guid: 7238168b1a8ffd9428f4ef911afd5cd8,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
