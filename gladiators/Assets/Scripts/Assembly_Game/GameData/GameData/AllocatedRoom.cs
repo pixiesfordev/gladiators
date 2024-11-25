@@ -393,6 +393,7 @@ namespace Gladiators.Main {
                         //關閉神祇技能選擇介面(做完演出後才去執行後續動作)
                         DivineSelectUI.Instance?.CloseUI(() => {
                             BattleSceneUI.Instance.StartBattle();
+                            BattleManager.Instance.StartGameAnimation();
                         });
                         break;
                     case PackGameState.GAMESTATE_FIGHTING:
