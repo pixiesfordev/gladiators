@@ -552,39 +552,57 @@ MonoBehaviour:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
-      inSlope: 2
-      outSlope: 2
+      value: 0.0023498535
+      inSlope: 1.1397954
+      outSlope: 1.1397954
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0
+      outWeight: 0.1779498
     - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
+      time: 0.36217415
+      value: 0.44397175
+      inSlope: 1.1783549
+      outSlope: 1.1783549
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0
+      inWeight: 0.17386997
+      outWeight: 0.105007164
+    - serializedVersion: 3
+      time: 0.8655031
+      value: 0.9486876
+      inSlope: 0.6238048
+      outSlope: 0.6238048
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.17228122
+    - serializedVersion: 3
+      time: 0.99995613
+      value: 1.000631
+      inSlope: 0.090106115
+      outSlope: 0.090106115
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.08497137
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  StartBattleZoomFrom: 80
-  StartBattleZoomDuration: 3.15
+  StartBattleZoomFrom: 100
+  StartBattleZoomDuration: 3.5
   BattleEndSlowDownCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 2
-      outSlope: 2
+      inSlope: 1.8389288
+      outSlope: 1.8389288
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0
+      outWeight: 0.07053942
     - serializedVersion: 3
       time: 1
       value: 1
@@ -597,8 +615,8 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  BattleEndSlowDownEndWaitTime: 2
-  BattleEndSlowDownDuration: 5
+  BattleEndSlowDownEndWaitTime: 1.5
+  BattleEndSlowDownDuration: 3
 --- !u!1 &7590910013932357930
 GameObject:
   m_ObjectHideFlags: 0
