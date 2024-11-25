@@ -8,6 +8,7 @@ using Cinemachine;
 using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using UnityEngine.SceneManagement;
 using System;
+using DG.Tweening;
 
 namespace Gladiators.Battle {
     public class BattleManager : MonoBehaviour {
@@ -36,8 +37,10 @@ namespace Gladiators.Battle {
         [HeaderAttribute("==============TEST==============")]
         //測試參數區塊
         [Tooltip("重置戰鬥")][SerializeField] bool bResetBattle = false;
+        [Tooltip("戰鬥開始拉近鏡頭演出曲線")][SerializeField] AnimationCurve StartBattleZoomCurve;
+        [Tooltip("戰鬥開始拉近鏡頭起始距離")][SerializeField] float StartBattleZoomFrom = 80f;
+        [Tooltip("戰鬥開始拉近鏡頭演出時間")][SerializeField] float StartBattleZoomDuration = 3.15f;
         //[Tooltip("前端演示測試 打勾表示只使用純前端邏輯模擬")][SerializeField] bool bFrontEndTest = true;
-
 
         public async UniTask Init() {
             Instance = this;
@@ -80,6 +83,33 @@ namespace Gladiators.Battle {
         if (DivineSelectUI.Instance != null)
             DivineSelectUI.Instance.SetActive(true);
         }
+
+        /// <summary>
+        /// 播放遊戲開始動畫
+        /// </summary>
+        public void StartGameAnimation() {
+            DoStartGameAnimation().Forget();
+        }
+
+        async UniTask DoStartGameAnimation() {
+            float passTime = 0f;
+            float curveVal = 0f;
+            float oldFOV = vCam.m_Lens.FieldOfView;
+            float deltaFOV = StartBattleZoomFrom - oldFOV;
+            vCam.m_Lens.FieldOfView = StartBattleZoomFrom;
+            //WriteLog.LogErrorFormat("拉近鏡頭參數! 起始值: {0} 差異值: {1} 目前值: {2}", StartBattleZoomFrom, deltaFOV, vCam.m_Lens.FieldOfView);
+            while (passTime < StartBattleZoomDuration) {
+                passTime += Time.deltaTime;
+                curveVal = StartBattleZoomCurve.Evaluate(passTime / StartBattleZoomDuration);
+                vCam.m_Lens.FieldOfView = oldFOV + (1 - curveVal) * deltaFOV;
+                await UniTask.Yield();
+                //WriteLog.LogErrorFormat("拉近鏡頭! 目前距離: {0}", vCam.m_Lens.FieldOfView);
+            }
+            //避免任何其他因素導致沒正常回歸原本的預設值 這裡再設定一次預設值
+            vCam.m_Lens.FieldOfView = oldFOV;
+        }
+
+
         public void StartGame() {
             battleModelController.BattleStart();
         }
