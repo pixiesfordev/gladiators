@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using Scoz.Func;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -41,6 +42,8 @@ public class TestShader : MonoBehaviour
     [SerializeField] bool TestMultiUniTask;
     [SerializeField] bool TestStopTask;
 
+    [SerializeField] bool TestUniTaskTime;
+
     Material _SkillMaterial1;
     Material _SkillMaterial2;
     Material _SkillMaterial3;
@@ -49,52 +52,49 @@ public class TestShader : MonoBehaviour
     CancellationToken CT;
 
     // Start is called before the first frame update
-    void Start()
-    {
-        _SkillMaterial1 = Instantiate(TestMaterial);
-        _SkillMaterial2 = Instantiate(TestMaterial);
-        _SkillMaterial3 = Instantiate(TestMaterial);
+    void Start() {
+        if (TestMaterial != null) {
+            _SkillMaterial1 = Instantiate(TestMaterial);
+            _SkillMaterial2 = Instantiate(TestMaterial);
+            _SkillMaterial3 = Instantiate(TestMaterial);
+        }
         CTS = new CancellationTokenSource();
         CT = CTS.Token;
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        if (UpdateImage1)
-        {
+    void Update() {
+        if (UpdateImage1) {
             UpdateImage1 = false;
             UpdateTargetImage(TestImage1, _SkillMaterial1);
         }
-        if (UpdateImage2)
-        {
+        if (UpdateImage2) {
             UpdateImage2 = false;
             UpdateTargetImage(TestImage2, _SkillMaterial2);
         }
-        if (UpdateImage3)
-        {
+        if (UpdateImage3) {
             UpdateImage3 = false;
             UpdateTargetImage(TestImage3, _SkillMaterial3);
         }
-        if (TestLerp)
-        {
+        if (TestLerp) {
             TestLerp = false;
             TryLerp().Forget();
         }
-        if (TestMultiUniTask)
-        {
+        if (TestMultiUniTask) {
             TestMultiUniTask = false;
             TryWaitTask().Forget();
         }
-        if (TestStopTask)
-        {
+        if (TestStopTask) {
             TestStopTask = false;
             StopTask();
         }
+        if (TestUniTaskTime) {
+            TestUniTaskTime = false;
+            DoTestUniTaskTime().Forget();
+        }
     }
     
-    async UniTaskVoid TryLerp()
-    {
+    async UniTaskVoid TryLerp() {
         float resultVal = 0f;
         float passTime = 0f;
         while (passTime <= CountTime) {
@@ -105,8 +105,7 @@ public class TestShader : MonoBehaviour
         }
     }
 
-    async UniTaskVoid TryWaitTask()
-    {
+    async UniTaskVoid TryWaitTask() {
         Debug.LogWarningFormat("Before do first: {0}", Time.time);
         await FirstWaitTask();
         Debug.LogWarningFormat("Before do second: {0}", Time.time);
@@ -114,8 +113,7 @@ public class TestShader : MonoBehaviour
         Debug.LogWarningFormat("All done: {0}", Time.time);
     }
 
-    async UniTask FirstWaitTask()
-    {
+    async UniTask FirstWaitTask() {
         float resultVal = 0f;
         float passTime = 0f;
         while (passTime <= Time1) {
@@ -126,8 +124,7 @@ public class TestShader : MonoBehaviour
         }
     }
 
-    async UniTask SecondWaitTask()
-    {
+    async UniTask SecondWaitTask() {
         float resultVal = 0f;
         float passTime = 0f;
         while (passTime <= Time2) {
@@ -138,8 +135,7 @@ public class TestShader : MonoBehaviour
         }
     }
 
-    void StopTask()
-    {
+    void StopTask() {
         //測試停止UniTask.Yield()
         if (CT != null) {
             CTS.Cancel();
@@ -148,8 +144,7 @@ public class TestShader : MonoBehaviour
         }
     }
 
-    void UpdateTargetImage(Image _target, Material _material)
-    {
+    void UpdateTargetImage(Image _target, Material _material) {
         if (GiveMaterial)
         {
             if (UpdateTex) _material.SetTexture("_main_Tex", _MainTex);
@@ -162,6 +157,18 @@ public class TestShader : MonoBehaviour
         else
         {
             _target.material = null;
+        }
+    }
+
+    async UniTask DoTestUniTaskTime () {
+        WriteLog.LogError("測試UniTask是否受ScaleTime影響");
+        float totalProgress = 5f;
+        float progress = 0f;
+        Time.timeScale = 0f;
+        while (progress < totalProgress) {
+            progress += 0.05f;
+            await UniTask.Yield();
+            WriteLog.LogErrorFormat("目前進度: {0}", progress);
         }
     }
 }
