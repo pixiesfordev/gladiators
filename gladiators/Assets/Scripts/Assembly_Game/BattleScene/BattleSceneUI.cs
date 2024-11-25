@@ -45,6 +45,8 @@ public class BattleSceneUI : BaseUI {
     [SerializeField] BattleFIGHT BattleFightObj;//開場演出
     [SerializeField] Animator BattleKO;//KO演出
 
+    [SerializeField] BattleMoney MoneyObj;//戰鬥金幣物件(UI)
+
     public bool IsCastingSkill { get; private set; } //是否施放立即釋放技能中
     int CastingSkillPos; //正在施放技能的按鈕位置
 
@@ -301,7 +303,7 @@ public class BattleSceneUI : BaseUI {
     }
 
     /// <summary>
-    /// 設定夏禕技能的能量消耗值
+    /// 設定下一技能的能量消耗值
     /// </summary>
     /// <param name="_val"></param>
     public void SetNextSkillVigorCost(int _val) {
@@ -419,6 +421,14 @@ public class BattleSceneUI : BaseUI {
     /// </summary>
     public void StartBattle() {
         BattleFightObj.StartBattle();
+    }
+
+    /// <summary>
+    /// 獲得金幣
+    /// </summary>
+    /// <param name="money">金幣數量</param>
+    public void AddMoney(int money) {
+        MoneyObj.AddMoney(money);
     }
 
 }
