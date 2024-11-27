@@ -25,6 +25,7 @@ namespace Gladiators.Main {
         public int INIT { get; private set; }
         public double VigorRegen { get; private set; }
         public double ModelCenter { get; private set; }
+        public double ImgScale {  get; private set; }
 
 
         protected override void SetDataFromJson(JsonData _item) {

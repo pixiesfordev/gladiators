@@ -19,8 +19,8 @@ Assets/AssetStoreTools*
 ServerData/
 AmplifyShaderEditor/
 AmplifyShaderEditor.meta
-Builds/
-Build_Windows/
+Build_*/
+
 
 
 

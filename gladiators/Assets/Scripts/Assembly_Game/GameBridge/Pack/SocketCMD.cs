@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Scoz.Func;
+using System;
 using System.Collections;
 using UnityEngine;
 

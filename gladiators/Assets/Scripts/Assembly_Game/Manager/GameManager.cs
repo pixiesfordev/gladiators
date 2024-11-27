@@ -106,7 +106,8 @@ namespace Scoz.Func {
             //JsonMapper.RegisterImporter((double _value) => {
             //    return (float)_value;
             //});
-
+            Screen.sleepTimeout = SleepTimeout.NeverSleep;// 防止螢幕自動休眠
+            Screen.SetResolution(1170, 540,true);
             DontDestroyOnLoad(gameObject);
             //設定FPS與垂直同步
 #if Dev

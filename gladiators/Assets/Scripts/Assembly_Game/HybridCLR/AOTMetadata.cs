@@ -11,7 +11,6 @@ public static class AOTMetadata {
 		"SerializableDictionary.dll",
 		"System.Core.dll",
 		"System.dll",
-		"UniRx.dll",
 		"UniTask.dll",
 		"Unity.Addressables.dll",
 		"Unity.ResourceManager.dll",

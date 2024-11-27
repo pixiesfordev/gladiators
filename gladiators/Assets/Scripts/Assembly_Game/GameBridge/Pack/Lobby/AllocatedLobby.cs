@@ -68,7 +68,7 @@ namespace Gladiators.Main {
             try {
                 while (!token.IsCancellationRequested) {
                     sendPing();
-                    await UniTask.Delay(TimeSpan.FromSeconds(1), cancellationToken: token);
+                    await UniTask.Delay(TimeSpan.FromSeconds(5), cancellationToken: token);
                 }
             } catch (OperationCanceledException) {
                 WriteLog.Log("PingLoop cancelled.");
@@ -176,18 +176,26 @@ namespace Gladiators.Main {
         /// <summary>
         /// 收到Match封包回傳
         /// </summary>
-        void handlerMatch(SocketCMD<MATCH_TOCLIENT> _packet) {
+        async void handlerMatch(SocketCMD<MATCH_TOCLIENT> _packet) {
+            PopupUI.HideLoading();
             if (_packet == null || _packet.Content == null) {
                 WriteLog.LogError("Match錯誤，配對失敗");
                 return;
             }
+            if (!string.IsNullOrEmpty(_packet.ErrMsg)) {
+                WriteLog.LogError($"配房失敗: {_packet.ErrMsg}");
+                return;
+            }
+            PopupUI.ShowLoading("已建立配對，加入房間中...");
             var content = _packet.Content;
             // 連線Matchgame之前先離開本來的Matchgame
             AllocatedRoom.Instance.LeaveRoom();
+            await UniTask.Delay(500); // 等待0.5秒再去連server
             // 開始連線Matchgame
             var gameState = GamePlayer.Instance.GetDBData<DBGameState>();
             string serverName = "Matchgame";
             GameConnector.NewConnector(serverName, content.IP, content.Port, () => {
+                PopupUI.HideLoading();
                 var connector = GameConnector.GetConnector(serverName);
                 if (connector != null) {
                     AllocatedRoom.Instance.SetRoom(connector, content.CreaterID, content.DBMatchgameID, content.IP, content.Port);
@@ -215,6 +223,7 @@ namespace Gladiators.Main {
         public void Match(string _dbMapID) {
             var cmd = new SocketCMD<MATCH>(new MATCH { DBMapID = _dbMapID });
             connector.Send(cmd);
+            PopupUI.ShowLoading("配對中...");
         }
 
     }
