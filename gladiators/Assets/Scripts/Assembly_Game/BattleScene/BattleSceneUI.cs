@@ -47,7 +47,38 @@ public class BattleSceneUI : BaseUI {
 
     [SerializeField] BattleMoney MoneyObj;//戰鬥金幣物件(UI)
 
-    public bool IsCastingSkill { get; private set; } //是否施放立即釋放技能中
+    /// <summary>
+    /// 是否能施放立即技能
+    /// </summary>
+    public bool CanSpellInstantSkill {
+        get {
+            bool isLock = spellLocker.Any(pair => pair.Value);
+            if (isLock) WriteLog.Log(getSpellLockStr);
+            return isLock;
+        }
+    }
+    string getSpellLockStr {
+        get {
+            var keys = spellLocker.Where(pair => pair.Value).Select(pair => pair.Key);
+            return $"技能鎖住項目:  {string.Join(", ", keys)}";
+        }
+    }
+    public enum SpellLock {
+        Casting, // 施放中
+        Effect, // 狀態效果影響
+        InMeleeRange, // 在肉搏限定距離內(與對手角鬥士的距離過近時禁止施放立即技能)
+    }
+    Dictionary<SpellLock, bool> spellLocker = new Dictionary<SpellLock, bool>();
+    /// <summary>
+    /// 設定立即技能鎖住清單(有任一項SpellLock被鎖住就不能施放立即技能)
+    /// </summary>
+    public void SetInstantSkillLocker(SpellLock _type, bool _lock) {
+        //WriteLog.Log($"技能鎖({_type}: {_lock})");
+        spellLocker[_type] = _lock;
+    }
+
+
+
     int CastingSkillPos; //正在施放技能的按鈕位置
 
     //[HeaderAttribute("==============Test==============")]
@@ -317,7 +348,7 @@ public class BattleSceneUI : BaseUI {
     /// <param name="_skillId">該按鈕的技能ID</param>
     public void CastingInstantSKill(BattleSkillButton _btn, int _skillId) {
         //施放技能後鎖定 不能連續施放技能
-        IsCastingSkill = true;
+        SetInstantSkillLocker(SpellLock.Casting, true);
         //找出釋放技能的按鈕位置
         for (int i = 0; i < SkillBtns.Length; i++) {
             if (SkillBtns[i] == _btn) {
@@ -330,14 +361,13 @@ public class BattleSceneUI : BaseUI {
     }
 
     /// <summary>
-    /// 解除技能施放鎖定
+    /// 技能施放後要短暫鎖住X秒
     /// </summary>
-    /// <returns></returns>
-    async UniTaskVoid ReleasedSkillLock() {
+    async UniTaskVoid castingTmpLock() {
+        SetInstantSkillLocker(SpellLock.Casting, true);
         //鎖定0.5秒後才能放下一個技能
         await UniTask.WaitForSeconds(0.5f);
-        IsCastingSkill = false;
-        WriteLog.LogWarningFormat("施展技能結束 解鎖!");
+        SetInstantSkillLocker(SpellLock.Casting, false);
     }
 
     /// <summary>
@@ -359,7 +389,7 @@ public class BattleSceneUI : BaseUI {
     public void CastInstantSkill(int _skillId) {
         SkillBtns[CastingSkillPos].CastInstantSkill(NextSkillBtn.GetNextSkillId());
         NextSkillBtn.CacheSkillId(_skillId);
-        ReleasedSkillLock().Forget();
+        castingTmpLock().Forget();
     }
 
     /// <summary>
@@ -375,26 +405,7 @@ public class BattleSceneUI : BaseUI {
             }
         }
         NextSkillBtn.CacheSkillId(_skillId);
-        //server驅動施放技能後鎖定 不能連續施放技能
-        IsCastingSkill = true;
-        ReleasedSkillLock().Forget();
-        WriteLog.LogWarningFormat("施放近戰技能! 正在施展技能中 上鎖! 技能ID: {0}", _skillId);
-    }
-
-    /// <summary>
-    /// 鎖定技能施放
-    /// </summary>
-    public void LockSkillCasting() {
-        IsCastingSkill = true;
-        WriteLog.Log("鎖住技能施放!");
-    }
-
-    /// <summary>
-    /// 立即釋放技能施放鎖定
-    /// </summary>
-    public void ReleaseSkillLockImmediately() {
-        IsCastingSkill = false;
-        WriteLog.Log("立即釋放技能施放鎖定!");
+        castingTmpLock().Forget(); // 技能施放後要短暫鎖住X秒
     }
 
     /// <summary>

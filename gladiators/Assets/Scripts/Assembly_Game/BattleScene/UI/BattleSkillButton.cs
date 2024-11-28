@@ -7,6 +7,7 @@ using Gladiators.Main;
 using Scoz.Func;
 using UnityEngine;
 using UnityEngine.UI;
+using static BattleSceneUI;
 
 /// <summary>
 /// 戰鬥技能按鈕
@@ -128,10 +129,10 @@ public class BattleSkillButton : MonoBehaviour {
                 if (sprite != null)
                     SkillIcon.sprite = sprite;
                 else
-                    AssetGet.GetSpriteFromAtlas("SpellIcon", "sprint", (sprite) => { 
-                        SkillIcon.sprite = sprite; 
+                    AssetGet.GetSpriteFromAtlas("SpellIcon", "sprint", (sprite) => {
+                        SkillIcon.sprite = sprite;
                         WriteLog.LogWarningFormat("圖片缺少! 用衝刺圖代替顯示! ID: {0}", SkillData.Ref);
-                        } );
+                    });
             });
         } else {
             SkillIcon.gameObject.SetActive(false);
@@ -507,10 +508,7 @@ public class BattleSkillButton : MonoBehaviour {
             return;
         }
         //判斷是否已經有其他技能在施放中
-        if (BattleSceneUI.Instance.IsCastingSkill) {
-            Debug.LogWarning("Other skill is casting!");
-            return;
-        }
+        if (BattleSceneUI.Instance.CanSpellInstantSkill) return;
         //判斷按鈕是否鎖定中 比如放開按鈕演出完到判斷施法之間發生Available的演出動畫 美術要求必須重新點按鈕 所以視為無效點擊
         if (btnLocking) {
             Debug.LogWarning("Cast skill! 但按鈕被鎖定了!");

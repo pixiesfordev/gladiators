@@ -146,6 +146,10 @@ namespace Gladiators.Main {
                             var beforeMeleePacket = LitJson.JsonMapper.ToObject<SocketCMD<BEFORE_MELEE_TOCLIENT>>(_msg);
                             HandlerBeforeMelee(beforeMeleePacket);
                             break;
+                        case SocketContent.MatchgameCMD_TCP.LOCK_INSTANT_TOCLIENT:
+                            var lockInstantPacket = LitJson.JsonMapper.ToObject<SocketCMD<LOCK_INSTANT_TOCLIENT>>(_msg);
+                            HandlerLockInstant(lockInstantPacket);
+                            break;
                         case SocketContent.MatchgameCMD_TCP.GLADIATORSTATES_TOCLIENT:
                             var gStatePacket = LitJson.JsonMapper.ToObject<SocketCMD<GLADIATORSTATES_TOCLIENT>>(_msg);
                             HandlerGladiatorStates(gStatePacket);
@@ -419,7 +423,13 @@ namespace Gladiators.Main {
             if (SceneManager.GetActiveScene().name != MyScene.BattleScene.ToString() || BattleManager.Instance == null) return;
             BattleController.Instance.PlayMeleeSkill(_packet.Content);
         }
-
+        /// <summary>
+        /// 收到鎖住立即技能封包
+        /// </summary>
+        void HandlerLockInstant(SocketCMD<LOCK_INSTANT_TOCLIENT> _packet) {
+            if (SceneManager.GetActiveScene().name != MyScene.BattleScene.ToString() || BattleManager.Instance == null) return;
+            BattleSceneUI.Instance.SetInstantSkillLocker(BattleSceneUI.SpellLock.InMeleeRange, _packet.Content.Lock);
+        }
 
 
         async UniTaskVoid pingLoop() {

@@ -54,6 +54,7 @@ namespace Gladiators.Socket {
             GAMESTATE_TOCLIENT,  // (TCP)遊戲狀態-送Client
             MELEE_TOCLIENT, // (TCP)肉搏-送Client
             BEFORE_MELEE_TOCLIENT, // (TCP)即將肉搏-送Client
+            LOCK_INSTANT_TOCLIENT, // (TCP)鎖住遠程技能-送Client
             HP_TOCLIENT, // (TCP)角鬥士生命-送Client
             GLADIATORSTATES_TOCLIENT, // (TCP)角鬥士狀態-送Client
 

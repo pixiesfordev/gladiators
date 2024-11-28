@@ -81,24 +81,31 @@ public class BattleController : MonoBehaviour {
     public void UpdateGladiatorsState(long _packID, long _time, PACKGLADIATORSTATE _leftState, PACKGLADIATORSTATE _rightState) {
         if (_leftState == null || _rightState == null) return;
 
-        leftChar.UpdateEffectTypes(_leftState.EffectDatas);
-        rightChar.UpdateEffectTypes(_rightState.EffectDatas);
+        // 設定左方玩家的Buff
         List<BufferIconData> selfBuffer = new List<BufferIconData>();
+        HashSet<EffectType> selfEffects = new HashSet<EffectType>();
         foreach (var effectData in _leftState.EffectDatas) {
             var (success, effectType) = JsonSkillEffect.ConvertStrToEffectType(effectData.EffectName);
             if (success) {
                 selfBuffer.Add(new BufferIconData(effectData.EffectName, (int)effectData.Duration, effectType.GetStackType()));
+                selfEffects.Add(effectType);
             }
         }
+        leftChar.UpdateEffectTypes(selfEffects);
+        BattleSceneUI.Instance.PlayerGladiatorInfo.SetBufferIcon(selfBuffer);
+        // 設定右方玩的BuffIcon
         List<BufferIconData> enemyBuffer = new List<BufferIconData>();
+        HashSet<EffectType> eneyEffects = new HashSet<EffectType>();
         foreach (var effectData in _rightState.EffectDatas) {
             var (success, effectType) = JsonSkillEffect.ConvertStrToEffectType(effectData.EffectName);
             if (success) {
                 enemyBuffer.Add(new BufferIconData(effectData.EffectName, (int)effectData.Duration, effectType.GetStackType()));
+                eneyEffects.Add(effectType);
             }
         }
-        BattleSceneUI.Instance.PlayerGladiatorInfo.SetBufferIcon(selfBuffer);
+        rightChar.UpdateEffectTypes(eneyEffects);
         BattleSceneUI.Instance.EnemyGladiatorInfo.SetBufferIcon(enemyBuffer);
+
         // 新增移動插植緩衝
         ServerStatePack pack = new ServerStatePack();
         pack.PackID = _packID;

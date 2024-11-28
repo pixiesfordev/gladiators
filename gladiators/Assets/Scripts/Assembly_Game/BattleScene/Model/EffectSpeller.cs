@@ -52,22 +52,17 @@ namespace Gladiators.Main {
         }
 
         Dictionary<EffectType, GameObject> buffs = new Dictionary<EffectType, GameObject>();
-        public void PlayBuffEffect(List<PackEffect> _effectDatas) {
-            HashSet<EffectType> effectsSet = new HashSet<EffectType>();
-            foreach (var effectData in _effectDatas) {
-                var (success, effectType) = JsonSkillEffect.ConvertStrToEffectType(effectData.EffectName);
-                if (success) effectsSet.Add(effectType);
-            }
+        public void PlayBuffEffect(HashSet<EffectType> _effects) {
 
             // 移除 Buff
-            var keysToRemove = buffs.Keys.Where(k => !effectsSet.Contains(k)).ToList();
+            var keysToRemove = buffs.Keys.Where(k => !_effects.Contains(k)).ToList();
             foreach (var key in keysToRemove) {
                 Destroy(buffs[key]);
                 buffs.Remove(key);
             }
 
             // 新增 Buff
-            foreach (var effectType in effectsSet) {
+            foreach (var effectType in _effects) {
                 if (!buffs.ContainsKey(effectType)) {
                     buffs[effectType] = null; // 先設為 null 表示正在載入中
                     AddressablesLoader.GetPrefab($"Particles/Buff/{effectType}", (prefab, handle) => {

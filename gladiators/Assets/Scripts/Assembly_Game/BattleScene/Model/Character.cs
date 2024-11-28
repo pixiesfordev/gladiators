@@ -57,7 +57,7 @@ public class Character : MonoBehaviour {
 
     // 狀態
     public int MeleeSkillID { get; private set; }
-    List<EffectType> effectTypes = new List<EffectType>();
+    HashSet<EffectType> effectTypes = new HashSet<EffectType>();
     public bool CanMove {
         get {
             if (IsKnockback) return false;
@@ -135,9 +135,10 @@ public class Character : MonoBehaviour {
         }
     }
 
-
-    public void UpdateEffectTypes(List<PackEffect> _effectDatas) {
-        MyEffectSpeller.PlayBuffEffect(_effectDatas);
+    public void UpdateEffectTypes(HashSet<EffectType> _effectTypes) {
+        MyEffectSpeller.PlayBuffEffect(_effectTypes);
+        effectTypes = _effectTypes;
+        BattleSceneUI.Instance?.SetInstantSkillLocker(BattleSceneUI.SpellLock.Effect, effectTypes.IsInstantSkillRestriction());
     }
 
     void SetFaceToTarget(float _knockAngle) {
@@ -146,7 +147,14 @@ public class Character : MonoBehaviour {
         transform.localRotation = Quaternion.Euler(0, adjustedAngle, 0);
     }
     public void HandleMelee(Vector3 _finalPos, List<PackEffect> _effectDatas, float _serverKnockDist, float _serverResultPos, float _knockAngl, int _skilID) {
-        UpdateEffectTypes(_effectDatas);
+        HashSet<EffectType> _effects = new HashSet<EffectType>();
+        foreach (var effectData in _effectDatas) {
+            var (success, effectType) = JsonSkillEffect.ConvertStrToEffectType(effectData.EffectName);
+            if (success) {
+                _effects.Add(effectType);
+            }
+        }
+        UpdateEffectTypes(_effects);
         MeleeSkillID = _skilID;
         SetFaceToTarget(_knockAngl);
         knockback(_finalPos, _serverKnockDist, _serverResultPos, _knockAngl);

@@ -216,29 +216,30 @@ namespace Gladiators.Main {
         /// <summary>
         /// 是否為移動限制類效果
         /// </summary>
-        public static bool IsMobileRestriction(this List<EffectType> _effectTypes) {
-            return _effectTypes.CheckEnumsExistInList(EffectType.Dizzy, EffectType.Fearing, EffectType.Pull);
+        public static bool IsMobileRestriction(this HashSet<EffectType> _effectTypes) {
+            return _effectTypes.CheckEnumsExistInHashSet(EffectType.Dizzy, EffectType.Fearing, EffectType.Pull);
         }
+
 
         /// <summary>
         /// 是否為玩家操控限制類效果
         /// </summary>
-        public static bool IsPlayerControlRestriction(this List<EffectType> _effectTypes) {
-            return _effectTypes.CheckEnumsExistInList(EffectType.Berserk);
+        public static bool IsPlayerControlRestriction(this HashSet<EffectType> _effectTypes) {
+            return _effectTypes.CheckEnumsExistInHashSet(EffectType.Berserk);
         }
 
         /// <summary>
         /// 是否為立即技能限制類效果
         /// </summary>
-        public static bool IsInstantSkillRestriction(this List<EffectType> _effectTypes) {
-            return _effectTypes.CheckEnumsExistInList(EffectType.Fearing, EffectType.Fearing, EffectType.Pull);
+        public static bool IsInstantSkillRestriction(this HashSet<EffectType> _effectTypes) {
+            return _effectTypes.CheckEnumsExistInHashSet(EffectType.Dizzy, EffectType.Fearing, EffectType.Pull);
         }
 
         /// <summary>
         /// 是否為擊退免疫類效果
         /// </summary>
-        public static bool IsImmuneToKnockback(this List<EffectType> _effectTypes) {
-            return _effectTypes.CheckEnumsExistInList(EffectType.Barrier);
+        public static bool IsImmuneToKnockback(this HashSet<EffectType> _effectTypes) {
+            return _effectTypes.CheckEnumsExistInHashSet(EffectType.Barrier);
         }
     }
 
