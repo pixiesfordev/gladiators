@@ -97,15 +97,21 @@ namespace Gladiators.Main {
         }
 
         public void Disconnect() {
-            tcpClient.Disconnect();
-            onConnectedActions = null;
-            onDisconnectedActions = null;
-            tcpClient = null;
+            if (tcpClient != null) {
+                tcpClient.Disconnect();
+                onConnectedActions = null;
+                onDisconnectedActions = null;
+                tcpClient = null;
+            }
         }
         void receive(string _msg) {
             receiveAc?.Invoke(_msg);
         }
         public void Send<T>(SocketCMD<T> packet) where T : SocketContent {
+            if (tcpClient == null) {
+                WriteLog.LogError("tcpClient為null");
+                return;
+            }
             tcpClient.SendPacketAsync(packet).Forget();
         }
 
