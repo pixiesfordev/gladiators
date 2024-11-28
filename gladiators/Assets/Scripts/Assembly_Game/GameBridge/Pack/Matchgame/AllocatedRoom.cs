@@ -92,7 +92,7 @@ namespace Gladiators.Main {
             TcpIP = _ip;
             Port = _port;
             firstPackServerTimestamp = 0;
-            WriteLog.LogColorFormat("設定被Matchmaker分配到的房間資料: {0}", WriteLog.LogType.Debug, DebugUtils.ObjToStr(Instance));
+            WriteLog.LogColorFormat("設定Matchgame資料: {0}", WriteLog.LogType.Connection, DebugUtils.ObjToStr(Instance));
         }
         void onReceiveMsg(string _msg) {
             try {
@@ -103,11 +103,6 @@ namespace Gladiators.Main {
                     WriteLog.LogErrorFormat("收到錯誤的命令類型: {0}", cmdType);
                     return;
                 } else {
-                    // 不輸出的Conn Log加到清單中
-                    List<string> dontShowLogCMDs = new List<string>();
-                    dontShowLogCMDs.Add(SocketContent.MatchgameCMD_TCP.PING_TOCLIENT.ToString());
-                    dontShowLogCMDs.Add(SocketContent.MatchgameCMD_TCP.GLADIATORSTATES_TOCLIENT.ToString());
-                    if (!dontShowLogCMDs.Contains(data.CMD)) WriteLog.LogColor($"(TCP)接收: {_msg}", WriteLog.LogType.Connection);
                     if (CMDCallback.TryGetValue(cmdID, out Action<string> _cb)) {
                         CMDCallback.Remove(cmdID);
                         _cb?.Invoke(_msg);
@@ -185,7 +180,7 @@ namespace Gladiators.Main {
             DBMatchgameID = null;
             Port = 0;
             stopPingLoop();
-            connector.Disconnect();
+            connector?.Disconnect();
             WriteLog.LogColorFormat("清空配對房間(AllocatedRoom)資訊: {0}", WriteLog.LogType.Debug, DebugUtils.ObjToStr(Instance));
         }
         void sendPing() {
@@ -243,18 +238,14 @@ namespace Gladiators.Main {
         /// (GM)設定角鬥士
         /// </summary>
         public void GMSetGladiator(int _gladiatorID, int[] _skillIDs) {
+            //WriteLog.LogError("_gladiatorID="+_gladiatorID);
+            //WriteLog.LogError(string.Join(',', _skillIDs));
             var cmd = new SocketCMD<GMACTION>(new GMACTION(GMACTION.GMActionType.GMACTION_SETGLADIATOR.ToString(), new PackGMAction_SetGladiator(_gladiatorID, _skillIDs)));
             connector.Send(cmd);
         }
         public void LeaveRoom() {
+            WriteLog.LogColor($"呼叫離開 Matchgame Server", WriteLog.LogType.Connection);
             clearRoom();
-            BattleManager.Instance.BattleEnd(afterKO);
-        }
-
-        void afterKO() {
-            PopupUI.InitSceneTransitionProgress(0);
-            PopupUI.CallSceneTransition(MyScene.BattleSimulationScene);
-            SetGameState(GameState.GameState_NotInGame);
         }
 
         /// <summary>
@@ -279,7 +270,6 @@ namespace Gladiators.Main {
                 return;
             }
             SetGameState(GameState.GameState_WaitingPlayersData);
-            //SetPlayer("660926d4d0b8e0936ddc6afe");
             SimulationUI.Instance.SendSimulationSetting();
         }
         /// <summary>
@@ -403,6 +393,12 @@ namespace Gladiators.Main {
                     case PackGameState.GAMESTATE_END:
                         SetGameState(GameState.GameState_End);
                         LeaveRoom();
+                        BattleManager.Instance.BattleEnd(() => {
+                            // 戰鬥結束KO演出後轉回選角鬥士場景
+                            PopupUI.InitSceneTransitionProgress(0);
+                            PopupUI.CallSceneTransition(MyScene.BattleSimulationScene);
+                            SetGameState(GameState.GameState_NotInGame);
+                        });
                         break;
                 }
             }
@@ -456,7 +452,7 @@ namespace Gladiators.Main {
                 sum += latency;
             }
             Lantency = sum / latencySamples.Count;
-            WriteLog.LogColor($"近{MaxLatencySamples}筆Ping計算出的網路延遲為: {MyMath.Round((float)Lantency, 2)} ms", WriteLog.LogType.Connection);
+            //WriteLog.LogColor($"近{MaxLatencySamples}筆Ping計算出的網路延遲為: {MyMath.Round((float)Lantency, 2)} ms", WriteLog.LogType.Connection);
         }
 
 

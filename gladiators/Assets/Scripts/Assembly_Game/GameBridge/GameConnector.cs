@@ -3,8 +3,6 @@ using Gladiators.Socket;
 using Scoz.Func;
 using System;
 using System.Collections.Generic;
-using System.Runtime.Remoting.Messaging;
-using UnityEditor.MemoryProfiler;
 
 
 namespace Gladiators.Main {
@@ -13,11 +11,13 @@ namespace Gladiators.Main {
         TcpClientManager tcpClient;
         Action onConnectedActions;
         Action onDisconnectedActions;
+        Action<string> receiveAc;
         private static readonly object dicLocker = new object();
         static Dictionary<string, GameConnector> tcpClients = new Dictionary<string, GameConnector>();
         static HashSet<string> connectings = new HashSet<string>();
 
         public static async UniTask NewConnector(string _name, string _ip, int _port, Action _onConnectedAc, Action _onDisconnectedAc) {
+            WriteLog.LogColor($"建立 {_name} 連線 Ip: {_ip} Port: {_port}", WriteLog.LogType.Connection);
             var connector = new GameConnector();
             if (tcpClients.ContainsKey(_name)) {
                 WriteLog.LogError($"嘗試連線已連線中的Server({_name})");
@@ -32,6 +32,7 @@ namespace Gladiators.Main {
             connector.tcpClient = new TcpClientManager();
             connector.tcpClient.OnConnected = () => connector.onConnectedToMatchGame(connector);
             connector.tcpClient.OnDisconnected = () => connector.onDisconnectedToMatchGame(connector);
+            connector.tcpClient.OnPacketReceived += connector.receive;
             if (_onConnectedAc != null) connector.onConnectedActions += _onConnectedAc;
             if (_onDisconnectedAc != null) connector.onDisconnectedActions += _onDisconnectedAc;
             // 連線到伺服器
@@ -48,7 +49,7 @@ namespace Gladiators.Main {
                 WriteLog.LogError($" RegisterOnPacketReceived 失敗，因為尚未連線到伺服器 {Name}");
                 return;
             }
-            tcpClient.OnPacketReceived += _ac;
+            receiveAc += _ac;
         }
 
         public void UnregisterOnPacketReceived(Action<string> _ac) {
@@ -56,7 +57,7 @@ namespace Gladiators.Main {
                 WriteLog.LogError($" UnregisterOnPacketReceived 失敗，因為尚未連線到伺服器 {Name}");
                 return;
             }
-            tcpClient.OnPacketReceived -= _ac;
+            receiveAc -= _ac;
         }
         void onConnectedToMatchGame(GameConnector _connector) {
             connectings.Remove(_connector.Name);
@@ -96,12 +97,21 @@ namespace Gladiators.Main {
         }
 
         public void Disconnect() {
-            tcpClient.Disconnect();
-            onConnectedActions = null;
-            onDisconnectedActions = null;
-            tcpClient = null;
+            if (tcpClient != null) {
+                tcpClient.Disconnect();
+                onConnectedActions = null;
+                onDisconnectedActions = null;
+                tcpClient = null;
+            }
+        }
+        void receive(string _msg) {
+            receiveAc?.Invoke(_msg);
         }
         public void Send<T>(SocketCMD<T> packet) where T : SocketContent {
+            if (tcpClient == null) {
+                WriteLog.LogError("tcpClient為null");
+                return;
+            }
             tcpClient.SendPacketAsync(packet).Forget();
         }
 

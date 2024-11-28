@@ -15,7 +15,9 @@ namespace Gladiators.BattleSimulation {
         public static SimulationUI Instance { get; private set; }
 
         // Gladiator
+        [SerializeField] Image Img_BG;
         [SerializeField] Image Img_Gladiator;
+        [SerializeField] Image Img_GladiatorBG;
         [SerializeField] Image Img_Talent;
         [SerializeField] Text Txt_TalentTitle;
         [SerializeField] Text Txt_TalentInfo;
@@ -70,8 +72,18 @@ namespace Gladiators.BattleSimulation {
             CurGladiator = _json;
             AddressablesLoader.GetSprite($"Gladiator/{CurGladiator.ID}", (sprite, handle) => {
                 Img_Gladiator.sprite = sprite;
+                Img_Gladiator.transform.localScale = Vector3.one * (float)CurGladiator.ImgScale;
                 Img_Gladiator.SetNativeSize();
+
+                Img_GladiatorBG.sprite = sprite;
+                Img_GladiatorBG.transform.localScale = Vector3.one * (float)CurGladiator.ImgScale;
+                Img_GladiatorBG.SetNativeSize();
             });
+            AddressablesLoader.GetSprite($"GladiatorBG/{CurGladiator.ID}", (sprite, handle) => {
+                Img_BG.sprite = sprite;
+                Img_BG.SetNativeSize();
+            });
+            
             var jsonSkill = GameDictionary.GetJsonData<JsonSkill>(CurGladiator.ID);
             if (jsonSkill == null) return;
             AddressablesLoader.GetSpriteAtlas("SpellIcon", atlas => {
@@ -118,10 +130,10 @@ namespace Gladiators.BattleSimulation {
                     AllocatedRoom.Instance.SetRoom(connector, "testCreater", gameState.MatchgameTestverRoomName, gameState.MatchgameTestverTcpIp, gameState.MatchgameTestverPort);
                     AllocatedRoom.Instance.Auth();
                 }
-            }, null).Forget();
+            }, AllocatedRoom.Instance.LeaveRoom).Forget();
         }
         public void OnVsPlayer() {
-
+            AllocatedLobby.Instance.Match("TestMap");
         }
         public void SendSimulationSetting() {
             List<int> skills = new List<int>(curSkillIDs);

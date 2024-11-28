@@ -55,6 +55,10 @@ public class TcpClientManager {
 
         try {
             // 將封包序列化成 JSON 格式
+            if(string.IsNullOrEmpty(socketCMD.CMD)) {
+                WriteLog.LogError("socketCMD.CMD為null");
+                return;
+            }
             string serializedPacket = LitJson.JsonMapper.ToJson(socketCMD);
             byte[] data = Encoding.UTF8.GetBytes(serializedPacket);
             // 發送封包
