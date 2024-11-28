@@ -105,7 +105,7 @@ MonoBehaviour:
   m_Parent: {fileID: 114350483966674976}
   m_Children:
   - {fileID: 8926484042661614609}
-  m_UIPosition: {x: 943, y: -209}
+  m_UIPosition: {x: 941, y: -220}
   m_UICollapsed: 0
   m_UISuperCollapsed: 0
   m_InputSlots: []
@@ -141,7 +141,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614580}
   - {fileID: 8926484042661614632}
   - {fileID: 8926484042661614659}
-  m_UIPosition: {x: 941, y: 168}
+  m_UIPosition: {x: 937, y: 173}
   m_UICollapsed: 0
   m_UISuperCollapsed: 0
   m_InputSlots:
@@ -5348,7 +5348,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615158}
   - {fileID: 8926484042661615165}
   - {fileID: 8926484042661615177}
-  m_UIPosition: {x: 3274, y: 81}
+  m_UIPosition: {x: 3272, y: 84}
   m_UICollapsed: 0
   m_UISuperCollapsed: 0
   m_InputSlots:
@@ -5392,7 +5392,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: UnityEditor.VFX.AABox, Unity.VisualEffectGraph.Editor,
           Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      m_SerializableObject: '{"center":{"x":-0.008661508560180664,"y":0.0,"z":-2.3405323028564455},"size":{"x":3.004997730255127,"y":3.960069179534912,"z":3.0607447624206545}}'
+      m_SerializableObject: '{"center":{"x":-0.008661508560180664,"y":0.0,"z":-0.44858455657958987},"size":{"x":3.004997730255127,"y":3.960069179534912,"z":3.0607447624206545}}'
     m_Space: 0
   m_Property:
     name: bounds
@@ -9971,7 +9971,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615415}
   - {fileID: 8926484042661615434}
   - {fileID: 8926484042661615482}
-  m_UIPosition: {x: 1729, y: 84}
+  m_UIPosition: {x: 1716, y: 84}
   m_UICollapsed: 0
   m_UISuperCollapsed: 0
   m_InputSlots:

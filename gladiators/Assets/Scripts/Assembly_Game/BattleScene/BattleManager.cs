@@ -8,6 +8,7 @@ using Cinemachine;
 using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using UnityEngine.SceneManagement;
 using System;
+using DG.Tweening;
 
 namespace Gladiators.Battle {
     public class BattleManager : MonoBehaviour {
@@ -36,8 +37,14 @@ namespace Gladiators.Battle {
         [HeaderAttribute("==============TEST==============")]
         //測試參數區塊
         [Tooltip("重置戰鬥")][SerializeField] bool bResetBattle = false;
-        //[Tooltip("前端演示測試 打勾表示只使用純前端邏輯模擬")][SerializeField] bool bFrontEndTest = true;
+        [Tooltip("戰鬥開始拉近鏡頭演出曲線")][SerializeField] AnimationCurve StartBattleZoomCurve;
+        [Tooltip("戰鬥開始拉近鏡頭起始距離")][SerializeField] float StartBattleZoomFrom = 80f;
+        [Tooltip("戰鬥開始拉近鏡頭演出時間")][SerializeField] float StartBattleZoomDuration = 3.15f;
 
+        [Tooltip("戰鬥結束慢動作演出曲線")][SerializeField] AnimationCurve BattleEndSlowDownCurve;
+        [Tooltip("戰鬥結束慢動作停止後等待秒數 用來預置模擬之後可能要做的事情")][SerializeField] float BattleEndSlowDownEndWaitTime = 2f;
+        [Tooltip("戰鬥結束慢動作演出時間")][SerializeField] float BattleEndSlowDownDuration = 5f;
+        //[Tooltip("前端演示測試 打勾表示只使用純前端邏輯模擬")][SerializeField] bool bFrontEndTest = true;
 
         public async UniTask Init() {
             Instance = this;
@@ -80,6 +87,33 @@ namespace Gladiators.Battle {
         if (DivineSelectUI.Instance != null)
             DivineSelectUI.Instance.SetActive(true);
         }
+
+        /// <summary>
+        /// 播放遊戲開始動畫
+        /// </summary>
+        public void StartGameAnimation() {
+            DoStartGameAnimation().Forget();
+        }
+
+        async UniTask DoStartGameAnimation() {
+            float passTime = 0f;
+            float curveVal = 0f;
+            float oldFOV = vCam.m_Lens.FieldOfView;
+            float deltaFOV = StartBattleZoomFrom - oldFOV;
+            vCam.m_Lens.FieldOfView = StartBattleZoomFrom;
+            //WriteLog.LogErrorFormat("拉近鏡頭參數! 起始值: {0} 差異值: {1} 目前值: {2}", StartBattleZoomFrom, deltaFOV, vCam.m_Lens.FieldOfView);
+            while (passTime < StartBattleZoomDuration) {
+                passTime += Time.deltaTime;
+                curveVal = StartBattleZoomCurve.Evaluate(passTime / StartBattleZoomDuration);
+                vCam.m_Lens.FieldOfView = oldFOV + (1 - curveVal) * deltaFOV;
+                await UniTask.Yield();
+                //WriteLog.LogErrorFormat("拉近鏡頭! 目前距離: {0}", vCam.m_Lens.FieldOfView);
+            }
+            //避免任何其他因素導致沒正常回歸原本的預設值 這裡再設定一次預設值
+            vCam.m_Lens.FieldOfView = oldFOV;
+        }
+
+
         public void StartGame() {
             battleModelController.BattleStart();
         }
@@ -198,11 +232,7 @@ namespace Gladiators.Battle {
         #endregion
 
         //TODO:
-        //體力條計算(自動恢復 使用技能消耗 衝刺消耗)
-        //對撞計算(傷害計算>>血量 擊退距離>>人物模型位置改變 撞牆判定>>是否被打到邊界 要額外扣血演出 這個建議不要跟傷害一起演出 而是先有撞牆演出後再扣血)
-        //血量計算(傷害量/恢復量傳給UI演出)
         //戰鬥結算
-        //buff設定
 
         //衝刺
         public void GoRun(bool isRun) {
@@ -223,10 +253,30 @@ namespace Gladiators.Battle {
         /// 戰鬥結束時呼叫
         /// </summary>
         public void BattleEnd(Action afterKo) {
-            //TODO:請偉軒修改這段邏輯 新富的要求有兩個
-            //1.背景全白 模型跟UI在白色背景前面 還有白色是要淡入還是直接出現請再跟新富確認
-            //2.KO要慢動作 可能要改TimeScale 如果要改TimeScale請記得用UnScaleTime跑演出(但我不確定這樣Animator會不會不能播)
+            //TODO:戰鬥結束演出 >> 最後一下打下去(開始變慢+背景全白+KO動畫) >> 處決演出 >> 結算畫面
+            //0.打最後一下的瞬間全白並開始緩速並播放KO動畫
+            //1.背景全白 模型跟UI在白色背景前面
+            //開始減速
+            BattleEndSlowDown().Forget();
+            //播放UI的KO動畫
             BattleSceneUI.Instance.PlayKO(afterKo);
+        }
+
+        async UniTask BattleEndSlowDown() {
+            float passTime = 0f;
+            float curveVal = 0f;
+            //WriteLog.LogError("開始減速KO演出");
+            while (passTime < BattleEndSlowDownDuration) {
+                passTime += Time.unscaledDeltaTime;
+                curveVal = BattleEndSlowDownCurve.Evaluate(passTime / BattleEndSlowDownDuration);
+                Time.timeScale = 1 - curveVal;
+                await UniTask.Yield();
+                //WriteLog.LogErrorFormat("減速KO演出! 現在速度: {0}", Time.timeScale);
+            }
+            //WriteLog.LogErrorFormat("結束減速KO演出 等待秒數: {0}", BattleEndSlowDownEndWaitTime);
+            Time.timeScale = 1f;
+            await UniTask.WaitForSeconds(BattleEndSlowDownEndWaitTime);
+            //WriteLog.LogError("結束減速KO演出"); 
         }
     }
 }
