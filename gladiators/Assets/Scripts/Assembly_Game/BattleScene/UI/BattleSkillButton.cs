@@ -514,7 +514,6 @@ public class BattleSkillButton : MonoBehaviour {
             Debug.LogWarning("Cast skill! 但按鈕被鎖定了!");
             return;
         }
-        btnLocking = true;
         //檢查技能型態
         if (SkillData.Activation == SkillActivation.Instant) {
             //立即施放 >> 判斷EnergyEnough >> 足夠就Start Scale並送包給後端告知開始施法 不夠就沒事
@@ -522,32 +521,36 @@ public class BattleSkillButton : MonoBehaviour {
             //start_cast(0.22秒時ModelCastSkill 0.28秒時CastSkillSetIconGrayEvent) >>
             //AfterCastSkillEvent >> Change skills(ChangeSkillEvent) >> AfterChangeSkillEvent 
             if (IsEnergyEnough) {
+                btnLocking = true;
                 BattleSceneUI.Instance.CastingInstantSKill(this, SkillData.ID);
                 curAniState = SkillAniState.START_SCALE;
                 BtnAni.Play("Start_Scale");
                 //Debug.LogError("開始釋放立即施放技能!");
-            } else {
-                //能量不足以施放技能 按鈕解鎖
-                btnLocking = false;
-                //Debug.LogError("立即釋放類技能 能量不足 無法施放技能!");
             }
         } else if (SkillData.Activation == SkillActivation.Melee) {
             //判斷是否已經被選上
             if (SkillSelected) {
                 //已選上 >> Start Cancel >> AfterCancelEvent
+                btnLocking = true;
                 curAniState = SkillAniState.START_CANCEL;
                 BtnAni.Play(IsEnergyEnough ? "Start_Cancel" : "Start_Cancel_Insufficient");
+                SkillSelected = !SkillSelected;
+                AllocatedRoom.Instance.ActiveSkill(SkillData.ID, SkillSelected);
                 //Debug.LogError("取消近戰技能!");
             } else {
-                //未選上 >> Start Scale >> AfterScaleEvent >> Start vibrute >> AfterVibruteEvent
-                curAniState = SkillAniState.START_SCALE;
-                BtnAni.Play(IsEnergyEnough ? "Start_Scale" : "Start_Scale_Insufficient");
-                //Debug.LogError("選上近戰技能!");
-                //檢查其他按鈕取消選上
-                BattleSceneUI.Instance.CancelOtherSelectedSKill(this);
+                //未選上 >> 判斷能量是否足夠 足夠才可以選取
+                if (IsEnergyEnough) {
+                    //Start Scale >> AfterScaleEvent >> Start vibrute >> AfterVibruteEvent
+                    btnLocking = true;
+                    curAniState = SkillAniState.START_SCALE;
+                    BtnAni.Play(IsEnergyEnough ? "Start_Scale" : "Start_Scale_Insufficient");
+                    SkillSelected = !SkillSelected;
+                    AllocatedRoom.Instance.ActiveSkill(SkillData.ID, SkillSelected);
+                    //Debug.LogError("選上近戰技能!");
+                    //檢查其他按鈕取消選上
+                    BattleSceneUI.Instance.CancelOtherSelectedSKill(this);
+                }
             }
-            SkillSelected = !SkillSelected;
-            AllocatedRoom.Instance.ActiveSkill(SkillData.ID, SkillSelected);
         }
     }
 
