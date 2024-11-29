@@ -107,7 +107,11 @@ namespace Scoz.Func {
             //    return (float)_value;
             //});
             Screen.sleepTimeout = SleepTimeout.NeverSleep;// 防止螢幕自動休眠
+#if PLATFORM_STANDALONE
+#else // 非 PLATFORM_STANDALONE 降解析度
             Screen.SetResolution(1170, 540,true);
+#endif
+
             DontDestroyOnLoad(gameObject);
             //設定FPS與垂直同步
 #if Dev

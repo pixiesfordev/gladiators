@@ -25,14 +25,17 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// }} 
 
 	// {{ AOT generic types
-	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask.<>c<BattleSceneUI.<DoKOAni>d__54>
+	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask.<>c<BattleMoney.<DoMoneyAnimator>d__12>
+	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask.<>c<BattleSceneUI.<DoKOAni>d__57>
 	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask.<>c<BattleSkillButton.<DoExposureGradient>d__69>
 	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask.<>c<BattleSkillButton.<DoSaturationGradient>d__70>
 	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask.<>c<Character.<MoveClientToPos>d__44>
-	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask.<>c<Gladiators.Battle.BattleManager.<CheckGameState>d__22>
-	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask.<>c<Gladiators.Battle.BattleManager.<Init>d__21>
-	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask.<>c<Gladiators.Battle.BattleManager.<InitBattleModelController>d__31>
-	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask.<>c<Gladiators.Battle.BattleManager.<changeFovAsync>d__28>
+	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask.<>c<Gladiators.Battle.BattleManager.<BattleEndSlowDown>d__47>
+	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask.<>c<Gladiators.Battle.BattleManager.<CheckGameState>d__28>
+	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask.<>c<Gladiators.Battle.BattleManager.<DoStartGameAnimation>d__32>
+	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask.<>c<Gladiators.Battle.BattleManager.<Init>d__27>
+	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask.<>c<Gladiators.Battle.BattleManager.<InitBattleModelController>d__39>
+	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask.<>c<Gladiators.Battle.BattleManager.<changeFovAsync>d__36>
 	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask.<>c<Gladiators.Main.APIManager.<GameState>d__11,object>
 	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask.<>c<Gladiators.Main.APIManager.<GetServerTime>d__5,System.DateTimeOffset>
 	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask.<>c<Gladiators.Main.APIManager.<Signin>d__9,object>
@@ -51,16 +54,20 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask.<>c<Scoz.Func.UniTaskManager.<RepeatTask>d__9>
 	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask.<>c<TcpClientManager.<ConnectAsync>d__9>
 	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask.<>c<TcpClientManager.<SendPacketAsync>d__10<object>>
-	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask.<>c<TestShader.<FirstWaitTask>d__38>
-	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask.<>c<TestShader.<SecondWaitTask>d__39>
-	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask<BattleSceneUI.<DoKOAni>d__54>
+	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask.<>c<TestShader.<DoTestUniTaskTime>d__43>
+	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask.<>c<TestShader.<FirstWaitTask>d__39>
+	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask.<>c<TestShader.<SecondWaitTask>d__40>
+	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask<BattleMoney.<DoMoneyAnimator>d__12>
+	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask<BattleSceneUI.<DoKOAni>d__57>
 	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask<BattleSkillButton.<DoExposureGradient>d__69>
 	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask<BattleSkillButton.<DoSaturationGradient>d__70>
 	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask<Character.<MoveClientToPos>d__44>
-	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask<Gladiators.Battle.BattleManager.<CheckGameState>d__22>
-	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask<Gladiators.Battle.BattleManager.<Init>d__21>
-	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask<Gladiators.Battle.BattleManager.<InitBattleModelController>d__31>
-	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask<Gladiators.Battle.BattleManager.<changeFovAsync>d__28>
+	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask<Gladiators.Battle.BattleManager.<BattleEndSlowDown>d__47>
+	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask<Gladiators.Battle.BattleManager.<CheckGameState>d__28>
+	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask<Gladiators.Battle.BattleManager.<DoStartGameAnimation>d__32>
+	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask<Gladiators.Battle.BattleManager.<Init>d__27>
+	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask<Gladiators.Battle.BattleManager.<InitBattleModelController>d__39>
+	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask<Gladiators.Battle.BattleManager.<changeFovAsync>d__36>
 	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask<Gladiators.Main.APIManager.<GameState>d__11,object>
 	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask<Gladiators.Main.APIManager.<GetServerTime>d__5,System.DateTimeOffset>
 	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask<Gladiators.Main.APIManager.<Signin>d__9,object>
@@ -79,15 +86,16 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask<Scoz.Func.UniTaskManager.<RepeatTask>d__9>
 	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask<TcpClientManager.<ConnectAsync>d__9>
 	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask<TcpClientManager.<SendPacketAsync>d__10<object>>
-	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask<TestShader.<FirstWaitTask>d__38>
-	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask<TestShader.<SecondWaitTask>d__39>
+	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask<TestShader.<DoTestUniTaskTime>d__43>
+	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask<TestShader.<FirstWaitTask>d__39>
+	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask<TestShader.<SecondWaitTask>d__40>
 	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder<System.DateTimeOffset>
 	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder<object>
 	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoid.<>c<BattleBufferIcon.<Shine>d__10>
 	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoid.<>c<BattleController.<StateUpdateLoop>d__22>
 	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoid.<>c<BattleGladiatorInfo.<HPChange>d__61>
 	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoid.<>c<BattleGladiatorInfo.<HPGrayChange>d__62>
-	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoid.<>c<BattleSceneUI.<ReleasedSkillLock>d__46>
+	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoid.<>c<BattleSceneUI.<castingTmpLock>d__51>
 	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoid.<>c<BattleSkillButton.<CastSkill>d__67>
 	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoid.<>c<BattleSkillButton.<SetAvailableMaterial>d__58>
 	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoid.<>c<BattleStaminaObj.<DoBrigtenMask>d__48>
@@ -99,18 +107,18 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoid.<>c<Gladiators.Battle.DivineSelectUI.<PlayCountDownCandleTime>d__49>
 	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoid.<>c<Gladiators.Battle.DivineSkill.<SelectSkill>d__12>
 	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoid.<>c<Gladiators.Main.AllocatedLobby.<pingLoop>d__25>
-	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoid.<>c<Gladiators.Main.AllocatedRoom.<pingLoop>d__77>
+	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoid.<>c<Gladiators.Main.AllocatedRoom.<pingLoop>d__78>
 	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoid.<>c<MaterialSwitcher.<<SetMetallicValue>b__5_0>d>
 	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoid.<>c<MaterialSwitcher.<<Start>b__3_0>d>
 	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoid.<>c<NextBattleSkillButton.<PlayChangeSkill>d__17>
 	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoid.<>c<TcpClientManager.<ReceiveDataAsync>d__11>
-	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoid.<>c<TestShader.<TryLerp>d__36>
-	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoid.<>c<TestShader.<TryWaitTask>d__37>
+	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoid.<>c<TestShader.<TryLerp>d__37>
+	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoid.<>c<TestShader.<TryWaitTask>d__38>
 	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoid<BattleBufferIcon.<Shine>d__10>
 	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoid<BattleController.<StateUpdateLoop>d__22>
 	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoid<BattleGladiatorInfo.<HPChange>d__61>
 	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoid<BattleGladiatorInfo.<HPGrayChange>d__62>
-	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoid<BattleSceneUI.<ReleasedSkillLock>d__46>
+	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoid<BattleSceneUI.<castingTmpLock>d__51>
 	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoid<BattleSkillButton.<CastSkill>d__67>
 	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoid<BattleSkillButton.<SetAvailableMaterial>d__58>
 	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoid<BattleStaminaObj.<DoBrigtenMask>d__48>
@@ -122,13 +130,13 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoid<Gladiators.Battle.DivineSelectUI.<PlayCountDownCandleTime>d__49>
 	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoid<Gladiators.Battle.DivineSkill.<SelectSkill>d__12>
 	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoid<Gladiators.Main.AllocatedLobby.<pingLoop>d__25>
-	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoid<Gladiators.Main.AllocatedRoom.<pingLoop>d__77>
+	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoid<Gladiators.Main.AllocatedRoom.<pingLoop>d__78>
 	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoid<MaterialSwitcher.<<SetMetallicValue>b__5_0>d>
 	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoid<MaterialSwitcher.<<Start>b__3_0>d>
 	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoid<NextBattleSkillButton.<PlayChangeSkill>d__17>
 	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoid<TcpClientManager.<ReceiveDataAsync>d__11>
-	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoid<TestShader.<TryLerp>d__36>
-	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoid<TestShader.<TryWaitTask>d__37>
+	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoid<TestShader.<TryLerp>d__37>
+	// Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoid<TestShader.<TryWaitTask>d__38>
 	// Cysharp.Threading.Tasks.CompilerServices.IStateMachineRunnerPromise<System.DateTimeOffset>
 	// Cysharp.Threading.Tasks.CompilerServices.IStateMachineRunnerPromise<object>
 	// Cysharp.Threading.Tasks.ITaskPoolNode<object>
@@ -248,6 +256,7 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// SerializableDictionary<object,object>
 	// SerializableDictionaryBase<int,object,object>
 	// SerializableDictionaryBase<object,object,object>
+	// System.Action<System.Collections.Generic.KeyValuePair<int,byte>>
 	// System.Action<System.Nullable<UnityEngine.SceneManagement.Scene>,UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle>
 	// System.Action<UniWebViewMessage>
 	// System.Action<UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle,object>
@@ -273,6 +282,7 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// System.Buffers.TlsOverPerCoreLockedStacksArrayPool<int>
 	// System.ByReference<int>
 	// System.ByReference<ushort>
+	// System.Collections.Generic.ArraySortHelper<System.Collections.Generic.KeyValuePair<int,byte>>
 	// System.Collections.Generic.ArraySortHelper<UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle>
 	// System.Collections.Generic.ArraySortHelper<UnityEngine.UIVertex>
 	// System.Collections.Generic.ArraySortHelper<UnityEngine.Vector3>
@@ -282,6 +292,7 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// System.Collections.Generic.ArraySortHelper<long>
 	// System.Collections.Generic.ArraySortHelper<object>
 	// System.Collections.Generic.ArraySortHelper<ushort>
+	// System.Collections.Generic.Comparer<System.Collections.Generic.KeyValuePair<int,byte>>
 	// System.Collections.Generic.Comparer<System.Collections.Generic.KeyValuePair<long,object>>
 	// System.Collections.Generic.Comparer<System.Collections.Generic.KeyValuePair<object,object>>
 	// System.Collections.Generic.Comparer<System.DateTimeOffset>
@@ -311,6 +322,7 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// System.Collections.Generic.Comparer<long>
 	// System.Collections.Generic.Comparer<object>
 	// System.Collections.Generic.Comparer<ushort>
+	// System.Collections.Generic.Dictionary.Enumerator<int,byte>
 	// System.Collections.Generic.Dictionary.Enumerator<int,int>
 	// System.Collections.Generic.Dictionary.Enumerator<int,object>
 	// System.Collections.Generic.Dictionary.Enumerator<long,long>
@@ -320,6 +332,7 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// System.Collections.Generic.Dictionary.Enumerator<object,float>
 	// System.Collections.Generic.Dictionary.Enumerator<object,int>
 	// System.Collections.Generic.Dictionary.Enumerator<object,object>
+	// System.Collections.Generic.Dictionary.KeyCollection.Enumerator<int,byte>
 	// System.Collections.Generic.Dictionary.KeyCollection.Enumerator<int,int>
 	// System.Collections.Generic.Dictionary.KeyCollection.Enumerator<int,object>
 	// System.Collections.Generic.Dictionary.KeyCollection.Enumerator<long,long>
@@ -329,6 +342,7 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// System.Collections.Generic.Dictionary.KeyCollection.Enumerator<object,float>
 	// System.Collections.Generic.Dictionary.KeyCollection.Enumerator<object,int>
 	// System.Collections.Generic.Dictionary.KeyCollection.Enumerator<object,object>
+	// System.Collections.Generic.Dictionary.KeyCollection<int,byte>
 	// System.Collections.Generic.Dictionary.KeyCollection<int,int>
 	// System.Collections.Generic.Dictionary.KeyCollection<int,object>
 	// System.Collections.Generic.Dictionary.KeyCollection<long,long>
@@ -338,6 +352,7 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// System.Collections.Generic.Dictionary.KeyCollection<object,float>
 	// System.Collections.Generic.Dictionary.KeyCollection<object,int>
 	// System.Collections.Generic.Dictionary.KeyCollection<object,object>
+	// System.Collections.Generic.Dictionary.ValueCollection.Enumerator<int,byte>
 	// System.Collections.Generic.Dictionary.ValueCollection.Enumerator<int,int>
 	// System.Collections.Generic.Dictionary.ValueCollection.Enumerator<int,object>
 	// System.Collections.Generic.Dictionary.ValueCollection.Enumerator<long,long>
@@ -347,6 +362,7 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// System.Collections.Generic.Dictionary.ValueCollection.Enumerator<object,float>
 	// System.Collections.Generic.Dictionary.ValueCollection.Enumerator<object,int>
 	// System.Collections.Generic.Dictionary.ValueCollection.Enumerator<object,object>
+	// System.Collections.Generic.Dictionary.ValueCollection<int,byte>
 	// System.Collections.Generic.Dictionary.ValueCollection<int,int>
 	// System.Collections.Generic.Dictionary.ValueCollection<int,object>
 	// System.Collections.Generic.Dictionary.ValueCollection<long,long>
@@ -356,6 +372,7 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// System.Collections.Generic.Dictionary.ValueCollection<object,float>
 	// System.Collections.Generic.Dictionary.ValueCollection<object,int>
 	// System.Collections.Generic.Dictionary.ValueCollection<object,object>
+	// System.Collections.Generic.Dictionary<int,byte>
 	// System.Collections.Generic.Dictionary<int,int>
 	// System.Collections.Generic.Dictionary<int,object>
 	// System.Collections.Generic.Dictionary<long,long>
@@ -398,6 +415,7 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// System.Collections.Generic.HashSetEqualityComparer<UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle>
 	// System.Collections.Generic.HashSetEqualityComparer<int>
 	// System.Collections.Generic.HashSetEqualityComparer<object>
+	// System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<int,byte>>
 	// System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<int,int>>
 	// System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<int,object>>
 	// System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<long,long>>
@@ -416,6 +434,7 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// System.Collections.Generic.ICollection<long>
 	// System.Collections.Generic.ICollection<object>
 	// System.Collections.Generic.ICollection<ushort>
+	// System.Collections.Generic.IComparer<System.Collections.Generic.KeyValuePair<int,byte>>
 	// System.Collections.Generic.IComparer<System.Collections.Generic.KeyValuePair<long,object>>
 	// System.Collections.Generic.IComparer<System.Collections.Generic.KeyValuePair<object,object>>
 	// System.Collections.Generic.IComparer<UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle>
@@ -432,6 +451,7 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// System.Collections.Generic.IDictionary<object,LitJson.PropertyMetadata>
 	// System.Collections.Generic.IDictionary<object,object>
 	// System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<System.UIntPtr,object>>
+	// System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<int,byte>>
 	// System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<int,int>>
 	// System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<int,object>>
 	// System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<long,long>>
@@ -452,6 +472,7 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// System.Collections.Generic.IEnumerable<object>
 	// System.Collections.Generic.IEnumerable<ushort>
 	// System.Collections.Generic.IEnumerator<System.Collections.Generic.KeyValuePair<System.UIntPtr,object>>
+	// System.Collections.Generic.IEnumerator<System.Collections.Generic.KeyValuePair<int,byte>>
 	// System.Collections.Generic.IEnumerator<System.Collections.Generic.KeyValuePair<int,int>>
 	// System.Collections.Generic.IEnumerator<System.Collections.Generic.KeyValuePair<int,object>>
 	// System.Collections.Generic.IEnumerator<System.Collections.Generic.KeyValuePair<long,long>>
@@ -475,6 +496,7 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// System.Collections.Generic.IEqualityComparer<int>
 	// System.Collections.Generic.IEqualityComparer<long>
 	// System.Collections.Generic.IEqualityComparer<object>
+	// System.Collections.Generic.IList<System.Collections.Generic.KeyValuePair<int,byte>>
 	// System.Collections.Generic.IList<System.Collections.Generic.KeyValuePair<object,int>>
 	// System.Collections.Generic.IList<System.Collections.Generic.KeyValuePair<object,object>>
 	// System.Collections.Generic.IList<UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle>
@@ -487,6 +509,7 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// System.Collections.Generic.IList<object>
 	// System.Collections.Generic.IList<ushort>
 	// System.Collections.Generic.KeyValuePair<System.UIntPtr,object>
+	// System.Collections.Generic.KeyValuePair<int,byte>
 	// System.Collections.Generic.KeyValuePair<int,int>
 	// System.Collections.Generic.KeyValuePair<int,object>
 	// System.Collections.Generic.KeyValuePair<long,long>
@@ -500,6 +523,7 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// System.Collections.Generic.LinkedList.Enumerator<object>
 	// System.Collections.Generic.LinkedList<object>
 	// System.Collections.Generic.LinkedListNode<object>
+	// System.Collections.Generic.List.Enumerator<System.Collections.Generic.KeyValuePair<int,byte>>
 	// System.Collections.Generic.List.Enumerator<UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle>
 	// System.Collections.Generic.List.Enumerator<UnityEngine.UIVertex>
 	// System.Collections.Generic.List.Enumerator<UnityEngine.Vector3>
@@ -509,6 +533,7 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// System.Collections.Generic.List.Enumerator<long>
 	// System.Collections.Generic.List.Enumerator<object>
 	// System.Collections.Generic.List.Enumerator<ushort>
+	// System.Collections.Generic.List<System.Collections.Generic.KeyValuePair<int,byte>>
 	// System.Collections.Generic.List<UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle>
 	// System.Collections.Generic.List<UnityEngine.UIVertex>
 	// System.Collections.Generic.List<UnityEngine.Vector3>
@@ -518,6 +543,7 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// System.Collections.Generic.List<long>
 	// System.Collections.Generic.List<object>
 	// System.Collections.Generic.List<ushort>
+	// System.Collections.Generic.ObjectComparer<System.Collections.Generic.KeyValuePair<int,byte>>
 	// System.Collections.Generic.ObjectComparer<System.Collections.Generic.KeyValuePair<long,object>>
 	// System.Collections.Generic.ObjectComparer<System.Collections.Generic.KeyValuePair<object,object>>
 	// System.Collections.Generic.ObjectComparer<System.DateTimeOffset>
@@ -612,6 +638,7 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// System.Collections.Generic.TreeWalkPredicate<System.Collections.Generic.KeyValuePair<long,object>>
 	// System.Collections.Generic.TreeWalkPredicate<System.Collections.Generic.KeyValuePair<object,object>>
 	// System.Collections.Generic.ValueListBuilder<int>
+	// System.Collections.ObjectModel.ReadOnlyCollection<System.Collections.Generic.KeyValuePair<int,byte>>
 	// System.Collections.ObjectModel.ReadOnlyCollection<UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle>
 	// System.Collections.ObjectModel.ReadOnlyCollection<UnityEngine.UIVertex>
 	// System.Collections.ObjectModel.ReadOnlyCollection<UnityEngine.Vector3>
@@ -621,6 +648,7 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// System.Collections.ObjectModel.ReadOnlyCollection<long>
 	// System.Collections.ObjectModel.ReadOnlyCollection<object>
 	// System.Collections.ObjectModel.ReadOnlyCollection<ushort>
+	// System.Comparison<System.Collections.Generic.KeyValuePair<int,byte>>
 	// System.Comparison<UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle>
 	// System.Comparison<UnityEngine.UIVertex>
 	// System.Comparison<UnityEngine.Vector3>
@@ -634,6 +662,8 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// System.Converter<object,int>
 	// System.Converter<object,object>
 	// System.Func<Cysharp.Threading.Tasks.UniTaskVoid>
+	// System.Func<System.Collections.Generic.KeyValuePair<int,byte>,byte>
+	// System.Func<System.Collections.Generic.KeyValuePair<int,byte>,int>
 	// System.Func<System.Collections.Generic.KeyValuePair<int,object>,int>
 	// System.Func<System.Collections.Generic.KeyValuePair<int,object>,object>
 	// System.Func<System.Collections.Generic.KeyValuePair<object,int>,System.Collections.Generic.KeyValuePair<object,int>>
@@ -661,20 +691,27 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// System.Linq.Enumerable.<CastIterator>d__99<object>
 	// System.Linq.Enumerable.<ConcatIterator>d__59<System.Collections.Generic.KeyValuePair<object,int>>
 	// System.Linq.Enumerable.<OfTypeIterator>d__97<object>
+	// System.Linq.Enumerable.Iterator<System.Collections.Generic.KeyValuePair<int,byte>>
 	// System.Linq.Enumerable.Iterator<byte>
 	// System.Linq.Enumerable.Iterator<float>
 	// System.Linq.Enumerable.Iterator<int>
 	// System.Linq.Enumerable.Iterator<object>
 	// System.Linq.Enumerable.Iterator<ushort>
+	// System.Linq.Enumerable.WhereArrayIterator<System.Collections.Generic.KeyValuePair<int,byte>>
 	// System.Linq.Enumerable.WhereArrayIterator<int>
+	// System.Linq.Enumerable.WhereEnumerableIterator<System.Collections.Generic.KeyValuePair<int,byte>>
 	// System.Linq.Enumerable.WhereEnumerableIterator<float>
 	// System.Linq.Enumerable.WhereEnumerableIterator<int>
 	// System.Linq.Enumerable.WhereEnumerableIterator<ushort>
+	// System.Linq.Enumerable.WhereListIterator<System.Collections.Generic.KeyValuePair<int,byte>>
 	// System.Linq.Enumerable.WhereListIterator<int>
+	// System.Linq.Enumerable.WhereSelectArrayIterator<System.Collections.Generic.KeyValuePair<int,byte>,int>
 	// System.Linq.Enumerable.WhereSelectArrayIterator<byte,ushort>
 	// System.Linq.Enumerable.WhereSelectArrayIterator<object,float>
+	// System.Linq.Enumerable.WhereSelectEnumerableIterator<System.Collections.Generic.KeyValuePair<int,byte>,int>
 	// System.Linq.Enumerable.WhereSelectEnumerableIterator<byte,ushort>
 	// System.Linq.Enumerable.WhereSelectEnumerableIterator<object,float>
+	// System.Linq.Enumerable.WhereSelectListIterator<System.Collections.Generic.KeyValuePair<int,byte>,int>
 	// System.Linq.Enumerable.WhereSelectListIterator<byte,ushort>
 	// System.Linq.Enumerable.WhereSelectListIterator<object,float>
 	// System.Linq.EnumerableSorter<object,float>
@@ -694,6 +731,7 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// System.Nullable<UnityEngine.SceneManagement.Scene>
 	// System.Nullable<float>
 	// System.Nullable<long>
+	// System.Predicate<System.Collections.Generic.KeyValuePair<int,byte>>
 	// System.Predicate<UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle>
 	// System.Predicate<UnityEngine.UIVertex>
 	// System.Predicate<UnityEngine.Vector3>
@@ -802,9 +840,11 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	public void RefMethods()
 	{
 		// object Cinemachine.CinemachineVirtualCamera.GetCinemachineComponent<object>()
-		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.UniTask.Awaiter,BattleSceneUI.<DoKOAni>d__54>(Cysharp.Threading.Tasks.UniTask.Awaiter&,BattleSceneUI.<DoKOAni>d__54&)
-		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.UniTask.Awaiter,Gladiators.Battle.BattleManager.<Init>d__21>(Cysharp.Threading.Tasks.UniTask.Awaiter&,Gladiators.Battle.BattleManager.<Init>d__21&)
-		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.UniTask.Awaiter,Gladiators.Battle.BattleManager.<InitBattleModelController>d__31>(Cysharp.Threading.Tasks.UniTask.Awaiter&,Gladiators.Battle.BattleManager.<InitBattleModelController>d__31&)
+		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.UniTask.Awaiter,BattleMoney.<DoMoneyAnimator>d__12>(Cysharp.Threading.Tasks.UniTask.Awaiter&,BattleMoney.<DoMoneyAnimator>d__12&)
+		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.UniTask.Awaiter,BattleSceneUI.<DoKOAni>d__57>(Cysharp.Threading.Tasks.UniTask.Awaiter&,BattleSceneUI.<DoKOAni>d__57&)
+		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.UniTask.Awaiter,Gladiators.Battle.BattleManager.<BattleEndSlowDown>d__47>(Cysharp.Threading.Tasks.UniTask.Awaiter&,Gladiators.Battle.BattleManager.<BattleEndSlowDown>d__47&)
+		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.UniTask.Awaiter,Gladiators.Battle.BattleManager.<Init>d__27>(Cysharp.Threading.Tasks.UniTask.Awaiter&,Gladiators.Battle.BattleManager.<Init>d__27&)
+		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.UniTask.Awaiter,Gladiators.Battle.BattleManager.<InitBattleModelController>d__39>(Cysharp.Threading.Tasks.UniTask.Awaiter&,Gladiators.Battle.BattleManager.<InitBattleModelController>d__39&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.UniTask.Awaiter,Gladiators.Main.GameConnector.<NewConnector>d__11>(Cysharp.Threading.Tasks.UniTask.Awaiter&,Gladiators.Main.GameConnector.<NewConnector>d__11&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.UniTask.Awaiter,Gladiators.Main.StartSceneUI.<Signin>d__22>(Cysharp.Threading.Tasks.UniTask.Awaiter&,Gladiators.Main.StartSceneUI.<Signin>d__22&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.UniTask.Awaiter,Gladiators.Main.StartSceneUI.<connectToLobby>d__31>(Cysharp.Threading.Tasks.UniTask.Awaiter&,Gladiators.Main.StartSceneUI.<connectToLobby>d__31&)
@@ -812,8 +852,8 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.UniTask.Awaiter,Gladiators.Main.StartSceneUI.<signup>d__29>(Cysharp.Threading.Tasks.UniTask.Awaiter&,Gladiators.Main.StartSceneUI.<signup>d__29&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.UniTask.Awaiter,Scoz.Func.UniTaskManager.<OneTimesTask>d__11>(Cysharp.Threading.Tasks.UniTask.Awaiter&,Scoz.Func.UniTaskManager.<OneTimesTask>d__11&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.UniTask.Awaiter,Scoz.Func.UniTaskManager.<RepeatTask>d__9>(Cysharp.Threading.Tasks.UniTask.Awaiter&,Scoz.Func.UniTaskManager.<RepeatTask>d__9&)
-		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.UniTask.Awaiter,TestShader.<FirstWaitTask>d__38>(Cysharp.Threading.Tasks.UniTask.Awaiter&,TestShader.<FirstWaitTask>d__38&)
-		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.UniTask.Awaiter,TestShader.<SecondWaitTask>d__39>(Cysharp.Threading.Tasks.UniTask.Awaiter&,TestShader.<SecondWaitTask>d__39&)
+		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.UniTask.Awaiter,TestShader.<FirstWaitTask>d__39>(Cysharp.Threading.Tasks.UniTask.Awaiter&,TestShader.<FirstWaitTask>d__39&)
+		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.UniTask.Awaiter,TestShader.<SecondWaitTask>d__40>(Cysharp.Threading.Tasks.UniTask.Awaiter&,TestShader.<SecondWaitTask>d__40&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.UniTask.Awaiter<System.DateTimeOffset>,Gladiators.Main.StartSceneUI.<Signin>d__22>(Cysharp.Threading.Tasks.UniTask.Awaiter<System.DateTimeOffset>&,Gladiators.Main.StartSceneUI.<Signin>d__22&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.UniTask.Awaiter<object>,Gladiators.Main.StartSceneUI.<Signin>d__22>(Cysharp.Threading.Tasks.UniTask.Awaiter<object>&,Gladiators.Main.StartSceneUI.<Signin>d__22&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.UniTask.Awaiter<object>,Gladiators.Main.StartSceneUI.<connectToLobby>d__31>(Cysharp.Threading.Tasks.UniTask.Awaiter<object>&,Gladiators.Main.StartSceneUI.<connectToLobby>d__31&)
@@ -821,9 +861,12 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.UniTask.Awaiter<object>,Gladiators.Main.StartSceneUI.<signup>d__29>(Cysharp.Threading.Tasks.UniTask.Awaiter<object>&,Gladiators.Main.StartSceneUI.<signup>d__29&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.YieldAwaitable.Awaiter,BattleSkillButton.<DoExposureGradient>d__69>(Cysharp.Threading.Tasks.YieldAwaitable.Awaiter&,BattleSkillButton.<DoExposureGradient>d__69&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.YieldAwaitable.Awaiter,BattleSkillButton.<DoSaturationGradient>d__70>(Cysharp.Threading.Tasks.YieldAwaitable.Awaiter&,BattleSkillButton.<DoSaturationGradient>d__70&)
-		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.YieldAwaitable.Awaiter,Gladiators.Battle.BattleManager.<CheckGameState>d__22>(Cysharp.Threading.Tasks.YieldAwaitable.Awaiter&,Gladiators.Battle.BattleManager.<CheckGameState>d__22&)
-		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.YieldAwaitable.Awaiter,Gladiators.Battle.BattleManager.<changeFovAsync>d__28>(Cysharp.Threading.Tasks.YieldAwaitable.Awaiter&,Gladiators.Battle.BattleManager.<changeFovAsync>d__28&)
+		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.YieldAwaitable.Awaiter,Gladiators.Battle.BattleManager.<BattleEndSlowDown>d__47>(Cysharp.Threading.Tasks.YieldAwaitable.Awaiter&,Gladiators.Battle.BattleManager.<BattleEndSlowDown>d__47&)
+		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.YieldAwaitable.Awaiter,Gladiators.Battle.BattleManager.<CheckGameState>d__28>(Cysharp.Threading.Tasks.YieldAwaitable.Awaiter&,Gladiators.Battle.BattleManager.<CheckGameState>d__28&)
+		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.YieldAwaitable.Awaiter,Gladiators.Battle.BattleManager.<DoStartGameAnimation>d__32>(Cysharp.Threading.Tasks.YieldAwaitable.Awaiter&,Gladiators.Battle.BattleManager.<DoStartGameAnimation>d__32&)
+		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.YieldAwaitable.Awaiter,Gladiators.Battle.BattleManager.<changeFovAsync>d__36>(Cysharp.Threading.Tasks.YieldAwaitable.Awaiter&,Gladiators.Battle.BattleManager.<changeFovAsync>d__36&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.YieldAwaitable.Awaiter,Gladiators.Main.Projector.<move>d__4>(Cysharp.Threading.Tasks.YieldAwaitable.Awaiter&,Gladiators.Main.Projector.<move>d__4&)
+		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.YieldAwaitable.Awaiter,TestShader.<DoTestUniTaskTime>d__43>(Cysharp.Threading.Tasks.YieldAwaitable.Awaiter&,TestShader.<DoTestUniTaskTime>d__43&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.AwaitUnsafeOnCompleted<System.Runtime.CompilerServices.TaskAwaiter,Character.<MoveClientToPos>d__44>(System.Runtime.CompilerServices.TaskAwaiter&,Character.<MoveClientToPos>d__44&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.AwaitUnsafeOnCompleted<System.Runtime.CompilerServices.TaskAwaiter,TcpClientManager.<ConnectAsync>d__9>(System.Runtime.CompilerServices.TaskAwaiter&,TcpClientManager.<ConnectAsync>d__9&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.AwaitUnsafeOnCompleted<System.Runtime.CompilerServices.TaskAwaiter,TcpClientManager.<SendPacketAsync>d__10<object>>(System.Runtime.CompilerServices.TaskAwaiter&,TcpClientManager.<SendPacketAsync>d__10<object>&)
@@ -835,14 +878,17 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder<object>.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.UniTask.Awaiter<object>,Gladiators.Main.APIManager.<query>d__3>(Cysharp.Threading.Tasks.UniTask.Awaiter<object>&,Gladiators.Main.APIManager.<query>d__3&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder<object>.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.UnityAsyncExtensions.UnityWebRequestAsyncOperationAwaiter,Scoz.Func.Poster.<Get>d__1>(Cysharp.Threading.Tasks.UnityAsyncExtensions.UnityWebRequestAsyncOperationAwaiter&,Scoz.Func.Poster.<Get>d__1&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder<object>.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.UnityAsyncExtensions.UnityWebRequestAsyncOperationAwaiter,Scoz.Func.Poster.<Post>d__0>(Cysharp.Threading.Tasks.UnityAsyncExtensions.UnityWebRequestAsyncOperationAwaiter&,Scoz.Func.Poster.<Post>d__0&)
-		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.Start<BattleSceneUI.<DoKOAni>d__54>(BattleSceneUI.<DoKOAni>d__54&)
+		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.Start<BattleMoney.<DoMoneyAnimator>d__12>(BattleMoney.<DoMoneyAnimator>d__12&)
+		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.Start<BattleSceneUI.<DoKOAni>d__57>(BattleSceneUI.<DoKOAni>d__57&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.Start<BattleSkillButton.<DoExposureGradient>d__69>(BattleSkillButton.<DoExposureGradient>d__69&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.Start<BattleSkillButton.<DoSaturationGradient>d__70>(BattleSkillButton.<DoSaturationGradient>d__70&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.Start<Character.<MoveClientToPos>d__44>(Character.<MoveClientToPos>d__44&)
-		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.Start<Gladiators.Battle.BattleManager.<CheckGameState>d__22>(Gladiators.Battle.BattleManager.<CheckGameState>d__22&)
-		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.Start<Gladiators.Battle.BattleManager.<Init>d__21>(Gladiators.Battle.BattleManager.<Init>d__21&)
-		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.Start<Gladiators.Battle.BattleManager.<InitBattleModelController>d__31>(Gladiators.Battle.BattleManager.<InitBattleModelController>d__31&)
-		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.Start<Gladiators.Battle.BattleManager.<changeFovAsync>d__28>(Gladiators.Battle.BattleManager.<changeFovAsync>d__28&)
+		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.Start<Gladiators.Battle.BattleManager.<BattleEndSlowDown>d__47>(Gladiators.Battle.BattleManager.<BattleEndSlowDown>d__47&)
+		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.Start<Gladiators.Battle.BattleManager.<CheckGameState>d__28>(Gladiators.Battle.BattleManager.<CheckGameState>d__28&)
+		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.Start<Gladiators.Battle.BattleManager.<DoStartGameAnimation>d__32>(Gladiators.Battle.BattleManager.<DoStartGameAnimation>d__32&)
+		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.Start<Gladiators.Battle.BattleManager.<Init>d__27>(Gladiators.Battle.BattleManager.<Init>d__27&)
+		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.Start<Gladiators.Battle.BattleManager.<InitBattleModelController>d__39>(Gladiators.Battle.BattleManager.<InitBattleModelController>d__39&)
+		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.Start<Gladiators.Battle.BattleManager.<changeFovAsync>d__36>(Gladiators.Battle.BattleManager.<changeFovAsync>d__36&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.Start<Gladiators.Main.GameConnector.<NewConnector>d__11>(Gladiators.Main.GameConnector.<NewConnector>d__11&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.Start<Gladiators.Main.Projector.<move>d__4>(Gladiators.Main.Projector.<move>d__4&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.Start<Gladiators.Main.StartSceneUI.<Signin>d__22>(Gladiators.Main.StartSceneUI.<Signin>d__22&)
@@ -853,8 +899,9 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.Start<Scoz.Func.UniTaskManager.<RepeatTask>d__9>(Scoz.Func.UniTaskManager.<RepeatTask>d__9&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.Start<TcpClientManager.<ConnectAsync>d__9>(TcpClientManager.<ConnectAsync>d__9&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.Start<TcpClientManager.<SendPacketAsync>d__10<object>>(TcpClientManager.<SendPacketAsync>d__10<object>&)
-		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.Start<TestShader.<FirstWaitTask>d__38>(TestShader.<FirstWaitTask>d__38&)
-		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.Start<TestShader.<SecondWaitTask>d__39>(TestShader.<SecondWaitTask>d__39&)
+		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.Start<TestShader.<DoTestUniTaskTime>d__43>(TestShader.<DoTestUniTaskTime>d__43&)
+		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.Start<TestShader.<FirstWaitTask>d__39>(TestShader.<FirstWaitTask>d__39&)
+		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder.Start<TestShader.<SecondWaitTask>d__40>(TestShader.<SecondWaitTask>d__40&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder<System.DateTimeOffset>.Start<Gladiators.Main.APIManager.<GetServerTime>d__5>(Gladiators.Main.APIManager.<GetServerTime>d__5&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder<object>.Start<Gladiators.Main.APIManager.<GameState>d__11>(Gladiators.Main.APIManager.<GameState>d__11&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder<object>.Start<Gladiators.Main.APIManager.<Signin>d__9>(Gladiators.Main.APIManager.<Signin>d__9&)
@@ -866,7 +913,7 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.UniTask.Awaiter,BattleBufferIcon.<Shine>d__10>(Cysharp.Threading.Tasks.UniTask.Awaiter&,BattleBufferIcon.<Shine>d__10&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.UniTask.Awaiter,BattleGladiatorInfo.<HPChange>d__61>(Cysharp.Threading.Tasks.UniTask.Awaiter&,BattleGladiatorInfo.<HPChange>d__61&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.UniTask.Awaiter,BattleGladiatorInfo.<HPGrayChange>d__62>(Cysharp.Threading.Tasks.UniTask.Awaiter&,BattleGladiatorInfo.<HPGrayChange>d__62&)
-		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.UniTask.Awaiter,BattleSceneUI.<ReleasedSkillLock>d__46>(Cysharp.Threading.Tasks.UniTask.Awaiter&,BattleSceneUI.<ReleasedSkillLock>d__46&)
+		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.UniTask.Awaiter,BattleSceneUI.<castingTmpLock>d__51>(Cysharp.Threading.Tasks.UniTask.Awaiter&,BattleSceneUI.<castingTmpLock>d__51&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.UniTask.Awaiter,BattleSkillButton.<CastSkill>d__67>(Cysharp.Threading.Tasks.UniTask.Awaiter&,BattleSkillButton.<CastSkill>d__67&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.UniTask.Awaiter,BattleSkillButton.<SetAvailableMaterial>d__58>(Cysharp.Threading.Tasks.UniTask.Awaiter&,BattleSkillButton.<SetAvailableMaterial>d__58&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.UniTask.Awaiter,BattleStaminaObj.<DoCastLattices>d__40>(Cysharp.Threading.Tasks.UniTask.Awaiter&,BattleStaminaObj.<DoCastLattices>d__40&)
@@ -874,12 +921,12 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.UniTask.Awaiter,Gladiators.Battle.DivineSelectUI.<PlayCountDownCandleTime>d__49>(Cysharp.Threading.Tasks.UniTask.Awaiter&,Gladiators.Battle.DivineSelectUI.<PlayCountDownCandleTime>d__49&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.UniTask.Awaiter,Gladiators.Battle.DivineSkill.<SelectSkill>d__12>(Cysharp.Threading.Tasks.UniTask.Awaiter&,Gladiators.Battle.DivineSkill.<SelectSkill>d__12&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.UniTask.Awaiter,Gladiators.Main.AllocatedLobby.<pingLoop>d__25>(Cysharp.Threading.Tasks.UniTask.Awaiter&,Gladiators.Main.AllocatedLobby.<pingLoop>d__25&)
-		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.UniTask.Awaiter,Gladiators.Main.AllocatedRoom.<pingLoop>d__77>(Cysharp.Threading.Tasks.UniTask.Awaiter&,Gladiators.Main.AllocatedRoom.<pingLoop>d__77&)
+		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.UniTask.Awaiter,Gladiators.Main.AllocatedRoom.<pingLoop>d__78>(Cysharp.Threading.Tasks.UniTask.Awaiter&,Gladiators.Main.AllocatedRoom.<pingLoop>d__78&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.UniTask.Awaiter,MaterialSwitcher.<<SetMetallicValue>b__5_0>d>(Cysharp.Threading.Tasks.UniTask.Awaiter&,MaterialSwitcher.<<SetMetallicValue>b__5_0>d&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.UniTask.Awaiter,MaterialSwitcher.<<Start>b__3_0>d>(Cysharp.Threading.Tasks.UniTask.Awaiter&,MaterialSwitcher.<<Start>b__3_0>d&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.UniTask.Awaiter,NextBattleSkillButton.<PlayChangeSkill>d__17>(Cysharp.Threading.Tasks.UniTask.Awaiter&,NextBattleSkillButton.<PlayChangeSkill>d__17&)
-		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.UniTask.Awaiter,TestShader.<TryLerp>d__36>(Cysharp.Threading.Tasks.UniTask.Awaiter&,TestShader.<TryLerp>d__36&)
-		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.UniTask.Awaiter,TestShader.<TryWaitTask>d__37>(Cysharp.Threading.Tasks.UniTask.Awaiter&,TestShader.<TryWaitTask>d__37&)
+		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.UniTask.Awaiter,TestShader.<TryLerp>d__37>(Cysharp.Threading.Tasks.UniTask.Awaiter&,TestShader.<TryLerp>d__37&)
+		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.UniTask.Awaiter,TestShader.<TryWaitTask>d__38>(Cysharp.Threading.Tasks.UniTask.Awaiter&,TestShader.<TryWaitTask>d__38&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.YieldAwaitable.Awaiter,BattleController.<StateUpdateLoop>d__22>(Cysharp.Threading.Tasks.YieldAwaitable.Awaiter&,BattleController.<StateUpdateLoop>d__22&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.YieldAwaitable.Awaiter,BattleStaminaObj.<DoBrigtenMask>d__48>(Cysharp.Threading.Tasks.YieldAwaitable.Awaiter&,BattleStaminaObj.<DoBrigtenMask>d__48&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.YieldAwaitable.Awaiter,BattleStaminaObj.<DoCastLattices>d__40>(Cysharp.Threading.Tasks.YieldAwaitable.Awaiter&,BattleStaminaObj.<DoCastLattices>d__40&)
@@ -892,7 +939,7 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.Start<BattleController.<StateUpdateLoop>d__22>(BattleController.<StateUpdateLoop>d__22&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.Start<BattleGladiatorInfo.<HPChange>d__61>(BattleGladiatorInfo.<HPChange>d__61&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.Start<BattleGladiatorInfo.<HPGrayChange>d__62>(BattleGladiatorInfo.<HPGrayChange>d__62&)
-		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.Start<BattleSceneUI.<ReleasedSkillLock>d__46>(BattleSceneUI.<ReleasedSkillLock>d__46&)
+		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.Start<BattleSceneUI.<castingTmpLock>d__51>(BattleSceneUI.<castingTmpLock>d__51&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.Start<BattleSkillButton.<CastSkill>d__67>(BattleSkillButton.<CastSkill>d__67&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.Start<BattleSkillButton.<SetAvailableMaterial>d__58>(BattleSkillButton.<SetAvailableMaterial>d__58&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.Start<BattleStaminaObj.<DoBrigtenMask>d__48>(BattleStaminaObj.<DoBrigtenMask>d__48&)
@@ -904,13 +951,13 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.Start<Gladiators.Battle.DivineSelectUI.<PlayCountDownCandleTime>d__49>(Gladiators.Battle.DivineSelectUI.<PlayCountDownCandleTime>d__49&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.Start<Gladiators.Battle.DivineSkill.<SelectSkill>d__12>(Gladiators.Battle.DivineSkill.<SelectSkill>d__12&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.Start<Gladiators.Main.AllocatedLobby.<pingLoop>d__25>(Gladiators.Main.AllocatedLobby.<pingLoop>d__25&)
-		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.Start<Gladiators.Main.AllocatedRoom.<pingLoop>d__77>(Gladiators.Main.AllocatedRoom.<pingLoop>d__77&)
+		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.Start<Gladiators.Main.AllocatedRoom.<pingLoop>d__78>(Gladiators.Main.AllocatedRoom.<pingLoop>d__78&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.Start<MaterialSwitcher.<<SetMetallicValue>b__5_0>d>(MaterialSwitcher.<<SetMetallicValue>b__5_0>d&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.Start<MaterialSwitcher.<<Start>b__3_0>d>(MaterialSwitcher.<<Start>b__3_0>d&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.Start<NextBattleSkillButton.<PlayChangeSkill>d__17>(NextBattleSkillButton.<PlayChangeSkill>d__17&)
 		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.Start<TcpClientManager.<ReceiveDataAsync>d__11>(TcpClientManager.<ReceiveDataAsync>d__11&)
-		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.Start<TestShader.<TryLerp>d__36>(TestShader.<TryLerp>d__36&)
-		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.Start<TestShader.<TryWaitTask>d__37>(TestShader.<TryWaitTask>d__37&)
+		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.Start<TestShader.<TryLerp>d__37>(TestShader.<TryLerp>d__37&)
+		// System.Void Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder.Start<TestShader.<TryWaitTask>d__38>(TestShader.<TryWaitTask>d__38&)
 		// Cysharp.Threading.Tasks.UniTask.Awaiter Cysharp.Threading.Tasks.EnumeratorAsyncExtensions.GetAwaiter<object>(object)
 		// object DG.Tweening.TweenExtensions.Pause<object>(object)
 		// object DG.Tweening.TweenSettingsExtensions.OnComplete<object>(object,DG.Tweening.TweenCallback)
@@ -937,6 +984,7 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 		// bool System.Enum.TryParse<object>(string,bool,object&)
 		// bool System.Enum.TryParse<object>(string,object&)
 		// bool System.Linq.Enumerable.All<byte>(System.Collections.Generic.IEnumerable<byte>,System.Func<byte,bool>)
+		// bool System.Linq.Enumerable.Any<System.Collections.Generic.KeyValuePair<int,byte>>(System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<int,byte>>,System.Func<System.Collections.Generic.KeyValuePair<int,byte>,bool>)
 		// System.Collections.Generic.IEnumerable<int> System.Linq.Enumerable.Cast<int>(System.Collections.IEnumerable)
 		// System.Collections.Generic.IEnumerable<object> System.Linq.Enumerable.Cast<object>(System.Collections.IEnumerable)
 		// System.Collections.Generic.IEnumerable<int> System.Linq.Enumerable.CastIterator<int>(System.Collections.IEnumerable)
@@ -954,6 +1002,7 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 		// System.Collections.Generic.IEnumerable<object> System.Linq.Enumerable.OfTypeIterator<object>(System.Collections.IEnumerable)
 		// System.Linq.IOrderedEnumerable<object> System.Linq.Enumerable.OrderBy<object,float>(System.Collections.Generic.IEnumerable<object>,System.Func<object,float>)
 		// System.Collections.Generic.IEnumerable<float> System.Linq.Enumerable.Select<object,float>(System.Collections.Generic.IEnumerable<object>,System.Func<object,float>)
+		// System.Collections.Generic.IEnumerable<int> System.Linq.Enumerable.Select<System.Collections.Generic.KeyValuePair<int,byte>,int>(System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<int,byte>>,System.Func<System.Collections.Generic.KeyValuePair<int,byte>,int>)
 		// System.Collections.Generic.IEnumerable<ushort> System.Linq.Enumerable.Select<byte,ushort>(System.Collections.Generic.IEnumerable<byte>,System.Func<byte,ushort>)
 		// object[] System.Linq.Enumerable.ToArray<object>(System.Collections.Generic.IEnumerable<object>)
 		// System.Collections.Generic.Dictionary<int,object> System.Linq.Enumerable.ToDictionary<System.Collections.Generic.KeyValuePair<int,object>,int,object>(System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<int,object>>,System.Func<System.Collections.Generic.KeyValuePair<int,object>,int>,System.Func<System.Collections.Generic.KeyValuePair<int,object>,object>)
@@ -969,8 +1018,10 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 		// System.Collections.Generic.List<float> System.Linq.Enumerable.ToList<float>(System.Collections.Generic.IEnumerable<float>)
 		// System.Collections.Generic.List<int> System.Linq.Enumerable.ToList<int>(System.Collections.Generic.IEnumerable<int>)
 		// System.Collections.Generic.List<object> System.Linq.Enumerable.ToList<object>(System.Collections.Generic.IEnumerable<object>)
+		// System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<int,byte>> System.Linq.Enumerable.Where<System.Collections.Generic.KeyValuePair<int,byte>>(System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<int,byte>>,System.Func<System.Collections.Generic.KeyValuePair<int,byte>,bool>)
 		// System.Collections.Generic.IEnumerable<int> System.Linq.Enumerable.Where<int>(System.Collections.Generic.IEnumerable<int>,System.Func<int,bool>)
 		// System.Collections.Generic.IEnumerable<float> System.Linq.Enumerable.Iterator<object>.Select<float>(System.Func<object,float>)
+		// System.Collections.Generic.IEnumerable<int> System.Linq.Enumerable.Iterator<System.Collections.Generic.KeyValuePair<int,byte>>.Select<int>(System.Func<System.Collections.Generic.KeyValuePair<int,byte>,int>)
 		// System.Collections.Generic.IEnumerable<ushort> System.Linq.Enumerable.Iterator<byte>.Select<ushort>(System.Func<byte,ushort>)
 		// System.Void System.Runtime.CompilerServices.AsyncVoidMethodBuilder.AwaitUnsafeOnCompleted<Cysharp.Threading.Tasks.UniTask.Awaiter,Gladiators.Main.AllocatedLobby.<handlerMatch>d__32>(Cysharp.Threading.Tasks.UniTask.Awaiter&,Gladiators.Main.AllocatedLobby.<handlerMatch>d__32&)
 		// System.Void System.Runtime.CompilerServices.AsyncVoidMethodBuilder.Start<Gladiators.Main.AllocatedLobby.<handlerMatch>d__32>(Gladiators.Main.AllocatedLobby.<handlerMatch>d__32&)
@@ -1012,5 +1063,7 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 		// UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle<object> UnityEngine.ResourceManagement.ResourceManager.StartOperation<object>(UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationBase<object>,UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle)
 		// object UnityEngine.Resources.GetBuiltinResource<object>(string)
 		// object UnityEngine.Resources.Load<object>(string)
+		// string string.Join<int>(string,System.Collections.Generic.IEnumerable<int>)
+		// string string.JoinCore<int>(System.Char*,int,System.Collections.Generic.IEnumerable<int>)
 	}
 }

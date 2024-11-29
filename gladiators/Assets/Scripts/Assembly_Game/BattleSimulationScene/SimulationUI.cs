@@ -83,14 +83,14 @@ namespace Gladiators.BattleSimulation {
                 Img_BG.sprite = sprite;
                 Img_BG.SetNativeSize();
             });
-            
+
             var jsonSkill = GameDictionary.GetJsonData<JsonSkill>(CurGladiator.ID);
             if (jsonSkill == null) return;
             AddressablesLoader.GetSpriteAtlas("SpellIcon", atlas => {
                 Img_Talent.sprite = atlas.GetSprite(jsonSkill.Ref);
             });
             Txt_TalentTitle.text = jsonSkill.Name;
-            Txt_TalentTitle.text = jsonSkill.Description;
+            Txt_TalentInfo.text = jsonSkill.Description;
         }
         public void NextGladiator() {
             curGladiatorIdx++;
