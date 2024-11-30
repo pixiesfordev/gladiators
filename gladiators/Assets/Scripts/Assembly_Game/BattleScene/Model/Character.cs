@@ -8,6 +8,7 @@ using Scoz.Func;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Unity.Entities;
+using UnityEditor.Search;
 using UnityEngine;
 
 public enum NumType {
@@ -19,6 +20,15 @@ public enum NumType {
     Dmg_Poison,
     Dmg_Burning,
 
+    Restore_Hp,
+    Restore_Vigor,
+}
+
+public enum QueueNumType {
+    Dmg,
+    Dmg_Bleeding,
+    Dmg_Poison,
+    Dmg_Burning,
     Restore_Hp,
     Restore_Vigor,
 }
@@ -75,6 +85,11 @@ public class Character : MonoBehaviour {
         MoveSmoke.Stop();
         setModel(jsonGladiator);
         SetFaceToTarget(_knockAngle);
+        // 初始化跳數字字典
+        foreach (QueueNumType type in System.Enum.GetValues(typeof(QueueNumType))) {
+            damageQueues[type] = new Queue<(NumType, int)>();
+            isProcessing[type] = false;
+        }
     }
 
     void setModel(JsonGladiator _json) {
@@ -221,53 +236,111 @@ public class Character : MonoBehaviour {
     }
 
     [SerializeField] float damageShowYPos = 6f;
+    [SerializeField] float restoreShowYPos = 20f;
     [SerializeField] DamageNumber defaultDamagePrefab;
     [SerializeField] DamageNumber bleedDamagePrefab;
     [SerializeField] DamageNumber poisonDamagePrefab;
     [SerializeField] DamageNumber burningDamagePrefab;
     [SerializeField] DamageNumber recoveryHPPrefab;
     [SerializeField] DamageNumber recoveryPhysicalPrefab;
-    public void ShowBattleNumber(NumType type, int value) {
+    int minIntervalMilliseconds = 300; // 同類型的跳數字最小間隔時間（毫秒）
+    Dictionary<QueueNumType, Queue<(NumType, int)>> damageQueues = new Dictionary<QueueNumType, Queue<(NumType, int)>>(); // 該類型的跳數字列隊
+    Dictionary<QueueNumType, bool> isProcessing = new Dictionary<QueueNumType, bool>(); // 該類型的跳數字是否在列隊中
 
+
+
+    public void ShowBattleNumber(NumType _type, int _value) {
+        QueueNumType type = QueueNumType.Dmg;
+        switch (_type) {
+            case NumType.Dmg_Small:
+            case NumType.Dmg_Medium:
+            case NumType.Dmg_Large:
+                type = QueueNumType.Dmg;
+                break;
+            case NumType.Restore_Hp:
+                type = QueueNumType.Restore_Hp;
+                break;
+            case NumType.Dmg_Poison:
+                type = QueueNumType.Dmg_Poison;
+                break;
+            case NumType.Dmg_Bleeding:
+                type = QueueNumType.Dmg_Bleeding;
+                break;
+            case NumType.Dmg_Burning:
+                type = QueueNumType.Dmg_Burning;
+                break;
+            case NumType.Restore_Vigor:
+                type = QueueNumType.Restore_Vigor;
+                break;
+            default:
+                WriteLog.LogError($"ShowBattleNumber 有尚未定義的NumType({_type})");
+                break;
+        }
+
+        // 將傷害值加入對應的隊列
+        damageQueues[type].Enqueue((_type, _value));
+
+        // 如果該類型尚未在處理中，則開始處理
+        if (!isProcessing[type]) {
+            processQueueAsync(type).Forget();
+        }
+    }
+
+    async UniTaskVoid processQueueAsync(QueueNumType _queueType) {
+        isProcessing[_queueType] = true;
+
+        while (damageQueues[_queueType].Count > 0) {
+            var (type, value) = damageQueues[_queueType].Dequeue();
+            displayDamageNumber(_queueType, type, value);
+            await UniTask.Delay(minIntervalMilliseconds);
+        }
+        isProcessing[_queueType] = false;
+    }
+
+    void displayDamageNumber(QueueNumType _queueType, NumType _type, int _value) {
         DamageNumber damagePopup = null;
-
-        switch (type) {
+        float yPos = damageShowYPos;
+        switch (_type) {
             default:
             case NumType.Dmg_Small:
-                damagePopup = defaultDamagePrefab.Spawn(this.transform.position + new Vector3(0, damageShowYPos, 1), value);
+                damagePopup = defaultDamagePrefab.Spawn(this.transform.position + new Vector3(0, yPos, 1), _value);
                 damagePopup.SetFollowedTarget(this.transform);
                 break;
             case NumType.Dmg_Medium:
-                damagePopup = defaultDamagePrefab.Spawn(this.transform.position + new Vector3(0, damageShowYPos, 1), value);
+                damagePopup = defaultDamagePrefab.Spawn(this.transform.position + new Vector3(0, yPos, 1), _value);
                 damagePopup.SetScale(1.8f);
                 damagePopup.SetFollowedTarget(this.transform);
                 break;
             case NumType.Dmg_Large:
-                damagePopup = defaultDamagePrefab.Spawn(this.transform.position + new Vector3(0, damageShowYPos, 1), value);
+                damagePopup = defaultDamagePrefab.Spawn(this.transform.position + new Vector3(0, yPos, 1), _value);
                 damagePopup.SetScale(2f);
                 damagePopup.SetFollowedTarget(this.transform);
                 break;
             case NumType.Dmg_Bleeding:
-                damagePopup = bleedDamagePrefab.Spawn(this.transform.position + new Vector3(0, damageShowYPos, 1), value);
+                damagePopup = bleedDamagePrefab.Spawn(this.transform.position + new Vector3(0, yPos, 1), _value);
                 break;
             case NumType.Dmg_Poison:
-                damagePopup = poisonDamagePrefab.Spawn(this.transform.position + new Vector3(0, damageShowYPos, 1), value);
+                damagePopup = poisonDamagePrefab.Spawn(this.transform.position + new Vector3(0, yPos, 1), _value);
                 break;
             case NumType.Dmg_Burning:
-                damagePopup = burningDamagePrefab.Spawn(this.transform.position + new Vector3(0, damageShowYPos, 1), value);
+                damagePopup = burningDamagePrefab.Spawn(this.transform.position + new Vector3(0, yPos, 1), _value);
                 break;
             case NumType.Restore_Hp:
-                damagePopup = recoveryHPPrefab.Spawn(this.transform.position + new Vector3(0, damageShowYPos + 0.5f, 1), value);
+                yPos = restoreShowYPos;
+                damagePopup = recoveryHPPrefab.Spawn(this.transform.position + new Vector3(0, yPos, 1), _value);
                 damagePopup.SetFollowedTarget(this.transform);
                 break;
             case NumType.Restore_Vigor:
-                damagePopup = recoveryPhysicalPrefab.Spawn(this.transform.position + new Vector3(0, damageShowYPos + 0.5f, 1), value);
+                yPos = restoreShowYPos;
+                damagePopup = recoveryPhysicalPrefab.Spawn(this.transform.position + new Vector3(0, yPos, 1), _value);
                 damagePopup.SetFollowedTarget(this.transform);
                 break;
         }
 
-        damagePopup.transform.SetParent(this.transform);
-        float sideRotationdAngle = (FaceDir == RightLeft.Right) ? 0 : 180;
-        damagePopup.transform.localRotation = Quaternion.Euler(0, sideRotationdAngle, 0);
+        if (damagePopup != null) {
+            damagePopup.transform.SetParent(this.transform);
+            float sideRotationAngle = (FaceDir == RightLeft.Right) ? 0 : 180;
+            damagePopup.transform.localRotation = Quaternion.Euler(0, sideRotationAngle, 0);
+        }
     }
 }

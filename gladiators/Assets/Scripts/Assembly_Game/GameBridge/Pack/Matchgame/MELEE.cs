@@ -12,7 +12,7 @@ namespace Gladiators.Socket.Matchgame {
     public class PackMelee {
         public int SkillID { get; private set; }
         public double MeleePos { get; private set; }
-        public double Knockback { get; private set; }
+        public double BeKnockback { get; private set; }
         public double CurPos { get; private set; }
         public List<PackEffect> EffectDatas { get; private set; }
     }

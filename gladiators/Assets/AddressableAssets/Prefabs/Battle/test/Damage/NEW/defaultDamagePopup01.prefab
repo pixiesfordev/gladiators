@@ -216,7 +216,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   permanent: 0
-  lifetime: 1.5
+  lifetime: 1
   unscaledTime: 0
   enable3DGame: 0
   faceCameraView: 1
@@ -263,7 +263,7 @@ MonoBehaviour:
     - B
     suffixDigits: 030000000300000003000000
     maxDigits: 4
-  enableLeftText: 1
+  enableLeftText: 0
   leftText: 
   leftTextSettings:
     bold: 0
@@ -361,33 +361,33 @@ MonoBehaviour:
       m_NumAlphaKeys: 2
     fromNumber: 10
     toNumber: 100
-  durationFadeIn: 0.2
+  durationFadeIn: 0.01
   enableOffsetFadeIn: 1
-  offsetFadeIn: {x: 2, y: 0}
-  enableScaleFadeIn: 1
+  offsetFadeIn: {x: 3, y: 0}
+  enableScaleFadeIn: 0
   scaleFadeIn: {x: 1, y: 1}
-  enableCrossScaleFadeIn: 1
+  enableCrossScaleFadeIn: 0
   crossScaleFadeIn: {x: 1, y: 1.1}
   enableShakeFadeIn: 0
   shakeOffsetFadeIn: {x: -1, y: 1}
   shakeFrequencyFadeIn: 4
-  durationFadeOut: 0.2
+  durationFadeOut: 0.05
   enableOffsetFadeOut: 0
   offsetFadeOut: {x: 0.3, y: 0.2}
-  enableScaleFadeOut: 1
+  enableScaleFadeOut: 0
   scaleFadeOut: {x: 2.5, y: 2.5}
-  enableCrossScaleFadeOut: 1
+  enableCrossScaleFadeOut: 0
   crossScaleFadeOut: {x: 1.1, y: 1.1}
   enableShakeFadeOut: 0
   shakeOffsetFadeOut: {x: 0, y: 1.5}
   shakeFrequencyFadeOut: 4
   enableLerp: 1
   lerpSettings:
-    speed: 6
-    minX: -0.4
-    maxX: 0.4
-    minY: 1
-    maxY: 1.5
+    speed: 50
+    minX: -2
+    maxX: 2
+    minY: -2
+    maxY: 2
     randomFlip: 0
   enableVelocity: 0
   velocitySettings:
@@ -399,10 +399,10 @@ MonoBehaviour:
     dragX: 0.1
     dragY: 1
     gravity: 1
-  enableShaking: 1
+  enableShaking: 0
   shakeSettings:
-    offset: {x: 0.005, y: 0.005}
-    frequency: 50
+    offset: {x: 0.01, y: 0.01}
+    frequency: 100
   enableFollowing: 0
   followedTarget: {fileID: 0}
   followSettings:

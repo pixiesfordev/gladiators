@@ -57,7 +57,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -3016009729354918782, guid: 6d070d3aaf6160f42b5e8124261b645e, type: 2}
+  - {fileID: -3016009729354918782, guid: 0b49c2e246ead61489d05da35229d195, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -101,16 +101,16 @@ MonoBehaviour:
       m_Calls: []
   m_text: <size=+5>+</size><space=0.39em><cspace=0.9><size=+5>123</size></cspace><space=0.39em>
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 6d070d3aaf6160f42b5e8124261b645e, type: 2}
-  m_sharedMaterial: {fileID: -3016009729354918782, guid: 6d070d3aaf6160f42b5e8124261b645e,
+  m_fontAsset: {fileID: 11400000, guid: 0b49c2e246ead61489d05da35229d195, type: 2}
+  m_sharedMaterial: {fileID: -3016009729354918782, guid: 0b49c2e246ead61489d05da35229d195,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4287631052
-  m_fontColor: {r: 0.8018868, g: 0.056737266, b: 0.56579244, a: 1}
+    rgba: 4278255615
+  m_fontColor: {r: 1, g: 1, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -225,7 +225,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -3016009729354918782, guid: 6d070d3aaf6160f42b5e8124261b645e, type: 2}
+  - {fileID: -3016009729354918782, guid: 0b49c2e246ead61489d05da35229d195, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -727,7 +727,7 @@ MonoBehaviour:
   enablePooling: 0
   poolSize: 50
   disableOnSceneLoad: 1
-  editorLastFont: Neon-Magenta
+  editorLastFont: Neon-PhysicalPopup01
   position: {x: 0, y: 0, z: 0}
 --- !u!210 &7242723254379501660
 SortingGroup:
@@ -811,7 +811,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -3016009729354918782, guid: 6d070d3aaf6160f42b5e8124261b645e, type: 2}
+  - {fileID: -3016009729354918782, guid: 0b49c2e246ead61489d05da35229d195, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

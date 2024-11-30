@@ -74,6 +74,7 @@ MonoBehaviour:
     type: 3}
   recoveryPhysicalPrefab: {fileID: 2515543820834242609, guid: ab7ae98edb10ad74f8fdaf869ce6ae37,
     type: 3}
+  minIntervalMilliseconds: 500
 --- !u!114 &5996496001789048552
 MonoBehaviour:
   m_ObjectHideFlags: 0

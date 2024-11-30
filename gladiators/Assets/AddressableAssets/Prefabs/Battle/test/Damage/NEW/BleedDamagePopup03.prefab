@@ -53,7 +53,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -3016009729354918782, guid: ff829a3d0af952b4a9257edc3d2534d3, type: 2}
+  - {fileID: -3016009729354918782, guid: 217ea8412e92e3e4bbbe740b7bf5a049, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -140,7 +140,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -3016009729354918782, guid: ff829a3d0af952b4a9257edc3d2534d3, type: 2}
+  - {fileID: -3016009729354918782, guid: 217ea8412e92e3e4bbbe740b7bf5a049, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -182,10 +182,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: <size=+5>-</size><space=0.39em><cspace=0.9><size=+5>123</size></cspace><space=0.39em>
+  m_text: <space=0.39em><cspace=0.9><size=+5>123</size></cspace><space=0.39em>
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: ff829a3d0af952b4a9257edc3d2534d3, type: 2}
-  m_sharedMaterial: {fileID: -3016009729354918782, guid: ff829a3d0af952b4a9257edc3d2534d3,
+  m_fontAsset: {fileID: 11400000, guid: 217ea8412e92e3e4bbbe740b7bf5a049, type: 2}
+  m_sharedMaterial: {fileID: -3016009729354918782, guid: 217ea8412e92e3e4bbbe740b7bf5a049,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -352,8 +352,8 @@ MonoBehaviour:
     - B
     suffixDigits: 030000000300000003000000
     maxDigits: 4
-  enableLeftText: 1
-  leftText: '-'
+  enableLeftText: 0
+  leftText: 
   leftTextSettings:
     bold: 0
     italic: 0
@@ -727,7 +727,7 @@ MonoBehaviour:
   enablePooling: 0
   poolSize: 50
   disableOnSceneLoad: 1
-  editorLastFont: Neon-Magenta default03
+  editorLastFont: Neon-Magenta default01
   position: {x: 0, y: 0, z: 0}
 --- !u!210 &420758175304529094
 SortingGroup:
@@ -811,7 +811,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -3016009729354918782, guid: ff829a3d0af952b4a9257edc3d2534d3, type: 2}
+  - {fileID: -3016009729354918782, guid: 217ea8412e92e3e4bbbe740b7bf5a049, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

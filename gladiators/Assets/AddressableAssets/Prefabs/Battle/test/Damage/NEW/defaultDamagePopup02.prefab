@@ -217,7 +217,7 @@ MonoBehaviour:
   shakeFrequencyFadeOut: 4
   enableLerp: 1
   lerpSettings:
-    speed: 6
+    speed: 20
     minX: -0.4
     maxX: 0.4
     minY: 1

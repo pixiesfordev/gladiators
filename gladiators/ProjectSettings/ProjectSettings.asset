@@ -266,7 +266,7 @@ PlayerSettings:
   AndroidTargetDevices: 0
   AndroidSplashScreenScale: 0
   androidSplashScreen: {fileID: 0}
-  AndroidKeystoreName: E:/MyGames/gladiators/Keys/pixies.keystore
+  AndroidKeystoreName: E:/Projects/gladiators/Keys/pixies.keystore
   AndroidKeyaliasName: pixies
   AndroidEnableArmv9SecurityFeatures: 0
   AndroidBuildApkPerCpuArchitecture: 0

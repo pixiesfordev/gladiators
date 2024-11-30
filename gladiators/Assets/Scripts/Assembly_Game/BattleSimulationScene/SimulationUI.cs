@@ -31,7 +31,7 @@ namespace Gladiators.BattleSimulation {
         [SerializeField] Btn_Skill[] Btn_Skills;
         [SerializeField] Text Txt_SkillTitle;
         [SerializeField] Text Txt_SkillInfo;
-        int[] curSkillIDs = new int[5] { 1001, 1002, 1003, 1004, 1005 };
+        int[] curSkillIDs = new int[5] { 1001, 1002, 1004, 1005, 1006 };
         int curSkillIdx = 0;
 
         public override void RefreshText() {

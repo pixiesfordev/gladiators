@@ -257,11 +257,12 @@ public class BattleController : MonoBehaviour {
 
     public void Melee(PackMelee _leftMelee, PackMelee _rightMelee) {
         if (_leftMelee == null || _rightMelee == null) return;
-        curKnockAngle += UnityEngine.Random.Range(-KnockAngleRange, KnockAngleRange);
+        if (_leftMelee.BeKnockback != 0 && _rightMelee.BeKnockback != 0) // 雙方都有被擊退才改變演出的碰撞角度(就只是演出效果)
+            curKnockAngle += UnityEngine.Random.Range(-KnockAngleRange, KnockAngleRange);
         BattleManager.Instance.SetVCamTargetRot(-curKnockAngle);
         var clientPos = ConvertTo3DPos((float)_leftMelee.CurPos, (float)_rightMelee.CurPos);
-        leftChar.HandleMelee(clientPos.Item1, _leftMelee.EffectDatas, (float)_leftMelee.Knockback, (float)_leftMelee.CurPos, curKnockAngle, _leftMelee.SkillID);
-        rightChar.HandleMelee(clientPos.Item2, _rightMelee.EffectDatas, (float)_rightMelee.Knockback, (float)_rightMelee.CurPos, curKnockAngle, _rightMelee.SkillID);
+        leftChar.HandleMelee(clientPos.Item1, _leftMelee.EffectDatas, (float)_leftMelee.BeKnockback, (float)_leftMelee.CurPos, curKnockAngle, _leftMelee.SkillID);
+        rightChar.HandleMelee(clientPos.Item2, _rightMelee.EffectDatas, (float)_rightMelee.BeKnockback, (float)_rightMelee.CurPos, curKnockAngle, _rightMelee.SkillID);
 
         //產生特效
         AddressablesLoader.GetParticle("Battle/MeleeHit", (prefab, handle) => {
@@ -336,10 +337,15 @@ public class BattleController : MonoBehaviour {
                     numType = NumType.Dmg_Large;
                 break;
             case EffectType.RestoreHP:
+            case EffectType.RegenHP:
                 if (_value < 0) {
                     WriteLog.LogError($"收到HPChange封包的格式錯誤 effectType: {effectType}  Value: {_value}");
                 }
                 numType = NumType.Restore_Hp;
+                break;
+            case EffectType.RestoreVigor:
+            case EffectType.RegenVigor:
+                numType = NumType.Restore_Vigor;
                 break;
             case EffectType.Bleeding:
             case EffectType.Poison:
