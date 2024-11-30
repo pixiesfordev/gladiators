@@ -6,9 +6,6 @@ using Gladiators.Main;
 using Gladiators.Socket.Matchgame;
 using Scoz.Func;
 using System.Collections.Generic;
-using System.Diagnostics;
-using Unity.Entities;
-using UnityEditor.Search;
 using UnityEngine;
 
 public enum NumType {

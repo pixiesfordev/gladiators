@@ -195,7 +195,7 @@
 	{	"ID":"Skill_1004",	"Name_TW":"閃電錨",	"Description_TW":"造成傷害並暈眩",	"Name_CH":"閃電錨",	"Description_CH":"造成傷害並暈眩",	"Name_EN":"閃電錨",	"Description_EN":"造成傷害並暈眩",	"Name_JP":"閃電錨",	"Description_JP":"造成傷害並暈眩"},
 	{	"ID":"Skill_1005",	"Name_TW":"投擲",	"Description_TW":"造成傷害",	"Name_CH":"投擲",	"Description_CH":"造成傷害",	"Name_EN":"投擲",	"Description_EN":"造成傷害",	"Name_JP":"投擲",	"Description_JP":"造成傷害"},
 	{	"ID":"Skill_1006",	"Name_TW":"劇毒飛刀",	"Description_TW":"造成傷害, 並賦予中毒",	"Name_CH":"劇毒飛刀",	"Description_CH":"造成傷害, 並賦予中毒",	"Name_EN":"劇毒飛刀",	"Description_EN":"造成傷害, 並賦予中毒",	"Name_JP":"劇毒飛刀",	"Description_JP":"造成傷害, 並賦予中毒"},
-	{	"ID":"Skill_1007",	"Name_TW":"石化眼",	"Description_TW":"造成傷害",	"Name_CH":"石化眼",	"Description_CH":"造成傷害",	"Name_EN":"石化眼",	"Description_EN":"造成傷害",	"Name_JP":"石化眼",	"Description_JP":"造成傷害"},
+	{	"ID":"Skill_1007",	"Name_TW":"石化眼",	"Description_TW":"造成傷害並暈眩",	"Name_CH":"石化眼",	"Description_CH":"造成傷害並暈眩",	"Name_EN":"石化眼",	"Description_EN":"造成傷害並暈眩",	"Name_JP":"石化眼",	"Description_JP":"造成傷害並暈眩"},
 	{	"ID":"Skill_1008",	"Name_TW":"火焰吐息",	"Description_TW":"造成傷害, 並賦予著火",	"Name_CH":"火焰吐息",	"Description_CH":"造成傷害, 並賦予著火",	"Name_EN":"火焰吐息",	"Description_EN":"造成傷害, 並賦予著火",	"Name_JP":"火焰吐息",	"Description_JP":"造成傷害, 並賦予著火"},
 	{	"ID":"Skill_1009",	"Name_TW":"叫囂",	"Description_TW":"叫囂",	"Name_CH":"叫囂",	"Description_CH":"叫囂",	"Name_EN":"叫囂",	"Description_EN":"叫囂",	"Name_JP":"叫囂",	"Description_JP":"叫囂"},
 	{	"ID":"Skill_1010",	"Name_TW":"爪襲",	"Description_TW":"造成傷害, 並賦予流血",	"Name_CH":"爪襲",	"Description_CH":"造成傷害, 並賦予流血",	"Name_EN":"爪襲",	"Description_EN":"造成傷害, 並賦予流血",	"Name_JP":"爪襲",	"Description_JP":"造成傷害, 並賦予流血"},
