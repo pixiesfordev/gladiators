@@ -119,19 +119,28 @@ public class BattleSkillButton : MonoBehaviour {
     /// 設定技能資料
     /// </summary>
     /// <param name="_skill">技能資料</param>
-    public void SetData(JsonSkill _skill) {
+    /// /// <param name="_init">是否為初始化</param>
+    public void SetData(JsonSkill _skill, bool _init) {
         SkillData = _skill;
         Debug.LogWarningFormat("技能物件:{0}設定技能資料! 技能ID: {1}", gameObject.name, SkillData != null ? SkillData.ID : 0);
         if (SkillData != null && !string.IsNullOrEmpty(SkillData.Ref)) {
             //設定SkillIcon
             AssetGet.GetSpriteFromAtlas("SpellIcon", SkillData.Ref, (sprite) => {
                 SkillIcon.gameObject.SetActive(true);
-                if (sprite != null)
+                if (sprite != null) {
                     SkillIcon.sprite = sprite;
+                    WhiteRotate.sprite = sprite;
+                    //WriteLog.LogWarningFormat("設定圖片! 技能物件: {0} 是否為初始化: {1} 能量是否足夠: {2}", name, _init, IsEnergyEnough);
+                    if (_init)
+                        SetSkillIconGray(!IsEnergyEnough);
+                }
                 else
                     AssetGet.GetSpriteFromAtlas("SpellIcon", "sprint", (sprite) => {
                         SkillIcon.sprite = sprite;
-                        WriteLog.LogWarningFormat("圖片缺少! 用衝刺圖代替顯示! ID: {0}", SkillData.Ref);
+                        WhiteRotate.sprite = sprite;
+                        if (_init)
+                            SetSkillIconGray(!IsEnergyEnough);
+                        //WriteLog.LogWarningFormat("圖片缺少! 用衝刺圖代替顯示! ID: {0}", SkillData.Ref);
                     });
             });
         } else {
@@ -236,7 +245,7 @@ public class BattleSkillButton : MonoBehaviour {
     public void ChangeSkillEvent() {
         //由BtnAni的Change skills呼叫此事件 更換技能圖片
         var _jsonSkill = GameDictionary.GetJsonData<JsonSkill>(CacheSKillId);
-        SetData(_jsonSkill);
+        SetData(_jsonSkill, false);
         BattleSceneUI.Instance.SetSKillVigorCost(this, _jsonSkill != null ? _jsonSkill.Vigor : 0);
         //Debug.LogErrorFormat("更換技能資料! ID: {0}", CacheSKillId);
     }
@@ -319,6 +328,7 @@ public class BattleSkillButton : MonoBehaviour {
 
     void SetSkillIconGray(bool _bGray) {
         SkillIcon.material = _bGray ? GrayIconMaterial : null;
+        //WriteLog.LogWarningFormat("設定圖片是否打灰: {0} 按鈕: {1}", _bGray, name);
     }
 
     /// <summary>
@@ -344,6 +354,7 @@ public class BattleSkillButton : MonoBehaviour {
             curAniState == SkillAniState.START_CANCEL ||
             curAniState == SkillAniState.AVAILABLE ||
             curAniState == SkillAniState.INSTANT_WAIT_SERVER) {
+            //WriteLog.LogWarningFormat("不能點按鈕! 特殊演出狀態: {0} 按鈕: {1}", curAniState, name);
             return;
         }
 

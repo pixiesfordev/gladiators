@@ -143,7 +143,7 @@ public class BattleSceneUI : BaseUI {
         //接收封包並設定按鈕的技能資料
         for (int i = 0; i < SkillBtns.Length; i++) {
             var jsonSkill = GameDictionary.GetJsonData<JsonSkill>(_handSKillIDs[i]);
-            SkillBtns[i].SetData(jsonSkill);
+            SkillBtns[i].SetData(jsonSkill, true);
             SkillBtns[i].SetSkillOn(_handSKillIDs[i] == _skillOnID);
             MyBattleStaminaObj.SetSkillVigorVal(i, jsonSkill != null ? jsonSkill.Vigor : 0);
             //TODO:目前體力預設值是5 這裡先判斷一次預設值 但日後應該添加一個判斷是否為初始化的旗標 包含技能起始狀態都要判斷
