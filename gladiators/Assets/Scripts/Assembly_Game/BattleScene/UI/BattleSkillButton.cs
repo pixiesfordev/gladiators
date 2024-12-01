@@ -627,5 +627,6 @@ public class BattleSkillButton : MonoBehaviour {
     /// <param name="open">True為顯示鎖頭</param>
     public void SetLockerIcon(bool open) {
         Locker.gameObject.SetActive(open);
+        SetSkillIconGray(open);
     }
 }
