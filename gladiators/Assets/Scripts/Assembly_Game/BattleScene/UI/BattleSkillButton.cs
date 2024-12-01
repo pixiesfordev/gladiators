@@ -27,6 +27,7 @@ public class BattleSkillButton : MonoBehaviour {
     [SerializeField] Material GrayMaterial;
     [SerializeField] Animator BtnAni;
     [SerializeField] Texture2D SkillMaterialMask;
+    [SerializeField] Image Locker;
 
     [HeaderAttribute("==============TEST==============")]
     [Tooltip("使用技能外移位置")][SerializeField] Vector3 UsedSkillMoveOutPosition;
@@ -102,6 +103,7 @@ public class BattleSkillButton : MonoBehaviour {
 
         IconMaterial.SetTexture("_main_mask01", SkillMaterialMask);
         //CreateCTS();
+        SetLockerIcon(false);
     }
 
     /*
@@ -617,5 +619,13 @@ public class BattleSkillButton : MonoBehaviour {
             _material.SetFloat("_color_saturation", saturationVal);
             await UniTask.Yield();
         }
+    }
+
+    /// <summary>
+    /// 開關鎖頭圖案
+    /// </summary>
+    /// <param name="open">True為顯示鎖頭</param>
+    public void SetLockerIcon(bool open) {
+        Locker.gameObject.SetActive(open);
     }
 }
