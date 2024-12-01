@@ -217,6 +217,24 @@ public class Character : MonoBehaviour {
         });
     }
 
+
+    float knockbackForce = 10f; // 擊退力量
+    float knockbackDuration = 0.5f; // 擊退持續時間，秒
+    float rotationSpeed = 720f; // 旋轉速度，度/秒
+
+    // 角色死亡時的擊退和旋轉效果
+    async UniTask dieKnockout() {
+        Vector3 knockbackDirection = -transform.forward; // 通常是角色面對的反方向
+        float startTime = Time.time;
+
+        // 開始擊退和旋轉
+        while (Time.time < startTime + knockbackDuration) {
+            transform.position += knockbackDirection * knockbackForce * Time.deltaTime; // 向後擊退
+            transform.Rotate(Vector3.up, rotationSpeed * Time.deltaTime); // 旋轉
+            await UniTask.Yield(PlayerLoopTiming.Update);
+        }
+    }
+
     void sprayCoin() {
         AddressablesLoader.GetParticle("Battle/CFXR _BOOM_", (prefab, handle) => {
             var go = Instantiate(prefab);

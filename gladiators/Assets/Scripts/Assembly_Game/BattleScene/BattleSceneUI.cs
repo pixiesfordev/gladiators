@@ -75,8 +75,9 @@ public class BattleSceneUI : BaseUI {
     public void SetInstantSkillLocker(SpellLock _type, bool _lock) {
         //WriteLog.Log($"技能鎖({_type}: {_lock})");
         spellLocker[_type] = _lock;
+        bool canSpellInstantSkill = CanSpellInstantSkill;
         foreach (var btn in SkillBtns) {
-            btn.SetLockerIcon(_lock);
+            btn.SetLockerIcon(canSpellInstantSkill);
         }
     }
 
