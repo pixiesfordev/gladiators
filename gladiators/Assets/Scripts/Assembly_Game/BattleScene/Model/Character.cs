@@ -42,7 +42,8 @@ public class Character : MonoBehaviour {
     public ParticleSystem MoveSmoke;
     public EffectSpeller MyEffectSpeller;
     public Transform BuffParent;
-    [SerializeField] Transform CenterTrans;
+    [SerializeField] Transform ModelParentTrans;
+    [SerializeField] Transform CharaCenterPivotTrans; // 要抓模型中心用這個Transform
     public Vector3 CenterPos { get { return new Vector3(transform.position.x, transform.position.y + modelCenter, transform.position.z); } }
     public Vector3 TopPos { get { return new Vector3(transform.position.x, transform.position.y + modelCenter * 2, transform.position.z); } }
     float modelCenter;
@@ -95,7 +96,8 @@ public class Character : MonoBehaviour {
             return;
         }
         modelCenter = (float)_json.ModelCenter;
-        CenterTrans.localPosition = new Vector3(0, modelCenter, 0);
+        CharaCenterPivotTrans.localPosition = new Vector3(0, modelCenter, 0);
+        ModelParentTrans.localPosition = new Vector3(0, -modelCenter, 0);
         AddressablesLoader.GetPrefab($"Gladiator/{_json.Ref}/BOARD", (boardPrefab, handle) => {
             if (boardPrefab != null) {
                 if (BOARD != null) {
@@ -135,6 +137,7 @@ public class Character : MonoBehaviour {
 
 
     public async UniTask MoveClientToPos(Vector3 _pos, float _duration, bool _move = false) {
+        if (die) return;
         if (_move) {
             if (CanMove) {
                 PlayAni("move");
@@ -159,6 +162,7 @@ public class Character : MonoBehaviour {
         transform.localRotation = Quaternion.Euler(0, adjustedAngle, 0);
     }
     public void HandleMelee(Vector3 _finalPos, List<PackEffect> _effectDatas, float _serverKnockDist, float _serverResultPos, float _knockAngl, int _skilID) {
+        if (die) return;
         HashSet<EffectType> _effects = new HashSet<EffectType>();
         foreach (var effectData in _effectDatas) {
             var (success, effectType) = JsonSkillEffect.ConvertStrToEffectType(effectData.EffectName);
@@ -219,18 +223,24 @@ public class Character : MonoBehaviour {
 
 
     float knockbackForce = 10f; // 擊退力量
-    float knockbackDuration = 0.5f; // 擊退持續時間，秒
-    float rotationSpeed = 720f; // 旋轉速度，度/秒
+    float knockbackDuration = 5f; // 擊退持續時間(秒)
+    float rotationSpeed = 360f; // 旋轉速度，度/秒
+    bool die = false;
+
 
     // 角色死亡時的擊退和旋轉效果
-    async UniTask dieKnockout() {
-        Vector3 knockbackDirection = -transform.forward; // 通常是角色面對的反方向
+    public async UniTask DieKnockout() {
+        if (die) return;
+        die = true;
+        Vector3 knockDir = transform.right * -(int)FaceDir;// 朝向後方擊退
+
         float startTime = Time.time;
+        float rotateDir = -(float)FaceDir;
 
         // 開始擊退和旋轉
         while (Time.time < startTime + knockbackDuration) {
-            transform.position += knockbackDirection * knockbackForce * Time.deltaTime; // 向後擊退
-            transform.Rotate(Vector3.up, rotationSpeed * Time.deltaTime); // 旋轉
+            transform.position += knockDir * knockbackForce * Time.deltaTime; // 擊退
+            CharaCenterPivotTrans.Rotate(Vector3.right, rotateDir * rotationSpeed * Time.deltaTime); // 旋轉
             await UniTask.Yield(PlayerLoopTiming.Update);
         }
     }

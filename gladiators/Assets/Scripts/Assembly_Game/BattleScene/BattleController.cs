@@ -311,6 +311,13 @@ public class BattleController : MonoBehaviour {
 
     }
 
+    public void CallDie(string _playerID) {
+        if (!CharDic.ContainsKey(_playerID)) {
+            return;
+        }
+        CharDic[_playerID].DieKnockout().Forget();
+    }
+
     // Server收到血量變化封包後，呼叫此Func顯示跳血
     public void ShowBattleNumber(string _playerID, int _value, string _effectTypeStr) {
         if (!CharDic.ContainsKey(_playerID) || CharDic[_playerID] == null) return;

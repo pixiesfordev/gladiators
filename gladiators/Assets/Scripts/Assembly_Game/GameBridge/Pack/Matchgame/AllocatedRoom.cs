@@ -329,6 +329,9 @@ namespace Gladiators.Main {
             if (SceneManager.GetActiveScene().name != MyScene.BattleScene.ToString() || BattleManager.Instance == null) return;
             BattleSceneUI.Instance.UpdateGladiatorHP(_packet.Content.PlayerID, _packet.Content.HPChange);
             BattleController.Instance.ShowBattleNumber(_packet.Content.PlayerID, _packet.Content.HPChange, _packet.Content.EffectType);
+            if (_packet.Content.CurHp <= 0) {
+                BattleController.Instance.CallDie(_packet.Content.PlayerID);
+            }
         }
         /// <summary>
         /// 收到Player ACTION回傳
