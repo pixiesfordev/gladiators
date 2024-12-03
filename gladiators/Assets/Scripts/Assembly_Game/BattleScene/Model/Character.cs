@@ -30,6 +30,11 @@ public enum QueueNumType {
     Restore_Vigor,
 }
 
+public enum KnockbackType {
+    Slide, // 滑行
+    Knockup,// 擊飛
+}
+
 public class Character : MonoBehaviour {
 
 
@@ -61,7 +66,7 @@ public class Character : MonoBehaviour {
     public bool IsRushing { get; private set; }
     public bool IsKnockback { get; private set; }
 
-    const float KNOCKUP_TIME = 0.4f;//擊飛時間
+    const float KNOCKBACK_TIME = 0.5f;//擊退/飛時間
 
     // 狀態
     public int MeleeSkillID { get; private set; }
@@ -126,9 +131,11 @@ public class Character : MonoBehaviour {
         if (IsRushing == _on) return;
         IsRushing = _on;
         if (IsRushing) {
+            WriteLog.LogError("Rush");
             MoveSmoke.Play();
             animator.SetFloat("moveSpeed", 1.5f);
         } else {
+            WriteLog.LogError("Cancel Rush");
             MoveSmoke.Stop();
             animator.SetFloat("moveSpeed", 1f);
         }
@@ -179,47 +186,89 @@ public class Character : MonoBehaviour {
 
 
     void knockback(Vector3 _finalPos, float _serverKnockPower, float _serverResultPos, float _knockAngle) {
+        // 判斷擊退類型
+        var knockbackType = KnockbackType.Slide;
+        if (_serverKnockPower > 20) knockbackType = KnockbackType.Knockup;
+
         IsKnockback = true;
         // 播放碰撞動畫
         PlayAni("knockback");
         BattleManager.Instance.vCam.GetComponent<CameraShake>()?.Shake();
 
-
-
         Vector3 originalPos = transform.localPosition;
-        float knockupHeight = _serverKnockPower / 6f;
-        float gravity = 8f * knockupHeight / (KNOCKUP_TIME * KNOCKUP_TIME); // 8 * h / T^2
-        float initialVelocityY = gravity * (KNOCKUP_TIME / 2f); // v0 = g * (T/2)
 
-        // 計算水平位移量
-        Vector3 horizontalDisplacement = new Vector3(_finalPos.x - originalPos.x, 0, _finalPos.z - originalPos.z);
-        Vector3 horizontalVelocity = horizontalDisplacement / KNOCKUP_TIME;
+        if (knockbackType == KnockbackType.Knockup) { // 擊飛
+            float knockupHeight = _serverKnockPower / 6f;
+            float gravity = 8f * knockupHeight / (KNOCKBACK_TIME * KNOCKBACK_TIME); // 8 * h / T^2
+            float initialVelocityY = gravity * (KNOCKBACK_TIME / 2f); // v0 = g * (T/2)
 
-        UniTask.Void(async () => {
-            float passTime = 0f;
-            while (passTime < KNOCKUP_TIME) {
-                passTime += Time.deltaTime;
-                float t = passTime / KNOCKUP_TIME;
-                // 更新水平位置
-                Vector3 newPos = originalPos + horizontalVelocity * passTime;
-                // 更新垂直位置
-                float newY = originalPos.y + initialVelocityY * passTime - 0.5f * gravity * passTime * passTime;
-                // 設定新的位置
-                transform.localPosition = new Vector3(newPos.x, newY, newPos.z);
-                await UniTask.Yield();
-            }
+            // 計算水平位移量
+            Vector3 horizontalDisplacement = new Vector3(_finalPos.x - originalPos.x, 0, _finalPos.z - originalPos.z);
+            Vector3 horizontalVelocity = horizontalDisplacement / KNOCKBACK_TIME;
 
-            // 確保最終的水平位置
-            transform.localPosition = new Vector3(_finalPos.x, originalPos.y, _finalPos.z);
-            IsKnockback = false;
-            // 撞牆檢查
-            if (_serverResultPos == BattleController.WALLPOS || _serverResultPos == -BattleController.WALLPOS) {
-                knockWall();
-            }
-            // 播放暈眩動畫
-            PlayAni("stun");
-        });
+            UniTask.Void(async () => {
+                float passTime = 0f;
+                while (passTime < KNOCKBACK_TIME) {
+                    passTime += Time.deltaTime;
+                    float t = passTime / KNOCKBACK_TIME;
+                    // 更新水平位置
+                    Vector3 newPos = originalPos + horizontalVelocity * passTime;
+                    // 更新垂直位置
+                    float newY = originalPos.y + initialVelocityY * passTime - 0.5f * gravity * passTime * passTime;
+                    // 設定新的位置
+                    transform.localPosition = new Vector3(newPos.x, newY, newPos.z);
+                    await UniTask.Yield();
+                }
+
+                // 確保最終的水平位置
+                transform.localPosition = new Vector3(_finalPos.x, originalPos.y, _finalPos.z);
+                IsKnockback = false;
+                // 撞牆檢查
+                if (_serverResultPos == BattleController.WALLPOS || _serverResultPos == -BattleController.WALLPOS) {
+                    knockWall();
+                }
+                // 播放暈眩動畫
+                PlayAni("stun");
+            });
+        } else if (knockbackType == KnockbackType.Slide) { // 擊退滑行
+            Vector3 horizontalDisplacement = new Vector3(_finalPos.x - originalPos.x, 0, _finalPos.z - originalPos.z);
+            float totalDistance = horizontalDisplacement.magnitude;
+            Vector3 direction = horizontalDisplacement.normalized;
+
+            // 摩擦力係數（調整減速強度，值越大減速越明顯）
+            float frictionCoefficient = 2f; // 摩擦力調整數值(越大代表減速越強，滑行在最後時刻才快速減速)
+
+            UniTask.Void(async () => {
+                float passTime = 0f;
+                while (passTime < KNOCKBACK_TIME) {
+                    passTime += Time.deltaTime;
+                    float t = Mathf.Clamp01(passTime / KNOCKBACK_TIME); // 確保 t 在 [0, 1] 範圍內
+
+                    // 使用摩擦力係數調整減速曲線
+                    float easedT = 1 - Mathf.Pow(1 - t, frictionCoefficient);
+                    float currentDistance = totalDistance * easedT; // 計算當前滑行距離
+                    Vector3 newPos = originalPos + direction * currentDistance;
+
+                    // 垂直位置不變
+                    transform.localPosition = new Vector3(newPos.x, originalPos.y, newPos.z);
+                    await UniTask.Yield();
+                }
+
+                // 確保最終的水平位置
+                transform.localPosition = new Vector3(_finalPos.x, originalPos.y, _finalPos.z);
+                IsKnockback = false;
+                // 撞牆檢查
+                if (_serverResultPos == BattleController.WALLPOS || _serverResultPos == -BattleController.WALLPOS) {
+                    knockWall();
+                }
+                // 播放暈眩動畫
+                PlayAni("stun");
+            });
+        }
     }
+
+
+
 
 
     float knockbackForce = 10f; // 擊退力量

@@ -9197,7 +9197,7 @@ MonoBehaviour:
   StateText: {fileID: 5113572391482141870}
   ButtonAnimator: {fileID: 8898953110382197147}
   Btn: {fileID: 2271151290300352636}
-  PressMode: 1
+  PressMode: 0
 --- !u!1 &5046835436759563885
 GameObject:
   m_ObjectHideFlags: 0

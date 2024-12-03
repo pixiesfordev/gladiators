@@ -272,7 +272,7 @@ public class BattleController : MonoBehaviour {
         });
     }
 
-    public void Run(string _playerID, bool _run) {
+    public void Rush(string _playerID, bool _run) {
         if (CharDic.ContainsKey(_playerID)) CharDic[_playerID].SetRush(_run);
     }
 

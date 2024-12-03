@@ -34,12 +34,17 @@ public class BattleSprintButton : MonoBehaviour {
     5.rush_start反著放 >> 取消衝刺(縮小) >> 這個藥用
     */
 
+    void Start() {
+        if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer) {
+            PressMode = true;
+        }
+    }
+
     /// <summary>
     /// 檢查體力條狀態
     /// </summary>
     /// <param name="vigor"></param>
-    public void CheckVigor(float vigor)
-    {
+    public void CheckVigor(float vigor) {
         //檢查體力足夠衝刺狀態是否有改變 有改變才演出 不然其他演出會無法出現 因為CheckVigor一直都在跑
         VigorEnoughCheck = vigor > MinimumSprintVigorNeed;
         if (VigorEnoughCurState != VigorEnoughCheck) {
@@ -98,8 +103,7 @@ public class BattleSprintButton : MonoBehaviour {
         }
     }
 
-    public void ClickToShock()
-    {
+    public void ClickToShock() {
         if (!PressMode && IsOn) {
             ButtonAnimator.Play("rush_shock");
         }

@@ -227,7 +227,7 @@ namespace Gladiators.Main {
         /// 通知Server此玩家已經進入Run
         /// </summary>
         public void SetRun(bool isRun) {
-            var cmd = new SocketCMD<PLAYERACTION>(new PLAYERACTION("Action_Rush", new PackAction_Rush(isRun)));
+            var cmd = new SocketCMD<PLAYERACTION>(new PLAYERACTION(PLAYERACTION.PackActionType.ACTION_RUSH.ToString(), new PackAction_Rush(isRun)));
             connector.Send(cmd);
         }
 
@@ -349,6 +349,11 @@ namespace Gladiators.Main {
                         if (MyPackPlayer.DBID == _playerID) BattleSceneUI.Instance.CastInstantSkill(instantSkillPack.NewSkilID);
                         BattleController.Instance.PlayInstantSkill(_playerID, instantSkillPack.SkillID);
                         break;
+                    case PLAYERACTION.PackActionType.ACTION_RUSH: // 收到即時技能發動
+                        var rushPack = JsonMapper.ToObject<PackAction_Rush>(_jsonStr);
+                        BattleController.Instance.Rush(_playerID, rushPack.On);
+                        break;
+
                     default:
                         Debug.LogError($"收到未實作處理的 PackActionType: {_actionType}");
                         break;
