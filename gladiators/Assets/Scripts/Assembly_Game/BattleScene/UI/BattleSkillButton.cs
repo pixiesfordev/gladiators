@@ -283,15 +283,16 @@ public class BattleSkillButton : MonoBehaviour {
     /// </summary>
     /// <param name="_skillId"></param>
     public void CastInstantSkill(int _skillId) {
-        PlayButtonCast();
+        PlayButtonCast(true);
         CacheSKillId = _skillId;
         WriteLog.LogWarning("收到立即釋放技能回傳封包 開始施展技能!");
     }
 
-    void PlayButtonCast() {
+    void PlayButtonCast(bool playVigorConsume) {
         curAniState = SkillAniState.START_CAST;
         BtnAni.Play("start_cast");
-        BattleSceneUI.Instance.BattleSkillBtnCastStaminaConsume(SkillData.Vigor);
+        if (playVigorConsume)
+            BattleSceneUI.Instance.BattleSkillBtnCastStaminaConsume(SkillData.Vigor);
     }
 
     void PlayButtonNormal() {
@@ -325,7 +326,7 @@ public class BattleSkillButton : MonoBehaviour {
         //Debug.LogErrorFormat("Cast melee skill. Cache next skill. ID: {0}", _nextSkillId);
         //start cast(0.22秒時ModelCastSkill 0.28秒時CastSkillSetIconGrayEvent) >> AfterCastSkillEvent >>
         //Change skills(ChangeSkillEvent) >> AfterChangeSkillEvent 
-        PlayButtonCast();
+        PlayButtonCast(false);
     }
 
     void SetSkillIconGray(bool _bGray) {
@@ -359,6 +360,10 @@ public class BattleSkillButton : MonoBehaviour {
             //WriteLog.LogWarningFormat("不能點按鈕! 特殊演出狀態: {0} 按鈕: {1}", curAniState, name);
             return;
         }
+
+        //如果技能已經被選上了也不改變狀態 不然抖動演出會被中斷(因為現在一選近戰技能就會馬上扣體力)
+        if (SkillSelected)
+            return;
 
         if (EnergyRate < 1f && EnergyRate > 0f) {
             //介於0~1之間才填入fillAmount以免出錯
@@ -541,27 +546,30 @@ public class BattleSkillButton : MonoBehaviour {
                 //Debug.LogError("開始釋放立即施放技能!");
             }
         } else if (SkillData.Activation == SkillActivation.Melee) {
-            //判斷是否已經被選上
             if (SkillSelected) {
-                //已選上 >> Start Cancel >> AfterCancelEvent
+                //已選上 >> 不可取消 所以不做任何事
+                WriteLog.LogFormat("已選上技能: {0} ID: {1}", name, SkillData.ID);
+                //Old:已選上 >> Start Cancel >> AfterCancelEvent(保留作為紀錄)
+                /*
                 btnLocking = true;
                 curAniState = SkillAniState.START_CANCEL;
                 BtnAni.Play(IsEnergyEnough ? "Start_Cancel" : "Start_Cancel_Insufficient");
                 SkillSelected = !SkillSelected;
                 AllocatedRoom.Instance.ActiveSkill(SkillData.ID, SkillSelected);
                 //Debug.LogError("取消近戰技能!");
+                */
             } else {
-                //未選上 >> 判斷能量是否足夠 足夠才可以選取
-                if (IsEnergyEnough) {
+                //未選上 >> 判斷能量是否足夠且沒有已選上的近戰技能
+                if (IsEnergyEnough && !BattleSceneUI.Instance.CheckSelectedMeleeExist()) {
                     //Start Scale >> AfterScaleEvent >> Start vibrute >> AfterVibruteEvent
                     btnLocking = true;
                     curAniState = SkillAniState.START_SCALE;
-                    BtnAni.Play(IsEnergyEnough ? "Start_Scale" : "Start_Scale_Insufficient");
+                    BattleSceneUI.Instance.BattleSkillBtnCastStaminaConsume(SkillData.Vigor);
+                    //BtnAni.Play(IsEnergyEnough ? "Start_Scale" : "Start_Scale_Insufficient");
+                    BtnAni.Play("Start_Scale");
                     SkillSelected = !SkillSelected;
                     AllocatedRoom.Instance.ActiveSkill(SkillData.ID, SkillSelected);
                     //Debug.LogError("選上近戰技能!");
-                    //檢查其他按鈕取消選上
-                    BattleSceneUI.Instance.CancelOtherSelectedSKill(this);
                 }
             }
         }

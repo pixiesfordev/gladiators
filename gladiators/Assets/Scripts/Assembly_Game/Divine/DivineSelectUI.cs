@@ -36,6 +36,8 @@ namespace Gladiators.Battle {
         [SerializeField] Transform[] BGMoveWithCameraTiers; //會跟著鏡頭移動的分層 拆五層 五層移動量會不一樣 做出深度感
         [SerializeField] DivineCandle[] CandleObjs; //蠟燭動畫
 
+        [SerializeField] Text MousePositionVal; //測試用 監控滑鼠位置
+
         [HeaderAttribute("==============TEST==============")]
         [Tooltip("每根蠟燭倒數時間")][SerializeField] float PerCandleCountDownTime = 1f;
         [Tooltip("測試蠟燭倒數演出")][SerializeField] bool PerformCandleCountDown = false;
@@ -43,6 +45,13 @@ namespace Gladiators.Battle {
         [Tooltip("光圈縮至最小的倍率 即蠟燭全熄滅時 光圈相對於原本大小的倍率 必須大於0")][SerializeField] float ApertureMinSize = 0.3f;
         [Tooltip("背景變至最暗時的亮度 值為0~1")][SerializeField] float BGDarkestBrightness = 0.3f;
         //[Tooltip("")][SerializeField]
+
+        //TODO:測試區塊 測試完成後砍掉或者隱藏        
+        [Tooltip("鏡頭移動層級比率 轉換數值為滑鼠的X位置乘於此數值 從遠到近")][SerializeField] float[] MoveBGTierRates;
+        [Tooltip("改變移動背景相關物件開關")] [SerializeField] bool BGTierSwitch = false;
+        [SerializeField] bool ShowTestBGTierObj; //顯示是否測試BGTier中
+        float MoveBGTierLimitX;
+        CancellationTokenSource MoveBGTierCTK;
 
         //TODO:
         //1.卡片被選中要有光圈(先上光圈圖)
@@ -115,6 +124,9 @@ namespace Gladiators.Battle {
 
             //倒數蠟燭
             CountDownCandleTime();
+
+            //抓出螢幕尺寸 限制鏡頭偏移量
+            MoveBGTierLimitX = Screen.width;
         }
 
         //TODO:添加偏移效果 跟著游標/陀螺儀讓場景物件有偏移的效果
@@ -126,6 +138,51 @@ namespace Gladiators.Battle {
                 CountDownCandleTime();
                 PerformCandleCountDown = false;
             }
+            //測試BGTier
+            if (BGTierSwitch) {
+                BGTierSwitch = false;
+                ShowTestBGTierObj = !ShowTestBGTierObj;
+                foreach (var obj in BGMoveWithCameraTiers)
+                    obj.gameObject.SetActive(ShowTestBGTierObj);
+                MousePositionVal.transform.parent.gameObject.SetActive(ShowTestBGTierObj);
+            }
+        }
+
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+            MoveBGTierCTK = new CancellationTokenSource();
+            //開始跟隨鏡頭
+            MoveTierObj().Forget();
+        }
+
+        protected override void OnDisable()
+        {
+            base.OnDisable();
+            //停止跟隨鏡頭
+            MoveBGTierCTK?.Cancel();
+        }
+
+        async UniTask MoveTierObj() {
+            #if UNITY_STANDALONE
+            //根據滑鼠位置移動物件
+            Vector3 curMousePos = Input.mousePosition;
+            Vector3[] tempPos = new Vector3[5]{Vector3.zero, Vector3.zero, Vector3.zero, Vector3.zero, Vector3.zero};
+            while (true) {
+                MousePositionVal.text = curMousePos.ToString();
+                for (int i = 0; i < BGMoveWithCameraTiers.Length; i++) {
+                    tempPos[i].x = curMousePos.x * MoveBGTierRates[i];
+                    BGMoveWithCameraTiers[i].transform.localPosition = tempPos[i];
+                }
+                await UniTask.Yield(MoveBGTierCTK.Token);
+                curMousePos = Input.mousePosition;
+                if (Mathf.Abs(curMousePos.x) > MoveBGTierLimitX)
+                    curMousePos.x = curMousePos.x > 0 ? MoveBGTierLimitX : -MoveBGTierLimitX;
+            }
+            #elif UNITY_IOS || UNITY_ANDROID
+            //TODO:根據陀螺儀數值移動物件
+            #endif
+            
         }
 
         void UpdatePlayerGold() {

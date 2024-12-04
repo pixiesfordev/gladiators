@@ -82,6 +82,7 @@ public class BattleStaminaObj : MonoBehaviour {
         SetValText(curVal, CurrentVal);
         SetValText(maxVal, MaxVal);
         CurrentMaxVal = maxVal;
+        SetLattices(curVal);
         BattleSceneUI.Instance.CheckVigor(curVal);
     }
 

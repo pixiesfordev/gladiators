@@ -375,15 +375,15 @@ public class BattleSceneUI : BaseUI {
     }
 
     /// <summary>
-    /// 取消其他發動中的近戰/肉搏技能按鈕
+    /// 確認是否有已選上的近戰技能
     /// </summary>
-    /// <param name="_selectedBtn">被選中的技能按鈕</param>
-    public void CancelOtherSelectedSKill(BattleSkillButton _selectedBtn) {
+    /// <returns>True if any skill is selected.</returns>
+    public bool CheckSelectedMeleeExist() {
         for (int i = 0; i < SkillBtns.Length; i++) {
-            if (SkillBtns[i].SkillSelected && SkillBtns[i] != _selectedBtn) {
-                SkillBtns[i].CancelSelected();
-            }
+            if (SkillBtns[i].SkillSelected)
+                return true;
         }
+        return false;
     }
 
     /// <summary>
