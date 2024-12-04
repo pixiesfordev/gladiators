@@ -112,10 +112,10 @@ AnimatorStateMachine:
   m_ChildStates:
   - serializedVersion: 1
     m_State: {fileID: 2395782918623399710}
-    m_Position: {x: 340, y: 190, z: 0}
+    m_Position: {x: 410, y: 170, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -4220406520599689190}
-    m_Position: {x: 650, y: 190, z: 0}
+    m_Position: {x: 640, y: 210, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -2314028510184317451}
     m_Position: {x: 130, y: 320, z: 0}
@@ -351,7 +351,7 @@ AnimatorStateTransition:
 --- !u!1102 &7134169155894556740
 AnimatorState:
   serializedVersion: 6
-  m_ObjectHideFlags: 1
+  m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}

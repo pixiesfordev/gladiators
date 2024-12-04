@@ -167,7 +167,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: material._Convert
-    path: ' rotate/BOARD'
+    path: rotate/BOARD
     classID: 23
     script: {fileID: 0}
     flags: 0
@@ -224,7 +224,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: material._NOISE
-    path: ' rotate/BOARD'
+    path: rotate/BOARD
     classID: 23
     script: {fileID: 0}
     flags: 0
@@ -272,7 +272,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: material._color_contrast
-    path: ' rotate/BOARD'
+    path: rotate/BOARD
     classID: 23
     script: {fileID: 0}
     flags: 0
@@ -320,7 +320,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: material._spacing
-    path: ' rotate/BOARD'
+    path: rotate/BOARD
     classID: 23
     script: {fileID: 0}
     flags: 0
@@ -368,7 +368,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: material._spacing01
-    path: ' rotate/BOARD'
+    path: rotate/BOARD
     classID: 23
     script: {fileID: 0}
     flags: 0
@@ -416,7 +416,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: material._speed
-    path: ' rotate/BOARD'
+    path: rotate/BOARD
     classID: 23
     script: {fileID: 0}
     flags: 0
@@ -438,7 +438,7 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     - serializedVersion: 2
-      path: 1839437254
+      path: 2860277470
       attribute: 2303622558
       script: {fileID: 0}
       typeID: 23
@@ -447,7 +447,7 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     - serializedVersion: 2
-      path: 1839437254
+      path: 2860277470
       attribute: 2160441349
       script: {fileID: 0}
       typeID: 23
@@ -456,7 +456,7 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     - serializedVersion: 2
-      path: 1839437254
+      path: 2860277470
       attribute: 2209479877
       script: {fileID: 0}
       typeID: 23
@@ -465,7 +465,7 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     - serializedVersion: 2
-      path: 1839437254
+      path: 2860277470
       attribute: 2380905753
       script: {fileID: 0}
       typeID: 23
@@ -474,7 +474,7 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     - serializedVersion: 2
-      path: 1839437254
+      path: 2860277470
       attribute: 2173804534
       script: {fileID: 0}
       typeID: 23
@@ -483,7 +483,7 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     - serializedVersion: 2
-      path: 1839437254
+      path: 2860277470
       attribute: 2233340522
       script: {fileID: 0}
       typeID: 23
@@ -746,7 +746,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: material._Convert
-    path: ' rotate/BOARD'
+    path: rotate/BOARD
     classID: 23
     script: {fileID: 0}
     flags: 0
@@ -803,7 +803,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: material._NOISE
-    path: ' rotate/BOARD'
+    path: rotate/BOARD
     classID: 23
     script: {fileID: 0}
     flags: 0
@@ -851,7 +851,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: material._color_contrast
-    path: ' rotate/BOARD'
+    path: rotate/BOARD
     classID: 23
     script: {fileID: 0}
     flags: 0
@@ -899,7 +899,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: material._spacing
-    path: ' rotate/BOARD'
+    path: rotate/BOARD
     classID: 23
     script: {fileID: 0}
     flags: 0
@@ -947,7 +947,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: material._spacing01
-    path: ' rotate/BOARD'
+    path: rotate/BOARD
     classID: 23
     script: {fileID: 0}
     flags: 0
@@ -995,7 +995,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: material._speed
-    path: ' rotate/BOARD'
+    path: rotate/BOARD
     classID: 23
     script: {fileID: 0}
     flags: 0
