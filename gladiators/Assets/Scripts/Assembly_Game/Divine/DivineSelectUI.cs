@@ -52,6 +52,7 @@ namespace Gladiators.Battle {
         [Tooltip("改變移動背景相關物件開關")] [SerializeField] bool BGTierSwitch = false;
         [Tooltip("添加層級的子物件顏色")] [SerializeField] Color AddBGTierColor = Color.white;
         [Tooltip("增加層級")] [SerializeField] bool AddBGTier = false;
+        [Tooltip("新添加方塊預設添加移動量")] [SerializeField] float AddBGTierDefaultRate = 0.05f;
         [SerializeField] bool ShowTestBGTierObj; //顯示是否測試BGTier中
         float MoveBGTierLimitX;
         CancellationTokenSource MoveBGTierCTK;
@@ -208,7 +209,7 @@ namespace Gladiators.Battle {
                 tempImg.color = AddBGTierColor;
             }
             BGMoveWithCameraTiers.Add(obj);
-            float lastTierRate = MoveBGTierRates[MoveBGTierRates.Count - 1] + 0.05f;
+            float lastTierRate = MoveBGTierRates[MoveBGTierRates.Count - 1] + AddBGTierDefaultRate;
             MoveBGTierRates.Add(lastTierRate);
             float FromHeight = 380f;
             float ToHeight = -380f;
