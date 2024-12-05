@@ -12,6 +12,7 @@ using DG.Tweening;
 using Gladiators.Socket;
 using UniRx;
 using Cysharp.Threading.Tasks.CompilerServices;
+using System.Linq;
 
 namespace Gladiators.Battle {
     public class DivineSelectUI : BaseUI {
@@ -33,7 +34,7 @@ namespace Gladiators.Battle {
         [SerializeField] Image BtnBGDecoration;
         [SerializeField] Material GrayMaterial;
 
-        [SerializeField] Transform[] BGMoveWithCameraTiers; //會跟著鏡頭移動的分層 拆五層 五層移動量會不一樣 做出深度感
+        [SerializeField] List<Transform> BGMoveWithCameraTiers; //會跟著鏡頭移動的分層 拆五層 五層移動量會不一樣 做出深度感
         [SerializeField] DivineCandle[] CandleObjs; //蠟燭動畫
 
         [SerializeField] Text MousePositionVal; //測試用 監控滑鼠位置
@@ -47,8 +48,10 @@ namespace Gladiators.Battle {
         //[Tooltip("")][SerializeField]
 
         //TODO:測試區塊 測試完成後砍掉或者隱藏        
-        [Tooltip("鏡頭移動層級比率 轉換數值為滑鼠的X位置乘於此數值 從遠到近")][SerializeField] float[] MoveBGTierRates;
+        [Tooltip("鏡頭移動層級比率 轉換數值為滑鼠的X位置乘於此數值 從遠到近")][SerializeField] List<float> MoveBGTierRates;
         [Tooltip("改變移動背景相關物件開關")] [SerializeField] bool BGTierSwitch = false;
+        [Tooltip("添加層級的子物件顏色")] [SerializeField] Color AddBGTierColor = Color.white;
+        [Tooltip("增加層級")] [SerializeField] bool AddBGTier = false;
         [SerializeField] bool ShowTestBGTierObj; //顯示是否測試BGTier中
         float MoveBGTierLimitX;
         CancellationTokenSource MoveBGTierCTK;
@@ -146,6 +149,11 @@ namespace Gladiators.Battle {
                     obj.gameObject.SetActive(ShowTestBGTierObj);
                 MousePositionVal.transform.parent.gameObject.SetActive(ShowTestBGTierObj);
             }
+            //測試BGTier自動添加層級
+            if (AddBGTier) {
+                AddBGTier = false;
+                CreateTierObj().Forget();
+            }
         }
 
         protected override void OnEnable()
@@ -167,10 +175,12 @@ namespace Gladiators.Battle {
             #if UNITY_STANDALONE
             //根據滑鼠位置移動物件
             Vector3 curMousePos = Input.mousePosition;
-            Vector3[] tempPos = new Vector3[5]{Vector3.zero, Vector3.zero, Vector3.zero, Vector3.zero, Vector3.zero};
+            Vector3[] tempPos = new Vector3[BGMoveWithCameraTiers.Count];
+            for (int i = 0; i < tempPos.Length; i++)
+                tempPos[i] = Vector3.zero;
             while (true) {
                 MousePositionVal.text = curMousePos.ToString();
-                for (int i = 0; i < BGMoveWithCameraTiers.Length; i++) {
+                for (int i = 0; i < BGMoveWithCameraTiers.Count; i++) {
                     tempPos[i].x = curMousePos.x * MoveBGTierRates[i];
                     BGMoveWithCameraTiers[i].transform.localPosition = tempPos[i];
                 }
@@ -183,6 +193,36 @@ namespace Gladiators.Battle {
             //TODO:根據陀螺儀數值移動物件
             #endif
             
+        }
+
+        async UniTask CreateTierObj() {
+            MoveBGTierCTK?.Cancel();
+            MousePositionVal.text = "建立新物件中 請稍等";
+            await UniTask.WaitForSeconds(0.3f);
+            Transform obj = Instantiate(BGMoveWithCameraTiers[0]);
+            obj.parent = BGMoveWithCameraTiers[0].parent;
+            obj.name = string.Format("BGMoveTier{0}", BGMoveWithCameraTiers.Count);
+            obj.localScale = Vector3.one;
+            Image tempImg = obj.GetComponentInChildren<Image>();
+            if (tempImg != null) {
+                tempImg.color = AddBGTierColor;
+            }
+            BGMoveWithCameraTiers.Add(obj);
+            float lastTierRate = MoveBGTierRates[MoveBGTierRates.Count - 1] + 0.05f;
+            MoveBGTierRates.Add(lastTierRate);
+            float FromHeight = 380f;
+            float ToHeight = -380f;
+            for (int i = 0; i < BGMoveWithCameraTiers.Count; i++) {
+                Image innerImage = BGMoveWithCameraTiers[i].GetComponentInChildren<Image>();
+                Vector3 tempPos = innerImage.transform.localPosition;
+                tempPos.y = Mathf.Lerp(FromHeight, ToHeight, (float)i / (float)BGMoveWithCameraTiers.Count);
+                innerImage.transform.localPosition = tempPos;
+                Debug.LogErrorFormat("目前index: {0} y值: {1}", i, tempPos.y);
+            }
+            await UniTask.WaitForSeconds(0.3f);
+            MoveBGTierCTK = new CancellationTokenSource();
+            //開始跟隨鏡頭
+            MoveTierObj().Forget();
         }
 
         void UpdatePlayerGold() {
