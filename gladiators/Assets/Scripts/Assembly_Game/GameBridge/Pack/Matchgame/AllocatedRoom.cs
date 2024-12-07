@@ -158,6 +158,10 @@ namespace Gladiators.Main {
                             var hpPacket = LitJson.JsonMapper.ToObject<SocketCMD<Hp_TOCLIENT>>(_msg);
                             HandlerHp(hpPacket);
                             break;
+                        case SocketContent.MatchgameCMD_TCP.KNOCKBACK_TOCLIENT:
+                            var knockbackPacket = LitJson.JsonMapper.ToObject<SocketCMD<KNOCKBACK_TOCLIENT>>(_msg);
+                            HandlerKnockback(knockbackPacket);
+                            break;
                         case SocketContent.MatchgameCMD_TCP.GMACTION_TOCLIENT:
                             //收到封包要先進行GMACTION_TOCLIENT反序列化之後再根據ActionType類型來使用泛型解析成正確的ActionContent
                             var gmActionBasePacket = JsonMapper.ToObject<SocketCMD<GMACTION_TOCLIENT<JsonData>>>(_msg);
@@ -332,6 +336,13 @@ namespace Gladiators.Main {
             if (_packet.Content.CurHp <= 0) {
                 BattleController.Instance.CallDie(_packet.Content.PlayerID);
             }
+        }
+        /// <summary>
+        /// 收到角鬥士擊退
+        /// </summary>
+        public void HandlerKnockback(SocketCMD<KNOCKBACK_TOCLIENT> _packet) {
+            if (SceneManager.GetActiveScene().name != MyScene.BattleScene.ToString() || BattleManager.Instance == null) return;
+            BattleController.Instance.Knockback(_packet.Content);
         }
         /// <summary>
         /// 收到Player ACTION回傳

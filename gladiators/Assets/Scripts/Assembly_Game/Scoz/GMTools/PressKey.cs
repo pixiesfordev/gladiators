@@ -25,17 +25,17 @@ namespace Scoz.Func {
             } else if (Input.GetKeyDown(KeyCode.O)) {
             } else if (Input.GetKeyDown(KeyCode.I)) {
             } else if (Input.GetKeyDown(KeyCode.Z)) {
-                BattleManager.Instance.battleModelController.leftChar.ShowBattleNumber(NumType.Dmg_Small, UnityEngine.Random.Range(1, 100));
+                BattleManager.Instance.battleModelController.LeftChar.ShowBattleNumber(NumType.Dmg_Small, UnityEngine.Random.Range(1, 100));
             } else if (Input.GetKeyDown(KeyCode.X)) {
-                BattleManager.Instance.battleModelController.leftChar.ShowBattleNumber(NumType.Dmg_Bleeding, UnityEngine.Random.Range(1, 100));
+                BattleManager.Instance.battleModelController.LeftChar.ShowBattleNumber(NumType.Dmg_Bleeding, UnityEngine.Random.Range(1, 100));
             } else if (Input.GetKeyDown(KeyCode.C)) {
-                BattleManager.Instance.battleModelController.leftChar.ShowBattleNumber(NumType.Dmg_Poison, UnityEngine.Random.Range(1, 100));
+                BattleManager.Instance.battleModelController.LeftChar.ShowBattleNumber(NumType.Dmg_Poison, UnityEngine.Random.Range(1, 100));
             } else if (Input.GetKeyDown(KeyCode.V)) {
-                BattleManager.Instance.battleModelController.leftChar.ShowBattleNumber(NumType.Dmg_Burning, UnityEngine.Random.Range(1, 100));
+                BattleManager.Instance.battleModelController.LeftChar.ShowBattleNumber(NumType.Dmg_Burning, UnityEngine.Random.Range(1, 100));
             } else if (Input.GetKeyDown(KeyCode.B)) {
-                BattleManager.Instance.battleModelController.leftChar.ShowBattleNumber(NumType.Restore_Hp, UnityEngine.Random.Range(1, 100));
+                BattleManager.Instance.battleModelController.LeftChar.ShowBattleNumber(NumType.Restore_Hp, UnityEngine.Random.Range(1, 100));
             } else if (Input.GetKeyDown(KeyCode.N)) {
-                BattleManager.Instance.battleModelController.leftChar.ShowBattleNumber(NumType.Restore_Vigor, UnityEngine.Random.Range(1, 100));
+                BattleManager.Instance.battleModelController.LeftChar.ShowBattleNumber(NumType.Restore_Vigor, UnityEngine.Random.Range(1, 100));
             } else if (Input.GetKeyDown(KeyCode.L)) {
                 //var data = GameDictionary.GetJsonData<JsonGladiator>(1);
                 //WriteLog.WriteObj(data);
