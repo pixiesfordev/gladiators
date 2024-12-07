@@ -35,6 +35,7 @@ namespace Gladiators.Socket.Matchgame {
     }
     // 技能失敗回傳
     public class PackAction_SkillFail_ToClient {
+        public int[] HandSkills { get; private set; } // 目前手牌
     }
     // 啟用肉搏技能
     public class PackAction_ActiveMeleeSkill_ToClient {

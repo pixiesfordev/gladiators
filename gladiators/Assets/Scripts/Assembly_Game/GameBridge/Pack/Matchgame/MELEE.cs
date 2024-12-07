@@ -7,7 +7,7 @@ namespace Gladiators.Socket.Matchgame {
         public PackMelee OpponentAttack { get; private set; }
         public int NewSkilID { get; private set; }   // 新抽到的技能
         public int SkillOnID { get; private set; }   // 啟用中的肉搏技能        
-        public int[] MyHandSkillIDs { get; private set; } // 目前手牌
+        public int[] HandSkills { get; private set; } // 目前手牌
     }
     public class PackMelee {
         public int SkillID { get; private set; }
