@@ -53,8 +53,9 @@ namespace Gladiators.Battle {
         [Tooltip("添加層級的子物件顏色")] [SerializeField] Color AddBGTierColor = Color.white;
         [Tooltip("增加層級")] [SerializeField] bool AddBGTier = false;
         [Tooltip("新添加方塊預設添加移動量")] [SerializeField] float AddBGTierDefaultRate = 0.05f;
-        [SerializeField] bool ShowTestBGTierObj; //顯示是否測試BGTier中
+        [Tooltip("顯示是否測試BGTier中")] [SerializeField] bool ShowTestBGTierObj;
         float MoveBGTierLimitX;
+        float MoveBGTierLimitY;
         CancellationTokenSource MoveBGTierCTK;
 
         //TODO:
@@ -131,11 +132,9 @@ namespace Gladiators.Battle {
 
             //抓出螢幕尺寸 限制鏡頭偏移量
             MoveBGTierLimitX = Screen.width;
+            MoveBGTierLimitY = Screen.height;
         }
 
-        //TODO:添加偏移效果 跟著游標/陀螺儀讓場景物件有偏移的效果
-        //1.手機板使用陀螺儀
-        //2.電腦版使用mouse position
         // Update is called once per frame
         void Update() {
             if (PerformCandleCountDown) {
@@ -182,13 +181,16 @@ namespace Gladiators.Battle {
             while (true) {
                 MousePositionVal.text = curMousePos.ToString();
                 for (int i = 0; i < BGMoveWithCameraTiers.Count; i++) {
-                    tempPos[i].x = curMousePos.x * MoveBGTierRates[i];
+                    tempPos[i].x = curMousePos.x * -MoveBGTierRates[i];
+                    tempPos[i].y = curMousePos.y * -MoveBGTierRates[i];
                     BGMoveWithCameraTiers[i].transform.localPosition = tempPos[i];
                 }
                 await UniTask.Yield(MoveBGTierCTK.Token);
                 curMousePos = Input.mousePosition;
                 if (Mathf.Abs(curMousePos.x) > MoveBGTierLimitX)
                     curMousePos.x = curMousePos.x > 0 ? MoveBGTierLimitX : -MoveBGTierLimitX;
+                if (Mathf.Abs(curMousePos.y) > MoveBGTierLimitY)
+                    curMousePos.y = curMousePos.y > 0 ? MoveBGTierLimitY : -MoveBGTierLimitY;
             }
             #elif UNITY_IOS || UNITY_ANDROID
             //TODO:根據陀螺儀數值移動物件
