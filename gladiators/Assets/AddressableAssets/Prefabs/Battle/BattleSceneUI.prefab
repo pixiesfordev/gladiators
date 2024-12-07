@@ -9867,7 +9867,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a24d9ba4fffa87d4ba4bb7a14a53a073, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ddf5d9e20e106104a8c7c46952314d04, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -15373,7 +15373,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a24d9ba4fffa87d4ba4bb7a14a53a073, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ddf5d9e20e106104a8c7c46952314d04, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -17994,6 +17994,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: DivineSelectUI
       objectReference: {fileID: 0}
+    - target: {fileID: 1103408698334025449, guid: f58af1ae2e8b6db479a1301d8ed08275,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1337082992953136564, guid: f58af1ae2e8b6db479a1301d8ed08275,
         type: 3}
       propertyPath: m_IsActive
@@ -18294,6 +18299,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: BattleFIGHT
+      objectReference: {fileID: 0}
+    - target: {fileID: 4804131610566424785, guid: ca880666716a607498c94bb5a0a3961a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7851149940171391891, guid: ca880666716a607498c94bb5a0a3961a,
         type: 3}
