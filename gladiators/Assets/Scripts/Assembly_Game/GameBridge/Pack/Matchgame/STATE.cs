@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using System.Numerics;
+using UnityEngine;
 
 namespace Gladiators.Socket.Matchgame {
 
@@ -25,7 +25,7 @@ namespace Gladiators.Socket.Matchgame {
     }
     public class PACKGLADIATORSTATE {
         //class名稱就是封包的CMD名稱
-        public double CurPos { get; private set; }
+        public PackVector2 CurPos { get; private set; }
         public double CurSpd { get; private set; }
         public double CurVigor { get; private set; }
         public bool Rush { get; private set; }
@@ -43,6 +43,28 @@ namespace Gladiators.Socket.Matchgame {
         public int CurHp { get; private set; }
         public int MaxHp { get; private set; }
 
+    }
+    public class KNOCKBACK_TOCLIENT : SocketContent {
+        //class名稱就是封包的CMD名稱
+        public string PlayerID { get; private set; }
+        public PackVector2 BeforePos { get; private set; }
+        public PackVector2 AfterPos { get; private set; }
+        public float KnockbackDist { get; private set; }
+        public bool KnockWall { get; private set; }
+
+    }
+    // 自定義 Vector2 類
+    public class PackVector2 {
+        public double X { get; set; }
+        public double Y { get; set; }
+
+        public Vector2 ToUnityVector2() {
+            return new Vector2((float)X, (float)Y);
+        }
+
+        public static PackVector2 FromUnityVector2(UnityEngine.Vector2 vec) {
+            return new PackVector2 { X = vec.x, Y = vec.y };
+        }
     }
 
 }

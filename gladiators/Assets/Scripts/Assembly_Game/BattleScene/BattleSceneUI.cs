@@ -53,7 +53,7 @@ public class BattleSceneUI : BaseUI {
     public bool CanSpellInstantSkill {
         get {
             bool isLock = spellLocker.Any(pair => pair.Value);
-            if (isLock) WriteLog.Log(getSpellLockStr);
+            //if (isLock) WriteLog.Log(getSpellLockStr);
             return isLock;
         }
     }

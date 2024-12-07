@@ -24,7 +24,7 @@ namespace Gladiators.Socket.Matchgame {
         public int CurHp { get; private set; }      // 目前生命
         public double CurVigor { get; private set; }  // 目前體力
         public double CurSpd { get; private set; }// 目前速度
-        public double CurPos { get; private set; }// 目前位置
+        public PackVector2 CurPos { get; private set; }// 目前位置
         public string[] EffectTypes { get; private set; }  // 狀態清單
     }
 }

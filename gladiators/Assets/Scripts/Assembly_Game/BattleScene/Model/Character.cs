@@ -37,18 +37,14 @@ public enum KnockbackType {
 
 public class Character : MonoBehaviour {
 
-
-    public Transform Base;
-    public Transform rotate;
-    public Transform Baseturntable;
+    [SerializeField] Transform boardRotateTrans;
+    [SerializeField] Transform CharaCenterPivotTrans; // 要抓模型中心用這個Transform
+    [SerializeField] Transform SideRotationParent;
     public Transform BOARD;
-    public Transform CamLook_Left;
-    public Transform CamLook_Right;
     public ParticleSystem MoveSmoke;
     public EffectSpeller MyEffectSpeller;
     public Transform BuffParent;
-    [SerializeField] Transform ModelParentTrans;
-    [SerializeField] Transform CharaCenterPivotTrans; // 要抓模型中心用這個Transform
+
     public Vector3 CenterPos { get { return new Vector3(transform.position.x, transform.position.y + modelCenter, transform.position.z); } }
     public Vector3 TopPos { get { return new Vector3(transform.position.x, transform.position.y + modelCenter * 2, transform.position.z); } }
     float modelCenter;
@@ -56,38 +52,32 @@ public class Character : MonoBehaviour {
 
 
     public Animator animator;
-
-    public RightLeft FaceDir { get; private set; }// 玩家面相方向(玩家看到自己都是在左方且面相右方)
-
+    RightLeft Side;
 
     Character enemy;
-    [SerializeField] Transform SideRotationParent;
+
 
     public bool IsRushing { get; private set; }
-    public bool IsKnockback { get; private set; }
 
     const float KNOCKBACK_TIME = 0.5f;//擊退/飛時間
 
     // 狀態
-    public int MeleeSkillID { get; private set; }
     HashSet<EffectType> effectTypes = new HashSet<EffectType>();
     public bool CanMove {
         get {
-            if (IsKnockback) return false;
             return !effectTypes.IsMobileRestriction();
         }
     }
 
-    public void Init(int _jsonID, float _pos, Character _opponent, RightLeft _faceDir, float _knockAngle) {
+    public void Init(int _jsonID, Vector2 _pos, Character _opponent, RightLeft _side) {
         MyEffectSpeller.Init(_opponent);
         var jsonGladiator = GameDictionary.GetJsonData<JsonGladiator>(_jsonID);
         enemy = _opponent;
-        FaceDir = _faceDir;
-        transform.localPosition = new Vector3(_pos, 0, 0);
+        Side = _side;
+        transform.localPosition = _pos;
         SetRush(false);
         MoveSmoke.Stop();
         setModel(jsonGladiator);
-        SetFaceToTarget(_knockAngle);
         // 初始化跳數字字典
         foreach (QueueNumType type in System.Enum.GetValues(typeof(QueueNumType))) {
             damageQueues[type] = new Queue<(NumType, int)>();
@@ -102,7 +92,6 @@ public class Character : MonoBehaviour {
         }
         modelCenter = (float)_json.ModelCenter;
         CharaCenterPivotTrans.localPosition = new Vector3(0, modelCenter, 0);
-        ModelParentTrans.localPosition = new Vector3(0, -modelCenter, 0);
         AddressablesLoader.GetPrefab($"Gladiator/{_json.Ref}/BOARD", (boardPrefab, handle) => {
             if (boardPrefab != null) {
                 if (BOARD != null) {
@@ -111,11 +100,12 @@ public class Character : MonoBehaviour {
 
                 GameObject newBoard = Instantiate(boardPrefab);
                 BOARD = newBoard.transform;
-                BOARD.SetParent(rotate);
+                BOARD.SetParent(boardRotateTrans);
                 BOARD.localPosition = new Vector3(0f, 0f, 0f);
                 BOARD.name = "BOARD";
 
-                float sideRotationdAngle = (FaceDir == RightLeft.Right) ? 90 : -90;
+                float sideRotationdAngle = (Side == RightLeft.Left) ? 0 : 180;
+                WriteLog.Log($"id {name} Side {Side}  angle: {sideRotationdAngle}");
                 SideRotationParent.localRotation = Quaternion.Euler(0, sideRotationdAngle, 0);
             }
         });
@@ -144,7 +134,6 @@ public class Character : MonoBehaviour {
 
 
     public async UniTask MoveClientToPos(Vector3 _pos, float _duration, bool _move = false) {
-        if (die) return;
         if (_move) {
             if (CanMove) {
                 PlayAni("move");
@@ -162,14 +151,7 @@ public class Character : MonoBehaviour {
         effectTypes = _effectTypes;
         BattleSceneUI.Instance?.SetInstantSkillLocker(BattleSceneUI.SpellLock.Effect, effectTypes.IsInstantSkillRestriction());
     }
-
-    void SetFaceToTarget(float _knockAngle) {
-        // 調整角度根據角色的面向方向(左右)
-        float adjustedAngle = (FaceDir == RightLeft.Right) ? -_knockAngle : -(_knockAngle + 180f);
-        transform.localRotation = Quaternion.Euler(0, adjustedAngle, 0);
-    }
-    public void HandleMelee(Vector3 _finalPos, List<PackEffect> _effectDatas, float _serverKnockDist, float _serverResultPos, float _knockAngl, int _skilID) {
-        if (die) return;
+    public void HandleEffects(List<PackEffect> _effectDatas) {
         HashSet<EffectType> _effects = new HashSet<EffectType>();
         foreach (var effectData in _effectDatas) {
             var (success, effectType) = JsonSkillEffect.ConvertStrToEffectType(effectData.EffectName);
@@ -178,95 +160,108 @@ public class Character : MonoBehaviour {
             }
         }
         UpdateEffectTypes(_effects);
-        MeleeSkillID = _skilID;
-        SetFaceToTarget(_knockAngl);
-        knockback(_finalPos, _serverKnockDist, _serverResultPos, _knockAngl);
     }
+    public void HandleKnockback(Vector2 _beforePos, Vector2 _afterPos, bool _isKnockwall) {
+        if (die) return;
 
+        float knockbackDist = Vector2.Distance(_beforePos, _afterPos);
 
-
-    void knockback(Vector3 _finalPos, float _serverKnockPower, float _serverResultPos, float _knockAngle) {
         // 判斷擊退類型
         var knockbackType = KnockbackType.Slide;
-        if (_serverKnockPower > 20) knockbackType = KnockbackType.Knockup;
+        if (knockbackDist > 20) knockbackType = KnockbackType.Knockup;
 
-        IsKnockback = true;
         // 播放碰撞動畫
         PlayAni("knockback");
         BattleManager.Instance.vCam.GetComponent<CameraShake>()?.Shake();
 
         Vector3 originalPos = transform.localPosition;
+        Vector3 finalPos = new Vector3(_afterPos.x, originalPos.y, _afterPos.y);
 
-        if (knockbackType == KnockbackType.Knockup) { // 擊飛
-            float knockupHeight = _serverKnockPower / 6f;
+        if (knockbackType == KnockbackType.Knockup) // 擊飛
+        {
+            float knockupHeight = knockbackDist / 6f;
             float gravity = 8f * knockupHeight / (KNOCKBACK_TIME * KNOCKBACK_TIME); // 8 * h / T^2
             float initialVelocityY = gravity * (KNOCKBACK_TIME / 2f); // v0 = g * (T/2)
-
-            // 計算水平位移量
-            Vector3 horizontalDisplacement = new Vector3(_finalPos.x - originalPos.x, 0, _finalPos.z - originalPos.z);
-            Vector3 horizontalVelocity = horizontalDisplacement / KNOCKBACK_TIME;
+            Vector3 horizontalVelocity = (finalPos - originalPos) / KNOCKBACK_TIME;
 
             UniTask.Void(async () => {
                 float passTime = 0f;
                 while (passTime < KNOCKBACK_TIME) {
                     passTime += Time.deltaTime;
                     float t = passTime / KNOCKBACK_TIME;
+
                     // 更新水平位置
                     Vector3 newPos = originalPos + horizontalVelocity * passTime;
+
                     // 更新垂直位置
                     float newY = originalPos.y + initialVelocityY * passTime - 0.5f * gravity * passTime * passTime;
+
                     // 設定新的位置
                     transform.localPosition = new Vector3(newPos.x, newY, newPos.z);
+                    faceDir();
                     await UniTask.Yield();
                 }
 
-                // 確保最終的水平位置
-                transform.localPosition = new Vector3(_finalPos.x, originalPos.y, _finalPos.z);
-                IsKnockback = false;
+                // 確保最終位置
+                transform.localPosition = finalPos;
+                faceDir();
                 // 撞牆檢查
-                if (_serverResultPos == BattleController.WALLPOS || _serverResultPos == -BattleController.WALLPOS) {
+                if (_isKnockwall) {
                     knockWall();
                 }
+
                 // 播放暈眩動畫
                 PlayAni("stun");
             });
-        } else if (knockbackType == KnockbackType.Slide) { // 擊退滑行
-            Vector3 horizontalDisplacement = new Vector3(_finalPos.x - originalPos.x, 0, _finalPos.z - originalPos.z);
+        } else if (knockbackType == KnockbackType.Slide) // 擊退滑行
+          {
+            Vector3 horizontalDisplacement = finalPos - originalPos;
             float totalDistance = horizontalDisplacement.magnitude;
             Vector3 direction = horizontalDisplacement.normalized;
-
-            // 摩擦力係數（調整減速強度，值越大減速越明顯）
-            float frictionCoefficient = 2f; // 摩擦力調整數值(越大代表減速越強，滑行在最後時刻才快速減速)
+            float frictionCoefficient = 2f; // 摩擦力調整數值
 
             UniTask.Void(async () => {
                 float passTime = 0f;
                 while (passTime < KNOCKBACK_TIME) {
                     passTime += Time.deltaTime;
-                    float t = Mathf.Clamp01(passTime / KNOCKBACK_TIME); // 確保 t 在 [0, 1] 範圍內
+                    float t = Mathf.Clamp01(passTime / KNOCKBACK_TIME);
 
                     // 使用摩擦力係數調整減速曲線
                     float easedT = 1 - Mathf.Pow(1 - t, frictionCoefficient);
-                    float currentDistance = totalDistance * easedT; // 計算當前滑行距離
+                    float currentDistance = totalDistance * easedT;
                     Vector3 newPos = originalPos + direction * currentDistance;
 
-                    // 垂直位置不變
+                    // 更新位置
                     transform.localPosition = new Vector3(newPos.x, originalPos.y, newPos.z);
+                    faceDir();
                     await UniTask.Yield();
                 }
 
-                // 確保最終的水平位置
-                transform.localPosition = new Vector3(_finalPos.x, originalPos.y, _finalPos.z);
-                IsKnockback = false;
+                // 確保最終位置
+                transform.localPosition = finalPos;
+                faceDir();
                 // 撞牆檢查
-                if (_serverResultPos == BattleController.WALLPOS || _serverResultPos == -BattleController.WALLPOS) {
+                if (_isKnockwall) {
                     knockWall();
                 }
+
                 // 播放暈眩動畫
                 PlayAni("stun");
             });
         }
     }
 
+    void faceDir() {
+        Vector3 dir = enemy.transform.position - transform.position;
+
+        dir.y = 0; // 只考慮 2D 面向，忽略 y 軸
+        if (dir.sqrMagnitude < 0.001f) {
+            return;
+        }
+        Quaternion targetRotation = Quaternion.LookRotation(dir);
+        targetRotation *= (Side == RightLeft.Left) ? Quaternion.Euler(0, -90f, 0) : Quaternion.Euler(0, 90f, 0);
+        transform.rotation = targetRotation;
+    }
 
 
 
@@ -281,10 +276,10 @@ public class Character : MonoBehaviour {
     public async UniTask DieKnockout() {
         if (die) return;
         die = true;
-        Vector3 knockDir = transform.right * -(int)FaceDir;// 朝向後方擊退
+        Vector3 knockDir = transform.right * (int)Side;// 朝向後方擊退
 
         float startTime = Time.time;
-        float rotateDir = -(float)FaceDir;
+        float rotateDir = (float)Side;
 
         // 開始擊退和旋轉
         while (Time.time < startTime + knockbackDuration) {
@@ -413,7 +408,7 @@ public class Character : MonoBehaviour {
 
         if (damagePopup != null) {
             damagePopup.transform.SetParent(this.transform);
-            float sideRotationAngle = (FaceDir == RightLeft.Right) ? 0 : 180;
+            float sideRotationAngle = (Side == RightLeft.Left) ? 0 : 180;
             damagePopup.transform.localRotation = Quaternion.Euler(0, sideRotationAngle, 0);
         }
     }
