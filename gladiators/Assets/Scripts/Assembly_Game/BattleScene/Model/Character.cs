@@ -59,7 +59,7 @@ public class Character : MonoBehaviour {
 
     public bool IsRushing { get; private set; }
 
-    const float KNOCKBACK_TIME = 0.8f;//擊退/飛時間
+    const float KNOCKBACK_TIME = 0.6f;//擊退/飛時間
 
     // 狀態
     HashSet<EffectType> effectTypes = new HashSet<EffectType>();
@@ -277,7 +277,7 @@ public class Character : MonoBehaviour {
         // 開始擊退和旋轉
         while (Time.time < startTime + knockbackDuration) {
             transform.position += knockDir * knockbackForce * Time.deltaTime; // 擊退
-            CharaCenterPivotTrans.Rotate(Vector3.right, rotateDir * rotationSpeed * Time.deltaTime); // 旋轉
+            CharaCenterPivotTrans.Rotate(Vector3.up, rotateDir * rotationSpeed * Time.deltaTime); // 旋轉
             await UniTask.Yield(PlayerLoopTiming.Update);
         }
     }
