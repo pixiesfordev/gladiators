@@ -163,11 +163,12 @@ public class Character : MonoBehaviour {
     }
     public void HandleKnockback(Vector2 _beforePos, Vector2 _afterPos, bool _isKnockwall) {
         if (die) return;
+        transform.localPosition = new Vector3(_beforePos.x, 0, _beforePos.y);
         float knockbackDist = Vector2.Distance(_beforePos, _afterPos);
 
         // 判斷擊退類型
         var knockbackType = KnockbackType.Slide;
-        if (knockbackDist > 20) knockbackType = KnockbackType.Knockup;
+        if (knockbackDist > 15) knockbackType = KnockbackType.Knockup;
 
         // 播放碰撞動畫
         PlayAni("knockback");
