@@ -352,6 +352,10 @@ namespace Gladiators.Main {
             PLAYERACTION.PackActionType actionType;
             if (MyEnum.TryParseEnum(_actionType, out actionType)) {
                 switch (actionType) {
+                    case PLAYERACTION.PackActionType.ACTION_SKILL_FAIL: // 技能施放失敗
+                        var faillSkill = JsonMapper.ToObject<PackAction_SkillFail_ToClient>(_jsonStr);
+                        WriteLog.LogError("施放技能失敗");
+                        break;
                     case PLAYERACTION.PackActionType.ACTIVE_MELEE_SKILL: // 收到肉搏技能啟用
                         var activeMeleeSkill = JsonMapper.ToObject<PackAction_ActiveMeleeSkill_ToClient>(_jsonStr);
                         break;
@@ -360,7 +364,7 @@ namespace Gladiators.Main {
                         if (MyPackPlayer.DBID == _playerID) BattleSceneUI.Instance.CastInstantSkill(instantSkillPack.NewSkilID);
                         BattleController.Instance.PlayInstantSkill(_playerID, instantSkillPack.SkillID);
                         break;
-                    case PLAYERACTION.PackActionType.ACTION_RUSH: // 收到即時技能發動
+                    case PLAYERACTION.PackActionType.ACTION_RUSH: // 衝刺
                         var rushPack = JsonMapper.ToObject<PackAction_Rush>(_jsonStr);
                         BattleController.Instance.Rush(_playerID, rushPack.On);
                         break;
