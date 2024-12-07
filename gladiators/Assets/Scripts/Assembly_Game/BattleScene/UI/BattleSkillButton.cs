@@ -438,6 +438,10 @@ public class BattleSkillButton : MonoBehaviour {
             Debug.LogWarningFormat("Press skill but btn is locking!");
             return;
         }
+        //判斷近戰技能是否已經發動中 or 能量不足不能發動也不能有點擊反映
+        if (SkillSelected || !IsEnergyEnough) return;
+        //如果不能發動立即技能也不能有反應
+        if (BattleSceneUI.Instance.CanSpellInstantSkill) return;
         if (IsEnergyEnough)
             EnoughEnergyPress();
         else
@@ -634,6 +638,10 @@ public class BattleSkillButton : MonoBehaviour {
     /// </summary>
     /// <param name="open">True為顯示鎖頭</param>
     public void SetLockerIcon(bool open) {
+        if (SkillSelected) {
+            WriteLog.LogFormat("近戰技能已發動中! 不鎖定! 物件:{0}", name);
+            return;
+        }
         Locker.gameObject.SetActive(open);
         SetSkillIconGray(open);
     }
