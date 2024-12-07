@@ -59,7 +59,7 @@ public class Character : MonoBehaviour {
 
     public bool IsRushing { get; private set; }
 
-    const float KNOCKBACK_TIME = 0.5f;//擊退/飛時間
+    const float KNOCKBACK_TIME = 0.8f;//擊退/飛時間
 
     // 狀態
     HashSet<EffectType> effectTypes = new HashSet<EffectType>();
@@ -163,7 +163,6 @@ public class Character : MonoBehaviour {
     }
     public void HandleKnockback(Vector2 _beforePos, Vector2 _afterPos, bool _isKnockwall) {
         if (die) return;
-
         float knockbackDist = Vector2.Distance(_beforePos, _afterPos);
 
         // 判斷擊退類型
@@ -177,8 +176,7 @@ public class Character : MonoBehaviour {
         Vector3 originalPos = transform.localPosition;
         Vector3 finalPos = new Vector3(_afterPos.x, originalPos.y, _afterPos.y);
 
-        if (knockbackType == KnockbackType.Knockup) // 擊飛
-        {
+        if (knockbackType == KnockbackType.Knockup) {// 擊飛
             float knockupHeight = knockbackDist / 6f;
             float gravity = 8f * knockupHeight / (KNOCKBACK_TIME * KNOCKBACK_TIME); // 8 * h / T^2
             float initialVelocityY = gravity * (KNOCKBACK_TIME / 2f); // v0 = g * (T/2)
@@ -201,20 +199,16 @@ public class Character : MonoBehaviour {
                     faceDir();
                     await UniTask.Yield();
                 }
-
-                // 確保最終位置
                 transform.localPosition = finalPos;
                 faceDir();
                 // 撞牆檢查
                 if (_isKnockwall) {
                     knockWall();
                 }
-
                 // 播放暈眩動畫
                 PlayAni("stun");
             });
-        } else if (knockbackType == KnockbackType.Slide) // 擊退滑行
-          {
+        } else if (knockbackType == KnockbackType.Slide) {// 擊退滑行
             Vector3 horizontalDisplacement = finalPos - originalPos;
             float totalDistance = horizontalDisplacement.magnitude;
             Vector3 direction = horizontalDisplacement.normalized;
@@ -236,19 +230,17 @@ public class Character : MonoBehaviour {
                     faceDir();
                     await UniTask.Yield();
                 }
-
-                // 確保最終位置
                 transform.localPosition = finalPos;
                 faceDir();
                 // 撞牆檢查
                 if (_isKnockwall) {
                     knockWall();
                 }
-
                 // 播放暈眩動畫
                 PlayAni("stun");
             });
         }
+
     }
 
     void faceDir() {

@@ -62,8 +62,7 @@ public class BattleController : MonoBehaviour {
         CharDic.Add(_myPlayerPack.DBID, LeftChar);
         CharDic.Add(_opponentPack.DBID, RightChar);
 
-        BattleManager.Instance.UpdateVCamTargetRot();
-        BattleManager.Instance.SetCamValues(GetDistBetweenChars());
+        BattleManager.Instance.UpdateVCam();
     }
 
 
@@ -177,9 +176,6 @@ public class BattleController : MonoBehaviour {
                 LeftChar.MoveClientToPos(new Vector3(leftPos.x, 0, leftPos.y), MOVE_DURATION_SECS, true).Forget();
                 RightChar.MoveClientToPos(new Vector3(rightPos.x, 0, rightPos.y), MOVE_DURATION_SECS, true).Forget();
 
-                // 更新攝影機
-                BattleManager.Instance.SetCamValues(GetDistBetweenChars());
-
                 // <<<<<<<<體力>>>>>>>>>
                 float leftVigor = Mathf.Lerp(before.LeftVigor, after.LeftVigor, alpha);
                 BattleSceneUI.Instance.SetVigor(leftVigor);
@@ -221,12 +217,7 @@ public class BattleController : MonoBehaviour {
     public void Knockback(KNOCKBACK_TOCLIENT _knockback) {
         if (_knockback == null) return;
         if (!CharDic.ContainsKey(_knockback.PlayerID)) return;
-
-        if (_knockback.PlayerID == GamePlayer.Instance.PlayerID) {
-            CharDic[_knockback.PlayerID].HandleKnockback(_knockback.BeforePos.ToUnityVector2(), _knockback.AfterPos.ToUnityVector2(), _knockback.KnockWall);
-        } else {
-            CharDic[_knockback.PlayerID].HandleKnockback(_knockback.BeforePos.ToUnityVector2(), _knockback.AfterPos.ToUnityVector2(), _knockback.KnockWall);
-        }
+        CharDic[_knockback.PlayerID].HandleKnockback(_knockback.BeforePos.ToUnityVector2(), _knockback.AfterPos.ToUnityVector2(), _knockback.KnockWall);
     }
 
 
