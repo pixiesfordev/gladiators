@@ -164,6 +164,8 @@ public class Character : MonoBehaviour {
     public void HandleKnockback(Vector2 _beforePos, Vector2 _afterPos, bool _isKnockwall) {
         if (die) return;
         transform.localPosition = new Vector3(_beforePos.x, 0, _beforePos.y);
+
+
         float knockbackDist = Vector2.Distance(_beforePos, _afterPos);
 
         // 判斷擊退類型
@@ -198,6 +200,7 @@ public class Character : MonoBehaviour {
                     // 設定新的位置
                     transform.localPosition = new Vector3(newPos.x, newY, newPos.z);
                     faceDir();
+                    BattleManager.Instance.UpdateVCam();
                     await UniTask.Yield();
                 }
                 transform.localPosition = finalPos;
@@ -208,6 +211,7 @@ public class Character : MonoBehaviour {
                 }
                 // 播放暈眩動畫
                 PlayAni("stun");
+                BattleManager.Instance.UpdateVCam();
             });
         } else if (knockbackType == KnockbackType.Slide) {// 擊退滑行
             Vector3 horizontalDisplacement = finalPos - originalPos;
@@ -229,6 +233,7 @@ public class Character : MonoBehaviour {
                     // 更新位置
                     transform.localPosition = new Vector3(newPos.x, originalPos.y, newPos.z);
                     faceDir();
+                    BattleManager.Instance.UpdateVCam();
                     await UniTask.Yield();
                 }
                 transform.localPosition = finalPos;
@@ -239,6 +244,7 @@ public class Character : MonoBehaviour {
                 }
                 // 播放暈眩動畫
                 PlayAni("stun");
+                BattleManager.Instance.UpdateVCam();
             });
         }
 
@@ -277,7 +283,7 @@ public class Character : MonoBehaviour {
         // 開始擊退和旋轉
         while (Time.time < startTime + knockbackDuration) {
             transform.position += knockDir * knockbackForce * Time.deltaTime; // 擊退
-            CharaCenterPivotTrans.Rotate(Vector3.up, rotateDir * rotationSpeed * Time.deltaTime); // 旋轉
+            CharaCenterPivotTrans.Rotate(Vector3.forward, rotateDir * rotationSpeed * Time.deltaTime); // 旋轉
             await UniTask.Yield(PlayerLoopTiming.Update);
         }
     }
