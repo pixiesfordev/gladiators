@@ -48,12 +48,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   boardRotateTrans: {fileID: 5751186689137934131}
   CharaCenterPivotTrans: {fileID: 8176527471791907671}
+  SideRotationParent: {fileID: 2168189493600221619}
   BOARD: {fileID: 7375380833258379778}
   MoveSmoke: {fileID: 7052043346960849981}
   MyEffectSpeller: {fileID: 5996496001789048552}
   BuffParent: {fileID: 3595498384123392660}
   animator: {fileID: 439293456559096948}
-  SideRotationParent: {fileID: 2168189493600221619}
   damageShowYPos: 5
   restoreShowYPos: 20
   defaultDamagePrefab: {fileID: 1633523022951624263, guid: 412f05a481110b34bb94bc66bcc72d21,
@@ -434,20 +434,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2592318827888616408, guid: d2d1f94a204458d44a0b8c73ff9f1b13,
-        type: 3}
-      propertyPath: m_Layer
-      value: 8
-      objectReference: {fileID: 0}
     - target: {fileID: 5316348206110256664, guid: d2d1f94a204458d44a0b8c73ff9f1b13,
         type: 3}
       propertyPath: m_Name
       value: MoveSmoke
-      objectReference: {fileID: 0}
-    - target: {fileID: 5316348206110256664, guid: d2d1f94a204458d44a0b8c73ff9f1b13,
-        type: 3}
-      propertyPath: m_Layer
-      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
