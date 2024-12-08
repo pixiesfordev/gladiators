@@ -59,7 +59,7 @@ public class Character : MonoBehaviour {
 
     public bool IsRushing { get; private set; }
 
-    const float KNOCKBACK_TIME = 0.5f;//擊退/飛時間
+    const float KNOCKBACK_TIME = 0.6f;//擊退/飛時間
 
     // 狀態
     HashSet<EffectType> effectTypes = new HashSet<EffectType>();
@@ -163,12 +163,14 @@ public class Character : MonoBehaviour {
     }
     public void HandleKnockback(Vector2 _beforePos, Vector2 _afterPos, bool _isKnockwall) {
         if (die) return;
+        transform.localPosition = new Vector3(_beforePos.x, 0, _beforePos.y);
+
 
         float knockbackDist = Vector2.Distance(_beforePos, _afterPos);
 
         // 判斷擊退類型
         var knockbackType = KnockbackType.Slide;
-        if (knockbackDist > 20) knockbackType = KnockbackType.Knockup;
+        if (knockbackDist > 15) knockbackType = KnockbackType.Knockup;
 
         // 播放碰撞動畫
         PlayAni("knockback");
@@ -177,8 +179,7 @@ public class Character : MonoBehaviour {
         Vector3 originalPos = transform.localPosition;
         Vector3 finalPos = new Vector3(_afterPos.x, originalPos.y, _afterPos.y);
 
-        if (knockbackType == KnockbackType.Knockup) // 擊飛
-        {
+        if (knockbackType == KnockbackType.Knockup) {// 擊飛
             float knockupHeight = knockbackDist / 6f;
             float gravity = 8f * knockupHeight / (KNOCKBACK_TIME * KNOCKBACK_TIME); // 8 * h / T^2
             float initialVelocityY = gravity * (KNOCKBACK_TIME / 2f); // v0 = g * (T/2)
@@ -199,22 +200,20 @@ public class Character : MonoBehaviour {
                     // 設定新的位置
                     transform.localPosition = new Vector3(newPos.x, newY, newPos.z);
                     faceDir();
+                    BattleManager.Instance.UpdateVCam();
                     await UniTask.Yield();
                 }
-
-                // 確保最終位置
                 transform.localPosition = finalPos;
                 faceDir();
                 // 撞牆檢查
                 if (_isKnockwall) {
                     knockWall();
                 }
-
                 // 播放暈眩動畫
                 PlayAni("stun");
+                BattleManager.Instance.UpdateVCam();
             });
-        } else if (knockbackType == KnockbackType.Slide) // 擊退滑行
-          {
+        } else if (knockbackType == KnockbackType.Slide) {// 擊退滑行
             Vector3 horizontalDisplacement = finalPos - originalPos;
             float totalDistance = horizontalDisplacement.magnitude;
             Vector3 direction = horizontalDisplacement.normalized;
@@ -234,21 +233,21 @@ public class Character : MonoBehaviour {
                     // 更新位置
                     transform.localPosition = new Vector3(newPos.x, originalPos.y, newPos.z);
                     faceDir();
+                    BattleManager.Instance.UpdateVCam();
                     await UniTask.Yield();
                 }
-
-                // 確保最終位置
                 transform.localPosition = finalPos;
                 faceDir();
                 // 撞牆檢查
                 if (_isKnockwall) {
                     knockWall();
                 }
-
                 // 播放暈眩動畫
                 PlayAni("stun");
+                BattleManager.Instance.UpdateVCam();
             });
         }
+
     }
 
     void faceDir() {
@@ -284,7 +283,7 @@ public class Character : MonoBehaviour {
         // 開始擊退和旋轉
         while (Time.time < startTime + knockbackDuration) {
             transform.position += knockDir * knockbackForce * Time.deltaTime; // 擊退
-            CharaCenterPivotTrans.Rotate(Vector3.right, rotateDir * rotationSpeed * Time.deltaTime); // 旋轉
+            CharaCenterPivotTrans.Rotate(Vector3.forward, rotateDir * rotationSpeed * Time.deltaTime); // 旋轉
             await UniTask.Yield(PlayerLoopTiming.Update);
         }
     }

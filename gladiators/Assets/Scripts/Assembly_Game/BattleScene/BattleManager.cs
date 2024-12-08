@@ -118,38 +118,30 @@ namespace Gladiators.Battle {
             battleModelController.BattleStart();
         }
 
-        public void UpdateVCamTargetRot() {
+        public void UpdateVCam() {
             if (battleModelController.LeftChar == null || battleModelController.RightChar == null) {
                 WriteLog.LogError($"character為null leftChar: {battleModelController.LeftChar}   rightChar: {battleModelController.RightChar}");
                 return;
             }
-
-            // 獲取兩個角色的世界座標
             Vector3 leftCharPos = battleModelController.LeftChar.transform.position;
             Vector3 rightCharPos = battleModelController.RightChar.transform.position;
-
-            // 計算角色之間的方向
             Vector3 direction = leftCharPos - rightCharPos;
-
-            // 確保方向的 y 分量不影響旋轉
             direction.y = 0;
-
-            // 檢查是否有有效的方向向量
             if (direction.sqrMagnitude < Mathf.Epsilon) {
                 return;
             }
-
             // 計算水平旋轉角度
             float targetYAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
-
             // 更新攝影機的 Y 軸旋轉
             vTargetGroup.transform.localRotation = Quaternion.Euler(0, targetYAngle, 0);
+
+            setCamValues(battleModelController.GetDistBetweenChars());
         }
 
         /// <summary>
         /// 根據雙方距離改變攝影機鏡頭
         /// </summary>
-        public void SetCamValues(float _charsDist) {
+        void setCamValues(float _charsDist) {
             float ratio = (_charsDist / MAX_DIST);
             // 更改FOV
             float fov = ratio * (camFOV.Y - camFOV.X) + camFOV.X;
