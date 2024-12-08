@@ -362,4 +362,13 @@ public class BattleStaminaObj : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// 取得目前體力值
+    /// </summary>
+    /// <returns>目前體力值</returns>
+    public int GetCurVigorVal() {
+        int.TryParse(CurrentVal.text, out int val);
+        return val;
+    }
+
 }

@@ -128,7 +128,7 @@ public class BattleSceneUI : BaseUI {
         SpawnBattleManager();
         InitGladiator(true, myGladiator.MaxHP, myGladiator.CurHp, myGladiator.JsonID);
         InitGladiator(false, opponentGladiator.MaxHP, opponentGladiator.CurHp, opponentGladiator.JsonID);
-        SetSkillDatas(handSKillIDs, 0);
+        SetSkillDatas(handSKillIDs, 0, true);
         CheckVigor(0f);
         BattleKO.gameObject.SetActive(false);
     }
@@ -138,20 +138,22 @@ public class BattleSceneUI : BaseUI {
     /// </summary>
     /// <param name="_handSKillIDs">手牌技能</param>
     /// <param name="_skillOnID">選中技能(近戰啟動中)</param>
-    public void SetSkillDatas(int[] _handSKillIDs, int _skillOnID) {
+    /// <param name="_init">是否為初始化</param>
+    public void SetSkillDatas(int[] _handSKillIDs, int _skillOnID, bool _init) {
         //這邊要+1是因為有一個是nextSkill
         if (_handSKillIDs.Length != SkillBtns.Length + 1) {
             WriteLog.LogError("_handSKillIDs封包格式錯誤");
             return;
         }
+        //TODO:現在體力初始化是5 之後有空確認一下是否有在設定skillData前就已經正確設定體力 如果已經正確就不用初始化旗標
+        int curVigor = _init ? 5 : MyBattleStaminaObj.GetCurVigorVal();
         //接收封包並設定按鈕的技能資料
         for (int i = 0; i < SkillBtns.Length; i++) {
             var jsonSkill = GameDictionary.GetJsonData<JsonSkill>(_handSKillIDs[i]);
             SkillBtns[i].SetData(jsonSkill, true);
             SkillBtns[i].SetSkillOn(_handSKillIDs[i] == _skillOnID);
             MyBattleStaminaObj.SetSkillVigorVal(i, jsonSkill != null ? jsonSkill.Vigor : 0);
-            //TODO:目前體力預設值是5 這裡先判斷一次預設值 但日後應該添加一個判斷是否為初始化的旗標 包含技能起始狀態都要判斷
-            MyBattleStaminaObj.SetVigorMaskBrightness(i, jsonSkill != null ? jsonSkill.Vigor < 5 : false);
+            MyBattleStaminaObj.SetVigorMaskBrightness(i, jsonSkill != null ? jsonSkill.Vigor < curVigor : false);
         }
         var nextJsonSkill = GameDictionary.GetJsonData<JsonSkill>(_handSKillIDs[_handSKillIDs.Length - 1]);
         NextSkillBtn.SetData(nextJsonSkill);

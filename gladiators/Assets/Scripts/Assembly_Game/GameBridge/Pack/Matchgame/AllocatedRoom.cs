@@ -354,6 +354,7 @@ namespace Gladiators.Main {
                 switch (actionType) {
                     case PLAYERACTION.PackActionType.ACTION_SKILL_FAIL: // 技能施放失敗
                         var faillSkill = JsonMapper.ToObject<PackAction_SkillFail_ToClient>(_jsonStr);
+                        BattleSceneUI.Instance.SetSkillDatas(faillSkill.HandSkills, 0, false);
                         WriteLog.LogError("施放技能失敗");
                         break;
                     case PLAYERACTION.PackActionType.ACTIVE_MELEE_SKILL: // 收到肉搏技能啟用
