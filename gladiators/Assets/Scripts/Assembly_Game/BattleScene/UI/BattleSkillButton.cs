@@ -173,7 +173,9 @@ public class BattleSkillButton : MonoBehaviour {
     }
 
     public void AfterCancelEvent() {
-        //由Start_Cancel和Start_Cancel_Insufficient播放完畢後呼叫 >> 恢復普通狀態
+        //被呼叫的情形:
+        //1.由Start_Cancel和Start_Cancel_Insufficient播放完畢後呼叫 >> 恢復普通狀態
+        //2.立即技能施放等待Server回傳逾時
         if (IsEnergyEnough) {
             //能量足夠普通狀態
             PlayButtonNormal();
@@ -214,7 +216,9 @@ public class BattleSkillButton : MonoBehaviour {
             //立即施放類 等待後端發送的封包後才演出
             if (IsEnergyEnough) {
                 curAniState = SkillAniState.INSTANT_WAIT_SERVER;
-                //Debug.LogError("立即釋放技能 等待Server送包");
+                //啟動計時等待 如果太久封包沒回來就還原原本狀態
+                WaitInstantSkillServerBack().Forget();
+                WriteLog.Log("立即釋放技能 等待Server送包");
             }
         } else if (SkillData.Activation == SkillActivation.Melee) {
             //近戰類到此就解鎖 因為後續觸發碰撞發動是由後端發送 非前端觸發
@@ -438,6 +442,10 @@ public class BattleSkillButton : MonoBehaviour {
             Debug.LogWarningFormat("Press skill but btn is locking!");
             return;
         }
+        //判斷近戰技能是否已經發動中 or 能量不足不能發動也不能有點擊反映
+        if (SkillSelected || !IsEnergyEnough) return;
+        //如果不能發動立即技能也不能有反應
+        if (BattleSceneUI.Instance.CanSpellInstantSkill) return;
         if (IsEnergyEnough)
             EnoughEnergyPress();
         else
@@ -634,7 +642,27 @@ public class BattleSkillButton : MonoBehaviour {
     /// </summary>
     /// <param name="open">True為顯示鎖頭</param>
     public void SetLockerIcon(bool open) {
+        if (SkillSelected) {
+            WriteLog.LogFormat("近戰技能已發動中! 不鎖定! 物件:{0}", name);
+            return;
+        }
         Locker.gameObject.SetActive(open);
         SetSkillIconGray(open);
+    }
+
+    async UniTask WaitInstantSkillServerBack() {
+        float startTime = Time.time;
+        float passTime = startTime;
+        float waitTimeLimit = 3f;
+        while (curAniState == SkillAniState.INSTANT_WAIT_SERVER) {
+            passTime += Time.deltaTime;
+            if (passTime - startTime > waitTimeLimit) {
+                //超過等待時間 還原狀態
+                AfterCancelEvent();
+                WriteLog.LogWarningFormat("技能超過等待時間:{0}秒. 技能物件:{1} 技能ID:{2}", waitTimeLimit, name, SkillData.ID);
+                break;
+            }
+            await UniTask.Yield();
+        }
     }
 }

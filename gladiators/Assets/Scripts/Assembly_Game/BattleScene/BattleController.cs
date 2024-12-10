@@ -13,8 +13,8 @@ public class BattleController : MonoBehaviour {
     [SerializeField] Character characterPrefab;
     [SerializeField] GameObject charactersParent;
 
-    [HideInInspector] public Character leftChar = null;
-    Character rightChar = null;
+    public Character LeftChar = null;
+    public Character RightChar = null;
     Dictionary<string, Character> CharDic;
 
     const float MOVE_DURATION_SECS = 0.08f; // client收到server座標更新後幾秒內要平滑移動至目標秒數
@@ -23,15 +23,14 @@ public class BattleController : MonoBehaviour {
 
     public const float WALLPOS = 20f;// 牆壁位置
     public const float KnockAngleRange = 30;// 擊退最大水平角度
-    float curKnockAngle = 0; // 目前碰撞擊退的角度
     SortedDictionary<long, ServerStatePack> StateBuffer = new SortedDictionary<long, ServerStatePack>(); // 狀態封包Buffer
     public class ServerStatePack {
         public long PackID;
-        public float LeftPos;
+        public Vector2 LeftPos;
         public float LeftSpd;
         public float LeftVigor;
         public bool LeftRush;
-        public float RightPos;
+        public Vector2 RightPos;
         public float RightSpd;
         public bool RightRush;
         public long Timestamp; // server送封包的時間戳
@@ -46,31 +45,30 @@ public class BattleController : MonoBehaviour {
 
 
     public void CreateCharacter(PackPlayer _myPlayerPack, PackPlayer _opponentPack) {
-        leftChar = Instantiate(characterPrefab, charactersParent.transform);
-        rightChar = Instantiate(characterPrefab, charactersParent.transform);
+        LeftChar = Instantiate(characterPrefab, charactersParent.transform);
+        RightChar = Instantiate(characterPrefab, charactersParent.transform);
 
-        leftChar.name = _myPlayerPack.DBID;
-        leftChar.tag = "leftobj";
-        leftChar.Init(_myPlayerPack.MyPackGladiator.JsonID, (float)_myPlayerPack.MyPackGladiator.CurPos, rightChar, RightLeft.Right, curKnockAngle);
+        LeftChar.name = _myPlayerPack.DBID;
+        LeftChar.tag = "leftobj";
+        LeftChar.Init(_myPlayerPack.MyPackGladiator.JsonID, _myPlayerPack.MyPackGladiator.CurPos.ToUnityVector2(), RightChar, RightLeft.Left);
         BattleSceneUI.Instance.InitVigor((float)_myPlayerPack.MyPackGladiator.CurVigor, 20);
-        BattleManager.Instance.vTargetGroup.AddMember(leftChar.transform, 1f, 8);
-        rightChar.name = _opponentPack.DBID;
-        rightChar.tag = "rightobj";
-        rightChar.Init(_opponentPack.MyPackGladiator.JsonID, (float)_opponentPack.MyPackGladiator.CurPos, leftChar, RightLeft.Left, curKnockAngle);
-        BattleManager.Instance.vTargetGroup.AddMember(rightChar.transform, 1.1f, 8);
+        BattleManager.Instance.vTargetGroup.AddMember(LeftChar.transform, 1f, 8);
+        RightChar.name = _opponentPack.DBID;
+        RightChar.tag = "rightobj";
+        RightChar.Init(_opponentPack.MyPackGladiator.JsonID, _opponentPack.MyPackGladiator.CurPos.ToUnityVector2(), LeftChar, RightLeft.Right);
+        BattleManager.Instance.vTargetGroup.AddMember(RightChar.transform, 1.1f, 8);
 
         CharDic = new Dictionary<string, Character>();
-        CharDic.Add(_myPlayerPack.DBID, leftChar);
-        CharDic.Add(_opponentPack.DBID, rightChar);
+        CharDic.Add(_myPlayerPack.DBID, LeftChar);
+        CharDic.Add(_opponentPack.DBID, RightChar);
 
-        BattleManager.Instance.SetVCamTargetRot(-curKnockAngle);
-        BattleManager.Instance.SetCamValues(GetDistBetweenChars());
+        BattleManager.Instance.UpdateVCam();
     }
 
 
 
     public IEnumerator WaitCharacterCreate() {
-        while (leftChar == null || rightChar == null) {
+        while (LeftChar == null || RightChar == null) {
             yield return new WaitForEndOfFrame();
         }
     }
@@ -91,7 +89,7 @@ public class BattleController : MonoBehaviour {
                 selfEffects.Add(effectType);
             }
         }
-        leftChar.UpdateEffectTypes(selfEffects);
+        LeftChar.UpdateEffectTypes(selfEffects);
         BattleSceneUI.Instance.PlayerGladiatorInfo.SetBufferIcon(selfBuffer);
         // 設定右方玩的BuffIcon
         List<BufferIconData> enemyBuffer = new List<BufferIconData>();
@@ -103,25 +101,24 @@ public class BattleController : MonoBehaviour {
                 eneyEffects.Add(effectType);
             }
         }
-        rightChar.UpdateEffectTypes(eneyEffects);
+        RightChar.UpdateEffectTypes(eneyEffects);
         BattleSceneUI.Instance.EnemyGladiatorInfo.SetBufferIcon(enemyBuffer);
 
+        var leftPos = _leftState.CurPos.ToUnityVector2();
+        var rightPos = _rightState.CurPos.ToUnityVector2();
         // 新增移動插植緩衝
         ServerStatePack pack = new ServerStatePack();
         pack.PackID = _packID;
         pack.Timestamp = _time;
-        pack.LeftPos = (float)_leftState.CurPos;
+        pack.LeftPos = leftPos;
         pack.LeftSpd = (float)_leftState.CurSpd;
         pack.LeftVigor = (float)_leftState.CurVigor;
         pack.LeftRush = _leftState.Rush;
-        pack.RightPos = (float)_rightState.CurPos;
+        pack.RightPos = rightPos;
         pack.RightSpd = (float)_rightState.CurSpd;
         pack.RightRush = _rightState.Rush;
         StateBuffer[_time] = pack;
     }
-    /// <summary>
-    /// 狀態更新循環
-    /// </summary>
     private async UniTaskVoid StateUpdateLoop() {
         while (AllocatedRoom.Instance.CurGameState == AllocatedRoom.GameState.GameState_Fighting) {
             // 計算渲染時間戳
@@ -139,7 +136,7 @@ public class BattleController : MonoBehaviour {
 
             foreach (var key in keys) {
                 if (key < cleanupTime) {
-                    //keysToRemove.Add(key);
+                    // keysToRemove.Add(key);
                 } else if (key <= renderTimestamp) {
                     beforeKey = key;
                 } else {
@@ -157,71 +154,56 @@ public class BattleController : MonoBehaviour {
             ServerStatePack lastPack = null;
             if (StateBuffer.Count >= 1) {
                 lastPack = StateBuffer.Values.Last();
-                leftChar.SetRush(lastPack.LeftRush);
-                rightChar.SetRush(lastPack.RightRush);
+                LeftChar.SetRush(lastPack.LeftRush);
+                RightChar.SetRush(lastPack.RightRush);
             }
 
-            if (beforeKey.HasValue && afterKey.HasValue) { // 封包沒延遲時進行插值(interpolation)
-
-
-                // <<<<<<<<計算插值alpha>>>>>>>>>
+            if (beforeKey.HasValue && afterKey.HasValue) {
+                // 封包沒延遲時進行插值(interpolation)
                 before = StateBuffer[beforeKey.Value];
                 after = StateBuffer[afterKey.Value];
+
                 // 計算插值alpha
                 float alpha = (float)(renderTimestamp - before.Timestamp) / (float)(after.Timestamp - before.Timestamp);
                 alpha = Mathf.Clamp01(alpha);
 
-
-
                 // <<<<<<<<腳色位置>>>>>>>>>
                 // 計算插值位置
-                float leftPos = Mathf.Lerp(before.LeftPos, after.LeftPos, alpha);
-                float rightPos = Mathf.Lerp(before.RightPos, after.RightPos, alpha);
-                //WriteLog.Log("leftPos=" + leftPos + " rightPos=" + rightPos);
-                var clientPos = ConvertTo3DPos(leftPos, rightPos);
-                // 更新角色位置
-                leftChar.MoveClientToPos(clientPos.Item1, MOVE_DURATION_SECS, true).Forget();
-                rightChar.MoveClientToPos(clientPos.Item2, MOVE_DURATION_SECS, true).Forget();
-                BattleManager.Instance.SetCamValues(GetDistBetweenChars());
+                Vector2 leftPos = Vector2.Lerp(before.LeftPos, after.LeftPos, alpha);
+                Vector2 rightPos = Vector2.Lerp(before.RightPos, after.RightPos, alpha);
+
+                // 更新角色位置到棋盤
+                LeftChar.MoveClientToPos(new Vector3(leftPos.x, 0, leftPos.y), MOVE_DURATION_SECS, true).Forget();
+                RightChar.MoveClientToPos(new Vector3(rightPos.x, 0, rightPos.y), MOVE_DURATION_SECS, true).Forget();
 
                 // <<<<<<<<體力>>>>>>>>>
                 float leftVigor = Mathf.Lerp(before.LeftVigor, after.LeftVigor, alpha);
                 BattleSceneUI.Instance.SetVigor(leftVigor);
-
-            } else { // 封包延遲時進行外推(extrapolation)
+            } else {
+                // 封包延遲時進行外推(extrapolation)
                 if (lastPack != null) {
-
                     // 計算從最後封包到當前渲染時間的時間差(秒)
                     float extrapolateTime = (renderTimestamp - lastPack.Timestamp) / 1000f;
-                    // 限制外推時間，避免過長導致不準確
                     extrapolateTime = Mathf.Min(extrapolateTime, MAX_EXTRAPOLATION_SECS);
 
-
                     // <<<<<<<<腳色位置>>>>>>>>>
-                    // 取得速度
-                    float leftSpd = lastPack.LeftSpd;
-                    float rightSpd = lastPack.RightSpd;
-                    // 計算外推位置
-                    float extrapolatedLeftPos = lastPack.LeftPos + leftSpd * extrapolateTime;
-                    float extrapolatedRightPos = lastPack.RightPos + rightSpd * extrapolateTime;
-                    // 使用插值來平滑外推位置
-                    extrapolatedLeftPos = Mathf.Lerp(lastPack.LeftPos, extrapolatedLeftPos, extrapolateTime / MOVE_DURATION_SECS);
-                    extrapolatedRightPos = Mathf.Lerp(lastPack.RightPos, extrapolatedRightPos, extrapolateTime / MOVE_DURATION_SECS);
-                    // 轉換為3D座標
-                    var clientExtrapolatedPos = ConvertTo3DPos(extrapolatedLeftPos, extrapolatedRightPos);
+                    Vector2 leftSpd = new Vector2(lastPack.LeftSpd, 0); // 假設速度是平面上的向量
+                    Vector2 rightSpd = new Vector2(lastPack.RightSpd, 0);
+
+                    Vector2 extrapolatedLeftPos = lastPack.LeftPos + leftSpd * extrapolateTime;
+                    Vector2 extrapolatedRightPos = lastPack.RightPos + rightSpd * extrapolateTime;
+
+                    // 平滑外推位置
+                    extrapolatedLeftPos = Vector2.Lerp(lastPack.LeftPos, extrapolatedLeftPos, extrapolateTime / MOVE_DURATION_SECS);
+                    extrapolatedRightPos = Vector2.Lerp(lastPack.RightPos, extrapolatedRightPos, extrapolateTime / MOVE_DURATION_SECS);
+
                     // 更新角色位置
-                    leftChar.MoveClientToPos(clientExtrapolatedPos.Item1, MOVE_DURATION_SECS, false).Forget();
-                    rightChar.MoveClientToPos(clientExtrapolatedPos.Item2, MOVE_DURATION_SECS, false).Forget();
+                    LeftChar.MoveClientToPos(new Vector3(extrapolatedLeftPos.x, 0, extrapolatedLeftPos.y), MOVE_DURATION_SECS, false).Forget();
+                    RightChar.MoveClientToPos(new Vector3(extrapolatedRightPos.x, 0, extrapolatedRightPos.y), MOVE_DURATION_SECS, false).Forget();
 
                     // <<<<<<<<體力>>>>>>>>>
-                    float leftVigor = lastPack.LeftVigor;
-                    // 計算外推體力
-                    float extrapolatedLeftVigor = lastPack.LeftVigor + 1 * extrapolateTime; // 體力回復都是1
-                    // 使用插值來平滑外推體力
+                    float extrapolatedLeftVigor = lastPack.LeftVigor + 1 * extrapolateTime;
                     extrapolatedLeftVigor = Mathf.Lerp(lastPack.LeftVigor, extrapolatedLeftVigor, extrapolateTime / MOVE_DURATION_SECS);
-
-                } else {
-                    // 尚未收到封包前腳色不會移動
                 }
             }
 
@@ -230,44 +212,20 @@ public class BattleController : MonoBehaviour {
     }
 
 
-    /// <summary>
-    /// 將server的1維座標轉client的3維座標
-    /// </summary>
-    Tuple<Vector3, Vector3> ConvertTo3DPos(float rightPos, float leftPos) {
-        // 計算一維座標的中心點
-        float serverCenterPos = (float)(rightPos + leftPos) / 2.0f;
-        float leftToCenter = Mathf.Abs(serverCenterPos - (float)leftPos);
-        float rightToCenter = Mathf.Abs(serverCenterPos - (float)rightPos);
-        // 計算client二維座標的中心點
-        Vector3 clientCenterPos = (rightChar.transform.localPosition + leftChar.transform.localPosition) / 2.0f;
-        // 根據目前client角度來計算出目前該有的client座標
-        float angle_left = curKnockAngle + 180f;
-        float angle_right = curKnockAngle;
-        float angleInRadians_left = angle_left * Mathf.Deg2Rad;
-        float angleInRadians_right = angle_right * Mathf.Deg2Rad;
-        float offsetX_left = Mathf.Cos(angleInRadians_left) * leftToCenter;
-        float offsetZ_left = Mathf.Sin(angleInRadians_left) * leftToCenter;
-        float offsetX_right = Mathf.Cos(angleInRadians_right) * rightToCenter;
-        float offsetZ_right = Mathf.Sin(angleInRadians_right) * rightToCenter;
-        Vector3 pos_left = new Vector3(clientCenterPos.x + offsetX_left, 0, clientCenterPos.z + offsetZ_left);
-        Vector3 pos_right = new Vector3(clientCenterPos.x + offsetX_right, 0, clientCenterPos.z + offsetZ_right);
-        return new Tuple<Vector3, Vector3>(pos_left, pos_right);
+
+
+    public void Knockback(KNOCKBACK_TOCLIENT _knockback) {
+        if (_knockback == null) return;
+        if (!CharDic.ContainsKey(_knockback.PlayerID)) return;
+        CharDic[_knockback.PlayerID].HandleKnockback(_knockback.BeforePos.ToUnityVector2(), _knockback.AfterPos.ToUnityVector2(), _knockback.KnockWall);
     }
 
 
-    public void Melee(PackMelee _leftMelee, PackMelee _rightMelee) {
-        if (_leftMelee == null || _rightMelee == null) return;
-        if (_leftMelee.BeKnockback != 0 && _rightMelee.BeKnockback != 0) // 雙方都有被擊退才改變演出的碰撞角度(就只是演出效果)
-            curKnockAngle += UnityEngine.Random.Range(-KnockAngleRange, KnockAngleRange);
-        BattleManager.Instance.SetVCamTargetRot(-curKnockAngle);
-        var clientPos = ConvertTo3DPos((float)_leftMelee.CurPos, (float)_rightMelee.CurPos);
-        leftChar.HandleMelee(clientPos.Item1, _leftMelee.EffectDatas, (float)_leftMelee.BeKnockback, (float)_leftMelee.CurPos, curKnockAngle, _leftMelee.SkillID);
-        rightChar.HandleMelee(clientPos.Item2, _rightMelee.EffectDatas, (float)_rightMelee.BeKnockback, (float)_rightMelee.CurPos, curKnockAngle, _rightMelee.SkillID);
-
+    public void Melee() {
         //產生特效
         AddressablesLoader.GetParticle("Battle/MeleeHit", (prefab, handle) => {
             var go = Instantiate(prefab);
-            var midPos = (rightChar.transform.position + leftChar.transform.position) / 2.0f;
+            var midPos = (RightChar.transform.position + LeftChar.transform.position) / 2.0f;
             go.transform.position = midPos + Vector3.up * 3;
         });
     }
@@ -294,19 +252,19 @@ public class BattleController : MonoBehaviour {
     /// 呼叫腳色播放肉搏技能，收到肉搏技能施放封包時會呼叫此Func
     /// </summary>
     public void PlayMeleeSkill(BEFORE_MELEE_TOCLIENT _pack) {
-        if (leftChar == null || rightChar == null) {
+        if (LeftChar == null || RightChar == null) {
             WriteLog.LogError("PlayMeleeSkill錯誤");
             return;
         }
         if (_pack.MySkillID != 0) {
             var jsonSkill = GameDictionary.GetJsonData<JsonSkill>(_pack.MySkillID);
             if (jsonSkill == null) return;
-            leftChar.MyEffectSpeller.PlaySpellEffect(jsonSkill);
+            LeftChar.MyEffectSpeller.PlaySpellEffect(jsonSkill);
         }
         if (_pack.OpponentSkillID != 0) {
             var jsonSkill = GameDictionary.GetJsonData<JsonSkill>(_pack.OpponentSkillID);
             if (jsonSkill == null) return;
-            rightChar.MyEffectSpeller.PlaySpellEffect(jsonSkill);
+            RightChar.MyEffectSpeller.PlaySpellEffect(jsonSkill);
         }
 
     }
@@ -380,11 +338,11 @@ public class BattleController : MonoBehaviour {
     }
 
     public float GetDistBetweenChars() {
-        if (leftChar == null || rightChar == null) {
-            WriteLog.LogError($"character為null leftChar: {leftChar}   rightChar: {rightChar}");
+        if (LeftChar == null || RightChar == null) {
+            WriteLog.LogError($"character為null leftChar: {LeftChar}   rightChar: {RightChar}");
             return 0f;
         }
-        float dist = Vector3.Distance(leftChar.transform.position, rightChar.transform.position);
+        float dist = Vector3.Distance(LeftChar.transform.position, RightChar.transform.position);
         return dist;
     }
 

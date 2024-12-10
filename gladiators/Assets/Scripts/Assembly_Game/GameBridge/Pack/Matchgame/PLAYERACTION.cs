@@ -2,6 +2,7 @@ namespace Gladiators.Socket.Matchgame {
     public class PLAYERACTION : SocketContent {
         public enum PackActionType {
             ACTION_SKILL,
+            ACTION_SKILL_FAIL,
             ACTIVE_MELEE_SKILL,
             INSTANT_SKILL,
             ACTION_OPPONENTSKILL,
@@ -31,6 +32,10 @@ namespace Gladiators.Socket.Matchgame {
             On = _on;
             SkillID = _skillID;
         }
+    }
+    // 技能失敗回傳
+    public class PackAction_SkillFail_ToClient {
+        public int[] HandSkills { get; private set; } // 目前手牌
     }
     // 啟用肉搏技能
     public class PackAction_ActiveMeleeSkill_ToClient {

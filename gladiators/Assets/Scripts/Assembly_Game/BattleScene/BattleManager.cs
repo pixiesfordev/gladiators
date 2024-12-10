@@ -83,9 +83,9 @@ namespace Gladiators.Battle {
         ///  雙方選完神祉技能 可以開始戰鬥
         /// </summary>
         public void StartSelectDivineSkill() {
-        //叫出神址選擇介面這裡顯示介面讓玩家選擇
-        if (DivineSelectUI.Instance != null)
-            DivineSelectUI.Instance.SetActive(true);
+            //叫出神址選擇介面這裡顯示介面讓玩家選擇
+            if (DivineSelectUI.Instance != null)
+                DivineSelectUI.Instance.SetActive(true);
         }
 
         /// <summary>
@@ -118,14 +118,30 @@ namespace Gladiators.Battle {
             battleModelController.BattleStart();
         }
 
-        public void SetVCamTargetRot(float _angle) {
-            vTargetGroup.transform.localRotation = Quaternion.Euler(0, -90 + _angle, 0);
+        public void UpdateVCam() {
+            if (battleModelController.LeftChar == null || battleModelController.RightChar == null) {
+                WriteLog.LogError($"character為null leftChar: {battleModelController.LeftChar}   rightChar: {battleModelController.RightChar}");
+                return;
+            }
+            Vector3 leftCharPos = battleModelController.LeftChar.transform.position;
+            Vector3 rightCharPos = battleModelController.RightChar.transform.position;
+            Vector3 direction = leftCharPos - rightCharPos;
+            direction.y = 0;
+            if (direction.sqrMagnitude < Mathf.Epsilon) {
+                return;
+            }
+            // 計算水平旋轉角度
+            float targetYAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
+            // 更新攝影機的 Y 軸旋轉
+            vTargetGroup.transform.localRotation = Quaternion.Euler(0, targetYAngle, 0);
+
+            setCamValues(battleModelController.GetDistBetweenChars());
         }
 
         /// <summary>
         /// 根據雙方距離改變攝影機鏡頭
         /// </summary>
-        public void SetCamValues(float _charsDist) {
+        void setCamValues(float _charsDist) {
             float ratio = (_charsDist / MAX_DIST);
             // 更改FOV
             float fov = ratio * (camFOV.Y - camFOV.X) + camFOV.X;
@@ -246,7 +262,7 @@ namespace Gladiators.Battle {
         }
 
         public void Melee(MELEE_TOCLIENT _melee) {
-            battleModelController.Melee(_melee.MyAttack, _melee.OpponentAttack);
+            battleModelController.Melee();
         }
 
         /// <summary>

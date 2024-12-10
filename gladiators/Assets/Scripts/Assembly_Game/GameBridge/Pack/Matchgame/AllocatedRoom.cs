@@ -158,6 +158,10 @@ namespace Gladiators.Main {
                             var hpPacket = LitJson.JsonMapper.ToObject<SocketCMD<Hp_TOCLIENT>>(_msg);
                             HandlerHp(hpPacket);
                             break;
+                        case SocketContent.MatchgameCMD_TCP.KNOCKBACK_TOCLIENT:
+                            var knockbackPacket = LitJson.JsonMapper.ToObject<SocketCMD<KNOCKBACK_TOCLIENT>>(_msg);
+                            HandlerKnockback(knockbackPacket);
+                            break;
                         case SocketContent.MatchgameCMD_TCP.GMACTION_TOCLIENT:
                             //收到封包要先進行GMACTION_TOCLIENT反序列化之後再根據ActionType類型來使用泛型解析成正確的ActionContent
                             var gmActionBasePacket = JsonMapper.ToObject<SocketCMD<GMACTION_TOCLIENT<JsonData>>>(_msg);
@@ -334,6 +338,13 @@ namespace Gladiators.Main {
             }
         }
         /// <summary>
+        /// 收到角鬥士擊退
+        /// </summary>
+        public void HandlerKnockback(SocketCMD<KNOCKBACK_TOCLIENT> _packet) {
+            if (SceneManager.GetActiveScene().name != MyScene.BattleScene.ToString() || BattleManager.Instance == null) return;
+            BattleController.Instance.Knockback(_packet.Content);
+        }
+        /// <summary>
         /// 收到Player ACTION回傳
         /// </summary>
         void HandlerPlayerAction(string _actionType, string _playerID, string _jsonStr) {
@@ -341,6 +352,11 @@ namespace Gladiators.Main {
             PLAYERACTION.PackActionType actionType;
             if (MyEnum.TryParseEnum(_actionType, out actionType)) {
                 switch (actionType) {
+                    case PLAYERACTION.PackActionType.ACTION_SKILL_FAIL: // 技能施放失敗
+                        var faillSkill = JsonMapper.ToObject<PackAction_SkillFail_ToClient>(_jsonStr);
+                        BattleSceneUI.Instance.SetSkillDatas(faillSkill.HandSkills, 0, false);
+                        WriteLog.LogError("施放技能失敗");
+                        break;
                     case PLAYERACTION.PackActionType.ACTIVE_MELEE_SKILL: // 收到肉搏技能啟用
                         var activeMeleeSkill = JsonMapper.ToObject<PackAction_ActiveMeleeSkill_ToClient>(_jsonStr);
                         break;
@@ -349,7 +365,7 @@ namespace Gladiators.Main {
                         if (MyPackPlayer.DBID == _playerID) BattleSceneUI.Instance.CastInstantSkill(instantSkillPack.NewSkilID);
                         BattleController.Instance.PlayInstantSkill(_playerID, instantSkillPack.SkillID);
                         break;
-                    case PLAYERACTION.PackActionType.ACTION_RUSH: // 收到即時技能發動
+                    case PLAYERACTION.PackActionType.ACTION_RUSH: // 衝刺
                         var rushPack = JsonMapper.ToObject<PackAction_Rush>(_jsonStr);
                         BattleController.Instance.Rush(_playerID, rushPack.On);
                         break;
