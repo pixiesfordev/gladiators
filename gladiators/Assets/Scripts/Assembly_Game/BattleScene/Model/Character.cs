@@ -197,6 +197,8 @@ public class Character : MonoBehaviour {
 
         Vector3 originalPos = transform.localPosition;
 
+        sprayCoin();
+
         if (knockbackType == KnockbackType.Knockup) { // 擊飛
             float knockupHeight = _serverKnockPower / 6f;
             float gravity = 8f * knockupHeight / (KNOCKBACK_TIME * KNOCKBACK_TIME); // 8 * h / T^2
@@ -228,7 +230,7 @@ public class Character : MonoBehaviour {
                     knockWall();
                 }
                 // 播放暈眩動畫
-                PlayAni("stun");
+                PlayAni("impact00");
             });
         } else if (knockbackType == KnockbackType.Slide) { // 擊退滑行
             Vector3 horizontalDisplacement = new Vector3(_finalPos.x - originalPos.x, 0, _finalPos.z - originalPos.z);
@@ -262,7 +264,7 @@ public class Character : MonoBehaviour {
                     knockWall();
                 }
                 // 播放暈眩動畫
-                PlayAni("stun");
+                PlayAni("impact01");
             });
         }
     }
@@ -295,7 +297,7 @@ public class Character : MonoBehaviour {
     }
 
     void sprayCoin() {
-        AddressablesLoader.GetParticle("Battle/CFXR _BOOM_", (prefab, handle) => {
+        AddressablesLoader.GetParticle("Battle/VFX_MONER", (prefab, handle) => {
             var go = Instantiate(prefab);
             go.transform.position = transform.position + Vector3.up * 6;
         });
