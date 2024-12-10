@@ -181,8 +181,8 @@ public class Character : MonoBehaviour {
 
         sprayCoin();
 
-        if (knockbackType == KnockbackType.Knockup) { // 擊飛
-            float knockupHeight = _serverKnockPower / 6f;
+        if (knockbackType == KnockbackType.Knockup) {// 擊飛
+            float knockupHeight = knockbackDist / 6f;
             float gravity = 8f * knockupHeight / (KNOCKBACK_TIME * KNOCKBACK_TIME); // 8 * h / T^2
             float initialVelocityY = gravity * (KNOCKBACK_TIME / 2f); // v0 = g * (T/2)
             Vector3 horizontalVelocity = (finalPos - originalPos) / KNOCKBACK_TIME;
