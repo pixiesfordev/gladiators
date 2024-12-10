@@ -37,6 +37,8 @@ namespace Gladiators.Battle {
         [SerializeField] List<Transform> BGMoveWithCameraTiers; //會跟著鏡頭移動的分層 拆五層 五層移動量會不一樣 做出深度感
         [SerializeField] DivineCandle[] CandleObjs; //蠟燭動畫
 
+        [SerializeField] DivineCardSelectEffect[] DivineCardSelectEffects; //神祇卡牌背後的光影動畫
+
         [SerializeField] Text MousePositionVal; //測試用 監控滑鼠位置
 
         [HeaderAttribute("==============TEST==============")]
@@ -553,6 +555,36 @@ namespace Gladiators.Battle {
             ResetButton();
             _afterCloseAct();
         }
+
+        #region 神祇卡片光影動畫控制邏輯
+
+        int GetDivineSkillObjIndex(DivineSkill obj) {
+            for (int i = 0; i < DivineSkills.Length; i++) {
+                if (obj.Equals(DivineSkills[i]))
+                    return i;
+            }
+            return -1;
+        }
+
+        public void PlayCardMaskOn(DivineSkill obj) {
+            int index = GetDivineSkillObjIndex(obj);
+            if (index == -1) return;
+            DivineCardSelectEffects[index].PlayCardMaskOn();
+        }
+
+        public void PlayCardMaskOff(DivineSkill obj) {
+            int index = GetDivineSkillObjIndex(obj);
+            if (index == -1) return;
+            DivineCardSelectEffects[index].PlayCardMaskOff();
+        }
+
+        public void PlayCardMaskDecide(DivineSkill obj) {
+            int index = GetDivineSkillObjIndex(obj);
+            if (index == -1) return;
+            DivineCardSelectEffects[index].PlayCardMaskDecide();
+        }
+
+        #endregion
 
         //敵方資料來源 >> AllocatedRoom的ReceiveSetPlayer下的GotOpponent
 

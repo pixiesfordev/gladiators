@@ -33,6 +33,7 @@ public class BattleSkillButton : MonoBehaviour {
     [Tooltip("使用技能外移位置")][SerializeField] Vector3 UsedSkillMoveOutPosition;
     [Tooltip("使用技能外移所需時間")][SerializeField] float UsedSkillMoveOutTime = 1f;
     //[Tooltip("")][SerializeField] ;
+    [Tooltip("測試Shader")] [SerializeField] bool TestShader = false;
 
     JsonSkill SkillData;
     public bool SkillSelected { get; private set; } = false; //技能被選上 等待觸發 碰撞觸發技能使用
@@ -53,10 +54,6 @@ public class BattleSkillButton : MonoBehaviour {
     bool IsEnergyEnough = false;
     bool OldEnergyEnough = true;
     float EnergyRate = 0f;
-    //Color IconGrayNormalColor = new(0.5f, 0.5f, 0.5f);
-    //Color PressColor = new(0.78f, 0.78f, 0.78f);
-    //Color HideColor = new(1f, 1f, 1f, 0f);
-    //Vector3 ZoomInScale = new(1.2f, 1.2f, 1f);
 
     enum SkillAniState {
         IDLE,
@@ -81,6 +78,8 @@ public class BattleSkillButton : MonoBehaviour {
     bool btnLocking = false;
     int CacheSKillId;
 
+    //TODO:測試師法跟能量足夠的時候 Shader有沒有正常運作
+
     void Start() {
         //初始化演出用材質球副本 避免每次演出一直產生新的object
         IconMaterial = Instantiate(SkillIconMaterial);
@@ -93,13 +92,15 @@ public class BattleSkillButton : MonoBehaviour {
 
         WhiteMaterial01.SetFloat("_exposure", 2f);
         WhiteMaterial01.SetFloat("_color_saturation", 0f);
-        //先把使用自訂Material相關的邏輯註解掉 因為無法正常裁切 需要找方法正確裁切
-        //White01.material = WhiteMaterial01;
+        //TODO:先把使用自訂Material相關的邏輯註解掉 因為無法正常裁切 需要找方法正確裁切
+        if (TestShader)
+            White01.material = WhiteMaterial01;
 
         WhiteMaterial.SetFloat("_exposure", 2f);
         WhiteMaterial.SetFloat("_color_saturation", 0);
-        //先把使用自訂Material相關的邏輯註解掉 因為無法正常裁切 需要找方法正確裁切
-        //White.material = WhiteMaterial;
+        //TODO:先把使用自訂Material相關的邏輯註解掉 因為無法正常裁切 需要找方法正確裁切
+        if (TestShader)
+            White.material = WhiteMaterial;
 
         IconMaterial.SetTexture("_main_mask01", SkillMaterialMask);
         //CreateCTS();
@@ -287,7 +288,9 @@ public class BattleSkillButton : MonoBehaviour {
     /// </summary>
     /// <param name="_skillId"></param>
     public void CastInstantSkill(int _skillId) {
-        PlayButtonCast(true);
+        PlayButtonCast(true); 
+        //TODO:測試
+        StartCastEvent().Forget();
         CacheSKillId = _skillId;
         WriteLog.LogWarning("收到立即釋放技能回傳封包 開始施展技能!");
     }
@@ -421,7 +424,9 @@ public class BattleSkillButton : MonoBehaviour {
         btnLocking = true;
         IconMaterial.SetFloat("_exposure", 1f);
         IconMaterial.SetFloat("_color_saturation", 0f);
-        //SkillIcon.material = IconMaterial;
+        //TODO:測試
+        if (TestShader)
+            SkillIcon.material = IconMaterial;
         await DoSaturationGradient(0f, 1f, 0.02f, IconMaterial);
         await UniTask.WaitForSeconds(0.29f);
         //演出完畢解鎖按鈕
@@ -449,7 +454,7 @@ public class BattleSkillButton : MonoBehaviour {
         if (IsEnergyEnough)
             EnoughEnergyPress();
         else
-            InsufficientEnergyPress();
+            InsufficientEnergyPress(); //這個現在並不會被呼叫到 不用測試
     }
 
     void EnoughEnergyPress() {
@@ -463,14 +468,13 @@ public class BattleSkillButton : MonoBehaviour {
         curAniState = SkillAniState.INSUFFICIENT_ENERGY_PRESS;
         BtnAni.Play("Insufficient_Energy_Press");
         //現在先把使用自訂Material相關的邏輯註解掉 因為無法正常裁切 需要找方法正確裁切
-        //DoInsufficientPress().Forget();
-        /*
-        float duration = 0.03f;
-        //設定white01材質
-        WhiteMaterial01.SetFloat("_exposure", 8f);
-        //設定white材質
-        WhiteMaterial.SetFloat("_exposure", 8f);
-        */
+        if (TestShader) {
+            DoInsufficientPress().Forget();
+            //設定white01材質
+            WhiteMaterial01.SetFloat("_exposure", 8f);
+            //設定white材質
+            WhiteMaterial.SetFloat("_exposure", 8f);
+        }
     }
 
     public void StartInsufficientEnergyPressEvent() {
@@ -479,7 +483,7 @@ public class BattleSkillButton : MonoBehaviour {
         White01.gameObject.SetActive(true);
     }
 
-    /*現在先把使用自訂Material相關的邏輯註解掉 因為無法正常裁切 需要找方法正確裁切
+    //現在先把使用自訂Material相關的邏輯註解掉 因為無法正常裁切 需要找方法正確裁切
     async UniTask DoInsufficientPress() {
         float duration = 0.03f;
         float startVal = 2f;
@@ -488,7 +492,6 @@ public class BattleSkillButton : MonoBehaviour {
         DoExposureGradient(startVal, endVal, duration, WhiteMaterial01).Forget();
         await UniTask.WaitForSeconds(duration);
     }
-    */
 
     public void ReleasedSkill() {
         //Debug.LogErrorFormat("released skill Time: {0}", Time.time);
@@ -502,7 +505,7 @@ public class BattleSkillButton : MonoBehaviour {
             EnoughEnergyReleased();
         } else {
             clickWaitDuration = 0.03f;
-            InsufficientEnergyReleased();
+            InsufficientEnergyReleased(); //這個現在不會被呼叫到 不用測試
         }
     }
 
@@ -516,12 +519,13 @@ public class BattleSkillButton : MonoBehaviour {
         //Debug.LogErrorFormat("insufficient energy released! Time: {0}", Time.time);
         curAniState = SkillAniState.INSUFFICIENT_ENERGY_RELEASED;
         BtnAni.Play("Insufficient_Energy_Released");
-        /*先把材質相關設定註解掉 目前沒辦法正確在Mask下使用Material
-        //white011材質變更
-        WhiteMaterial01.SetFloat("_exposure", 2f);
-        //white材質變更
-        WhiteMaterial.SetFloat("_exposure", 2f);
-        */
+        //先把材質相關設定註解掉 目前沒辦法正確在Mask下使用Material
+        if (TestShader) {
+            //white011材質變更
+            WhiteMaterial01.SetFloat("_exposure", 2f);
+            //white材質變更
+            WhiteMaterial.SetFloat("_exposure", 2f);
+        }
     }
 
     //點擊釋放技能
@@ -589,7 +593,7 @@ public class BattleSkillButton : MonoBehaviour {
         //Debug.LogErrorFormat("觸發點擊按鈕! Time: {0}", Time.time);
     }
 
-    /*配合Shader材質的演出 先註解 因為現在Shader有問題
+    //配合Shader材質的演出 先註解 因為現在Shader有問題
     async UniTaskVoid StartCastEvent()
     {
         float startVal = 1.5f;
@@ -605,7 +609,6 @@ public class BattleSkillButton : MonoBehaviour {
         //第二段漸變 exposureVal從15 >> 1 費時0.03秒
         await DoExposureGradient(startVal, endVal, 0.03f, IconMaterial);
     }
-    */
 
     /// <summary>
     /// 做材質球的Exposure漸變

@@ -16,6 +16,8 @@ namespace Gladiators.Battle {
 
         JsonSkill SkillData;
 
+        bool OldSelected = false;
+
         //TODO:
         //RelicsSkill日後要掛回材質球(位置:Asset/Resource/Atlas/DivineUI) Relics skill 
 
@@ -100,11 +102,15 @@ namespace Gladiators.Battle {
                 bool selected = DivineSelectUI.Instance.SelectDivineSkill(SkillData);
                 if (selected) {
                     EffectAni.Play("Relics_bigger", -1, 0f);
+                    DivineSelectUI.Instance.PlayCardMaskOn(this);
                     //WriteLog.LogErrorFormat("被選上! 按鈕: {0}", name);
                 } else {
                     EffectAni.Play("Relics_Cancelled", -1, 0f);
+                    if (OldSelected != selected)
+                        DivineSelectUI.Instance.PlayCardMaskOff(this);
                     //WriteLog.LogErrorFormat("取消選上! 按鈕: {0}", name);
                 }
+                OldSelected = selected;
             }
         }
 
@@ -113,6 +119,7 @@ namespace Gladiators.Battle {
         /// </summary>
         public void PlayDecisionSelected() {
             EffectAni.Play("Ruins_Decision_Selection", -1, 0f);
+            DivineSelectUI.Instance.PlayCardMaskDecide(this);
             //WriteLog.LogErrorFormat("播放確定選擇動畫! 按鈕: {0}", name);
         }
 
