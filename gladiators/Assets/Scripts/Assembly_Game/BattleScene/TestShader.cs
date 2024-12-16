@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using Gladiators.Main;
 using Scoz.Func;
 using UnityEngine;
 using UnityEngine.UI;
@@ -43,6 +44,9 @@ public class TestShader : MonoBehaviour
     [SerializeField] bool TestStopTask;
 
     [SerializeField] bool TestUniTaskTime;
+
+    [SerializeField] bool TestGetSpriteOfSpellIcon;
+    [SerializeField] string TestSpellIconRef;
 
     Material _SkillMaterial1;
     Material _SkillMaterial2;
@@ -91,6 +95,10 @@ public class TestShader : MonoBehaviour
         if (TestUniTaskTime) {
             TestUniTaskTime = false;
             DoTestUniTaskTime().Forget();
+        }
+        if (TestGetSpriteOfSpellIcon) {
+            TestGetSpriteOfSpellIcon = false;
+            SetTextureByRef();
         }
     }
     
@@ -169,6 +177,39 @@ public class TestShader : MonoBehaviour
             progress += 0.05f;
             await UniTask.Yield();
             WriteLog.LogErrorFormat("目前進度: {0}", progress);
+        }
+    }
+
+    void SetTextureByRef() {
+        if (!string.IsNullOrEmpty(TestSpellIconRef)) {
+            //設定SkillIcon
+            AssetGet.GetSpriteFromAtlas("SpellIcon", TestSpellIconRef, (sprite) => {
+                TestImage1.gameObject.SetActive(true);
+                if (sprite != null) {
+                    // Get the texture of the atlas(此行只能取到Atlas 無法正確設定圖片)
+                    Texture2D texture = sprite.texture;
+                    // Get the texture of the sprite in the atlas(一定要重新建立一個Texture 不然沒辦法正確取到我們要的圖...)
+                    Texture2D spriteTexture = new Texture2D((int)sprite.textureRect.width, (int)sprite.textureRect.height);
+                    spriteTexture.SetPixels(texture.GetPixels((int)sprite.textureRect.x, (int)sprite.textureRect.y, (int)sprite.textureRect.width, (int)sprite.textureRect.height));
+                    spriteTexture.Apply();
+                    _SkillMaterial1.SetTexture("_main_Tex", spriteTexture);
+                    //WriteLog.LogWarningFormat("設定圖片! 技能物件: {0} 是否為初始化: {1} 能量是否足夠: {2}", name, _init, IsEnergyEnough);
+                }
+                else
+                    AssetGet.GetSpriteFromAtlas("SpellIcon", "sprint", (sprite) => {
+                        // Get the texture of the atlas(此行只能取到Atlas 無法正確設定圖片)
+                        Texture2D texture = sprite.texture;
+                        // Get the texture of the sprite in the atlas(一定要重新建立一個Texture 不然沒辦法正確取到我們要的圖...)
+                        Texture2D spriteTexture = new Texture2D((int)sprite.textureRect.width, (int)sprite.textureRect.height);
+                        spriteTexture.SetPixels(texture.GetPixels((int)sprite.textureRect.x, (int)sprite.textureRect.y, (int)sprite.textureRect.width, (int)sprite.textureRect.height));
+                        spriteTexture.Apply();
+                        _SkillMaterial1.SetTexture("_main_Tex", sprite.texture);
+                        //WriteLog.LogWarningFormat("圖片缺少! 用衝刺圖代替顯示! ID: {0}", SkillData.Ref);
+                    });
+            });
+        } else {
+            TestImage1.gameObject.SetActive(false);
+            Debug.LogWarning("無法設定圖片 技能資料可能為空或Ref為空值!");
         }
     }
 }

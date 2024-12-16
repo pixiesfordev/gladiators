@@ -15,6 +15,7 @@ using static BattleSceneUI;
 public class BattleSkillButton : MonoBehaviour {
 
     [SerializeField] Image SkillIcon;
+    [SerializeField] Image SkillGrayIcon;
     [SerializeField] Image WhiteRotate;
     [SerializeField] Image White;
     [SerializeField] Image White01;
@@ -28,24 +29,27 @@ public class BattleSkillButton : MonoBehaviour {
     [SerializeField] Animator BtnAni;
     [SerializeField] Texture2D SkillMaterialMask;
     [SerializeField] Image Locker;
+    [SerializeField] Texture2D WhiteIconTexture;
+    [SerializeField] Texture2D White01MaskTexture;
 
     [HeaderAttribute("==============TEST==============")]
     [Tooltip("使用技能外移位置")][SerializeField] Vector3 UsedSkillMoveOutPosition;
     [Tooltip("使用技能外移所需時間")][SerializeField] float UsedSkillMoveOutTime = 1f;
     //[Tooltip("")][SerializeField] ;
-    [Tooltip("測試Shader")] [SerializeField] bool TestShader = false;
+
+    [SerializeField] bool PlayAvailable = false;
+    [SerializeField] bool PlayCast = false;
 
     JsonSkill SkillData;
     public bool SkillSelected { get; private set; } = false; //技能被選上 等待觸發 碰撞觸發技能使用
 
-    //TODO:之後有足夠時間改設計成陣列 根據演出需求動態添加材質球 目的為不能共用材質球 >> 先用簡單寫死的方式 看有幾個物件會用到就建立幾個
     Material IconMaterial;
     Material GrayIconMaterial;
     Material WhiteMaterial;
-    Material WhiteMaterial01;
-    Material ButtonLightMaterial;
-    Material ExplosiveCastMaterial;
-    Material JitterMaterial;
+    Material White01Material;
+    //Material ButtonLightMaterial;
+    //Material ExplosiveCastMaterial;
+    //Material JitterMaterial;
 
     //CancellationTokenSource CurrentCTS;
     //CancellationToken CurrentCT; //用來中斷UniTask.Yield
@@ -78,33 +82,61 @@ public class BattleSkillButton : MonoBehaviour {
     bool btnLocking = false;
     int CacheSKillId;
 
-    //TODO:測試師法跟能量足夠的時候 Shader有沒有正常運作
-
+    //TODO:測試施法跟能量足夠的時候 Shader有沒有正常運作
+    /*
+    //V1.先確保調整Shader的值 圖會跟著改變 >> OK 只要拿掉所有上層Mask即可正常運作
+        需要Shader模板 >> 初始化要先弄好
+        1.icon(技能圖)
+        2.white01(外圈白光框)
+        3.white(內部圖案白光)
+    //V2.重拉動畫演出(路徑跑掉的要重拉)
+    //3.修改設定圖片的邏輯 改用Shader之後 就不是改Image的Sprite了 而是Material的Texture2D了
+    //4.測試功能(施法 and 能量足夠)
+    */
     void Start() {
         //初始化演出用材質球副本 避免每次演出一直產生新的object
         IconMaterial = Instantiate(SkillIconMaterial);
         GrayIconMaterial = Instantiate(GrayMaterial);
         WhiteMaterial = Instantiate(SkillIconMaterial);
-        WhiteMaterial01 = Instantiate(SkillIconMaterial);
-        ButtonLightMaterial = Instantiate(SkillIconMaterial);
-        ExplosiveCastMaterial = Instantiate(SkillIconMaterial);
-        JitterMaterial = Instantiate(SkillIconMaterial);
+        White01Material = Instantiate(SkillIconMaterial);
+        //ButtonLightMaterial = Instantiate(SkillIconMaterial);
+        //ExplosiveCastMaterial = Instantiate(SkillIconMaterial);
+        //JitterMaterial = Instantiate(SkillIconMaterial);
 
-        WhiteMaterial01.SetFloat("_exposure", 2f);
-        WhiteMaterial01.SetFloat("_color_saturation", 0f);
-        //TODO:先把使用自訂Material相關的邏輯註解掉 因為無法正常裁切 需要找方法正確裁切
-        if (TestShader)
-            White01.material = WhiteMaterial01;
+        //初始化White和White01的圖片 遮罩 亮度 變色等數值
+        White01Material.SetTexture("_main_Tex", WhiteIconTexture);
+        White01Material.SetTexture("_main_mask01", White01MaskTexture);
+        White01Material.SetFloat("_exposure", 2f);
+        White01Material.SetFloat("_color_saturation", 0f);
+        White01.material = White01Material;
 
+        WhiteMaterial.SetTexture("_main_Tex", WhiteIconTexture);
+        WhiteMaterial.SetTexture("_main_mask01", SkillMaterialMask);
         WhiteMaterial.SetFloat("_exposure", 2f);
         WhiteMaterial.SetFloat("_color_saturation", 0);
-        //TODO:先把使用自訂Material相關的邏輯註解掉 因為無法正常裁切 需要找方法正確裁切
-        if (TestShader)
-            White.material = WhiteMaterial;
+        White.material = WhiteMaterial;
 
         IconMaterial.SetTexture("_main_mask01", SkillMaterialMask);
+
+        SkillIcon.material = IconMaterial;
+        SkillGrayIcon.material = GrayIconMaterial;
         //CreateCTS();
         SetLockerIcon(false);
+    }
+
+    void Update() {
+        if (PlayAvailable) {
+            PlayAvailable = false;
+            SetSkillIconGray(false);
+            curAniState = SkillAniState.AVAILABLE;
+            SetAvailableMaterial().Forget();
+            BtnAni.Play("available");
+        }
+
+        if (PlayCast) {
+            PlayCast = false;
+            PlayButtonCast(false);
+        }
     }
 
     /*
@@ -124,32 +156,51 @@ public class BattleSkillButton : MonoBehaviour {
     /// <param name="_skill">技能資料</param>
     /// /// <param name="_init">是否為初始化</param>
     public void SetData(JsonSkill _skill, bool _init) {
+        //TODO:設定Icon的Material
         SkillData = _skill;
         Debug.LogWarningFormat("技能物件:{0}設定技能資料! 技能ID: {1}", gameObject.name, SkillData != null ? SkillData.ID : 0);
         if (SkillData != null && !string.IsNullOrEmpty(SkillData.Ref)) {
             //設定SkillIcon
+            SkillIcon.gameObject.SetActive(false);
             AssetGet.GetSpriteFromAtlas("SpellIcon", SkillData.Ref, (sprite) => {
                 SkillIcon.gameObject.SetActive(true);
                 if (sprite != null) {
-                    SkillIcon.sprite = sprite;
                     WhiteRotate.sprite = sprite;
+                    SkillGrayIcon.sprite = sprite;
+                    IconMaterial.SetTexture("_main_Tex", GetRealTexture(sprite));
                     //WriteLog.LogWarningFormat("設定圖片! 技能物件: {0} 是否為初始化: {1} 能量是否足夠: {2}", name, _init, IsEnergyEnough);
                     if (_init)
                         SetSkillIconGray(!IsEnergyEnough);
                 }
                 else
                     AssetGet.GetSpriteFromAtlas("SpellIcon", "sprint", (sprite) => {
-                        SkillIcon.sprite = sprite;
                         WhiteRotate.sprite = sprite;
+                        SkillGrayIcon.sprite = sprite;
+                        IconMaterial.SetTexture("_main_Tex", GetRealTexture(sprite));
                         if (_init)
                             SetSkillIconGray(!IsEnergyEnough);
                         //WriteLog.LogWarningFormat("圖片缺少! 用衝刺圖代替顯示! ID: {0}", SkillData.Ref);
                     });
             });
         } else {
+            SkillGrayIcon.gameObject.SetActive(false);
             SkillIcon.gameObject.SetActive(false);
             Debug.LogWarning("無法設定圖片 技能資料可能為空或Ref為空值!");
         }
+    }
+
+    /// <summary>
+    /// 取得Atlas中的特定Texture(針對Material設定Texture使用)
+    /// </summary>
+    /// <param name="sourceSprite">Spritex來源</param>
+    /// <returns>目標Texture</returns>
+    Texture2D GetRealTexture(Sprite sourceSprite) {
+        Texture2D sourceTexture = sourceSprite.texture;
+        // Get the texture of the sprite in the atlas(一定要重新建立一個Texture 不然沒辦法正確取到我們要的圖...)
+        Texture2D targetTexture = new Texture2D((int)sourceSprite.textureRect.width, (int)sourceSprite.textureRect.height);
+        targetTexture.SetPixels(sourceTexture.GetPixels((int)sourceSprite.textureRect.x, (int)sourceSprite.textureRect.y, (int)sourceSprite.textureRect.width, (int)sourceSprite.textureRect.height));
+        targetTexture.Apply();
+        return targetTexture;
     }
 
     /// <summary>
@@ -337,8 +388,9 @@ public class BattleSkillButton : MonoBehaviour {
     }
 
     void SetSkillIconGray(bool _bGray) {
-        SkillIcon.material = _bGray ? GrayIconMaterial : null;
-        //WriteLog.LogWarningFormat("設定圖片是否打灰: {0} 按鈕: {1}", _bGray, name);
+        SkillIcon.gameObject.SetActive(!_bGray);
+        SkillGrayIcon.gameObject.SetActive(_bGray);
+        WriteLog.LogWarningFormat("設定圖片是否打灰: {0} 按鈕: {1}", _bGray, name);
     }
 
     /// <summary>
@@ -424,9 +476,6 @@ public class BattleSkillButton : MonoBehaviour {
         btnLocking = true;
         IconMaterial.SetFloat("_exposure", 1f);
         IconMaterial.SetFloat("_color_saturation", 0f);
-        //TODO:測試
-        if (TestShader)
-            SkillIcon.material = IconMaterial;
         await DoSaturationGradient(0f, 1f, 0.02f, IconMaterial);
         await UniTask.WaitForSeconds(0.29f);
         //演出完畢解鎖按鈕
@@ -436,7 +485,7 @@ public class BattleSkillButton : MonoBehaviour {
     public void SkillEnergyEnough() {
         //現在先把使用自訂Material相關的邏輯註解掉 因為無法正常裁切 需要找方法正確裁切
         //由BtnAni的available呼叫此事件(結束時)
-        //SetSkillIconGray(false);
+        SetSkillIconGray(false);
         SkillIcon.color = Color.white;
         ButtonLight.color = Color.white;
     }
@@ -467,14 +516,11 @@ public class BattleSkillButton : MonoBehaviour {
         //Debug.LogErrorFormat("Insufficient energy press! Time: {0}", Time.time);
         curAniState = SkillAniState.INSUFFICIENT_ENERGY_PRESS;
         BtnAni.Play("Insufficient_Energy_Press");
-        //現在先把使用自訂Material相關的邏輯註解掉 因為無法正常裁切 需要找方法正確裁切
-        if (TestShader) {
-            DoInsufficientPress().Forget();
-            //設定white01材質
-            WhiteMaterial01.SetFloat("_exposure", 8f);
-            //設定white材質
-            WhiteMaterial.SetFloat("_exposure", 8f);
-        }
+        DoInsufficientPress().Forget();
+        //設定white01材質
+        White01Material.SetFloat("_exposure", 8f);
+        //設定white材質
+        WhiteMaterial.SetFloat("_exposure", 8f);
     }
 
     public void StartInsufficientEnergyPressEvent() {
@@ -489,7 +535,7 @@ public class BattleSkillButton : MonoBehaviour {
         float startVal = 2f;
         float endVal = 8f;
         DoExposureGradient(startVal, endVal, duration, WhiteMaterial).Forget();
-        DoExposureGradient(startVal, endVal, duration, WhiteMaterial01).Forget();
+        DoExposureGradient(startVal, endVal, duration, White01Material).Forget();
         await UniTask.WaitForSeconds(duration);
     }
 
@@ -519,13 +565,10 @@ public class BattleSkillButton : MonoBehaviour {
         //Debug.LogErrorFormat("insufficient energy released! Time: {0}", Time.time);
         curAniState = SkillAniState.INSUFFICIENT_ENERGY_RELEASED;
         BtnAni.Play("Insufficient_Energy_Released");
-        //先把材質相關設定註解掉 目前沒辦法正確在Mask下使用Material
-        if (TestShader) {
-            //white011材質變更
-            WhiteMaterial01.SetFloat("_exposure", 2f);
-            //white材質變更
-            WhiteMaterial.SetFloat("_exposure", 2f);
-        }
+        //white01材質變更
+        White01Material.SetFloat("_exposure", 2f);
+        //white材質變更
+        WhiteMaterial.SetFloat("_exposure", 2f);
     }
 
     //點擊釋放技能
@@ -600,7 +643,6 @@ public class BattleSkillButton : MonoBehaviour {
         float endVal = 15f;
         //初始化材質球
         IconMaterial.SetFloat("_exposure", startVal);
-        SkillIcon.material = IconMaterial;
         await UniTask.WaitForSeconds(0.11f);
         //第一段漸變 exposureVal從1.5 >> 15 費時0.12秒
         await DoExposureGradient(startVal, endVal, 0.12f, IconMaterial);
@@ -650,7 +692,8 @@ public class BattleSkillButton : MonoBehaviour {
             return;
         }
         Locker.gameObject.SetActive(open);
-        SetSkillIconGray(open);
+        //顯示鎖頭 >> 一定打灰 不顯示鎖頭 >> 判斷能量是否足夠來決定是否打灰
+        SetSkillIconGray(open ? open : !IsEnergyEnough);
     }
 
     async UniTask WaitInstantSkillServerBack() {
