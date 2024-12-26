@@ -4,7 +4,7 @@ using System;
 using TMPro;
 using UnityEngine;
 
-namespace Gladiators.Main {
+namespace Gladiators.Battle {
     public class Projector : MonoBehaviour {
 
         Character target;

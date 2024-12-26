@@ -27,7 +27,7 @@ namespace Gladiators.Main {
     }
 
     public class SpellEffect {
-        public Space MySpace { get; private set; }
+        public SpaceType MySpace { get; private set; }
         public RoleSpace MyRoleSpace { get; private set; }
         public string Name { get; private set; }
         public SpellEffect(string _effectStr) {
@@ -36,7 +36,7 @@ namespace Gladiators.Main {
                 WriteLog.LogError($"SpellEffect建構失敗: {_effectStr}");
                 return;
             }
-            Space space;
+            SpaceType space;
             if (!MyEnum.TryParseEnum(strs[0], out space)) {
                 WriteLog.LogError($"SpellEffect建構失敗: {_effectStr}");
                 return;

@@ -1,13 +1,11 @@
-using Gladiators.Battle;
-using Gladiators.Socket.Matchgame;
 using Scoz.Func;
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Gladiators.Main;
 
-namespace Gladiators.Main {
+
+namespace Gladiators.Battle {
     public class EffectSpeller : MonoBehaviour {
 
         public EffectSpeller Instance { get; private set; }
@@ -100,7 +98,7 @@ namespace Gladiators.Main {
             AddressablesLoader.GetPrefab($"Particles/Skill/{_effect.Name}", (prefab, handle) => {
                 if (prefab == null) return;
                 var go = Instantiate(prefab);
-                if (_effect.MySpace == Space.Local) {
+                if (_effect.MySpace == SpaceType.Local) {
                     go.transform.SetParent(myslef.transform);
                 } else {
                     go.transform.SetParent(BattleManager.Instance.WorldEffectParent);
@@ -120,7 +118,7 @@ namespace Gladiators.Main {
             AddressablesLoader.GetPrefab($"Particles/Skill/{_effect.Name}", (prefab, handle) => {
                 if (prefab == null) return;
                 var go = Instantiate(prefab);
-                if (_effect.MySpace == Space.Local) {
+                if (_effect.MySpace == SpaceType.Local) {
                     go.transform.SetParent(opponent.transform);
                 } else {
                     go.transform.SetParent(BattleManager.Instance.WorldEffectParent);
@@ -162,7 +160,7 @@ namespace Gladiators.Main {
             // 命中後執行
             AddressablesLoader.GetPrefab($"Particles/Skill/{_json.Effect_ProjectorHit.Name}", (prefab, handle) => {
                 var hitGo = Instantiate(prefab);
-                if (_json.Effect_ProjectorHit.MySpace == Space.Local) {
+                if (_json.Effect_ProjectorHit.MySpace == SpaceType.Local) {
                     hitGo.transform.SetParent(opponent.transform);
                     setRoleSpacePos(hitGo.transform, opponent, _json.Effect_ProjectorHit.MyRoleSpace);
                 } else {

@@ -95,6 +95,11 @@ MonoBehaviour:
     m_SerializedLabels:
     - Audio
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ae63e3d4ad27c5843bebac21cfcf5951
+    m_Address: Assets/AddressableAssets/Prefabs/Train/TrainVigor/TrainVigorSceneUI.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c0b6ca0a2a723204bbc05df61082a822
     m_Address: Assets/AddressableAssets/Dlls
     m_ReadOnly: 0
@@ -106,6 +111,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - Prefab
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d1e7eab25f9ff7040b170d12544d6863
+    m_Address: Assets/AddressableAssets/Prefabs/Train/TrainVigor/TrainVigorManager.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d3b908b736aade1459712c78847ed049
     m_Address: Assets/AddressableAssets/Prefabs/Start

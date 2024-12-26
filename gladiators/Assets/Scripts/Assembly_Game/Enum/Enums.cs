@@ -6,7 +6,7 @@ namespace Gladiators.Main {
         Myself,
         Enemy,
     }
-    public enum Space {
+    public enum SpaceType {
         Local,
         World,
     }

@@ -63,17 +63,17 @@ namespace Gladiators.Main {
         /// </summary>
         void SpawnSceneObjs() {
 
-            var myScene = MyEnum_UnityAssembly.ParseEnum<MyScene>(SceneManager.GetActiveScene().name);
-            switch (myScene) {
-                case MyScene.StartScene:
+            var sceneName = SceneManager.GetActiveScene().name;
+            switch (sceneName) {
+                case "StartScene":
                     //建立Popup_Local
                     PopupUI_Local.CreateNewInstance();
                     //建立InternetChecker
                     gameObject.AddComponent<InternetChecker_UnityAssembly>().Init();
                     break;
-                case MyScene.LobbyScene:
+                case "LobbyScene":
                     break;
-                case MyScene.BattleScene:
+                case "BattleScene":
                     break;
             }
         }
