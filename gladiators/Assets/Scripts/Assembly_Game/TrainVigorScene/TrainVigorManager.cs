@@ -12,7 +12,7 @@ namespace Gladiators.TrainVigor {
         [SerializeField] Camera MyCam;
         [SerializeField] Chara_TrainVigor Char;
         [SerializeField] Platform MyPlatform;
-        [SerializeField] Projector MyProjector;
+        [SerializeField] Spawner MySpawner;
         [SerializeField] int StartCountDownSec;
 
         [SerializeField] bool MobileControl;
@@ -64,7 +64,7 @@ namespace Gladiators.TrainVigor {
         public void StartGame() {
             playing = true;
             MyPlatform.StartRotate();
-            MyProjector.StartShoot();
+            MySpawner.StartShoot();
             Char.SetKinematic(false);
             // 開始倒數計時
             UniTask.Void(async () => {
@@ -81,7 +81,7 @@ namespace Gladiators.TrainVigor {
         void endGame() {
             playing = false;
             MyPlatform.StopRotate();
-            MyProjector.StopShoot();
+            MySpawner.StopShoot();
         }
         void controlChar_Joystick() {
             if (playing == false || Char == null || joyStick == null) return;

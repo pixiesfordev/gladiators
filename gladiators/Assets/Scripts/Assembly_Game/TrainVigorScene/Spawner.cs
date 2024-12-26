@@ -3,7 +3,7 @@ using Scoz.Func;
 using UnityEngine;
 
 namespace Gladiators.TrainVigor {
-    public class Projector : MonoBehaviour {
+    public class Spawner : MonoBehaviour {
         [SerializeField] GameObject projectilePrefab;
         [SerializeField] Transform centerTarget;
         [SerializeField] MinMaxF heightRange = new MinMaxF(5f, 10f);
