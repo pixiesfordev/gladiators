@@ -229,6 +229,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: TrainVigorManager
       objectReference: {fileID: 0}
+    - target: {fileID: 3911452168337500621, guid: d1e7eab25f9ff7040b170d12544d6863,
+        type: 3}
+      propertyPath: m_Cameras.Array.data[0]
+      value: 
+      objectReference: {fileID: 1669811456}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -442,11 +447,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1322834066}
     m_Modifications:
-    - target: {fileID: 3150712259369675123, guid: 52f730ba22fd94c4e9378c68147023a6,
-        type: 3}
-      propertyPath: m_ReferenceResolution.x
-      value: 2532
-      objectReference: {fileID: 0}
     - target: {fileID: 3334887699143162326, guid: 52f730ba22fd94c4e9378c68147023a6,
         type: 3}
       propertyPath: m_Pivot.x
@@ -563,28 +563,10 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3334887699143162326, guid: 52f730ba22fd94c4e9378c68147023a6,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1544538383}
+      addedObject: {fileID: 1618697375}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 52f730ba22fd94c4e9378c68147023a6, type: 3}
---- !u!224 &1544538383 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 625754809334357994, guid: ae63e3d4ad27c5843bebac21cfcf5951,
-    type: 3}
-  m_PrefabInstance: {fileID: 5753698361919013442}
-  m_PrefabAsset: {fileID: 0}
---- !u!20 &1669811456 stripped
-Camera:
-  m_CorrespondingSourceObject: {fileID: 2846627462954338286, guid: 738e497d555e57942aed2c48d37cc3df,
-    type: 3}
-  m_PrefabInstance: {fileID: 647021491}
-  m_PrefabAsset: {fileID: 0}
---- !u!224 &1853163432 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 3334887699143162326, guid: 52f730ba22fd94c4e9378c68147023a6,
-    type: 3}
-  m_PrefabInstance: {fileID: 1444834963}
-  m_PrefabAsset: {fileID: 0}
---- !u!1001 &5753698361919013442
+--- !u!1001 &1618697374
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -727,6 +709,81 @@ PrefabInstance:
       propertyPath: m_Name
       value: TrainVigorSceneUI
       objectReference: {fileID: 0}
+    - target: {fileID: 2702794791866947357, guid: ae63e3d4ad27c5843bebac21cfcf5951,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3290809177677329935, guid: ae63e3d4ad27c5843bebac21cfcf5951,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 295.27255
+      objectReference: {fileID: 0}
+    - target: {fileID: 3290809177677329935, guid: ae63e3d4ad27c5843bebac21cfcf5951,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 295.27255
+      objectReference: {fileID: 0}
+    - target: {fileID: 3290809177677329935, guid: ae63e3d4ad27c5843bebac21cfcf5951,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 293.8308
+      objectReference: {fileID: 0}
+    - target: {fileID: 3290809177677329935, guid: ae63e3d4ad27c5843bebac21cfcf5951,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 266.52307
+      objectReference: {fileID: 0}
+    - target: {fileID: 3290893388352133355, guid: ae63e3d4ad27c5843bebac21cfcf5951,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 295.27255
+      objectReference: {fileID: 0}
+    - target: {fileID: 3290893388352133355, guid: ae63e3d4ad27c5843bebac21cfcf5951,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 295.27255
+      objectReference: {fileID: 0}
+    - target: {fileID: 3700283868487660183, guid: ae63e3d4ad27c5843bebac21cfcf5951,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3700283868487660183, guid: ae63e3d4ad27c5843bebac21cfcf5951,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3700283868487660183, guid: ae63e3d4ad27c5843bebac21cfcf5951,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 44.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 3700283868487660183, guid: ae63e3d4ad27c5843bebac21cfcf5951,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 3700283868487660183, guid: ae63e3d4ad27c5843bebac21cfcf5951,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 22.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3700283868487660183, guid: ae63e3d4ad27c5843bebac21cfcf5951,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -15
+      objectReference: {fileID: 0}
+    - target: {fileID: 3940928816853993056, guid: ae63e3d4ad27c5843bebac21cfcf5951,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3940928816853993056, guid: ae63e3d4ad27c5843bebac21cfcf5951,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6730396139835783403, guid: ae63e3d4ad27c5843bebac21cfcf5951,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -762,6 +819,24 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ae63e3d4ad27c5843bebac21cfcf5951, type: 3}
+--- !u!224 &1618697375 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 625754809334357994, guid: ae63e3d4ad27c5843bebac21cfcf5951,
+    type: 3}
+  m_PrefabInstance: {fileID: 1618697374}
+  m_PrefabAsset: {fileID: 0}
+--- !u!20 &1669811456 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 2846627462954338286, guid: 738e497d555e57942aed2c48d37cc3df,
+    type: 3}
+  m_PrefabInstance: {fileID: 647021491}
+  m_PrefabAsset: {fileID: 0}
+--- !u!224 &1853163432 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 3334887699143162326, guid: 52f730ba22fd94c4e9378c68147023a6,
+    type: 3}
+  m_PrefabInstance: {fileID: 1444834963}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

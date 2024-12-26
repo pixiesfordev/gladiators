@@ -8,7 +8,7 @@ namespace Gladiators.TrainVigor {
         [SerializeField] Transform centerTarget;
         [SerializeField] MinMaxF heightRange = new MinMaxF(5f, 10f);
         [SerializeField] float spawnRadius = 20f;
-        [SerializeField] MinMaxF velocityRange = new MinMaxF(5f, 15f);
+        [SerializeField] public MinMaxF VelocityRange = new MinMaxF(5f, 15f);
         [SerializeField] MinMaxF angleOffsetRange = new MinMaxF(0f, 30f);
         [SerializeField] MinMaxF selfRotation = new MinMaxF(30, 720f);
         [SerializeField] MinMaxF interval = new MinMaxF(1f, 4f);
@@ -39,6 +39,7 @@ namespace Gladiators.TrainVigor {
 
                 // 產生物件
                 GameObject obj = Instantiate(projectilePrefab, spawnPos, Quaternion.identity);
+                obj.name = "Projectile";
                 Rigidbody rigid = obj.GetComponent<Rigidbody>();
 
                 // 隨機旋轉
@@ -59,7 +60,7 @@ namespace Gladiators.TrainVigor {
 
                 // 以 Y 軸為例，對 dir 向量進行旋轉
                 Vector3 finalDirection = Quaternion.AngleAxis(finalAngle, Vector3.up) * dirToCenter;
-                float speed = velocityRange.GetRandInRange();
+                float speed = VelocityRange.GetRandInRange();
                 rigid.velocity = finalDirection * speed;
 
                 await UniTask.WaitForSeconds(interval.GetRandInRange());

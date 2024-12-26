@@ -14,15 +14,19 @@ namespace Gladiators.TrainVigor {
         [SerializeField] Platform MyPlatform;
         [SerializeField] Spawner MySpawner;
         [SerializeField] int StartCountDownSec;
+        [SerializeField] float MaxAddRegenVigor;
+        [SerializeField] float CharDiePosY; // 腳色Y軸低於多少算遊戲失敗
 
         [SerializeField] bool MobileControl;
         UltimateJoystick joyStick;
         bool playing = false;
+        int curLeftTime;
+
 
         public void Init() {
             Instance = this;
             setCam();//設定攝影機模式
-            setStage();
+            setInit();
             setChar();
 
 #if !UNITY_EDITOR // 輸出版本要根據平台判斷操控方式
@@ -37,11 +41,11 @@ namespace Gladiators.TrainVigor {
             MyPlatform.StopRotate();
         }
         void setChar() {
-            Char.Init();
+            Char.Init(MySpawner.VelocityRange);
         }
 
-        void setStage() {
-
+        void setInit() {
+            MyPlatform.Init();
         }
         void setCam() {
             //因為戰鬥場景的攝影機有分為場景與UI, 要把場景攝影機設定為Base, UI設定為Overlay, 並在BaseCamera中加入Camera stack
@@ -60,28 +64,43 @@ namespace Gladiators.TrainVigor {
         private void Update() {
             if (MobileControl) controlChar_Joystick();
             else controlChar_Mouse();
+            dieCheck();
+        }
+        void dieCheck() {
+            if (!playing) return;
+            if (Char.transform.position.y < CharDiePosY) endGame();
+        }
+        void restartGame() {
+            TrainVigorSceneUI.Instance.ShowCountingdown(false);
+            StartGame();
         }
         public void StartGame() {
             playing = true;
+            MyPlatform.ResetPlatform();
+            Char.ResetChar();
             MyPlatform.StartRotate();
             MySpawner.StartShoot();
             Char.SetKinematic(false);
             // 開始倒數計時
             UniTask.Void(async () => {
-                int countDownNum = StartCountDownSec;
-                TrainVigorSceneUI.Instance.SetCountdownImg(countDownNum);
-                while (countDownNum > 0) {
+                curLeftTime = StartCountDownSec;
+                TrainVigorSceneUI.Instance.SetCountdownImg(curLeftTime);
+                while (curLeftTime > 0) {
+                    if (!playing) break;
                     await UniTask.Delay(1000);
-                    countDownNum--;
-                    TrainVigorSceneUI.Instance.SetCountdownImg(countDownNum);
+                    curLeftTime--;
+                    TrainVigorSceneUI.Instance.SetCountdownImg(curLeftTime);
                 }
-                endGame();
+                if (playing) endGame();
             });
         }
         void endGame() {
             playing = false;
             MyPlatform.StopRotate();
             MySpawner.StopShoot();
+            float addVigorGen = MaxAddRegenVigor * ((float)(StartCountDownSec - curLeftTime) / (float)StartCountDownSec);
+            addVigorGen = MyMath.Round(addVigorGen, 2);
+            PopupUI.ShowAttributeUI($"體力回復增加{addVigorGen}/s", restartGame);
         }
         void controlChar_Joystick() {
             if (playing == false || Char == null || joyStick == null) return;
@@ -98,5 +117,9 @@ namespace Gladiators.TrainVigor {
             direction = direction.normalized;
             Char.Move(direction);
         }
+
+
+
+
     }
 }

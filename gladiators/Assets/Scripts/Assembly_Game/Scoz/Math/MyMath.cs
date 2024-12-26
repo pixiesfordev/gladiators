@@ -6,8 +6,9 @@ using UnityEngine;
 namespace Scoz.Func {
     public class MyMath : MonoBehaviour {
         public static float Round(float _num, int _decimalPlaces) {
-            return Mathf.Round(_num * (float)(10 ^ _decimalPlaces)) / (float)(10 ^ _decimalPlaces);
+            return Mathf.Round(_num * Mathf.Pow(10, _decimalPlaces)) / Mathf.Pow(10, _decimalPlaces);
         }
+
         /// <summary>
         /// 取得正1或負1
         /// </summary>

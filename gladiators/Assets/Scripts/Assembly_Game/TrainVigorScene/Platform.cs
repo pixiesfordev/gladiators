@@ -9,6 +9,14 @@ namespace Gladiators.TrainVigor {
         [SerializeField] MinMaxF Interval; // 每次旋轉持續時間範圍
 
         bool rotating = false;
+        Quaternion defaultRotation;
+
+        public void Init() {
+            defaultRotation = transform.rotation;
+        }
+        public void ResetPlatform() {
+            transform.rotation = defaultRotation;
+        }
 
         public void StartRotate() {
             rotating = true;

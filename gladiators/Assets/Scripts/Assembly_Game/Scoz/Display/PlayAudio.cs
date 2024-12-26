@@ -46,7 +46,7 @@ namespace Scoz.Func {
         }
         public void Play(int _index) {
             AudioPlayer.PlayAudioByAudioAsset(AudioDatas[_index].Type, AudioDatas[_index].Clip, AudioDatas[_index].Loop, 1, (clip, handle) => {
-                AudioDatas[_index].ClipName = clip.name;
+                if (clip != null) AudioDatas[_index].ClipName = clip.name;
             });
         }
         public void PlaySoundByAudioClip(AssetReference _clip) {

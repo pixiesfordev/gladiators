@@ -1,5 +1,6 @@
 using Gladiators.Battle;
 using Scoz.Func;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,6 +11,7 @@ namespace Gladiators.TrainVigor {
         [HeaderAttribute("==============AddressableAssets==============")]
         [SerializeField] AssetReference TrainVigorSceneAsset;
         [SerializeField] Image[] Img_Coutingdown;
+        [SerializeField] BattleGladiatorInfo CharInfo;
         public static TrainVigorSceneUI Instance { get; private set; }
 
 
@@ -18,7 +20,7 @@ namespace Gladiators.TrainVigor {
         }
         public override void Init() {
             base.Init();
-
+            CharInfo.Init(1000, 800, 7);
             spawnSceneManager();
         }
         public override void RefreshText() {
@@ -68,6 +70,9 @@ namespace Gladiators.TrainVigor {
             TrainVigorManager.Instance.StartGame();
         }
 
+        public void AddHP(int _value) {
+            CharInfo.AddHP(_value);
+        }
 
     }
 }

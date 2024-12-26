@@ -36,6 +36,7 @@ namespace Scoz.Func {
             InitLoading();
             InitPopupEvent();
             InitClickCancel();
+            InitAttribueUI();
             InitConfirmCancel();
             InitInput();
             //InitScreenEffect();
@@ -165,6 +166,32 @@ namespace Scoz.Func {
             Instance.ClickCancelGo.SetActive(false);
             ClickCancelAction?.Invoke();
             ClickCancelActionWithParam?.Invoke(ClickCancelParam);
+        }
+
+
+        [HeaderAttribute("==============屬性上升彈窗==============")]
+        [SerializeField]
+        GameObject AttributeUIGo = null;
+        [SerializeField]
+        Text AttributeUIText = null;
+        Action AttributeAction = null;
+
+        void InitAttribueUI() {
+            AttributeUIGo.SetActive(false);
+        }
+
+        public static void ShowAttributeUI(string _text, Action _clickCancelAction) {
+            if (!Instance)
+                return;
+            Instance.AttributeUIGo.SetActive(true);
+            Instance.AttributeUIText.text = _text;
+            Instance.AttributeAction = _clickCancelAction;
+        }
+        public void OnClickAttributeUI() {
+            if (!Instance)
+                return;
+            Instance.AttributeUIGo.SetActive(false);
+            AttributeAction?.Invoke();
         }
 
 
