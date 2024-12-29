@@ -1,5 +1,6 @@
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using Gladiators.Hunt;
 using Gladiators.Socket.Matchgame;
 using Gladiators.TrainRock;
 using Gladiators.TrainVigor;
@@ -8,6 +9,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Net;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.TextCore.Text;
 
 public class TrainRockManager : MonoBehaviour {
@@ -20,8 +22,8 @@ public class TrainRockManager : MonoBehaviour {
     public float dragSensitivity = 10f; // 拖曳靈敏度
     public float initialVerticalSpeed = 10f; //拋物線向上高
 
-    [SerializeField] Camera mainCamera;
-    public Camera BattleCam => mainCamera;
+    [SerializeField] Camera MyCam;
+    public Camera RockCam => MyCam;
 
     private Vector3 dragStartPos; // 拖曳起點
     private Vector3 dragEndPos; // 拖曳終點
@@ -34,8 +36,20 @@ public class TrainRockManager : MonoBehaviour {
     public void Init() {
         Instance = this;
         trajectoryLine.enabled = false;
-
+        setCam();
         CreateCharacterTest();
+    }
+
+    void setCam() {
+        //因為戰鬥場景的攝影機有分為場景與UI, 要把場景攝影機設定為Base, UI設定為Overlay, 並在BaseCamera中加入Camera stack
+        UICam.Instance.SetRendererMode(CameraRenderType.Overlay);
+        addCamStack(UICam.Instance.MyCam);
+    }
+    void addCamStack(Camera _cam) {
+        if (_cam == null) return;
+        var cameraData = MyCam.GetUniversalAdditionalCameraData();
+        if (cameraData == null) return;
+        cameraData.cameraStack.Add(_cam);
     }
 
     // Update is called once per frame
@@ -44,6 +58,8 @@ public class TrainRockManager : MonoBehaviour {
     }
 
     private void HandleInput() {
+        if (!playing) return;
+
         if (Input.GetMouseButtonDown(0)) {
             isDragging = true;
             dragStartPos = GetWorldPointFromMouse(Input.mousePosition);
@@ -62,7 +78,7 @@ public class TrainRockManager : MonoBehaviour {
     }
 
     private Vector3 GetWorldPointFromMouse(Vector3 mousePosition) {
-        Ray ray = mainCamera.ScreenPointToRay(mousePosition);
+        Ray ray = MyCam.ScreenPointToRay(mousePosition);
         Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
 
         if (groundPlane.Raycast(ray, out float enter)) {
@@ -108,6 +124,36 @@ public class TrainRockManager : MonoBehaviour {
         trajectoryLine.SetPositions(points);
     }
 
+    public bool playing = false;
+    public int curLeftTime;
+    void restartGame() {
+        TrainRockSceneUI.Instance.ShowCountingdown(false);
+        StartGame(30);
+    }
+    public void StartGame(int StartSec) {
+        playing = true;
+        // 開始倒數計時
+        UniTask.Void(async () => {
+            curLeftTime = StartSec;
+            TrainRockSceneUI.Instance.SetCountdownImg(curLeftTime);
+            while (curLeftTime > 0) {
+                if (!playing) break;
+                await UniTask.Delay(1000);
+                curLeftTime--;
+                if (TrainRockSceneUI.Instance.CheckHP() <= 0) { 
+                    endGame();
+                    break;
+                }
+                TrainRockSceneUI.Instance.SetCountdownImg(curLeftTime);
+            }
+            if (playing) endGame();
+        });
+    }
+    void endGame() {
+        playing = false;
+        PopupUI.ShowAttributeUI($"最大血量增加{allAddHP}，目前最大血量為{TrainRockSceneUI.Instance.CheckMaxHP()}/s", restartGame);
+    }
+
     [SerializeField] Character characterPrefab;
     [SerializeField] GameObject charactersParent;
     public Character MyChar = null;
@@ -118,22 +164,25 @@ public class TrainRockManager : MonoBehaviour {
         MyChar.tag = "leftobj";
         MyChar.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
         MyChar.PlayAni("idle", true);
-        MyChar.Init(_myPlayerPack.MyPackGladiator.JsonID, new Vector2(0, -0.5f), null, RightLeft.Right);
+        MyChar.Init(_myPlayerPack.MyPackGladiator.JsonID, new Vector2(0, -1f), null, RightLeft.Right);
     }
-    public void CreateCharacterTest() { //測試用
+    public void CreateCharacterTest() {
         MyChar = Instantiate(characterPrefab, charactersParent.transform);
 
-        MyChar.name = "1223123132";
+        MyChar.name = "Test";
         MyChar.tag = "leftobj";
         MyChar.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
         MyChar.PlayAni("idle", true);
-        MyChar.InitTest(new Vector2(0, -0.5f), null, RightLeft.Right);
+        MyChar.Init(7, new Vector2(0, -1f), null, RightLeft.Right);
     }
 
+
+    float allAddHP = 0;
     public async UniTask doDamage() {
         int dmg = 10;
         int addHP = 20;
         MyChar.ShowBattleNumber(NumType.Dmg_Small, dmg);
+        allAddHP += addHP;
         TrainRockSceneUI.Instance.AddHP(-dmg);
         TrainRockSceneUI.Instance.AddMaxHP(addHP);
 

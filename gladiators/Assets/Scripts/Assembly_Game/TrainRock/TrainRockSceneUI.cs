@@ -39,7 +39,7 @@ namespace Gladiators.TrainRock {
         }
 
         public void SetCountdownImg(int _num) {
-
+            Debug.Log(_num);
             if (_num < 0) return;
             string numStr = _num.ToString();
             int length = numStr.Length;
@@ -65,7 +65,15 @@ namespace Gladiators.TrainRock {
         /// Animator Event呼叫
         /// </summary>
         public void OnStartCountingDownEnd() {
-            //TrainRockManager.Instance.StartGame();
+            Debug.Log("inthis??");
+            TrainRockManager.Instance.StartGame(30);
+        }
+
+        public int CheckMaxHP() {
+            return CharInfo.CheckMaxHP();
+        }
+        public int CheckHP() {
+            return CharInfo.CheckHP();
         }
 
         public void AddHP(int _value) {

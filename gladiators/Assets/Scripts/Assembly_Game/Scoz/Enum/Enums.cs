@@ -7,6 +7,7 @@ namespace Scoz.Func {
         BattleSimulationScene,//戰場模擬場景
         //這裡有追加Scene，若是正式版需要Build的話，BuildCommand.cs中的BuildScenes清單也要一併追加，Jenkins自動包檔才會包到
         TrainVigor,//(動態載入，不會加到BuildSetting中)體力訓練場景
+        TrainRock,
     }
     public enum EnvVersion {
         Dev,//開發版(內部開發使用)

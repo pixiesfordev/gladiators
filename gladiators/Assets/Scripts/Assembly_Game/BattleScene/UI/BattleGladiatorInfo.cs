@@ -200,6 +200,13 @@ namespace Gladiators.Battle {
             PerformHPChange();
         }
 
+        public int CheckMaxHP() {
+            return HeroMaxHP;
+        }
+        public int CheckHP() {
+            return HeroCurHP;
+        }
+
         void InitHP(int maxHP, int curHP) {
             if (maxHP == 0) {
                 maxHP = 1;

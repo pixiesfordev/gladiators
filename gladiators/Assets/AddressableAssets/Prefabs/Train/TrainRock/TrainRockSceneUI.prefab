@@ -626,8 +626,8 @@ MonoBehaviour:
   Event:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: Gladiators.Main.TrainVigorSceneUI, Game
+      - m_Target: {fileID: 2216290688474242922}
+        m_TargetAssemblyTypeName: Gladiators.TrainRock.TrainRockSceneUI, Game
         m_MethodName: OnStartCountingDownEnd
         m_Mode: 1
         m_Arguments:
@@ -1496,7 +1496,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5729404955231095123}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
