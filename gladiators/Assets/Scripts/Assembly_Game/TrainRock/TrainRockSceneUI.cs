@@ -65,7 +65,6 @@ namespace Gladiators.TrainRock {
         /// Animator Event呼叫
         /// </summary>
         public void OnStartCountingDownEnd() {
-            Debug.Log("inthis??");
             TrainRockManager.Instance.StartGame(30);
         }
 
