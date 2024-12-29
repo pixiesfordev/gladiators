@@ -35,11 +35,21 @@ MonoBehaviour:
     m_SerializedLabels:
     - Prefab
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 220230d6e3e10a94c831da11f16d3a0a
+    m_Address: Assets/AddressableAssets/Prefabs/Train/TrainRock/TrainRock.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 286c9d055b9bbd54ba8d759c728389bf
     m_Address: Assets/AddressableAssets/Settings
     m_ReadOnly: 0
     m_SerializedLabels:
     - Setting
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4ded73ffafc97a046af2a4776a577b51
+    m_Address: Assets/AddressableAssets/Prefabs/Train/TrainRock/TrainRockSceneUI.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 57d561e0f2050724685036a27dfba22a
     m_Address: Assets/AddressableAssets/Prefabs/BattleSimulation
