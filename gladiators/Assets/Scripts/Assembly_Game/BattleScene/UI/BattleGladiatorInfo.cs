@@ -191,6 +191,15 @@ namespace Gladiators.Battle {
             PerformHPChange();
         }
 
+        public void AddMaxHP(int _value) {
+            //傳入變化血量 中斷目前演出 計算終值 往終值演出
+            HeroMaxHP += _value;
+            if (HeroMaxHP <= 0) HeroMaxHP = 1;
+
+            Debug.LogFormat("最大血量變化. 變化量:{0} 目前最大血量:{1}", _value, HeroMaxHP);
+            PerformHPChange();
+        }
+
         void InitHP(int maxHP, int curHP) {
             if (maxHP == 0) {
                 maxHP = 1;

@@ -84,6 +84,19 @@ public class Character : MonoBehaviour {
             isProcessing[type] = false;
         }
     }
+    public void InitTest(Vector2 _pos, Character _opponent, RightLeft _side) {
+        MyEffectSpeller.Init(_opponent);
+        enemy = _opponent;
+        Side = _side;
+        transform.localPosition = _pos;
+        SetRush(false);
+        MoveSmoke.Stop();
+        // 初始化跳數字字典
+        foreach (QueueNumType type in System.Enum.GetValues(typeof(QueueNumType))) {
+            damageQueues[type] = new Queue<(NumType, int)>();
+            isProcessing[type] = false;
+        }
+    }
 
     void setModel(JsonGladiator _json) {
         if (_json == null) {
