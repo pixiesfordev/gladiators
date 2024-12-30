@@ -46,6 +46,11 @@ MonoBehaviour:
     m_SerializedLabels:
     - Setting
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 38b2d1bfd65083844a258900334fec17
+    m_Address: Assets/AddressableAssets/Prefabs/Train/TrainHunt/TrainHuntUI.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 4ded73ffafc97a046af2a4776a577b51
     m_Address: Assets/AddressableAssets/Prefabs/Train/TrainRock/TrainRockSceneUI.prefab
     m_ReadOnly: 0
@@ -98,6 +103,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - Prefab
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8c42d88131ed5d641bf2b051ee0eb577
+    m_Address: Assets/AddressableAssets/Prefabs/Train/TrainCave/TrainCaveUI.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 975bb8654eaf5624d9cb5a3dcca29cfe
     m_Address: Assets/AddressableAssets/Audios/Sound

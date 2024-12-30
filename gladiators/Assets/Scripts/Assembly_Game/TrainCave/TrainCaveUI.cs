@@ -32,7 +32,7 @@ namespace Gladiators.TrainCave {
 
         [HeaderAttribute("==============TEST==============")]
         [SerializeField] MyText MousePositionVal; //測試用 監控滑鼠位置
-        [Tooltip("受擊閃爍演出時間")] [SerializeField] float PlayerHittedTime;
+        [Tooltip("受擊閃爍演出時間")][SerializeField] float PlayerHittedTime;
 
 
         public static TrainCaveUI Instance { get; private set; }
@@ -53,8 +53,7 @@ namespace Gladiators.TrainCave {
         CancellationTokenSource HittedCTK;
 
         // Start is called before the first frame update
-        void Start()
-        {
+        void Start() {
             Init();
             PhysicsShield.InitShield(TrainCaveShield.ShieldType.Physics);
             MagicShield.InitShield(TrainCaveShield.ShieldType.Magic);
@@ -63,25 +62,22 @@ namespace Gladiators.TrainCave {
 
             DamgeOriginPos = Damge.transform.localPosition;
             DamgeEndPos = DamgeOriginPos;
-            DamgeEndPos.y += 130f; 
+            DamgeEndPos.y += 130f;
 
             MouseListener().Forget();
             ResetGame();
         }
 
         // Update is called once per frame
-        void Update()
-        {
-            
+        void Update() {
+
         }
 
-        public override void RefreshText()
-        {
-            
+        public override void RefreshText() {
+
         }
 
-        protected override void SetInstance()
-        {
+        protected override void SetInstance() {
             Instance = this;
         }
 
@@ -133,10 +129,10 @@ namespace Gladiators.TrainCave {
             //1.點左鍵舉物理盾牌 點右鍵舉魔法盾牌
             //2.根據滑鼠方向移動盾牌位置
             //先測試滑鼠事件
-            #if UNITY_STANDALONE
-            
+#if UNITY_EDITOR
+
             Vector3 curMousePos = Input.mousePosition;
-            
+
             while (true) {
                 MousePositionVal.text = curMousePos.ToString();
                 curMousePos = Input.mousePosition;
@@ -157,12 +153,12 @@ namespace Gladiators.TrainCave {
                     ShowShield(false, MouseButton.Left);
                 } else if (Input.GetMouseButtonUp(1)) {
                     ShowShield(false, MouseButton.Right);
-                } 
+                }
                 await UniTask.Yield();
             }
-            #elif UNITY_IOS || UNITY_ANDROID
+#elif UNITY_IOS || UNITY_ANDROID
             //TODO:用Joystick套件控制方向
-            #endif
+#endif
         }
 
         /// <summary>
