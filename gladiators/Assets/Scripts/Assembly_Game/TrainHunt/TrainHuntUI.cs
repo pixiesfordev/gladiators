@@ -10,8 +10,9 @@ using UnityEngine.UI;
 
 public class TrainHuntUI : MonoBehaviour
 {
-    [SerializeField] RectTransform BarWhite;
+    [SerializeField] RectTransform BarGray;
     [SerializeField] RectTransform BarYellow;
+    [SerializeField] RectTransform BarOrange;
     [SerializeField] RectTransform BarRed;
     [SerializeField] RectTransform BarPointer;
     [SerializeField] Transform MonsterPos;
@@ -27,8 +28,10 @@ public class TrainHuntUI : MonoBehaviour
 
     [HeaderAttribute("==============TEST==============")]
     [HeaderAttribute("==============游標區==============")]
-    [Tooltip("黃色條數值最小值")] float BarSetYellowMinRange = 0.3f;
-    [Tooltip("黃色條數值最大值")] float BarSetYellowMaxRange = 0.6f;
+    [Tooltip("黃色條數值最小值")] float BarSetYellowMinRange = 0.5f;
+    [Tooltip("黃色條數值最大值")] float BarSetYellowMaxRange = 0.7f;
+    [Tooltip("紅色條數值最小值")] float BarSetOrangeMinRange = 0.3f;
+    [Tooltip("紅色條數值最大值")] float BarSetOrangeMaxRange = 0.45f;
     [Tooltip("紅色條數值最小值")] float BarSetRedMinRange = 0.1f;
     [Tooltip("紅色條數值最大值")] float BarSetRedMaxRange = 0.25f;
     [Tooltip("游標移動曲線")][SerializeField] AnimationCurve BarPointerCurve;
@@ -49,9 +52,11 @@ public class TrainHuntUI : MonoBehaviour
 
     float BarHeight = 0f; //打擊條長度
     float BarYellowRange = 0f; //打擊條黃色區域值
+    float BarOrangeRange = 0f; //打擊條橘色區域值
     float BarRedRange = 0f; //打擊條紅色區域值
     float BarPointerDuration = 1f; //打擊條游標移動時間
     Vector2 BarYellowOriginSize;
+    Vector2 BarOrangeOriginSize;
     Vector2 BarRedOriginSize;
 
     float GameTime = 30f; //小遊戲時間
@@ -60,9 +65,10 @@ public class TrainHuntUI : MonoBehaviour
 
     int MonsterMaxHP = 200;
     int MonsterCurrentHP;
-    int HitHPRed = 15;
+    int HitHPRed = 20;
+    int HitHPOrange = 15;
     int HitHPYellow = 10;
-    int HitHPWhite = 5;
+    int HitHPGray = 5;
 
     Vector3 MonsterDamgeOriginPos;
     Vector3 MonsterDamgeEndPos;
@@ -74,10 +80,12 @@ public class TrainHuntUI : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //TODO:修改跳血邏輯 改用孟璋設計的統一樣式
         BarHeight = Screen.height - 200f;
-        Vector2 oldSize = BarWhite.sizeDelta;
-        BarWhite.sizeDelta = new Vector2(oldSize.x, BarHeight);
+        Vector2 oldSize = BarGray.sizeDelta;
+        BarGray.sizeDelta = new Vector2(oldSize.x, BarHeight);
         BarYellowOriginSize = BarYellow.sizeDelta;
+        BarOrangeOriginSize = BarOrange.sizeDelta;
         BarRedOriginSize = BarRed.sizeDelta;
 
         MonsterDamgeOriginPos = MonsterDamge.transform.localPosition;
@@ -121,11 +129,14 @@ public class TrainHuntUI : MonoBehaviour
         stop = true;
         await UniTask.Yield();
         BarYellowRange = UnityEngine.Random.Range(BarSetYellowMinRange, BarSetYellowMaxRange);
+        BarOrangeRange = UnityEngine.Random.Range(BarSetOrangeMinRange, BarSetOrangeMaxRange);
         BarRedRange = UnityEngine.Random.Range(BarSetRedMinRange, BarSetRedMaxRange);
         BarYellow.sizeDelta = new Vector2(BarYellowOriginSize.x, BarHeight * BarYellowRange);
+        BarOrange.sizeDelta = new Vector2(BarOrangeOriginSize.x, BarHeight * BarOrangeRange);
         BarRed.sizeDelta = new Vector2(BarRedOriginSize.x, BarHeight * BarRedRange);
         BarPointerDuration = UnityEngine.Random.Range(BarPointerMinDur, BarPointerMaxDur);
-        Debug.LogFormat("打擊條黃色區域:{0} 紅色區域:{1} 移動所需時間:{2}", BarYellowRange, BarRedRange, BarPointerDuration);
+        Debug.LogFormat("打擊條黃色區域:{0} 橘色區域: {1} 紅色區域:{2} 移動所需時間:{3}", 
+            BarYellowRange, BarOrangeRange, BarRedRange, BarPointerDuration);
         await UniTask.Yield();
         stop = false;
         BarStartMove().Forget();
@@ -206,9 +217,11 @@ public class TrainHuntUI : MonoBehaviour
             BarPointer.localPosition.y);
         if (PointerRangeVal < BarRedRange)
             return HitHPRed;
+        else if (PointerRangeVal < BarOrangeRange)
+            return HitHPOrange;
         else if (PointerRangeVal < BarYellowRange)
             return HitHPYellow;
-        return HitHPWhite;
+        return HitHPGray;
     }
 
     async UniTaskVoid PlayAttack(int reduceHP) {
