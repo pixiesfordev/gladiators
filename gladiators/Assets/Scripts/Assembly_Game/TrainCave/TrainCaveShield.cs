@@ -13,6 +13,8 @@ namespace Gladiators.TrainCave {
         [SerializeField] float ellipseHeight = 1f;  // 橢圓高
         [SerializeField] Vector2 ellipseCenterOffset = Vector2.zero; // 橢圓中心位置偏移
 
+        [SerializeField] bool bTest = false;
+
         CancellationTokenSource eventCTK;
 
         public enum ShieldType
@@ -50,6 +52,7 @@ namespace Gladiators.TrainCave {
             Vector2 dir;
             Vector2 offsetPos;
             Vector2 shieldPos;
+            Vector2 tempPos;
 
             float radians;
             float test;
@@ -57,7 +60,13 @@ namespace Gladiators.TrainCave {
             float y;
             float shieldAngle;
 
+            Debug.LogFormat("玩家初始位置: {0} 物件初始位置: {1}", trans_Char.position, transform.position);
+
             while (true) {
+                if (bTest) {
+                    await UniTask.Yield();
+                    continue;
+                }
                 // 取得滑鼠在世界座標中的位置
                 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 // 計算角色到滑鼠的向量與弧度(Radians)
@@ -78,11 +87,16 @@ namespace Gladiators.TrainCave {
                 y = (ellipseHeight / 2f) * Mathf.Sin(radians);
 
                 // 盾牌中心偏移
-                offsetPos = new Vector2(x, y) + ellipseCenterOffset;
+                tempPos = Vector2.zero;
+                tempPos.x = x;
+                tempPos.y = y;
+                offsetPos = tempPos + ellipseCenterOffset;
 
                 // 終於得到盾牌最終世界位置
                 shieldPos = playerPos + offsetPos;
-                transform.position = shieldPos;
+
+                //transform.position = shieldPos;
+                transform.localPosition = shieldPos;
 
                 // 讓盾牌朝外旋轉(角色與滑鼠的相對方向)，將弧度轉角度
                 shieldAngle = radians * Mathf.Rad2Deg;

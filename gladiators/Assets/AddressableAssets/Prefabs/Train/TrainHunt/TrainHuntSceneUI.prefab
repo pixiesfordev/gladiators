@@ -1508,7 +1508,7 @@ GameObject:
   - component: {fileID: 6191673837178302285}
   - component: {fileID: 1887648852838125274}
   m_Layer: 0
-  m_Name: TrainHuntUI
+  m_Name: TrainHuntSceneUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

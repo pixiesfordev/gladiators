@@ -9,6 +9,7 @@ using Unity.Entities.UniversalDelegates;
 using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.UI;
 
 namespace Gladiators.TrainCave {
@@ -29,6 +30,9 @@ namespace Gladiators.TrainCave {
         [SerializeField] Image HPCurrent;
         [SerializeField] MyText Damge;
         [SerializeField] MyText HPValText;
+
+        [HeaderAttribute("==============AddressableAssets==============")]
+        [SerializeField] AssetReference TrainCaveSceneAsset;
 
         [HeaderAttribute("==============TEST==============")]
         [SerializeField] MyText MousePositionVal; //測試用 監控滑鼠位置
@@ -69,10 +73,17 @@ namespace Gladiators.TrainCave {
             ResetGame();
         }
 
-        // Update is called once per frame
-        void Update()
-        {
-            
+        public override void Init() {
+            base.Init();
+            SpawnSceneManager();
+        }
+
+        void SpawnSceneManager() {
+            AddressablesLoader.GetPrefabByRef(TrainCaveSceneAsset, (battleManagerPrefab, handle) => {
+                GameObject go = Instantiate(battleManagerPrefab);
+                var manager = go.GetComponent<TrainCaveManager>();
+                manager.Init();
+            });
         }
 
         public override void RefreshText()

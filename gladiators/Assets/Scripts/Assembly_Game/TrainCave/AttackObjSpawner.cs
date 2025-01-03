@@ -41,20 +41,27 @@ namespace Gladiators.TrainCave {
         void spawnProjectile() {
             float angle = Random.Range(0f, Mathf.PI);
 
+            //決定子彈的起始位置
             Vector2 spawnPos2D = (Vector2)Trans_Target.position + new Vector2(
                 Mathf.Cos(angle),
                 Mathf.Sin(angle)
             ) * spawnRadius;
             Vector3 spawnPos3D = new Vector3(spawnPos2D.x, spawnPos2D.y, 0f);
+            
+            //產生子彈物件
             AttackObj bullet = Instantiate(projectilePrefab, spawnPos3D, Quaternion.identity);
+            
+            //挑選子彈種類 之後看遊戲有幾種子彈值就取多少
             int rand = Random.Range(0, 2);
             bullet.Init(rand == 1 ? TrainCaveShield.ShieldType.Physics : TrainCaveShield.ShieldType.Magic);
 
             Vector2 dir = (Vector2)Trans_Target.position - spawnPos2D;
 
+            //算出子彈物件的角度
             float rotZ = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
             bullet.transform.rotation = Quaternion.Euler(0f, 0f, rotZ);
 
+            //給予子彈加速度
             Rigidbody2D rb2D = bullet.GetComponent<Rigidbody2D>();
             if (rb2D != null) {
                 rb2D.velocity = dir.normalized * speed;

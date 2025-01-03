@@ -30,8 +30,8 @@ namespace Gladiators.TrainCave {
         }
 
         void OnTriggerEnter2D(Collider2D coll) {
-            Debug.Log ("-------开始碰撞------------");
-            Debug.Log(coll.gameObject.name);
+            //Debug.Log ("-------开始碰撞------------");
+            //Debug.Log(coll.gameObject.name);
             var shield = coll.gameObject.GetComponent<TrainCaveShield>();
             if (shield != null) {
                 if (shield.DefendType == DefednType) {
