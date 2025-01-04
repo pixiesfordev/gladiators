@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2547692759624628975}
   - component: {fileID: 4624054459366523365}
   - component: {fileID: 7670581614249589557}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: MousePos
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -92,7 +92,7 @@ GameObject:
   - component: {fileID: 5697112083230555161}
   - component: {fileID: 273042377740417246}
   - component: {fileID: 658054751068030216}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -212,7 +212,7 @@ GameObject:
   m_Component:
   - component: {fileID: 58889926206779456}
   - component: {fileID: 755464275646891686}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Spawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -265,7 +265,7 @@ GameObject:
   - component: {fileID: 5435992674282360903}
   - component: {fileID: 8754816134291820056}
   - component: {fileID: 5897771119492746753}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: MagicPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -346,7 +346,7 @@ GameObject:
   - component: {fileID: 7577452730888250199}
   - component: {fileID: 1556839595713948488}
   - component: {fileID: 1110008013965537800}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: TimeText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -425,7 +425,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 113886625076430842}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: HP
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -459,7 +459,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6680981279558472746}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: TextArea
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -500,7 +500,7 @@ GameObject:
   - component: {fileID: 5872141998159373020}
   - component: {fileID: 9192780974751000793}
   - component: {fileID: 8327101639331673533}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: PhysicsPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -580,7 +580,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8995896216855564960}
   - component: {fileID: 4429821072556130877}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: TrainCaveSceneUI 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -656,7 +656,7 @@ GameObject:
   - component: {fileID: 6710418517800569055}
   - component: {fileID: 2519843259561446147}
   - component: {fileID: 6574896385198747877}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Max
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -731,7 +731,7 @@ GameObject:
   - component: {fileID: 633866067601204895}
   - component: {fileID: 6477616730432407515}
   - component: {fileID: 7430663750207367405}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: GameOver
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -807,7 +807,7 @@ GameObject:
   - component: {fileID: 6260071267773062732}
   - component: {fileID: 1227436640917215909}
   - component: {fileID: 8174419025058980567}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: ValText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -888,7 +888,7 @@ GameObject:
   - component: {fileID: 1143744306098761252}
   - component: {fileID: 3346349309747008994}
   - component: {fileID: 6438037839536472335}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Current
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -964,7 +964,7 @@ GameObject:
   - component: {fileID: 6048777632618257918}
   - component: {fileID: 4567452836123398343}
   - component: {fileID: 5486485774733452919}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: MagicShield
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1055,6 +1055,7 @@ MonoBehaviour:
   ellipseWidth: 15
   ellipseHeight: 20
   ellipseCenterOffset: {x: 0, y: 0}
+  bTest: 0
 --- !u!61 &5486485774733452919
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1112,7 +1113,7 @@ GameObject:
   - component: {fileID: 7150030567885517821}
   - component: {fileID: 2328531608364681371}
   - component: {fileID: 4984266682337739321}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: PhysicsShield
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1203,6 +1204,7 @@ MonoBehaviour:
   ellipseWidth: 5
   ellipseHeight: 20
   ellipseCenterOffset: {x: 0, y: 0}
+  bTest: 0
 --- !u!61 &4984266682337739321
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1260,7 +1262,7 @@ GameObject:
   - component: {fileID: 6705742925118057426}
   - component: {fileID: 1170047389546352422}
   - component: {fileID: 398660008612792113}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: BG
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1392,7 +1394,7 @@ GameObject:
   - component: {fileID: 5381643480531136739}
   - component: {fileID: 4240351474294139955}
   - component: {fileID: 2703470544848816536}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Damge
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1473,7 +1475,7 @@ GameObject:
   - component: {fileID: 7552438501609452877}
   - component: {fileID: 5934919304077619424}
   - component: {fileID: 1102137979383973982}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
