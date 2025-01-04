@@ -149,6 +149,11 @@ MonoBehaviour:
     m_SerializedLabels:
     - Prefab
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: de558fd74ad27d34bb1e899e20568ae8
+    m_Address: Assets/AddressableAssets/Prefabs/Train/TrainCave/TrainCaveManager.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: f29e2e96a75df16449c2e57943f7ba66
     m_Address: Assets/AddressableAssets/Prefabs/Common
     m_ReadOnly: 0
