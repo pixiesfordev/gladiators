@@ -2907,6 +2907,10 @@ MonoBehaviour:
   GameOverObj: {fileID: 3536311626904509319}
   PlayerTalkBG: {fileID: 3444779554684452006}
   MonsterCharInfo: {fileID: 63369032910510984}
+  dmgPrefab: {fileID: 1259023133563206875, guid: c4a99d43960701d48a6a90ecb48cb276,
+    type: 3}
+  dmgPopupOffset: {x: 0, y: 4, z: 3}
+  dmgNumScal: 4
   BarPointerCurve:
     serializedVersion: 2
     m_Curve:

@@ -46,6 +46,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f6c851cb4eb78a4ba328b2a9914c651, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MyCam: {fileID: 3268296878888091885}
+  dmgPrefab: {fileID: 1259023133563206875, guid: c4a99d43960701d48a6a90ecb48cb276,
+    type: 3}
+  dmgPopupOffset: {x: 0, y: 0, z: 3}
+  dmgNumScal: 4
 --- !u!1 &3010785907236758184
 GameObject:
   m_ObjectHideFlags: 0

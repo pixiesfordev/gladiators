@@ -10,6 +10,7 @@ using UnityEngine.UI;
 using Gladiators.Battle;
 using UnityEditor.EditorTools;
 using UnityEngine.AddressableAssets;
+using DamageNumbersPro;
 
 namespace Gladiators.TrainHunt {
 
@@ -27,6 +28,10 @@ namespace Gladiators.TrainHunt {
         [SerializeField] GameObject GameOverObj;
         [SerializeField] GameObject PlayerTalkBG;
         [SerializeField] BattleGladiatorInfo MonsterCharInfo;
+
+        [SerializeField] DamageNumber dmgPrefab;
+        [SerializeField] Vector3 dmgPopupOffset; // 跳血座標偏移
+        [SerializeField] float dmgNumScal; // 跳血縮放
 
         [HeaderAttribute("==============TEST==============")]
         [HeaderAttribute("==============游標區==============")]
@@ -242,7 +247,7 @@ namespace Gladiators.TrainHunt {
             //1.角色攻擊演出
             await MoveAttack();
             //2.怪物受擊演出(跳血量傷害與閃爍兩次)
-            MonsterCharInfo.AddHP(-reduceHP);
+            ReduceMonsterHP(reduceHP);
             MonsterHitted.DOColor(Color.red, MonsterHittedTime);
             await UniTask.WaitForSeconds(MonsterHittedTime);
             MonsterHitted.DOColor(HideColor, MonsterHittedTime);
@@ -253,6 +258,12 @@ namespace Gladiators.TrainHunt {
             await UniTask.WaitForSeconds(MonsterHittedTime);
             //3.攻擊演出後重新挑選長條 挑選完後長條重新開始跑
             PickBarValue().Forget();
+        }
+
+        public void ReduceMonsterHP(int reduceHP) {
+            var dmgNum = dmgPrefab.Spawn(MonsterPos.position + dmgPopupOffset, reduceHP);
+            dmgNum.transform.localScale = Vector3.one * dmgNumScal;
+            MonsterCharInfo.AddHP(-reduceHP);
         }
 
         async UniTask MoveAttack() {

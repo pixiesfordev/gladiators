@@ -7,6 +7,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using static Codice.CM.Common.CmCallContext;
+using DamageNumbersPro;
 
 namespace Gladiators.TrainCave {
     public class TrainCaveManager : MonoBehaviour {
@@ -18,6 +19,10 @@ namespace Gladiators.TrainCave {
         [SerializeField] SpriteRenderer PlayerPic;
         [SerializeField] bool MobileControl;
         [SerializeField] AttackObjSpawner Spawner;
+
+        [SerializeField] DamageNumber dmgPrefab;
+        [SerializeField] Vector3 dmgPopupOffset; // 跳血座標偏移
+        [SerializeField] float dmgNumScal; // 跳血縮放
 
         [Tooltip("受擊閃爍演出時間")][SerializeField] float PlayerHittedTime;
         [Tooltip("受擊減少血量 必須為整數")][SerializeField] int HittedReduceHP;
@@ -164,7 +169,6 @@ namespace Gladiators.TrainCave {
             }
         }
 
-
         void CreateHittedCTK() {
             if (HittedCTK != null) {
                 HittedCTK.Cancel();
@@ -213,6 +217,9 @@ namespace Gladiators.TrainCave {
             } else if (obj.DefednType == TrainCaveShield.ShieldType.Physics) {
                 PlayerHittedByPhysics().Forget();
             }
+            //TODO:之後角色應該會獨立成一個通用物件 這段就需要改寫
+            var dmgNum = dmgPrefab.Spawn(PlayerTrans.position + dmgPopupOffset, HittedReduceHP);
+            dmgNum.transform.localScale = Vector3.one * dmgNumScal;
             TrainCaveUI.Instance.OnHit(HittedReduceHP);
         }
 
