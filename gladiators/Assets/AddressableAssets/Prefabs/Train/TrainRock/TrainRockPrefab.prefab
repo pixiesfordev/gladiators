@@ -844,12 +844,13 @@ MonoBehaviour:
   rockPrefab: {fileID: 8410734549793764341, guid: 31e28bf97053c08439be9c03e74a0e2a,
     type: 3}
   trajectoryLine: {fileID: 7319690162702324183}
-  trajectoryResolution: 50
+  trajectoryResolution: 5
   maxThrowForce: 20
   dragSensitivity: 10
   initialVerticalSpeed: 10
   MyCam: {fileID: 2316466101126620663}
-  StartCountDownSec: 30
+  playing: 0
+  curLeftTime: 0
   characterPrefab: {fileID: 8777980665360889955, guid: e3a3ff7294793c343a0a70815a85f586,
     type: 3}
   charactersParent: {fileID: 6482336395403633620}

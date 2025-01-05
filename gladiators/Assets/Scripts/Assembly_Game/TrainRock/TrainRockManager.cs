@@ -11,16 +11,19 @@ using System.Net;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.TextCore.Text;
+using UnityEngine.UI;
 
 public class TrainRockManager : MonoBehaviour {
     public static TrainRockManager Instance;
 
     public GameObject rockPrefab; // 石頭的 Prefab
     public LineRenderer trajectoryLine; // 用於顯示拋物線的 LineRenderer
-    public int trajectoryResolution = 100; // 拋物線的節點數
+    public int trajectoryResolution = 10; // 拋物線的節點數
     public float maxThrowForce = 20f; // 最大投擲力度
     public float dragSensitivity = 10f; // 拖曳靈敏度
     public float initialVerticalSpeed = 10f; //拋物線向上高
+    public Image leftLimitArea; // 左侧限制区域
+    public Image rightLimitArea; // 右侧限制区域
 
     [SerializeField] Camera MyCam;
     public Camera RockCam => MyCam;
@@ -61,15 +64,25 @@ public class TrainRockManager : MonoBehaviour {
         if (!playing) return;
 
         if (Input.GetMouseButtonDown(0)) {
-            isDragging = true;
-            dragStartPos = GetWorldPointFromMouse(Input.mousePosition);
+            Vector3 touchPosition = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10f);
+
+            if (IsTouchWithinImage(touchPosition, leftLimitArea) || IsTouchWithinImage(touchPosition, rightLimitArea)) {
+                isDragging = true;
+                dragStartPos = GetWorldPointFromStartMouse(touchPosition);
+            } else {
+                Debug.Log("超出圖片範圍~");
+            }
         } else if (Input.GetMouseButton(0) && isDragging) {
-            dragEndPos = GetWorldPointFromMouse(Input.mousePosition);
+            Vector3 touchPosition = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 20f);
+
+            dragEndPos = GetWorldPointFromEndMouse(touchPosition);
             Vector3 dragDelta = dragStartPos - dragEndPos;
             ShowTrajectory(dragStartPos, dragDelta);
         } else if (Input.GetMouseButtonUp(0) && isDragging) {
+            Vector3 touchPosition = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 20f);
+
             isDragging = false;
-            dragEndPos = GetWorldPointFromMouse(Input.mousePosition);
+            dragEndPos = GetWorldPointFromEndMouse(touchPosition);
             Vector3 dragDelta = dragStartPos - dragEndPos;
 
             ThrowStone(dragStartPos, dragDelta);
@@ -77,11 +90,34 @@ public class TrainRockManager : MonoBehaviour {
         }
     }
 
-    private Vector3 GetWorldPointFromMouse(Vector3 mousePosition) {
+    private bool IsTouchWithinImage(Vector3 touchPosition, Image image) {
+        Vector2 localPoint;
+        RectTransform imageRectTransform = image.rectTransform;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(imageRectTransform, touchPosition, image.canvas.worldCamera, out localPoint);
+
+        return imageRectTransform.rect.Contains(localPoint);
+    }
+
+    private Vector3 GetWorldPointFromStartMouse(Vector3 mousePosition) {
         Ray ray = MyCam.ScreenPointToRay(mousePosition);
-        Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
+        Plane groundPlane = new Plane(new Vector3(0, 0.2f, 1f), new Vector3(0, 0, 0));
 
         if (groundPlane.Raycast(ray, out float enter)) {
+            return ray.GetPoint(enter);
+        }
+
+        return Vector3.zero;
+    }
+
+    private Vector3 GetWorldPointFromEndMouse(Vector3 mousePosition) {
+        Ray ray = MyCam.ScreenPointToRay(mousePosition);
+        Plane groundPlane = new Plane(new Vector3(0, 1f, 0f), new Vector3(0, 0.8f, 0f));
+
+        if (groundPlane.Raycast(ray, out float enter)) {
+            if (enter > 50) {
+                enter = 50f;
+            }
+
             return ray.GetPoint(enter);
         }
 
@@ -94,7 +130,6 @@ public class TrainRockManager : MonoBehaviour {
 
         Vector3 velocity = throwDirection * throwForce;
         velocity.y = initialVerticalSpeed;
-
         GameObject stone = Instantiate(rockPrefab, startPosition, Quaternion.identity);
         Rigidbody rb = stone.GetComponent<Rigidbody>();
 

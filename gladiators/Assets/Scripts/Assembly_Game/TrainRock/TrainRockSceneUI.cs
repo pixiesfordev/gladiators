@@ -10,6 +10,8 @@ namespace Gladiators.TrainRock {
         [SerializeField] AssetReference TrainRockSceneAsset;
         [SerializeField] Image[] Img_Coutingdown;
         [SerializeField] BattleGladiatorInfo CharInfo;
+        [SerializeField] Image leftLimitArea;
+        [SerializeField] Image rightLimitArea;
         public static TrainRockSceneUI Instance { get; private set; }
 
 
@@ -31,6 +33,8 @@ namespace Gladiators.TrainRock {
                 GameObject go = Instantiate(battleManagerPrefab);
                 var manager = go.GetComponent<TrainRockManager>();
                 manager.Init();
+                manager.leftLimitArea = this.leftLimitArea;
+                manager.rightLimitArea = this.rightLimitArea;
             });
         }
 
@@ -39,7 +43,6 @@ namespace Gladiators.TrainRock {
         }
 
         public void SetCountdownImg(int _num) {
-            Debug.Log(_num);
             if (_num < 0) return;
             string numStr = _num.ToString();
             int length = numStr.Length;
