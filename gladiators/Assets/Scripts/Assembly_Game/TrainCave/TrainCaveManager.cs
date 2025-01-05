@@ -177,10 +177,6 @@ namespace Gladiators.TrainCave {
         /// </summary>
         /// <returns></returns>
         async UniTaskVoid MouseListener() {
-            //TODO:
-            //1.點左鍵舉物理盾牌 點右鍵舉魔法盾牌
-            //2.根據滑鼠方向移動盾牌位置
-            //先測試滑鼠事件
 
             Vector3 curMousePos = Input.mousePosition;
 
@@ -195,14 +191,15 @@ namespace Gladiators.TrainCave {
                 */
 
                 //盾牌事件
+                if (Input.GetMouseButtonUp(0))
+                    ShowShield(false, MouseButton.Left);
+                if (Input.GetMouseButtonUp(1))
+                    ShowShield(false, MouseButton.Right);
+
                 if (Input.GetMouseButtonDown(0)) {
                     ShowShield(true, MouseButton.Left);
                 } else if (Input.GetMouseButtonDown(1)) {
                     ShowShield(true, MouseButton.Right);
-                } else if (Input.GetMouseButtonUp(0)) {
-                    ShowShield(false, MouseButton.Left);
-                } else if (Input.GetMouseButtonUp(1)) {
-                    ShowShield(false, MouseButton.Right);
                 }
                 await UniTask.Yield();
             }
@@ -227,7 +224,7 @@ namespace Gladiators.TrainCave {
             } else if (button == MouseButton.Right) {
                 if (!PhysicsShield.gameObject.activeSelf)
                     MagicShield.ShowShield(show);
-            }
+            }          
         }
 
         public void AddPhysicsScore() {
