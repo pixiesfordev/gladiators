@@ -64,7 +64,7 @@ public class TrainRockManager : MonoBehaviour {
         if (!playing) return;
 
         if (Input.GetMouseButtonDown(0)) {
-            Vector3 touchPosition = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10f);
+            Vector3 touchPosition = Input.mousePosition;
 
             if (IsTouchWithinImage(touchPosition, leftLimitArea) || IsTouchWithinImage(touchPosition, rightLimitArea)) {
                 isDragging = true;
@@ -73,13 +73,13 @@ public class TrainRockManager : MonoBehaviour {
                 Debug.Log("³¬³öˆDÆ¬¹ ‡ú~");
             }
         } else if (Input.GetMouseButton(0) && isDragging) {
-            Vector3 touchPosition = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 20f);
+            Vector3 touchPosition = Input.mousePosition;
 
             dragEndPos = GetWorldPointFromEndMouse(touchPosition);
             Vector3 dragDelta = dragStartPos - dragEndPos;
             ShowTrajectory(dragStartPos, dragDelta);
         } else if (Input.GetMouseButtonUp(0) && isDragging) {
-            Vector3 touchPosition = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 20f);
+            Vector3 touchPosition = Input.mousePosition;
 
             isDragging = false;
             dragEndPos = GetWorldPointFromEndMouse(touchPosition);
@@ -111,13 +111,9 @@ public class TrainRockManager : MonoBehaviour {
 
     private Vector3 GetWorldPointFromEndMouse(Vector3 mousePosition) {
         Ray ray = MyCam.ScreenPointToRay(mousePosition);
-        Plane groundPlane = new Plane(new Vector3(0, 1f, 0f), new Vector3(0, 0.8f, 0f));
+        Plane groundPlane = new Plane(new Vector3(0, 0f, 1f), new Vector3(0, 0f, 1f));
 
         if (groundPlane.Raycast(ray, out float enter)) {
-            if (enter > 50) {
-                enter = 50f;
-            }
-
             return ray.GetPoint(enter);
         }
 

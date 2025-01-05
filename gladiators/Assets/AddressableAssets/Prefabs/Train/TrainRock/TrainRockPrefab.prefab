@@ -412,7 +412,7 @@ Transform:
   m_GameObject: {fileID: 2235385063685268398}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -13.4, z: 0}
+  m_LocalPosition: {x: 0, y: -13.4, z: -5}
   m_LocalScale: {x: 10, y: 10, z: 10}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -517,8 +517,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2911503781113169966}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.003936401, y: 0.99340177, z: -0.10884305, w: -0.035927214}
-  m_LocalPosition: {x: 2.4637566, y: 12.564631, z: 34.017372}
+  m_LocalRotation: {x: -0.0037230372, y: 0.993755, z: -0.10590942, w: -0.0349335}
+  m_LocalPosition: {x: 2.4637566, y: 12.564631, z: 30}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -715,7 +715,7 @@ Transform:
   m_GameObject: {fileID: 6482336395403633620}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -1, z: 0}
+  m_LocalPosition: {x: 0, y: -1, z: -5}
   m_LocalScale: {x: 3, y: 3, z: 3}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -848,6 +848,8 @@ MonoBehaviour:
   maxThrowForce: 20
   dragSensitivity: 10
   initialVerticalSpeed: 10
+  leftLimitArea: {fileID: 0}
+  rightLimitArea: {fileID: 0}
   MyCam: {fileID: 2316466101126620663}
   playing: 0
   curLeftTime: 0
@@ -912,8 +914,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7649430313357338200}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.0039364006, y: 0.99340177, z: -0.10884305, w: -0.035927214}
-  m_LocalPosition: {x: 2.4637566, y: 12.564631, z: 34.017372}
+  m_LocalRotation: {x: -0.0037230405, y: 0.993755, z: -0.105909415, w: -0.034933496}
+  m_LocalPosition: {x: 2.4637566, y: 12.564631, z: 30}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
