@@ -604,6 +604,7 @@ MonoBehaviour:
   MobileControl: 0
   Spawner: {fileID: 4342197312871588116}
   PlayerHittedTime: 0.5
+  HittedReduceHP: -100
 --- !u!1 &6039230607488349183
 GameObject:
   m_ObjectHideFlags: 0
