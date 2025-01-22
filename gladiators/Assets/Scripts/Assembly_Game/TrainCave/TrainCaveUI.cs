@@ -2,6 +2,7 @@ using Scoz.Func;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.UI;
+using Gladiators.Battle;
 
 namespace Gladiators.TrainCave {
     public class TrainCaveUI : BaseUI {
@@ -12,34 +13,19 @@ namespace Gladiators.TrainCave {
 
         [SerializeField] GameObject GameOverObj;
 
-        [SerializeField] Image HPCurrent;
-        [SerializeField] MyText Damge;
-        [SerializeField] MyText HPValText;
+        [SerializeField] BattleGladiatorInfo CharInfo;
 
         [HeaderAttribute("==============AddressableAssets==============")]
         [SerializeField] AssetReference TrainCaveSceneAsset;
 
 
 
-
         public static TrainCaveUI Instance { get; private set; }
-
-
-
-
-        Vector3 DamgeOriginPos;
-        Vector3 DamgeEndPos;
-
-
 
 
         // Start is called before the first frame update
         void Start() {
             Init();
-
-            DamgeOriginPos = Damge.transform.localPosition;
-            DamgeEndPos = DamgeOriginPos;
-            DamgeEndPos.y += 130f;
             ResetGame();
         }
 
@@ -87,20 +73,11 @@ namespace Gladiators.TrainCave {
             TimeText.text = _time.ToString();
         }
 
-
-
-
-
-
         public void SetPhysicsScore(int _score) {
             PhysicsPoint.text = string.Format("PHY: {0}", _score);
         }
         public void SetMagicScore(int _score) {
             MagicPoint.text = string.Format("MAG: {0}", _score);
-        }
-
-        void HideDamageText() {
-            Damge.gameObject.SetActive(false);
         }
 
         public void ShowGameOverObj(bool _active) {
@@ -109,28 +86,22 @@ namespace Gladiators.TrainCave {
 
         public void OnResetClick() {
             TrainCaveManager.Instance.ResetGame();
+            CharInfo.ResetHPBarToFull();
         }
 
         public void ResetGame() {
             PhysicsPoint.text = string.Format("PHY: {0}", 0);
             MagicPoint.text = string.Format("MAG: {0}", 0);
             GameOverObj.SetActive(false);
-            HPCurrent.fillAmount = 1f;
-
-            Damge.gameObject.SetActive(false);
+            CharInfo.Init(1000, 1000, 7);
         }
 
-        void SetHPText(int _curHP, int _maxHP) {
-            HPValText.text = string.Format("{0}/{1}", _curHP, _maxHP);
-        }
         public void OnHit(int _dmg) {
-            Damge.gameObject.SetActive(true);
-            Damge.text = string.Format("-{0}", _dmg);
-            Damge.transform.localPosition = DamgeOriginPos;
-            var curHP = TrainCaveManager.Instance.CurrentHP;
-            var maxHp = TrainCaveManager.Instance.MaxHP;
-            SetHPText(curHP, maxHp);
-            HPCurrent.fillAmount = (float)curHP / maxHp;
+            CharInfo.AddHP(_dmg);
+        }
+
+        public bool HeroIsDead() {
+            return CharInfo.HeroIsDead();
         }
 
     }

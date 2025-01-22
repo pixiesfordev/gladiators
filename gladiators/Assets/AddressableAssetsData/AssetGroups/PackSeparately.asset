@@ -114,6 +114,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 94a5c691debf46c48a06460e81f2b55f
+    m_Address: Assets/AddressableAssets/Prefabs/Train/TrainHunt/TrainHuntManager.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 975bb8654eaf5624d9cb5a3dcca29cfe
     m_Address: Assets/AddressableAssets/Audios/Sound
     m_ReadOnly: 0

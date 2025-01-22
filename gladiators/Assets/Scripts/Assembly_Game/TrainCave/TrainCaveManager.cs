@@ -7,6 +7,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using static Codice.CM.Common.CmCallContext;
+using DamageNumbersPro;
 
 namespace Gladiators.TrainCave {
     public class TrainCaveManager : MonoBehaviour {
@@ -19,7 +20,12 @@ namespace Gladiators.TrainCave {
         [SerializeField] bool MobileControl;
         [SerializeField] AttackObjSpawner Spawner;
 
+        [SerializeField] DamageNumber dmgPrefab;
+        [SerializeField] Vector3 dmgPopupOffset; // 跳血座標偏移
+        [SerializeField] float dmgNumScal; // 跳血縮放
+
         [Tooltip("受擊閃爍演出時間")][SerializeField] float PlayerHittedTime;
+        [Tooltip("受擊減少血量 必須為整數")][SerializeField] int HittedReduceHP;
 
         Vector3 towardLeft = new Vector3(-1f, 1f, 1f);
         bool PlayerTowardLeft = true; //角色是否朝左 false為朝右 True為朝左
@@ -31,9 +37,6 @@ namespace Gladiators.TrainCave {
         int PhysicsScore = 0;
         int MagicScore = 0;
         float GameTime = 30f;
-        public int MaxHP { get; private set; } = 100;
-        public int CurrentHP { get; private set; } = 0;
-
 
         public void Init() {
             Instance = this;
@@ -94,14 +97,14 @@ namespace Gladiators.TrainCave {
             float passTime = startTime;
             float deltaTime = 0f;
             float remainTime = 0f;
-            while (deltaTime < GameTime && CurrentHP > 0) {
+            while (deltaTime < GameTime && !TrainCaveUI.Instance.HeroIsDead()) {
                 passTime += Time.deltaTime;
                 deltaTime = passTime - startTime;
                 remainTime = (float)Math.Floor(GameTime - deltaTime);
                 if (remainTime < 0f)
                     remainTime = 0f;
                 //更新剩餘時間文字
-                TrainCaveUI.Instance.SetGameTime(Mathf.RoundToInt(GameTime));
+                TrainCaveUI.Instance.SetGameTime(Mathf.RoundToInt(remainTime));
                 await UniTask.Yield();
             }
             await UniTask.Yield();
@@ -117,8 +120,7 @@ namespace Gladiators.TrainCave {
             TrainCaveUI.Instance.ResetGame();
             PhysicsScore = 0;
             MagicScore = 0;
-            CurrentHP = MaxHP;
-
+            Debug.LogFormat("重新開始遊戲!");
             Spawner.StartShoot();
             GameStart().Forget();
         }
@@ -167,7 +169,6 @@ namespace Gladiators.TrainCave {
             }
         }
 
-
         void CreateHittedCTK() {
             if (HittedCTK != null) {
                 HittedCTK.Cancel();
@@ -180,10 +181,6 @@ namespace Gladiators.TrainCave {
         /// </summary>
         /// <returns></returns>
         async UniTaskVoid MouseListener() {
-            //TODO:
-            //1.點左鍵舉物理盾牌 點右鍵舉魔法盾牌
-            //2.根據滑鼠方向移動盾牌位置
-            //先測試滑鼠事件
 
             Vector3 curMousePos = Input.mousePosition;
 
@@ -198,14 +195,15 @@ namespace Gladiators.TrainCave {
                 */
 
                 //盾牌事件
+                if (Input.GetMouseButtonUp(0))
+                    ShowShield(false, MouseButton.Left);
+                if (Input.GetMouseButtonUp(1))
+                    ShowShield(false, MouseButton.Right);
+
                 if (Input.GetMouseButtonDown(0)) {
                     ShowShield(true, MouseButton.Left);
                 } else if (Input.GetMouseButtonDown(1)) {
                     ShowShield(true, MouseButton.Right);
-                } else if (Input.GetMouseButtonUp(0)) {
-                    ShowShield(false, MouseButton.Left);
-                } else if (Input.GetMouseButtonUp(1)) {
-                    ShowShield(false, MouseButton.Right);
                 }
                 await UniTask.Yield();
             }
@@ -214,13 +212,15 @@ namespace Gladiators.TrainCave {
 
         public void PlayerHitted(AttackObj obj) {
             //可以針對近來的Obj做不同種類的演出與傷害判定
-            int reduceHP = 10;
             if (obj.DefednType == TrainCaveShield.ShieldType.Magic) {
                 PlayerHittedByMagic().Forget();
             } else if (obj.DefednType == TrainCaveShield.ShieldType.Physics) {
                 PlayerHittedByPhysics().Forget();
             }
-            CurrentHP -= reduceHP;
+            //TODO:之後角色應該會獨立成一個通用物件 這段就需要改寫
+            var dmgNum = dmgPrefab.Spawn(PlayerTrans.position + dmgPopupOffset, HittedReduceHP);
+            dmgNum.transform.localScale = Vector3.one * dmgNumScal;
+            TrainCaveUI.Instance.OnHit(HittedReduceHP);
         }
 
         void ShowShield(bool show, MouseButton button) {
@@ -231,16 +231,17 @@ namespace Gladiators.TrainCave {
             } else if (button == MouseButton.Right) {
                 if (!PhysicsShield.gameObject.activeSelf)
                     MagicShield.ShowShield(show);
-            }
+            }          
         }
 
         public void AddPhysicsScore() {
             PhysicsScore++;
-
+            TrainCaveUI.Instance.SetPhysicsScore(PhysicsScore);
         }
 
         public void AddMagicScore() {
             MagicScore++;
+            TrainCaveUI.Instance.SetMagicScore(MagicScore);
         }
     }
 }

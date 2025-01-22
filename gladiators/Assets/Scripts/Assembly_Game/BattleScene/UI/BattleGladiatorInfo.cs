@@ -605,5 +605,17 @@ namespace Gladiators.Battle {
             }
         }
 
+        /// <summary>
+        /// 判斷英雄血量是否歸0
+        /// </summary>
+        /// <returns></returns>
+        public bool HeroIsDead() {
+            return HeroCurHP <= 0;
+        }
+
+        public void ResetHPBarToFull() {
+            SetHPBar(100f);
+        }
+
     }
 }
