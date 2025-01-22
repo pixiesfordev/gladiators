@@ -1,0 +1,12 @@
+var class_grid_framework_1_1_extensions_1_1_nearest_1_1_polar =
+[
+    [ "NearestCylindricalCell", "class_grid_framework_1_1_extensions_1_1_nearest_1_1_polar_a007781821e6bcddc726637d39fe74ef7.html#a007781821e6bcddc726637d39fe74ef7", null ],
+    [ "NearestCylindricalFace", "class_grid_framework_1_1_extensions_1_1_nearest_1_1_polar_abb190c9444df3bc89946bcc14c9abe73.html#abb190c9444df3bc89946bcc14c9abe73", null ],
+    [ "NearestCylindricalVertex", "class_grid_framework_1_1_extensions_1_1_nearest_1_1_polar_a548f0ac09d7cd423757e19467dd1547a.html#a548f0ac09d7cd423757e19467dd1547a", null ],
+    [ "NearestGridCell", "class_grid_framework_1_1_extensions_1_1_nearest_1_1_polar_a3049eb4fd2bcdb11245e4e5803ac38b2.html#a3049eb4fd2bcdb11245e4e5803ac38b2", null ],
+    [ "NearestGridFace", "class_grid_framework_1_1_extensions_1_1_nearest_1_1_polar_a11bbc7ff7577b5ce21a9e6f082ebd30a.html#a11bbc7ff7577b5ce21a9e6f082ebd30a", null ],
+    [ "NearestGridVertex", "class_grid_framework_1_1_extensions_1_1_nearest_1_1_polar_adb54c5f02833ff2741c11a378338f346.html#adb54c5f02833ff2741c11a378338f346", null ],
+    [ "NearestWorldCell", "class_grid_framework_1_1_extensions_1_1_nearest_1_1_polar_ae4ac5bb18ad9ec762abc4325a2060edf.html#ae4ac5bb18ad9ec762abc4325a2060edf", null ],
+    [ "NearestWorldFace", "class_grid_framework_1_1_extensions_1_1_nearest_1_1_polar_a1b6077fff6f16867bebf44f65161496a.html#a1b6077fff6f16867bebf44f65161496a", null ],
+    [ "NearestWorldVertex", "class_grid_framework_1_1_extensions_1_1_nearest_1_1_polar_a1d164ffb94f620f10024dd5afac17a15.html#a1d164ffb94f620f10024dd5afac17a15", null ]
+];

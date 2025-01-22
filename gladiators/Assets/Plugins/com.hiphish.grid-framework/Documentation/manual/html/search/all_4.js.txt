@@ -1,0 +1,10 @@
+var searchData=
+[
+  ['deg2rotation_0',['Deg2Rotation',['../class_grid_framework_1_1_extensions_1_1_conversion_1_1_polar_a772e0a5adf73c1d94ef7e23fcea7280f.html#a772e0a5adf73c1d94ef7e23fcea7280f',1,'GridFramework::Extensions::Conversion::Polar']]],
+  ['deg2sector_1',['Deg2Sector',['../class_grid_framework_1_1_extensions_1_1_conversion_1_1_polar_a365d15f357add7fa458436b9d2a7547c.html#a365d15f357add7fa458436b9d2a7547c',1,'GridFramework::Extensions::Conversion::Polar']]],
+  ['degrees_2',['Degrees',['../class_grid_framework_1_1_grids_1_1_polar_grid_a1fdd4bab9676e1195a2992e69e0404ba.html#a1fdd4bab9676e1195a2992e69e0404ba',1,'GridFramework::Grids::PolarGrid']]],
+  ['depth_3',['Depth',['../class_grid_framework_1_1_grids_1_1_layered_grid_a24ed73a3ef1ee085855d0b742da7da1d.html#a24ed73a3ef1ee085855d0b742da7da1d',1,'GridFramework::Grids::LayeredGrid']]],
+  ['direction_4',['Direction',['../class_grid_framework_1_1_renderers_1_1_hexagonal_1_1_rhombus.html#af12967ec2cda253bf45376d93ee1f201',1,'GridFramework::Renderers::Hexagonal::Rhombus']]],
+  ['down_5',['Down',['../class_grid_framework_1_1_renderers_1_1_hexagonal_1_1_herringbone_a17d12fb1152007b2e8b622e7b1e0a30e.html#a17d12fb1152007b2e8b622e7b1e0a30ea08a38277b0309070706f6652eeae9a53',1,'GridFramework.Renderers.Hexagonal.Herringbone.Down()'],['../class_grid_framework_1_1_renderers_1_1_hexagonal_1_1_rectangle_aad5ae732b0701476d5410f5eb8f779d8.html#aad5ae732b0701476d5410f5eb8f779d8a08a38277b0309070706f6652eeae9a53',1,'GridFramework.Renderers.Hexagonal.Rectangle.Down()'],['../class_grid_framework_1_1_renderers_1_1_hexagonal_1_1_rhombus_ae359d518f842a49391dc16cebc082a34.html#ae359d518f842a49391dc16cebc082a34a08a38277b0309070706f6652eeae9a53',1,'GridFramework.Renderers.Hexagonal.Rhombus.Down()']]],
+  ['drawing_20and_20rendering_20a_20grid_6',['Drawing and rendering a Grid',['../rendering.html',1,'']]]
+];

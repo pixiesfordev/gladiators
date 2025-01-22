@@ -30,7 +30,7 @@ namespace Scoz.Func {
             Instance = this;
             DontDestroyOnLoad(gameObject);
             MyCanvas = GetComponent<Canvas>();
-            MyCanvas.worldCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
+            MyCanvas.worldCamera = UICam.Instance.GetComponent<Camera>();// GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
             MyCanvas.sortingLayerName = "UI";
             InitGameInfo();
             InitLoading();

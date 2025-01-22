@@ -10,6 +10,7 @@ namespace Scoz.Func {
         TrainRock,
         TrainCave,
         TrainHunt,
+        Cuisine,
     }
     public enum EnvVersion {
         Dev,//開發版(內部開發使用)

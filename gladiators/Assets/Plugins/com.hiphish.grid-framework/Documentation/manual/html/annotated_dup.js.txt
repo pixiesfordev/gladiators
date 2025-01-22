@@ -1,0 +1,94 @@
+var annotated_dup =
+[
+    [ "GridFramework", "namespace_grid_framework.html", [
+      [ "Editor", "namespace_grid_framework_1_1_editor.html", [
+        [ "Renderers", "namespace_grid_framework_1_1_editor_1_1_renderers.html", [
+          [ "Hexagonal", "namespace_grid_framework_1_1_editor_1_1_renderers_1_1_hexagonal.html", [
+            [ "ConeEditor", "class_grid_framework_1_1_editor_1_1_renderers_1_1_hexagonal_1_1_cone_editor.html", "class_grid_framework_1_1_editor_1_1_renderers_1_1_hexagonal_1_1_cone_editor" ],
+            [ "HerringboneEditor", "class_grid_framework_1_1_editor_1_1_renderers_1_1_hexagonal_1_1_herringbone_editor.html", "class_grid_framework_1_1_editor_1_1_renderers_1_1_hexagonal_1_1_herringbone_editor" ],
+            [ "RectangleEditor", "class_grid_framework_1_1_editor_1_1_renderers_1_1_hexagonal_1_1_rectangle_editor.html", "class_grid_framework_1_1_editor_1_1_renderers_1_1_hexagonal_1_1_rectangle_editor" ],
+            [ "RhombusEditor", "class_grid_framework_1_1_editor_1_1_renderers_1_1_hexagonal_1_1_rhombus_editor.html", "class_grid_framework_1_1_editor_1_1_renderers_1_1_hexagonal_1_1_rhombus_editor" ]
+          ] ],
+          [ "Polar", "namespace_grid_framework_1_1_editor_1_1_renderers_1_1_polar.html", [
+            [ "CylinderEditor", "class_grid_framework_1_1_editor_1_1_renderers_1_1_polar_1_1_cylinder_editor.html", "class_grid_framework_1_1_editor_1_1_renderers_1_1_polar_1_1_cylinder_editor" ]
+          ] ],
+          [ "Rectangular", "namespace_grid_framework_1_1_editor_1_1_renderers_1_1_rectangular.html", [
+            [ "ParallelepipedEditor", "class_grid_framework_1_1_editor_1_1_renderers_1_1_rectangular_1_1_parallelepiped_editor.html", "class_grid_framework_1_1_editor_1_1_renderers_1_1_rectangular_1_1_parallelepiped_editor" ]
+          ] ],
+          [ "Spherical", "namespace_grid_framework_1_1_editor_1_1_renderers_1_1_spherical.html", [
+            [ "SphereEditor", "class_grid_framework_1_1_editor_1_1_renderers_1_1_spherical_1_1_sphere_editor.html", "class_grid_framework_1_1_editor_1_1_renderers_1_1_spherical_1_1_sphere_editor" ]
+          ] ],
+          [ "RendererEditor", "class_grid_framework_1_1_editor_1_1_renderers_1_1_renderer_editor.html", "class_grid_framework_1_1_editor_1_1_renderers_1_1_renderer_editor" ]
+        ] ],
+        [ "HexGridEditor", "class_grid_framework_1_1_editor_1_1_hex_grid_editor.html", null ],
+        [ "MenuItems", "class_grid_framework_1_1_editor_1_1_menu_items.html", null ],
+        [ "PolarGridEditor", "class_grid_framework_1_1_editor_1_1_polar_grid_editor.html", null ],
+        [ "RectGridEditor", "class_grid_framework_1_1_editor_1_1_rect_grid_editor.html", null ],
+        [ "SphereGridEditor", "class_grid_framework_1_1_editor_1_1_sphere_grid_editor.html", null ]
+      ] ],
+      [ "Extensions", "namespace_grid_framework_1_1_extensions.html", [
+        [ "Align", "namespace_grid_framework_1_1_extensions_1_1_align.html", [
+          [ "Hexagonal", "class_grid_framework_1_1_extensions_1_1_align_1_1_hexagonal.html", "class_grid_framework_1_1_extensions_1_1_align_1_1_hexagonal" ],
+          [ "Rectangular", "class_grid_framework_1_1_extensions_1_1_align_1_1_rectangular.html", "class_grid_framework_1_1_extensions_1_1_align_1_1_rectangular" ]
+        ] ],
+        [ "Conversion", "namespace_grid_framework_1_1_extensions_1_1_conversion.html", [
+          [ "Polar", "class_grid_framework_1_1_extensions_1_1_conversion_1_1_polar.html", "class_grid_framework_1_1_extensions_1_1_conversion_1_1_polar" ]
+        ] ],
+        [ "Nearest", "namespace_grid_framework_1_1_extensions_1_1_nearest.html", [
+          [ "Hexgonal", "class_grid_framework_1_1_extensions_1_1_nearest_1_1_hexgonal.html", "class_grid_framework_1_1_extensions_1_1_nearest_1_1_hexgonal" ],
+          [ "Polar", "class_grid_framework_1_1_extensions_1_1_nearest_1_1_polar.html", "class_grid_framework_1_1_extensions_1_1_nearest_1_1_polar" ],
+          [ "Rectangular", "class_grid_framework_1_1_extensions_1_1_nearest_1_1_rectangular.html", "class_grid_framework_1_1_extensions_1_1_nearest_1_1_rectangular" ],
+          [ "Spherical", "class_grid_framework_1_1_extensions_1_1_nearest_1_1_spherical.html", "class_grid_framework_1_1_extensions_1_1_nearest_1_1_spherical" ]
+        ] ],
+        [ "Scale", "namespace_grid_framework_1_1_extensions_1_1_scale.html", [
+          [ "AlignAndScale", "class_grid_framework_1_1_extensions_1_1_scale_1_1_align_and_scale.html", "class_grid_framework_1_1_extensions_1_1_scale_1_1_align_and_scale" ]
+        ] ]
+      ] ],
+      [ "Grids", "namespace_grid_framework_1_1_grids.html", [
+        [ "BaseGrid", "class_grid_framework_1_1_grids_1_1_base_grid.html", "class_grid_framework_1_1_grids_1_1_base_grid" ],
+        [ "HexGrid", "class_grid_framework_1_1_grids_1_1_hex_grid.html", "class_grid_framework_1_1_grids_1_1_hex_grid" ],
+        [ "LayeredGrid", "class_grid_framework_1_1_grids_1_1_layered_grid.html", "class_grid_framework_1_1_grids_1_1_layered_grid" ],
+        [ "PolarGrid", "class_grid_framework_1_1_grids_1_1_polar_grid.html", "class_grid_framework_1_1_grids_1_1_polar_grid" ],
+        [ "RectGrid", "class_grid_framework_1_1_grids_1_1_rect_grid.html", "class_grid_framework_1_1_grids_1_1_rect_grid" ],
+        [ "SphereGrid", "class_grid_framework_1_1_grids_1_1_sphere_grid.html", "class_grid_framework_1_1_grids_1_1_sphere_grid" ]
+      ] ],
+      [ "Matrices", "namespace_grid_framework_1_1_matrices.html", [
+        [ "Matrix3x3", "struct_grid_framework_1_1_matrices_1_1_matrix3x3.html", "struct_grid_framework_1_1_matrices_1_1_matrix3x3" ],
+        [ "Matrix3x4", "struct_grid_framework_1_1_matrices_1_1_matrix3x4.html", "struct_grid_framework_1_1_matrices_1_1_matrix3x4" ],
+        [ "Matrix4x3", "struct_grid_framework_1_1_matrices_1_1_matrix4x3.html", "struct_grid_framework_1_1_matrices_1_1_matrix4x3" ]
+      ] ],
+      [ "Renderers", "namespace_grid_framework_1_1_renderers.html", [
+        [ "Hexagonal", "namespace_grid_framework_1_1_renderers_1_1_hexagonal.html", [
+          [ "Cone", "class_grid_framework_1_1_renderers_1_1_hexagonal_1_1_cone.html", "class_grid_framework_1_1_renderers_1_1_hexagonal_1_1_cone" ],
+          [ "Herringbone", "class_grid_framework_1_1_renderers_1_1_hexagonal_1_1_herringbone.html", "class_grid_framework_1_1_renderers_1_1_hexagonal_1_1_herringbone" ],
+          [ "HexRenderer", "class_grid_framework_1_1_renderers_1_1_hexagonal_1_1_hex_renderer.html", "class_grid_framework_1_1_renderers_1_1_hexagonal_1_1_hex_renderer" ],
+          [ "Rectangle", "class_grid_framework_1_1_renderers_1_1_hexagonal_1_1_rectangle.html", "class_grid_framework_1_1_renderers_1_1_hexagonal_1_1_rectangle" ],
+          [ "Rhombus", "class_grid_framework_1_1_renderers_1_1_hexagonal_1_1_rhombus.html", "class_grid_framework_1_1_renderers_1_1_hexagonal_1_1_rhombus" ]
+        ] ],
+        [ "Polar", "namespace_grid_framework_1_1_renderers_1_1_polar.html", [
+          [ "Cylinder", "class_grid_framework_1_1_renderers_1_1_polar_1_1_cylinder.html", "class_grid_framework_1_1_renderers_1_1_polar_1_1_cylinder" ],
+          [ "PolarRenderer", "class_grid_framework_1_1_renderers_1_1_polar_1_1_polar_renderer.html", "class_grid_framework_1_1_renderers_1_1_polar_1_1_polar_renderer" ]
+        ] ],
+        [ "Rectangular", "namespace_grid_framework_1_1_renderers_1_1_rectangular.html", [
+          [ "Parallelepiped", "class_grid_framework_1_1_renderers_1_1_rectangular_1_1_parallelepiped.html", "class_grid_framework_1_1_renderers_1_1_rectangular_1_1_parallelepiped" ],
+          [ "RectangularRenderer", "class_grid_framework_1_1_renderers_1_1_rectangular_1_1_rectangular_renderer.html", "class_grid_framework_1_1_renderers_1_1_rectangular_1_1_rectangular_renderer" ]
+        ] ],
+        [ "Spherical", "namespace_grid_framework_1_1_renderers_1_1_spherical.html", [
+          [ "Sphere", "class_grid_framework_1_1_renderers_1_1_spherical_1_1_sphere.html", "class_grid_framework_1_1_renderers_1_1_spherical_1_1_sphere" ],
+          [ "SphericalRenderer", "class_grid_framework_1_1_renderers_1_1_spherical_1_1_spherical_renderer.html", "class_grid_framework_1_1_renderers_1_1_spherical_1_1_spherical_renderer" ]
+        ] ],
+        [ "GridRenderer", "class_grid_framework_1_1_renderers_1_1_grid_renderer.html", "class_grid_framework_1_1_renderers_1_1_grid_renderer" ]
+      ] ],
+      [ "Rendering", "namespace_grid_framework_1_1_rendering.html", [
+        [ "GlobalMeshBackend", "class_grid_framework_1_1_rendering_1_1_global_mesh_backend.html", null ],
+        [ "LineSegment", "class_grid_framework_1_1_rendering_1_1_line_segment.html", "class_grid_framework_1_1_rendering_1_1_line_segment" ],
+        [ "LineSegmentGroup", "class_grid_framework_1_1_rendering_1_1_line_segment_group.html", "class_grid_framework_1_1_rendering_1_1_line_segment_group" ],
+        [ "LocalMeshBackend", "class_grid_framework_1_1_rendering_1_1_local_mesh_backend.html", null ],
+        [ "RendererLineSegments", "class_grid_framework_1_1_rendering_1_1_renderer_line_segments.html", "class_grid_framework_1_1_rendering_1_1_renderer_line_segments" ],
+        [ "System", "class_grid_framework_1_1_rendering_1_1_system.html", "class_grid_framework_1_1_rendering_1_1_system" ]
+      ] ],
+      [ "Vectors", "namespace_grid_framework_1_1_vectors.html", [
+        [ "Vector6", "struct_grid_framework_1_1_vectors_1_1_vector6.html", "struct_grid_framework_1_1_vectors_1_1_vector6" ]
+      ] ]
+    ] ]
+];

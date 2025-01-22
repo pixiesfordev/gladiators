@@ -1,0 +1,4 @@
+var searchData=
+[
+  ['spherical_20grids_0',['Spherical grids',['../sphere.html',1,'']]]
+];

@@ -1,0 +1,4 @@
+var searchData=
+[
+  ['frequently_20used_20snippets_0',['Frequently used snippets',['../snippets.html',1,'']]]
+];

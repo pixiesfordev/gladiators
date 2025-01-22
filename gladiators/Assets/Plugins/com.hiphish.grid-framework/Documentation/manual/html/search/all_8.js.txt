@@ -1,0 +1,25 @@
+var searchData=
+[
+  ['height_0',['Height',['../struct_grid_framework_1_1_matrices_1_1_matrix4x3.html#a8ff973688a1fc33d829fa16e137a7662',1,'GridFramework.Matrices.Matrix4x3.Height()'],['../struct_grid_framework_1_1_matrices_1_1_matrix3x4.html#a54f03cf45e0f1e03533af5596b199ec9',1,'GridFramework.Matrices.Matrix3x4.Height()'],['../struct_grid_framework_1_1_matrices_1_1_matrix3x3.html#a3869c3ea4d2f32fcb51281cffb9b00b0',1,'GridFramework.Matrices.Matrix3x3.Height()'],['../class_grid_framework_1_1_grids_1_1_hex_grid_a48a00d8e3cb451eab3941cb8dd74a0fd.html#a48a00d8e3cb451eab3941cb8dd74a0fd',1,'GridFramework.Grids.HexGrid.Height()']]],
+  ['herringbone_1',['Herringbone',['../class_grid_framework_1_1_renderers_1_1_hexagonal_1_1_herringbone.html',1,'GridFramework::Renderers::Hexagonal']]],
+  ['herringboneeditor_2',['HerringboneEditor',['../class_grid_framework_1_1_editor_1_1_renderers_1_1_hexagonal_1_1_herringbone_editor.html',1,'GridFramework::Editor::Renderers::Hexagonal']]],
+  ['herringdowntocubic_3',['HerringDownToCubic',['../class_grid_framework_1_1_grids_1_1_hex_grid_abd1d026eb173121e6985f737f3683445.html#abd1d026eb173121e6985f737f3683445',1,'GridFramework::Grids::HexGrid']]],
+  ['herringdowntoherringup_4',['HerringDownToHerringUp',['../class_grid_framework_1_1_grids_1_1_hex_grid_ac2c70fdccbef21858b091565e1f53832.html#ac2c70fdccbef21858b091565e1f53832',1,'GridFramework::Grids::HexGrid']]],
+  ['herringdowntorhombicdown_5',['HerringDownToRhombicDown',['../class_grid_framework_1_1_grids_1_1_hex_grid_abc3bea98fd53b17cfdfb6ca49feebffe.html#abc3bea98fd53b17cfdfb6ca49feebffe',1,'GridFramework::Grids::HexGrid']]],
+  ['herringdowntorhombicup_6',['HerringDownToRhombicUp',['../class_grid_framework_1_1_grids_1_1_hex_grid_a12dbd57fbc9606a79206ef4278fb5644.html#a12dbd57fbc9606a79206ef4278fb5644',1,'GridFramework::Grids::HexGrid']]],
+  ['herringdowntoworld_7',['HerringDownToWorld',['../class_grid_framework_1_1_grids_1_1_hex_grid_a37db78a2fe9fdaf860144dfd31078951.html#a37db78a2fe9fdaf860144dfd31078951',1,'GridFramework::Grids::HexGrid']]],
+  ['herringuptocubic_8',['HerringUpToCubic',['../class_grid_framework_1_1_grids_1_1_hex_grid_ac3ca9f45b521e0956cf95883c9629958.html#ac3ca9f45b521e0956cf95883c9629958',1,'GridFramework::Grids::HexGrid']]],
+  ['herringuptoherringdown_9',['HerringUpToHerringDown',['../class_grid_framework_1_1_grids_1_1_hex_grid_a6854b757bc7f76b6f37ecd6c9ceb0e8c.html#a6854b757bc7f76b6f37ecd6c9ceb0e8c',1,'GridFramework::Grids::HexGrid']]],
+  ['herringuptorhombicdown_10',['HerringUpToRhombicDown',['../class_grid_framework_1_1_grids_1_1_hex_grid_abe789a73143b1890e0234707cc43a132.html#abe789a73143b1890e0234707cc43a132',1,'GridFramework::Grids::HexGrid']]],
+  ['herringuptorhombicup_11',['HerringUpToRhombicUp',['../class_grid_framework_1_1_grids_1_1_hex_grid_ac86f7a4f160e34005e5a1b83fcad6cd0.html#ac86f7a4f160e34005e5a1b83fcad6cd0',1,'GridFramework::Grids::HexGrid']]],
+  ['herringuptoworld_12',['HerringUpToWorld',['../class_grid_framework_1_1_grids_1_1_hex_grid_a95283c1c7fc690e3dc3c9317d75c09f9.html#a95283c1c7fc690e3dc3c9317d75c09f9',1,'GridFramework::Grids::HexGrid']]],
+  ['hexagonal_13',['Hexagonal',['../class_grid_framework_1_1_extensions_1_1_align_1_1_hexagonal.html',1,'GridFramework::Extensions::Align']]],
+  ['hexagonal_20grids_14',['Hexagonal grids',['../hex.html',1,'']]],
+  ['hexdirection_15',['HexDirection',['../class_grid_framework_1_1_grids_1_1_hex_grid_a309ec966d95947d7ef3b5d891d07ec39.html#a309ec966d95947d7ef3b5d891d07ec39',1,'GridFramework::Grids::HexGrid']]],
+  ['hexfrom_16',['HexFrom',['../class_grid_framework_1_1_renderers_1_1_hexagonal_1_1_cone.html#ab21beea42b215d2600e6b3f8baaf3597',1,'GridFramework::Renderers::Hexagonal::Cone']]],
+  ['hexgonal_17',['Hexgonal',['../class_grid_framework_1_1_extensions_1_1_nearest_1_1_hexgonal.html',1,'GridFramework::Extensions::Nearest']]],
+  ['hexgrid_18',['HexGrid',['../class_grid_framework_1_1_grids_1_1_hex_grid.html',1,'GridFramework::Grids']]],
+  ['hexgrideditor_19',['HexGridEditor',['../class_grid_framework_1_1_editor_1_1_hex_grid_editor.html',1,'GridFramework::Editor']]],
+  ['hexrenderer_20',['HexRenderer',['../class_grid_framework_1_1_renderers_1_1_hexagonal_1_1_hex_renderer.html',1,'GridFramework::Renderers::Hexagonal']]],
+  ['hexto_21',['HexTo',['../class_grid_framework_1_1_renderers_1_1_hexagonal_1_1_cone.html#a9585809ed019eacecd04e9d1d16ee538',1,'GridFramework::Renderers::Hexagonal::Cone']]]
+];

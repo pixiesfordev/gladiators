@@ -1,0 +1,18 @@
+{
+    "name": "com.hiphish.grid-framework.Editor",
+    "rootNamespace": "GridFramework",
+    "references": [
+        "GUID:5eee1c798098c968fb7e65ad18b072f6"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

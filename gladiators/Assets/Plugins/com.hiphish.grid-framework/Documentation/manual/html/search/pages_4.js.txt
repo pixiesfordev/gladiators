@@ -1,0 +1,5 @@
+var searchData=
+[
+  ['getting_20started_0',['Getting Started',['../starting.html',1,'']]],
+  ['grids_20in_20general_1',['Grids In General',['../general.html',1,'']]]
+];

@@ -1,0 +1,4 @@
+var searchData=
+[
+  ['clipped_0',['Clipped',['../class_grid_framework_1_1_renderers_1_1_hexagonal_1_1_rectangle_aad5ae732b0701476d5410f5eb8f779d8.html#aad5ae732b0701476d5410f5eb8f779d8a7c56ec21b4bd3d4e924d79f03ea221e8',1,'GridFramework::Renderers::Hexagonal::Rectangle']]]
+];

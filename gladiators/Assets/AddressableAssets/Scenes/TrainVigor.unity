@@ -229,6 +229,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: TrainVigorManager
       objectReference: {fileID: 0}
+    - target: {fileID: 3272783928327558447, guid: d1e7eab25f9ff7040b170d12544d6863,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3911452168337500621, guid: d1e7eab25f9ff7040b170d12544d6863,
         type: 3}
       propertyPath: m_Cameras.Array.data[0]

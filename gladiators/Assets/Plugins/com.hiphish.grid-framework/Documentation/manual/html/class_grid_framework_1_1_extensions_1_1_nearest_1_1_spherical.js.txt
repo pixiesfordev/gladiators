@@ -1,0 +1,11 @@
+var class_grid_framework_1_1_extensions_1_1_nearest_1_1_spherical =
+[
+    [ "NearestGeographicCell", "class_grid_framework_1_1_extensions_1_1_nearest_1_1_spherical_a8ad160da73a959969c8635dc73e8c0cf.html#a8ad160da73a959969c8635dc73e8c0cf", null ],
+    [ "NearestGeographicVertex", "class_grid_framework_1_1_extensions_1_1_nearest_1_1_spherical_a4e379862ec16f35121682f8b129494a9.html#a4e379862ec16f35121682f8b129494a9", null ],
+    [ "NearestGridCell", "class_grid_framework_1_1_extensions_1_1_nearest_1_1_spherical_a17da6095ab53356444cc46fbc32d7f56.html#a17da6095ab53356444cc46fbc32d7f56", null ],
+    [ "NearestGridVertex", "class_grid_framework_1_1_extensions_1_1_nearest_1_1_spherical_a4c130f84e0110b0ff1c22ecb5a465fd5.html#a4c130f84e0110b0ff1c22ecb5a465fd5", null ],
+    [ "NearestSphericalCell", "class_grid_framework_1_1_extensions_1_1_nearest_1_1_spherical_a5a8c55452e1c76f8a36c6a26826134c0.html#a5a8c55452e1c76f8a36c6a26826134c0", null ],
+    [ "NearestSphericalVertex", "class_grid_framework_1_1_extensions_1_1_nearest_1_1_spherical_ac13bd6db9b830069419da3b5eb5f4119.html#ac13bd6db9b830069419da3b5eb5f4119", null ],
+    [ "NearestWorldCell", "class_grid_framework_1_1_extensions_1_1_nearest_1_1_spherical_a2428780273c561148742b5b31d6eb6da.html#a2428780273c561148742b5b31d6eb6da", null ],
+    [ "NearestWorldVertex", "class_grid_framework_1_1_extensions_1_1_nearest_1_1_spherical_a4cf453f495d724bc17e8180cccfcdc0d.html#a4cf453f495d724bc17e8180cccfcdc0d", null ]
+];

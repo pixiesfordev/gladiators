@@ -1,0 +1,5 @@
+var searchData=
+[
+  ['deg2rotation_0',['Deg2Rotation',['../class_grid_framework_1_1_extensions_1_1_conversion_1_1_polar_a772e0a5adf73c1d94ef7e23fcea7280f.html#a772e0a5adf73c1d94ef7e23fcea7280f',1,'GridFramework::Extensions::Conversion::Polar']]],
+  ['deg2sector_1',['Deg2Sector',['../class_grid_framework_1_1_extensions_1_1_conversion_1_1_polar_a365d15f357add7fa458436b9d2a7547c.html#a365d15f357add7fa458436b9d2a7547c',1,'GridFramework::Extensions::Conversion::Polar']]]
+];
