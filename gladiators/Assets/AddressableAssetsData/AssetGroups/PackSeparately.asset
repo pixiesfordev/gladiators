@@ -130,6 +130,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b76c18fc4685b164c9dad6d2a63ade9f
+    m_Address: Assets/AddressableAssets/Prefabs/Train/Cuisine/CuisineCardPrefab.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: c0b6ca0a2a723204bbc05df61082a822
     m_Address: Assets/AddressableAssets/Dlls
     m_ReadOnly: 0

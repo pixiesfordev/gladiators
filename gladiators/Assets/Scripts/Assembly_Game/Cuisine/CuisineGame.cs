@@ -16,14 +16,18 @@ namespace Gladiators.Cuisine {
         /// <summary>已翻開等待配對的第二張卡</summary>
         CusineCard secondCard;
 
+        int maxChanceCount; // 可翻牌機會
+        public int CurChanceCount { get; private set; }
 
         /// <summary>
         /// 初始化遊戲：給定「對數」，建立並洗牌卡片。
         /// 例如 pairCount=5，就會有10張卡（ID=[0,0,1,1,2,2,3,3,4,4]）。
         /// </summary>
-        public CuisineGame(int pairCount) {
+        public CuisineGame(int pairCount, int chanceCount) {
             this.pairCount = pairCount;
             SetupCards(this.pairCount);
+            this.maxChanceCount = chanceCount;
+            CurChanceCount = chanceCount;
         }
 
         /// <summary>
@@ -32,6 +36,7 @@ namespace Gladiators.Cuisine {
         public void ResetGame() {
             firstCard = null;
             secondCard = null;
+            CurChanceCount = maxChanceCount;
             SetupCards(pairCount);
         }
 
@@ -57,6 +62,12 @@ namespace Gladiators.Cuisine {
         /// 翻牌，回傳是否配對成功與目前狀態ture為配對成功，-1為錯誤、0為第一張牌、1為第二張牌
         /// </summary>
         public (bool, int) FlipCard(int _idx) {
+
+            if (CurChanceCount <= 0) {
+                WriteLog.LogError("翻牌次數用完了");
+                return (false, -1);
+            }
+
             if (!Cards.ContainsKey(_idx)) {
                 WriteLog.LogError($"錯誤索引: {_idx}");
                 return (false, -1);
@@ -86,6 +97,8 @@ namespace Gladiators.Cuisine {
             }
         }
 
+
+
         /// <summary>
         /// 檢查第一張與第二張是否配對；若失敗則翻回去。
         /// </summary>
@@ -101,6 +114,9 @@ namespace Gladiators.Cuisine {
                 secondCard.IsMatched = true;
                 match = true;
             }
+
+            CurChanceCount--; // 翻開第二張牌後要減少次數
+
             return match;
         }
         public void FlipBack() {
