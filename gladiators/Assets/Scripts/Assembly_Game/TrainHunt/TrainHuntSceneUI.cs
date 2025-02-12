@@ -20,10 +20,10 @@ namespace Gladiators.TrainHunt {
         [SerializeField] RectTransform BarOrange;
         [SerializeField] RectTransform BarRed;
         [SerializeField] RectTransform BarPointer;
+        [SerializeField] RectTransform BarBG;
         [SerializeField] Transform MonsterPos;
         [SerializeField] Image MonsterIcon;
         [SerializeField] Image MonsterHitted;
-        [SerializeField] MyText TimeText;
         [SerializeField] RectTransform Attack;
         [SerializeField] GameObject GameOverObj;
         [SerializeField] GameObject PlayerTalkBG;
@@ -32,6 +32,10 @@ namespace Gladiators.TrainHunt {
         [SerializeField] DamageNumber dmgPrefab;
         [SerializeField] Vector3 dmgPopupOffset; // 跳血座標偏移
         [SerializeField] float dmgNumScal; // 跳血縮放
+
+        [SerializeField] TrainHuntTimeObj TimeObj; //時間顯示物件
+
+        [SerializeField] TrainHuntBG BGObj; //背景物件
 
         [HeaderAttribute("==============TEST==============")]
         [HeaderAttribute("==============游標區==============")]
@@ -62,7 +66,7 @@ namespace Gladiators.TrainHunt {
 
         public static TrainHuntSceneUI Instance { get; private set; }
 
-        float BarHeight = 0f; //打擊條長度
+        float BarWidth = 0f; //打擊條長度
         float BarYellowRange = 0f; //打擊條黃色區域值
         float BarOrangeRange = 0f; //打擊條橘色區域值
         float BarRedRange = 0f; //打擊條紅色區域值
@@ -84,13 +88,21 @@ namespace Gladiators.TrainHunt {
 
         Color HideColor = new Color(1f, 1f, 1f, 0f);
 
+        //TODO:
+        //v1.上下蓋兩條黑色背景長條(因為示意圖看起來是直接用黑色條去遮背景)
+        //v2.上方日夜條
+        //3.套其他背景
+        //4.套Boss模型進去
+        //5.詢問細節功能面
+        //6.詢問玩家角色的美術圖
+
         // Start is called before the first frame update
         void Start()
         {
             Init();
-            BarHeight = Screen.height - 200f;
+            BarWidth = BarBG.sizeDelta.x;
             Vector2 oldSize = BarGray.sizeDelta;
-            BarGray.sizeDelta = new Vector2(oldSize.x, BarHeight);
+            BarGray.sizeDelta = new Vector2(BarWidth, oldSize.y);
             BarYellowOriginSize = BarYellow.sizeDelta;
             BarOrangeOriginSize = BarOrange.sizeDelta;
             BarRedOriginSize = BarRed.sizeDelta;
@@ -104,6 +116,7 @@ namespace Gladiators.TrainHunt {
             PickBarValue().Forget();
             MonsterStartMove().Forget();
             PlayerTalkBGShine().Forget();
+            BGObj.StartRotate();
         }
 
         // Update is called once per frame
@@ -149,9 +162,9 @@ namespace Gladiators.TrainHunt {
             BarYellowRange = UnityEngine.Random.Range(BarSetYellowMinRange, BarSetYellowMaxRange);
             BarOrangeRange = UnityEngine.Random.Range(BarSetOrangeMinRange, BarSetOrangeMaxRange);
             BarRedRange = UnityEngine.Random.Range(BarSetRedMinRange, BarSetRedMaxRange);
-            BarYellow.sizeDelta = new Vector2(BarYellowOriginSize.x, BarHeight * BarYellowRange);
-            BarOrange.sizeDelta = new Vector2(BarOrangeOriginSize.x, BarHeight * BarOrangeRange);
-            BarRed.sizeDelta = new Vector2(BarRedOriginSize.x, BarHeight * BarRedRange);
+            BarYellow.sizeDelta = new Vector2(BarWidth * BarYellowRange, BarYellowOriginSize.y);
+            BarOrange.sizeDelta = new Vector2(BarWidth * BarOrangeRange, BarOrangeOriginSize.y);
+            BarRed.sizeDelta = new Vector2(BarWidth * BarRedRange, BarRedOriginSize.y);
             BarPointerDuration = UnityEngine.Random.Range(BarPointerMinDur, BarPointerMaxDur);
             Debug.LogFormat("打擊條黃色區域:{0} 橘色區域: {1} 紅色區域:{2} 移動所需時間:{3}", 
                 BarYellowRange, BarOrangeRange, BarRedRange, BarPointerDuration);
@@ -161,14 +174,13 @@ namespace Gladiators.TrainHunt {
         }
 
         async UniTaskVoid MonsterStartMove() {
-            TimeText.text = GameTime.ToString();
             //配合PickBarValue延遲兩偵
             await UniTask.Yield();
             await UniTask.Yield();
             float startTime = Time.time;
             float passTime = startTime;
             float deltaTime = 0f;
-            float remainTime = 0f;
+            float remainTime;
             Vector3 curMonsterPos = MonsterStartPos;
             Debug.LogFormat("開始移動怪物! 開始時間:{0} 經過時間:{1} 目前位置:{2}", startTime, passTime, curMonsterPos);
             while (deltaTime < GameTime) {
@@ -178,9 +190,9 @@ namespace Gladiators.TrainHunt {
                 if (remainTime < 0f)
                     remainTime = 0f;
                 //更新剩餘時間文字
-                TimeText.text = remainTime.ToString();
                 //更新怪物位置
                 curMonsterPos.x = Mathf.Lerp(MonsterStartPos.x, MonsterEndPos.x, deltaTime / GameTime);
+                TimeObj.SetPointerPos(deltaTime / GameTime);
                 MonsterPos.localPosition = curMonsterPos;
                 await UniTask.Yield();
             }
@@ -190,16 +202,16 @@ namespace Gladiators.TrainHunt {
 
         async UniTaskVoid BarStartMove() {
             Vector3 pointerPos = BarPointer.localPosition;
-            float pointerYPos = (BarHeight - BarPointer.sizeDelta.y / 2) / 2;
+            float pointerXPos = (BarWidth - BarPointer.sizeDelta.x / 2) / 2;
             float passTime = 0f;
-            pointerPos.y = pointerYPos;
+            pointerPos.x = pointerXPos;
             Vector3 startPos = pointerPos;
             Vector3 endPos = -pointerPos;
             bool pointerDir = true; //游標方向 true為往下 false為往上
             Debug.LogFormat("游標起始位置: {0} 結束位置: {1}", startPos, endPos);
             while (!stop) {
                 passTime = pointerDir ? passTime + Time.deltaTime : passTime - Time.deltaTime;
-                pointerPos.y = Mathf.Lerp(startPos.y, endPos.y, BarPointerCurve.Evaluate(passTime / BarPointerDuration));
+                pointerPos.x = Mathf.Lerp(startPos.x, endPos.x, BarPointerCurve.Evaluate(passTime / BarPointerDuration));
                 BarPointer.localPosition = pointerPos;
                 await UniTask.Yield();
                 if (passTime >= BarPointerDuration)
@@ -230,7 +242,7 @@ namespace Gladiators.TrainHunt {
         /// </summary>
         /// <returns>對應區域傷害值</returns>
         int GetHitHP() {
-            float PointerRangeVal = Math.Abs(BarPointer.localPosition.y / (BarHeight / 2));
+            float PointerRangeVal = Math.Abs(BarPointer.localPosition.x / (BarWidth / 2));
             Debug.LogFormat("打擊區域值:{0} 黃區:{1} 紅區:{2} 游標所在位置:{3}", PointerRangeVal, BarYellowRange, BarRedRange, 
                 BarPointer.localPosition.y);
             if (PointerRangeVal < BarRedRange)
@@ -287,6 +299,7 @@ namespace Gladiators.TrainHunt {
             Attack.gameObject.SetActive(false);
             PickBarValue().Forget();
             MonsterStartMove().Forget();
+            BGObj.BGFarStartMove();
         }
 
         async UniTaskVoid PlayerTalkBGShine() {
