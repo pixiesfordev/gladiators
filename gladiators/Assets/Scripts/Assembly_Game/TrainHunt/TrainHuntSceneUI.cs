@@ -27,15 +27,15 @@ namespace Gladiators.TrainHunt {
         [SerializeField] RectTransform Attack;
         [SerializeField] GameObject GameOverObj;
         [SerializeField] GameObject PlayerTalkBG;
-        [SerializeField] BattleGladiatorInfo MonsterCharInfo;
+        [SerializeField] BattleGladiatorInfo BossCharInfo;
 
-        [SerializeField] DamageNumber dmgPrefab;
         [SerializeField] Vector3 dmgPopupOffset; // 跳血座標偏移
         [SerializeField] float dmgNumScal; // 跳血縮放
 
         [SerializeField] TrainHuntTimeObj TimeObj; //時間顯示物件
 
         [SerializeField] TrainHuntBG BGObj; //背景物件
+        public TrainHuntBoss MyBoss; //Boss物件
 
         [HeaderAttribute("==============TEST==============")]
         [HeaderAttribute("==============游標區==============")]
@@ -88,18 +88,25 @@ namespace Gladiators.TrainHunt {
 
         Color HideColor = new Color(1f, 1f, 1f, 0f);
 
+        public enum HitArea : short
+        {
+            Gray = 0,
+            Yellow = 1,
+            Orange = 2,
+            Red = 3,
+        }
+
         //TODO:
         //v1.上下蓋兩條黑色背景長條(因為示意圖看起來是直接用黑色條去遮背景)
         //v2.上方日夜條
-        //3.套其他背景
-        //4.套Boss模型進去
-        //5.詢問細節功能面
-        //6.詢問玩家角色的美術圖
+        //v3.套其他背景
+        //4.搬移角色與Boss的邏輯到TrainHuntManager
+        //5.搬移遊戲邏輯到TrainHuntManager
 
         // Start is called before the first frame update
         void Start()
         {
-            Init();
+            //介面相關值先初始化
             BarWidth = BarBG.sizeDelta.x;
             Vector2 oldSize = BarGray.sizeDelta;
             BarGray.sizeDelta = new Vector2(BarWidth, oldSize.y);
@@ -107,25 +114,19 @@ namespace Gladiators.TrainHunt {
             BarOrangeOriginSize = BarOrange.sizeDelta;
             BarRedOriginSize = BarRed.sizeDelta;
 
-            MonsterCharInfo.Init(MonsterMaxHP, MonsterMaxHP, 7);
+            //初始化Manager
+            Init();
 
-            AttackOriginPos = Attack.transform.localPosition;
+            //TODO:移除掉 目前新富還沒決定好攻擊要怎麼放 先保留
             Attack.gameObject.SetActive(false);
 
             GameOverObj.SetActive(false);
-            PickBarValue().Forget();
-            MonsterStartMove().Forget();
-            PlayerTalkBGShine().Forget();
             BGObj.StartRotate();
         }
 
         // Update is called once per frame
         void Update()
         {
-            if (BPickBar) {
-                BPickBar = false;
-                PickBarValue().Forget();
-            }
             if (BReset) {
                 BReset = false;
                 ResetGame();
@@ -153,51 +154,18 @@ namespace Gladiators.TrainHunt {
             Instance = this;
         }
 
-        /// <summary>
-        /// 挑選打擊條長度的值
-        /// </summary>
-        async UniTaskVoid PickBarValue() {
-            stop = true;
-            await UniTask.Yield();
-            BarYellowRange = UnityEngine.Random.Range(BarSetYellowMinRange, BarSetYellowMaxRange);
-            BarOrangeRange = UnityEngine.Random.Range(BarSetOrangeMinRange, BarSetOrangeMaxRange);
-            BarRedRange = UnityEngine.Random.Range(BarSetRedMinRange, BarSetRedMaxRange);
-            BarYellow.sizeDelta = new Vector2(BarWidth * BarYellowRange, BarYellowOriginSize.y);
-            BarOrange.sizeDelta = new Vector2(BarWidth * BarOrangeRange, BarOrangeOriginSize.y);
-            BarRed.sizeDelta = new Vector2(BarWidth * BarRedRange, BarRedOriginSize.y);
-            BarPointerDuration = UnityEngine.Random.Range(BarPointerMinDur, BarPointerMaxDur);
-            Debug.LogFormat("打擊條黃色區域:{0} 橘色區域: {1} 紅色區域:{2} 移動所需時間:{3}", 
-                BarYellowRange, BarOrangeRange, BarRedRange, BarPointerDuration);
-            await UniTask.Yield();
-            stop = false;
-            BarStartMove().Forget();
+        public void SetBarUI(float yellowRange, float orangeRange, float redRange) {
+            BarYellow.sizeDelta = new Vector2(BarWidth * yellowRange, BarYellowOriginSize.y);
+            BarOrange.sizeDelta = new Vector2(BarWidth * orangeRange, BarOrangeOriginSize.y);
+            BarRed.sizeDelta = new Vector2(BarWidth * redRange, BarRedOriginSize.y);
         }
 
-        async UniTaskVoid MonsterStartMove() {
-            //配合PickBarValue延遲兩偵
-            await UniTask.Yield();
-            await UniTask.Yield();
-            float startTime = Time.time;
-            float passTime = startTime;
-            float deltaTime = 0f;
-            float remainTime;
-            Vector3 curMonsterPos = MonsterStartPos;
-            Debug.LogFormat("開始移動怪物! 開始時間:{0} 經過時間:{1} 目前位置:{2}", startTime, passTime, curMonsterPos);
-            while (deltaTime < GameTime) {
-                passTime += Time.deltaTime;
-                deltaTime = passTime - startTime;
-                remainTime = (float)Math.Floor(GameTime - deltaTime);
-                if (remainTime < 0f)
-                    remainTime = 0f;
-                //更新剩餘時間文字
-                //更新怪物位置
-                curMonsterPos.x = Mathf.Lerp(MonsterStartPos.x, MonsterEndPos.x, deltaTime / GameTime);
-                TimeObj.SetPointerPos(deltaTime / GameTime);
-                MonsterPos.localPosition = curMonsterPos;
-                await UniTask.Yield();
-            }
-            await UniTask.Yield();
-            EndGame();
+        public void SetBarMoveSpeed(float duration) {
+            BarPointerDuration = duration;
+        }
+
+        public void BarMove() {
+            BarStartMove().Forget();
         }
 
         async UniTaskVoid BarStartMove() {
@@ -209,6 +177,7 @@ namespace Gladiators.TrainHunt {
             Vector3 endPos = -pointerPos;
             bool pointerDir = true; //游標方向 true為往下 false為往上
             Debug.LogFormat("游標起始位置: {0} 結束位置: {1}", startPos, endPos);
+            stop = false;
             while (!stop) {
                 passTime = pointerDir ? passTime + Time.deltaTime : passTime - Time.deltaTime;
                 pointerPos.x = Mathf.Lerp(startPos.x, endPos.x, BarPointerCurve.Evaluate(passTime / BarPointerDuration));
@@ -221,6 +190,14 @@ namespace Gladiators.TrainHunt {
             }
         }
 
+        public void SetBossCharInfo(int maxHP, int heroID) {
+            BossCharInfo.Init(maxHP, maxHP, heroID);
+        }
+
+        public void SetPointerPos(float rate) {
+            TimeObj.SetPointerPos(rate);
+        }
+
         /// <summary>
         /// 點擊發動攻擊
         /// </summary>
@@ -229,53 +206,46 @@ namespace Gladiators.TrainHunt {
                 return;
             //長條停止演出
             stop = true;
-            //演出攻擊動畫
-            PlayAttack(GetHitHP()).Forget();
-        }
-
-        public void ClickReset() {
-            ResetGame();
+            //計算攻擊數值 & 演出攻擊動畫
+            TrainHuntManager.Instance.PlayerAttack(getHitArea());
         }
 
         /// <summary>
         /// 判斷打擊區域落在紅/黃/白區域
         /// </summary>
-        /// <returns>對應區域傷害值</returns>
-        int GetHitHP() {
+        /// <returns>對應區域</returns>
+        HitArea getHitArea() {
             float PointerRangeVal = Math.Abs(BarPointer.localPosition.x / (BarWidth / 2));
             Debug.LogFormat("打擊區域值:{0} 黃區:{1} 紅區:{2} 游標所在位置:{3}", PointerRangeVal, BarYellowRange, BarRedRange, 
                 BarPointer.localPosition.y);
             if (PointerRangeVal < BarRedRange)
-                return HitHPRed;
+                return HitArea.Red;
             else if (PointerRangeVal < BarOrangeRange)
-                return HitHPOrange;
+                return HitArea.Orange;
             else if (PointerRangeVal < BarYellowRange)
-                return HitHPYellow;
-            return HitHPGray;
+                return HitArea.Yellow;
+            return HitArea.Gray;
+        }
+
+        //TODO:等新富確定攻擊演出後 這裡要修改拔除
+        public void PlayerAttack(int reduceHP) {
+            PlayAttack(reduceHP).Forget();
         }
 
         async UniTaskVoid PlayAttack(int reduceHP) {
             Debug.LogFormat("打擊演出! 打擊HP:{0}", reduceHP);
             //1.角色攻擊演出
             await MoveAttack();
-            //2.怪物受擊演出(跳血量傷害與閃爍兩次)
-            ReduceMonsterHP(reduceHP);
-            MonsterHitted.DOColor(Color.red, MonsterHittedTime);
-            await UniTask.WaitForSeconds(MonsterHittedTime);
-            MonsterHitted.DOColor(HideColor, MonsterHittedTime);
-            await UniTask.WaitForSeconds(MonsterHittedTime);
-            MonsterHitted.DOColor(Color.red, MonsterHittedTime);
-            await UniTask.WaitForSeconds(MonsterHittedTime);
-            MonsterHitted.DOColor(HideColor, MonsterHittedTime);
-            await UniTask.WaitForSeconds(MonsterHittedTime);
+            //2.怪物受擊演出(跳血量傷害與Boss受擊動畫)
+            ReduceBossHP(reduceHP);
+            TrainHuntManager.Instance.JumpHitHP(reduceHP);
+            await TrainHuntManager.Instance.BossHitted();
             //3.攻擊演出後重新挑選長條 挑選完後長條重新開始跑
-            PickBarValue().Forget();
+            TrainHuntManager.Instance.PickBarValue();
         }
 
-        public void ReduceMonsterHP(int reduceHP) {
-            var dmgNum = dmgPrefab.Spawn(MonsterPos.position + dmgPopupOffset, reduceHP);
-            dmgNum.transform.localScale = Vector3.one * dmgNumScal;
-            MonsterCharInfo.AddHP(-reduceHP);
+        public void ReduceBossHP(int reduceHP) {
+            BossCharInfo.AddHP(-reduceHP);
         }
 
         async UniTask MoveAttack() {
@@ -288,27 +258,21 @@ namespace Gladiators.TrainHunt {
             Attack.gameObject.SetActive(false);
         }
 
-        void EndGame() {
+        public void ClickReset() {
+            ResetGame();
+        }
+
+        public void EndGame() {
             GameOverObj.SetActive(true);
         }
 
         void ResetGame() {
             GameOverObj.SetActive(false);
-            MonsterCharInfo.Init(MonsterMaxHP, MonsterMaxHP, 7);
-            MonsterCharInfo.ResetHPBarToFull();
+            BossCharInfo.Init(MonsterMaxHP, MonsterMaxHP, 7);
+            BossCharInfo.ResetHPBarToFull();
             Attack.gameObject.SetActive(false);
-            PickBarValue().Forget();
-            MonsterStartMove().Forget();
+            TrainHuntManager.Instance.GameStart();
             BGObj.BGFarStartMove();
-        }
-
-        async UniTaskVoid PlayerTalkBGShine() {
-            bool show = false;
-            while (true) {
-                show = !show;
-                PlayerTalkBG.SetActive(show);
-                await UniTask.WaitForSeconds(1f);
-            }
         }
     }
 

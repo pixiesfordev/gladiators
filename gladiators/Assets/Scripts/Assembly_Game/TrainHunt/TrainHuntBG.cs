@@ -26,7 +26,7 @@ public class TrainHuntBG : MonoBehaviour
     [Tooltip("地板上的植物(遠)轉動速度倍率(基於RotateDegreePerSec)")][SerializeField] float TreesRotateRate = 0.5f;
     [Tooltip("地板上的石碑轉動速度倍率(基於RotateDegreePerSec)")][SerializeField] float FarSteleRotateRate = 0.3f;
     [Tooltip("角色前的近景石碑轉動速度倍率(基於RotateDegreePerSec)")][SerializeField] float NearSteleRotateRate = 0.1f;
-    [HeaderAttribute("==============參數區域(橫條背景 未完成)==============")]
+    [HeaderAttribute("==============參數區域(橫條背景)==============")]
     [Tooltip("遠處背景每秒移動距離")][SerializeField] float FarBGMovePerSec = 1f;
     [Tooltip("更新遠處背景移動速度")][SerializeField] bool updateBGMoveSpeed = false;
 
