@@ -23,45 +23,24 @@ namespace Gladiators.TrainHunt {
         [SerializeField] RectTransform BarBG;
         [SerializeField] Transform MonsterPos;
         [SerializeField] Image MonsterIcon;
-        [SerializeField] Image MonsterHitted;
         [SerializeField] RectTransform Attack;
         [SerializeField] GameObject GameOverObj;
-        [SerializeField] GameObject PlayerTalkBG;
         [SerializeField] BattleGladiatorInfo BossCharInfo;
-
-        [SerializeField] Vector3 dmgPopupOffset; // 跳血座標偏移
-        [SerializeField] float dmgNumScal; // 跳血縮放
 
         [SerializeField] TrainHuntTimeObj TimeObj; //時間顯示物件
 
         [SerializeField] TrainHuntBG BGObj; //背景物件
         public TrainHuntBoss MyBoss; //Boss物件
+        public TrainHuntHero MyHero; //Hero物件
 
         [HeaderAttribute("==============TEST==============")]
         [HeaderAttribute("==============游標區==============")]
-        [Tooltip("黃色條數值最小值")] float BarSetYellowMinRange = 0.5f;
-        [Tooltip("黃色條數值最大值")] float BarSetYellowMaxRange = 0.7f;
-        [Tooltip("紅色條數值最小值")] float BarSetOrangeMinRange = 0.3f;
-        [Tooltip("紅色條數值最大值")] float BarSetOrangeMaxRange = 0.45f;
-        [Tooltip("紅色條數值最小值")] float BarSetRedMinRange = 0.1f;
-        [Tooltip("紅色條數值最大值")] float BarSetRedMaxRange = 0.25f;
         [Tooltip("游標移動曲線")][SerializeField] AnimationCurve BarPointerCurve;
-        [Tooltip("游標移動最少所需時間(最快速) 至少大於0")][SerializeField] float BarPointerMinDur;
-        [Tooltip("游標移動最多所需時間(最慢速)")][SerializeField] float BarPointerMaxDur;
-        [Tooltip("數值條重新挑選")][SerializeField] bool BPickBar = false;
-
         [HeaderAttribute("==============AddressableAssets==============")]
         [SerializeField] AssetReference TrainHuntSceneAsset;
 
         [HeaderAttribute("==============怪物位置區==============")]
-        [Tooltip("怪物起始位置")][SerializeField] Vector3 MonsterStartPos;
-        [Tooltip("怪物結束位置")][SerializeField] Vector3 MonsterEndPos;
-        [Tooltip("怪物血量")][SerializeField] int MonsterMaxHP;
-
-        [Tooltip("怪物受擊閃爍演出時間")] [SerializeField] float MonsterHittedTime;
-
         [Tooltip("攻擊物件移動時間")] [SerializeField] float AttackMoveDuration;
-
         [Tooltip("重置遊戲")][SerializeField] bool BReset = false;
 
         public static TrainHuntSceneUI Instance { get; private set; }
@@ -75,18 +54,9 @@ namespace Gladiators.TrainHunt {
         Vector2 BarOrangeOriginSize;
         Vector2 BarRedOriginSize;
 
-        float GameTime = 30f; //小遊戲時間
-
         bool stop = false;
 
-        int HitHPRed = 20;
-        int HitHPOrange = 15;
-        int HitHPYellow = 10;
-        int HitHPGray = 5;
-
         Vector3 AttackOriginPos;
-
-        Color HideColor = new Color(1f, 1f, 1f, 0f);
 
         public enum HitArea : short
         {
@@ -100,8 +70,9 @@ namespace Gladiators.TrainHunt {
         //v1.上下蓋兩條黑色背景長條(因為示意圖看起來是直接用黑色條去遮背景)
         //v2.上方日夜條
         //v3.套其他背景
-        //4.搬移角色與Boss的邏輯到TrainHuntManager
-        //5.搬移遊戲邏輯到TrainHuntManager
+        //v4.搬移角色與Boss的邏輯到TrainHuntManager
+        //v5.搬移遊戲邏輯到TrainHuntManager
+        //v6.拆UICanvas(針對背景 要多拆出一個UICanvas 要被角色跟Boss蓋住的一個 要在前景的另一個)
 
         // Start is called before the first frame update
         void Start()
@@ -158,6 +129,9 @@ namespace Gladiators.TrainHunt {
             BarYellow.sizeDelta = new Vector2(BarWidth * yellowRange, BarYellowOriginSize.y);
             BarOrange.sizeDelta = new Vector2(BarWidth * orangeRange, BarOrangeOriginSize.y);
             BarRed.sizeDelta = new Vector2(BarWidth * redRange, BarRedOriginSize.y);
+            BarYellowRange = yellowRange;
+            BarOrangeRange = orangeRange;
+            BarRedRange = redRange;
         }
 
         public void SetBarMoveSpeed(float duration) {
@@ -190,8 +164,8 @@ namespace Gladiators.TrainHunt {
             }
         }
 
-        public void SetBossCharInfo(int maxHP, int heroID) {
-            BossCharInfo.Init(maxHP, maxHP, heroID);
+        public void SetBossCharInfo(int maxHP, int bossID) {
+            BossCharInfo.Init(maxHP, maxHP, bossID);
         }
 
         public void SetPointerPos(float rate) {
@@ -268,7 +242,6 @@ namespace Gladiators.TrainHunt {
 
         void ResetGame() {
             GameOverObj.SetActive(false);
-            BossCharInfo.Init(MonsterMaxHP, MonsterMaxHP, 7);
             BossCharInfo.ResetHPBarToFull();
             Attack.gameObject.SetActive(false);
             TrainHuntManager.Instance.GameStart();

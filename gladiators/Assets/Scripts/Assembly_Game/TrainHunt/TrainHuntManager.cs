@@ -12,7 +12,7 @@ namespace Gladiators.TrainHunt {
     public class TrainHuntManager : MonoBehaviour
     {
         [SerializeField] Camera MyCam;
-        [SerializeField] TrainHuntHero MyHero;
+        TrainHuntHero MyHero;
         TrainHuntBoss MyBoss;
         [SerializeField] DamageNumber dmgPrefab;
         [SerializeField] Vector3 dmgPopupOffset; // 跳血座標偏移
@@ -56,6 +56,7 @@ namespace Gladiators.TrainHunt {
         // Start is called before the first frame update
         void Start() {
             MyBoss = TrainHuntSceneUI.Instance.MyBoss;
+            MyHero = TrainHuntSceneUI.Instance.MyHero;
             //賦予Boss血量資料(測試用 之後應該由外部呼叫給值)
             SetBossCharInfo(BossMaxHP, 7);
             //TODO:新富還沒決定好攻擊要如何呈現 之後實現 先暫時用舊版攻擊方式
@@ -98,8 +99,8 @@ namespace Gladiators.TrainHunt {
             TrainHuntSceneUI.Instance.EndGame();
         }
 
-        public void SetBossCharInfo(int maxHP, int heroID) {
-            TrainHuntSceneUI.Instance.SetBossCharInfo(maxHP, heroID);
+        public void SetBossCharInfo(int maxHP, int bossID) {
+            TrainHuntSceneUI.Instance.SetBossCharInfo(maxHP, bossID);
         }
 
         /// <summary>
