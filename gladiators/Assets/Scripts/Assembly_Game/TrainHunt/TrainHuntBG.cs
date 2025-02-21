@@ -99,11 +99,11 @@ public class TrainHuntBG : MonoBehaviour
         Vector3 steleFarVec = new(0f, 0f, degreePerFrame * FarSteleRotateRate);
         Vector3 steleNearVec = new (0f, 0f, degreePerFrame * NearSteleRotateRate);
         while (true) {
-            SphreaFloor.Rotate(floorVec);
-            SphreaPlants.Rotate(plantsVec);
-            SphreaTrees.Rotate(treeVec);
-            SphereSteleFar.Rotate(steleFarVec);
-            SteleNear.Rotate(steleNearVec);
+            SphreaFloor.Rotate(-floorVec);
+            SphreaPlants.Rotate(-plantsVec);
+            SphreaTrees.Rotate(-treeVec);
+            SphereSteleFar.Rotate(-steleFarVec);
+            SteleNear.Rotate(-steleNearVec);
             await UniTask.WaitForSeconds(perFrameSec, cancellationToken:RotateCTS.Token);
         }
     }
