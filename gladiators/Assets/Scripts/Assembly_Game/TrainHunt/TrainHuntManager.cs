@@ -23,6 +23,7 @@ namespace Gladiators.TrainHunt {
         [Tooltip("怪物結束位置")][SerializeField] Vector3 BossEndPos;
         [Tooltip("怪物起始位置角度")][SerializeField] Vector3 BossStartAngle;
         [Tooltip("怪物結束位置角度")][SerializeField] Vector3 BossEndAngle;
+        [Tooltip("圓周半徑")][SerializeField] float RadiusSet = 1013f;
         [Tooltip("怪物血量")][SerializeField] int BossMaxHP;
         [HeaderAttribute("==============打擊條區==============")]
         [Tooltip("黃色條數值最小值")][SerializeField] float BarSetYellowMinRange = 0.5f;
@@ -139,13 +140,22 @@ namespace Gladiators.TrainHunt {
             Vector3 curBossPos = BossStartPos;
             Vector3 curAngle = BossStartAngle;
             Debug.LogFormat("開始移動Boss! 開始時間:{0} 經過時間:{1} 目前位置:{2}", startTime, passTime, curBossPos);
+            //TODO:改成圓周公式
+            //x-h = rcos();
+            //y-k = rsin();
             while (deltaTime < GameTime) {
                 passTime += Time.deltaTime;
                 deltaTime = passTime - startTime;
                 //更新剩餘時間 & 怪物位置
-                curBossPos.x = Mathf.Lerp(BossStartPos.x, BossEndPos.x, deltaTime / GameTime);
-                curBossPos.y = Mathf.Lerp(BossStartPos.y, BossEndPos.y, deltaTime / GameTime);
+                //curBossPos.x = Mathf.Lerp(BossStartPos.x, BossEndPos.x, deltaTime / GameTime);
+                //curBossPos.y = Mathf.Lerp(BossStartPos.y, BossEndPos.y, deltaTime / GameTime);
                 curAngle.z = Mathf.Lerp(BossStartAngle.z, BossEndAngle.z, deltaTime / GameTime);
+                curBossPos.x = RadiusSet * Mathf.Cos(curAngle.z * Mathf.Deg2Rad);
+                curBossPos.y = RadiusSet * Mathf.Sin(curAngle.z * Mathf.Deg2Rad);
+                Debug.LogWarningFormat("theta: {0} x: {1} y: {2} cos: {3} sin: {4}", 
+                curAngle.z, curBossPos.x, curBossPos.y, 
+                Mathf.Cos(curAngle.z * Mathf.Deg2Rad),
+                Mathf.Sin(curAngle.z * Mathf.Deg2Rad));
                 TrainHuntSceneUI.Instance.SetPointerPos(deltaTime / GameTime);
                 MyBoss.transform.SetLocalPositionAndRotation(curBossPos, Quaternion.Euler(curAngle));
                 await UniTask.Yield();
