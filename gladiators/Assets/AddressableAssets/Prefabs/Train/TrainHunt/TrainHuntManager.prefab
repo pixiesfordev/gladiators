@@ -51,10 +51,11 @@ MonoBehaviour:
     type: 3}
   dmgPopupOffset: {x: 0, y: 4, z: 3}
   dmgNumScal: 4
-  BossStartPos: {x: -500, y: -245, z: 0}
-  BossEndPos: {x: 245, y: -210, z: 0}
-  BossStartAngle: {x: 0, y: 0, z: 15}
-  BossEndAngle: {x: 0, y: 0, z: -10}
+  BossStartPos: {x: 0, y: 1050, z: 0}
+  BossEndPos: {x: 0, y: 1050, z: 0}
+  BossStartAngle: {x: 0, y: 0, z: -25}
+  BossEndAngle: {x: 0, y: 0, z: 15}
+  RadiusSet: 1013
   BossMaxHP: 200
   BarSetYellowMinRange: 0.5
   BarSetYellowMaxRange: 0.7

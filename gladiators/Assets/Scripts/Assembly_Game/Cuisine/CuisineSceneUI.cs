@@ -1,5 +1,6 @@
 using Cysharp.Threading.Tasks;
 using Gladiators.Battle;
+using Gladiators.Main;
 using GridFramework.Grids;
 using Scoz.Func;
 using System;
@@ -28,6 +29,17 @@ namespace Gladiators.Cuisine {
         private void Start() {
             ShowCountingdown(false);
             LoadItemAsset(Init);
+            List<JsonSkill> gainSkills = new List<JsonSkill>();
+            gainSkills.Add(GameDictionary.GetJsonData<JsonSkill>(1001));
+            gainSkills.Add(GameDictionary.GetJsonData<JsonSkill>(1002));
+            gainSkills.Add(GameDictionary.GetJsonData<JsonSkill>(1003));
+            List<JsonSkill> pSkills = new List<JsonSkill>();
+            pSkills.Add(GameDictionary.GetJsonData<JsonSkill>(1004));
+            pSkills.Add(GameDictionary.GetJsonData<JsonSkill>(1005));
+            pSkills.Add(GameDictionary.GetJsonData<JsonSkill>(1006));
+            pSkills.Add(GameDictionary.GetJsonData<JsonSkill>(1007));
+            pSkills.Add(GameDictionary.GetJsonData<JsonSkill>(1008));
+            GainSkillUI.Instance.ShowUI(gainSkills, pSkills);
         }
 
 

@@ -9,8 +9,7 @@ using System;
 using DamageNumbersPro;
 
 namespace Gladiators.TrainHunt {
-    public class TrainHuntManager : MonoBehaviour
-    {
+    public class TrainHuntManager : MonoBehaviour {
         [SerializeField] Camera MyCam;
         TrainHuntHero MyHero;
         TrainHuntBoss MyBoss;
@@ -123,7 +122,7 @@ namespace Gladiators.TrainHunt {
             //把值賦給UI做設定
             TrainHuntSceneUI.Instance.SetBarUI(BarYellowRange, BarOrangeRange, BarRedRange);
             TrainHuntSceneUI.Instance.SetBarMoveSpeed(BarPointerDuration);
-            Debug.LogFormat("打擊條黃色區域:{0} 橘色區域: {1} 紅色區域:{2} 移動所需時間:{3}", 
+            Debug.LogFormat("打擊條黃色區域:{0} 橘色區域: {1} 紅色區域:{2} 移動所需時間:{3}",
                 BarYellowRange, BarOrangeRange, BarRedRange, BarPointerDuration);
             await UniTask.Yield();
             TrainHuntSceneUI.Instance.BarMove();
@@ -150,14 +149,15 @@ namespace Gladiators.TrainHunt {
                 //curBossPos.x = Mathf.Lerp(BossStartPos.x, BossEndPos.x, deltaTime / GameTime);
                 //curBossPos.y = Mathf.Lerp(BossStartPos.y, BossEndPos.y, deltaTime / GameTime);
                 curAngle.z = Mathf.Lerp(BossStartAngle.z, BossEndAngle.z, deltaTime / GameTime);
-                curBossPos.x = RadiusSet * Mathf.Cos(curAngle.z * Mathf.Deg2Rad);
-                curBossPos.y = RadiusSet * Mathf.Sin(curAngle.z * Mathf.Deg2Rad);
-                Debug.LogWarningFormat("theta: {0} x: {1} y: {2} cos: {3} sin: {4}", 
-                curAngle.z, curBossPos.x, curBossPos.y, 
-                Mathf.Cos(curAngle.z * Mathf.Deg2Rad),
-                Mathf.Sin(curAngle.z * Mathf.Deg2Rad));
+                //curBossPos.x = RadiusSet * Mathf.Cos(curAngle.z * Mathf.Deg2Rad);
+                //curBossPos.y = RadiusSet * Mathf.Sin(curAngle.z * Mathf.Deg2Rad);
+                //Debug.LogWarningFormat("theta: {0} x: {1} y: {2} cos: {3} sin: {4}", 
+                //curAngle.z, curBossPos.x, curBossPos.y, 
+                //Mathf.Cos(curAngle.z * Mathf.Deg2Rad),
+                //Mathf.Sin(curAngle.z * Mathf.Deg2Rad));
                 TrainHuntSceneUI.Instance.SetPointerPos(deltaTime / GameTime);
-                MyBoss.transform.SetLocalPositionAndRotation(curBossPos, Quaternion.Euler(curAngle));
+                //MyBoss.transform.localPosition = curBossPos;
+                MyBoss.transform.parent.localRotation = Quaternion.Euler(curAngle);
                 await UniTask.Yield();
             }
             await UniTask.Yield();
@@ -177,8 +177,7 @@ namespace Gladiators.TrainHunt {
         /// </summary>
         /// <returns>對應區域傷害值</returns>
         int GetHitHP(TrainHuntSceneUI.HitArea area) {
-            return area switch
-            {
+            return area switch {
                 TrainHuntSceneUI.HitArea.Red => HitHPRed,
                 TrainHuntSceneUI.HitArea.Orange => HitHPOrange,
                 TrainHuntSceneUI.HitArea.Yellow => HitHPYellow,
