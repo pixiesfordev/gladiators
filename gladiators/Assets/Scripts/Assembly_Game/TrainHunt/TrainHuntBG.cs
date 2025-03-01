@@ -50,11 +50,11 @@ public class TrainHuntBG : MonoBehaviour
     }
 
     void SetBGFarMoveParameter() {
-        var oldSize = FarBGImgRt.sizeDelta;
+        //var oldSize = FarBGImgRt.sizeDelta;
         //因為狩獵季節固定為30秒 所以圖片寬度以螢幕寬度為基礎加上30秒內要移動的距離 多加5秒保險 以免延遲導致破綻出現
-        //先不調整背景大小
+        //不調整背景大小 跟背景有關的都不要動
         //FarBGImgRt.sizeDelta = new Vector2(Screen.width + 35 * FarBGMovePerSec, oldSize.y);
-        FarBGImgRt.localPosition = new Vector3(-35 * FarBGMovePerSec / 2, 0f, 0f);
+        //FarBGImgRt.localPosition = new Vector3(-35 * FarBGMovePerSec / 2, 0f, 0f);
     }
 
     public void BGFarStartMove() {
