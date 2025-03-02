@@ -844,7 +844,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 1.19, y: 114.05}
+  m_AnchoredPosition: {x: 1.19, y: 121}
   m_SizeDelta: {x: 2558.15, y: 1079.72}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2632685389094878114
@@ -4439,12 +4439,12 @@ MonoBehaviour:
   FarBG: {fileID: 2577842833985531216}
   FarBGImgRt: {fileID: 8855344965282145868}
   RotateDegreePerSec: 5
-  FloorRotateRate: 3
-  PlantsRotateRate: 3
-  TreesRotateRate: 0.9
-  FarSteleRotateRate: 0.6
-  NearSteleRotateRate: 3
-  FarBGMovePerSec: 2
+  FloorRotateRate: 4
+  PlantsRotateRate: 4
+  TreesRotateRate: 3
+  FarSteleRotateRate: 2
+  NearSteleRotateRate: 4
+  FarBGMovePerSec: 5
   updateBGMoveSpeed: 0
 --- !u!1 &8460775646731391170
 GameObject:
@@ -5590,6 +5590,36 @@ PrefabInstance:
       propertyPath: m_Name
       value: TrainHuntSphrea
       objectReference: {fileID: 0}
+    - target: {fileID: 2336033858171400741, guid: 47e9a06cab211c04db8611c238046419,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.96769035
+      objectReference: {fileID: 0}
+    - target: {fileID: 2336033858171400741, guid: 47e9a06cab211c04db8611c238046419,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2336033858171400741, guid: 47e9a06cab211c04db8611c238046419,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2336033858171400741, guid: 47e9a06cab211c04db8611c238046419,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.25214168
+      objectReference: {fileID: 0}
+    - target: {fileID: 2336033858171400741, guid: 47e9a06cab211c04db8611c238046419,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 166.00049
+      objectReference: {fileID: 0}
+    - target: {fileID: 2336033858171400741, guid: 47e9a06cab211c04db8611c238046419,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: -29.209
+      objectReference: {fileID: 0}
     - target: {fileID: 2773163497349532618, guid: 47e9a06cab211c04db8611c238046419,
         type: 3}
       propertyPath: m_Pivot.x
@@ -5689,6 +5719,41 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6200192748624018365, guid: 47e9a06cab211c04db8611c238046419,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.9792031
+      objectReference: {fileID: 0}
+    - target: {fileID: 6200192748624018365, guid: 47e9a06cab211c04db8611c238046419,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6200192748624018365, guid: 47e9a06cab211c04db8611c238046419,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6200192748624018365, guid: 47e9a06cab211c04db8611c238046419,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.20288286
+      objectReference: {fileID: 0}
+    - target: {fileID: 6200192748624018365, guid: 47e9a06cab211c04db8611c238046419,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 547.00275
+      objectReference: {fileID: 0}
+    - target: {fileID: 6200192748624018365, guid: 47e9a06cab211c04db8611c238046419,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 166.00018
+      objectReference: {fileID: 0}
+    - target: {fileID: 6200192748624018365, guid: 47e9a06cab211c04db8611c238046419,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: -23.411
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

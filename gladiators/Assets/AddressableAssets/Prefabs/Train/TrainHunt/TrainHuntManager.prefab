@@ -53,8 +53,8 @@ MonoBehaviour:
   dmgNumScal: 4
   BossStartPos: {x: 0, y: 1050, z: 0}
   BossEndPos: {x: 0, y: 1050, z: 0}
-  BossStartAngle: {x: 0, y: 0, z: -25}
-  BossEndAngle: {x: 0, y: 0, z: 15}
+  BossStartAngle: {x: 0, y: 0, z: -50}
+  BossEndAngle: {x: 0, y: 0, z: 30}
   RadiusSet: 1013
   BossMaxHP: 200
   BarSetYellowMinRange: 0.5
