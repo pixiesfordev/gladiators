@@ -139,7 +139,7 @@ namespace Gladiators.TrainHunt {
             Vector3 curBossPos = BossStartPos;
             Vector3 curAngle = BossStartAngle;
             Debug.LogFormat("開始移動Boss! 開始時間:{0} 經過時間:{1} 目前位置:{2}", startTime, passTime, curBossPos);
-            //TODO:改成圓周公式
+            //TODO:之後有空可以研究改用圓周公式的方式 目前是用內圈根外圈的概念去轉動
             //x-h = rcos();
             //y-k = rsin();
             while (deltaTime < GameTime) {
