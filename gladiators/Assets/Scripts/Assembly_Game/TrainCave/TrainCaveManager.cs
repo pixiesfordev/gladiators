@@ -38,6 +38,16 @@ namespace Gladiators.TrainCave {
         int MagicScore = 0;
         float GameTime = 30f;
 
+        /*TODOLIST:
+        1.建立一個滑鼠物件(要限制移動位置 用來提醒玩家目前滑鼠方向方便操作盾牌)
+        2.攻擊物件邏輯修改
+        3.套英雄角色 & 被擊中演出
+         1.物理攻擊
+         2.魔法攻擊
+        4.套盾牌物件 & 防禦成功演出
+         1.物理攻擊
+         2.魔法攻擊
+        */
         public void Init() {
             Instance = this;
             SetCam();//設定攝影機模式

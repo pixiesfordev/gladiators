@@ -8,6 +8,11 @@ namespace Gladiators.TrainCave {
 
         public TrainCaveShield.ShieldType DefednType { get; private set; } = TrainCaveShield.ShieldType.NONE;
 
+        /*
+        1.改圖案 SpriteRenderer改成Image
+        2.改攻擊演出方式 >> 圖案快速戳過去 戳到任何物體後就退回去
+        */
+
         // Start is called before the first frame update
         void Start() {
 
@@ -53,6 +58,13 @@ namespace Gladiators.TrainCave {
         void OnTriggerExit2D(Collider2D coll) {
             //Debug.Log ("------结束碰撞-------------");
             //Debug.Log(coll.gameObject.name);
+        }
+
+        public void SetSpeed(Vector2 speed) {
+            Rigidbody2D rb2D = GetComponent<Rigidbody2D>();
+            if (rb2D != null) {
+                rb2D.velocity = speed;
+            }
         }
     }
 }

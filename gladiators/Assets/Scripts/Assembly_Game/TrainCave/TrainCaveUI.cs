@@ -68,6 +68,15 @@ namespace Gladiators.TrainCave {
          2.物理防禦分數
         5.盾牌操作方式 >> 用壓住的方式操作
         */
+        
+        /* 2025.3 TODOLIST:
+        1.套入介面圖 >> 目前大部分都已經套完 但攻擊按鈕還沒套 因為建議改成非按鈕形式 否則會誤導玩家
+        2.時間(封裝成通用物件) >> 已改好 之後先把Hunt介面改用新的物件套進去試試看
+        3.血條
+        4.鍵盤按鍵功能/滑鼠功能 >> 3.5測試發現滑鼠位置會抓不到 需要排除一下bug
+         1.物理盾牌
+         2.魔法盾牌 
+        */
 
         public void SetGameTime(int _time) {
             TimeText.text = _time.ToString();
