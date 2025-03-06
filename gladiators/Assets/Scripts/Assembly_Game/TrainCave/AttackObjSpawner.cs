@@ -62,10 +62,7 @@ namespace Gladiators.TrainCave {
             bullet.transform.rotation = Quaternion.Euler(0f, 0f, rotZ);
 
             //給予子彈加速度
-            Rigidbody2D rb2D = bullet.GetComponent<Rigidbody2D>();
-            if (rb2D != null) {
-                rb2D.velocity = dir.normalized * speed;
-            }
+            bullet.SetSpeed(dir.normalized * speed);
         }
     }
 }

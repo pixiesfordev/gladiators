@@ -27,7 +27,7 @@ namespace Gladiators.TrainHunt {
         [SerializeField] GameObject GameOverObj;
         [SerializeField] BattleGladiatorInfo BossCharInfo;
 
-        [SerializeField] TrainHuntTimeObj TimeObj; //時間顯示物件
+        [SerializeField] TrainTimeObj TimeObj; //時間顯示物件
 
         [SerializeField] TrainHuntBG BGObj; //背景物件
         public TrainHuntBoss MyBoss; //Boss物件
