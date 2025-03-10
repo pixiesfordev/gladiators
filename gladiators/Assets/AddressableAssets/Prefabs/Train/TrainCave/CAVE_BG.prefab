@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5442930086178813334}
   - component: {fileID: 3545509678329919696}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: edge2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94,7 +94,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8547005740694396204}
   - component: {fileID: 8525173403165609868}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: edge1_02
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -178,7 +178,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2822784006485799242}
   - component: {fileID: 1784028400527755356}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: CAVE_BG
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -240,7 +240,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5461112200842668484}
   - component: {fileID: 3085924704153625378}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: BG02
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -324,7 +324,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4998494705811138683}
   - component: {fileID: 6362386939469902219}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: edge1_08
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -408,7 +408,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7214012433262975300}
   - component: {fileID: 2871460244793371658}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: BG
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -492,7 +492,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5259107731440799936}
   - component: {fileID: 2052069871179815808}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: edge1_02 (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -576,7 +576,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8277671237749526437}
   - component: {fileID: 6642891415016464393}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: edge1_08 (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -660,7 +660,7 @@ GameObject:
   m_Component:
   - component: {fileID: 398724114874877995}
   - component: {fileID: 8716723259254252868}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: edge1_04 (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -744,7 +744,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8566094865078243601}
   - component: {fileID: 3369535709203139459}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: edge1_04
   m_TagString: Untagged
   m_Icon: {fileID: 0}
