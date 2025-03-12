@@ -68,7 +68,13 @@ namespace Gladiators.TrainCave {
                     continue;
                 }
                 // 取得滑鼠在世界座標中的位置
-                mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                if (Camera.main != null)
+                    mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                else {
+                    mousePos = Vector2.zero;
+                    Debug.LogWarningFormat("Camera Main is null!!");
+                }
+                    
                 // 計算角色到滑鼠的向量與弧度(Radians)
                 playerPos = trans_Char.position;
                 dir = mousePos - playerPos;
