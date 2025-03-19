@@ -14,8 +14,6 @@ namespace Gladiators.TrainCave {
         public static TrainCaveManager Instance;
         [SerializeField] Camera MyCam;
         [SerializeField] Transform PlayerTrans;
-        [SerializeField] TrainCaveShield PhysicsShield;
-        [SerializeField] TrainCaveShield MagicShield;
         [SerializeField] SpriteRenderer PlayerPic;
         [SerializeField] bool MobileControl;
         [SerializeField] AttackObjSpawner Spawner;
@@ -51,7 +49,6 @@ namespace Gladiators.TrainCave {
         public void Init() {
             Instance = this;
             SetCam();//設定攝影機模式
-            SetInit();
             MouseListener().Forget();
 
 #if !UNITY_EDITOR // 輸出版本要根據平台判斷操控方式
@@ -64,13 +61,6 @@ namespace Gladiators.TrainCave {
             joyStick.gameObject.SetActive(MobileControl);
 
             ResetGame();
-        }
-
-        void SetInit() {
-            PhysicsShield.InitShield(TrainCaveShield.ShieldType.Physics);
-            MagicShield.InitShield(TrainCaveShield.ShieldType.Magic);
-            PhysicsShield.gameObject.SetActive(false);
-            MagicShield.gameObject.SetActive(false);
         }
 
         void SetCam() {
@@ -236,11 +226,9 @@ namespace Gladiators.TrainCave {
         void ShowShield(bool show, MouseButton button) {
             Debug.LogFormat("顯示盾牌:{0} 按鈕:{1}", show, button);
             if (button == MouseButton.Left) {
-                if (!MagicShield.gameObject.activeSelf)
-                    PhysicsShield.ShowShield(show);
+                TrainCaveUI.Instance.ShowShield(TrainCaveShield.ShieldType.Physics, show);
             } else if (button == MouseButton.Right) {
-                if (!PhysicsShield.gameObject.activeSelf)
-                    MagicShield.ShowShield(show);
+                TrainCaveUI.Instance.ShowShield(TrainCaveShield.ShieldType.Magic, show);
             }          
         }
 

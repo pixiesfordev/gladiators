@@ -13,6 +13,9 @@ namespace Gladiators.TrainCave {
 
         [SerializeField] GameObject GameOverObj;
 
+        [SerializeField] TrainCaveShield PhysicsShield;
+        [SerializeField] TrainCaveShield MagicShield;
+
         [SerializeField] BattleGladiatorInfo CharInfo;
 
         [HeaderAttribute("==============AddressableAssets==============")]
@@ -31,7 +34,15 @@ namespace Gladiators.TrainCave {
 
         public override void Init() {
             base.Init();
+            InitShield();
             SpawnSceneManager();
+        }
+
+        void InitShield() {
+            PhysicsShield.InitShield(TrainCaveShield.ShieldType.Physics);
+            MagicShield.InitShield(TrainCaveShield.ShieldType.Magic);
+            PhysicsShield.gameObject.SetActive(false);
+            MagicShield.gameObject.SetActive(false);
         }
 
         void SpawnSceneManager() {
@@ -73,7 +84,7 @@ namespace Gladiators.TrainCave {
         1.套入介面圖 >> 目前大部分都已經套完 但攻擊按鈕還沒套 因為建議改成非按鈕形式 否則會誤導玩家
         2.時間(封裝成通用物件) >> 已改好 之後先把Hunt介面改用新的物件套進去試試看
         3.血條
-        4.鍵盤按鍵功能/滑鼠功能 >> 3.5測試發現滑鼠位置會抓不到 需要排除一下bug
+        4.鍵盤按鍵功能/滑鼠功能
          1.物理盾牌
          2.魔法盾牌 
         */
@@ -111,6 +122,19 @@ namespace Gladiators.TrainCave {
 
         public bool HeroIsDead() {
             return CharInfo.HeroIsDead();
+        }
+
+        public void ShowShield(TrainCaveShield.ShieldType _type, bool show) {
+            switch (_type) {
+                case TrainCaveShield.ShieldType.Physics:
+                    if (!MagicShield.gameObject.activeSelf)
+                        PhysicsShield.ShowShield(show);
+                    break;
+                case TrainCaveShield.ShieldType.Magic:
+                    if (!PhysicsShield.gameObject.activeSelf)
+                        MagicShield.ShowShield(show);
+                    break;
+            }
         }
 
     }
