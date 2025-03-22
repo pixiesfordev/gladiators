@@ -36,7 +36,7 @@ namespace Gladiators.TrainCave {
 
         /*TODOLIST:
         v1.建立一個滑鼠物件(要限制移動位置 用來提醒玩家目前滑鼠方向方便操作盾牌)
-        2.攻擊物件邏輯修改
+        v2.攻擊物件邏輯修改
         3.套英雄角色 & 被擊中演出
          1.物理攻擊
          2.魔法攻擊
@@ -90,19 +90,14 @@ namespace Gladiators.TrainCave {
         }
 
         async UniTaskVoid GameStart() {
-            TrainCaveUI.Instance.SetGameTime(Mathf.RoundToInt(GameTime));
             float startTime = Time.time;
             float passTime = startTime;
             float deltaTime = 0f;
-            float remainTime = 0f;
             while (deltaTime < GameTime && !TrainCaveUI.Instance.HeroIsDead()) {
                 passTime += Time.deltaTime;
                 deltaTime = passTime - startTime;
-                remainTime = (float)Math.Floor(GameTime - deltaTime);
-                if (remainTime < 0f)
-                    remainTime = 0f;
-                //更新剩餘時間文字
-                TrainCaveUI.Instance.SetGameTime(Mathf.RoundToInt(remainTime));
+                //更新剩餘時間
+                TrainCaveUI.Instance.SetPointerPos(deltaTime / GameTime);
                 await UniTask.Yield();
             }
             await UniTask.Yield();

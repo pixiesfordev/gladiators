@@ -9,7 +9,6 @@ using System.Threading;
 namespace Gladiators.TrainCave {
     public class TrainCaveUI : BaseUI {
 
-        [SerializeField] MyText TimeText;
         [SerializeField] MyText MagicPoint;
         [SerializeField] MyText PhysicsPoint;
 
@@ -20,6 +19,7 @@ namespace Gladiators.TrainCave {
 
         [SerializeField] BattleGladiatorInfo CharInfo;
         [SerializeField] SpriteRenderer HeroRenderer;
+        [SerializeField] TrainTimeObj TimeObj;
 
         public Transform AttackObjTrans;
 
@@ -88,16 +88,12 @@ namespace Gladiators.TrainCave {
         
         /* 2025.3 TODOLIST:
         1.套入介面圖 >> 目前大部分都已經套完 但攻擊按鈕還沒套 因為建議改成非按鈕形式 否則會誤導玩家
-        2.時間(封裝成通用物件) >> 已改好 之後先把Hunt介面改用新的物件套進去試試看
+        v2.時間(封裝成通用物件)
         3.血條
         4.鍵盤按鍵功能/滑鼠功能
          1.物理盾牌
          2.魔法盾牌 
         */
-
-        public void SetGameTime(int _time) {
-            TimeText.text = _time.ToString();
-        }
 
         public void SetPhysicsScore(int _score) {
             PhysicsPoint.text = string.Format("PHY: {0}", _score);
@@ -182,6 +178,10 @@ namespace Gladiators.TrainCave {
                 HittedCTK.Cancel();
             }
             HittedCTK = new CancellationTokenSource();
+        }
+
+        public void SetPointerPos(float rate) {
+            TimeObj.SetPointerPos(rate);
         }
 
     }
