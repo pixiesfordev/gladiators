@@ -3,6 +3,8 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.UI;
 using Gladiators.Battle;
+using Cysharp.Threading.Tasks;
+using System.Threading;
 
 namespace Gladiators.TrainCave {
     public class TrainCaveUI : BaseUI {
@@ -17,14 +19,18 @@ namespace Gladiators.TrainCave {
         [SerializeField] TrainCaveShield MagicShield;
 
         [SerializeField] BattleGladiatorInfo CharInfo;
+        [SerializeField] SpriteRenderer HeroRenderer;
+
+        public Transform AttackObjTrans;
+
+        [Tooltip("受擊閃爍演出時間")][SerializeField] float PlayerHittedTime;
 
         [HeaderAttribute("==============AddressableAssets==============")]
         [SerializeField] AssetReference TrainCaveSceneAsset;
 
-
-
         public static TrainCaveUI Instance { get; private set; }
 
+        CancellationTokenSource HittedCTK;
 
         // Start is called before the first frame update
         void Start() {
@@ -135,6 +141,47 @@ namespace Gladiators.TrainCave {
                         MagicShield.ShowShield(show);
                     break;
             }
+        }
+
+        public void PlayerHittedAni(TrainCaveShield.ShieldType type) {
+            PlayerHitted(type).Forget();
+        }
+
+        async UniTask PlayerHitted(TrainCaveShield.ShieldType type) {
+            CreateHittedCTK();
+            float startTime = Time.time;
+            float passTime = startTime;
+            Color changeColor;
+            if (type == TrainCaveShield.ShieldType.Magic) {
+                changeColor = Color.blue;
+            } else if (type == TrainCaveShield.ShieldType.Physics) {
+                changeColor = Color.red;
+            } else {
+                changeColor = Color.green;
+            }
+            Color toColor;
+            Color fromColor;
+            for (int i = 0; i < 4; i++) {
+                if (i % 2 == 1) {
+                    toColor = changeColor;
+                    fromColor = Color.white;
+                } else {
+                    toColor = Color.white;
+                    fromColor = changeColor;
+                }
+                while (passTime - startTime < PlayerHittedTime) {
+                    passTime += Time.deltaTime;
+                    HeroRenderer.color = Color.Lerp(fromColor, toColor, (passTime - startTime) / PlayerHittedTime);
+                    await UniTask.Yield(HittedCTK.Token);
+                }
+            }
+        }
+
+        void CreateHittedCTK() {
+            if (HittedCTK != null) {
+                HittedCTK.Cancel();
+            }
+            HittedCTK = new CancellationTokenSource();
         }
 
     }

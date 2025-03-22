@@ -49,7 +49,9 @@ namespace Gladiators.TrainCave {
             Vector3 spawnPos3D = new Vector3(spawnPos2D.x, spawnPos2D.y, 0f);
             
             //產生子彈物件
-            AttackObj bullet = Instantiate(projectilePrefab, spawnPos3D, Quaternion.identity);
+            //AttackObj bullet = Instantiate(projectilePrefab, spawnPos3D, Quaternion.identity);
+            AttackObj bullet = Instantiate(projectilePrefab, spawnPos3D, Quaternion.identity, TrainCaveUI.Instance.AttackObjTrans);
+            
             
             //挑選子彈種類 之後看遊戲有幾種子彈值就取多少
             int rand = Random.Range(0, 2);

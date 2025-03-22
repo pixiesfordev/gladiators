@@ -21,8 +21,6 @@ namespace Gladiators.TrainCave {
         [SerializeField] DamageNumber dmgPrefab;
         [SerializeField] Vector3 dmgPopupOffset; // 跳血座標偏移
         [SerializeField] float dmgNumScal; // 跳血縮放
-
-        [Tooltip("受擊閃爍演出時間")][SerializeField] float PlayerHittedTime;
         [Tooltip("受擊減少血量 必須為整數")][SerializeField] int HittedReduceHP;
 
         Vector3 towardLeft = new Vector3(-1f, 1f, 1f);
@@ -37,7 +35,7 @@ namespace Gladiators.TrainCave {
         float GameTime = 30f;
 
         /*TODOLIST:
-        1.建立一個滑鼠物件(要限制移動位置 用來提醒玩家目前滑鼠方向方便操作盾牌)
+        v1.建立一個滑鼠物件(要限制移動位置 用來提醒玩家目前滑鼠方向方便操作盾牌)
         2.攻擊物件邏輯修改
         3.套英雄角色 & 被擊中演出
          1.物理攻擊
@@ -125,50 +123,6 @@ namespace Gladiators.TrainCave {
             GameStart().Forget();
         }
 
-        async UniTask PlayerHittedByPhysics() {
-            CreateHittedCTK();
-            float startTime = Time.time;
-            float passTime = startTime;
-            Color toColor;
-            Color fromColor;
-            for (int i = 0; i < 4; i++) {
-                if (i % 2 == 1) {
-                    toColor = Color.red;
-                    fromColor = Color.white;
-                } else {
-                    toColor = Color.white;
-                    fromColor = Color.red;
-                }
-                while (passTime - startTime < PlayerHittedTime) {
-                    passTime += Time.deltaTime;
-                    PlayerPic.color = Color.Lerp(fromColor, toColor, (passTime - startTime) / PlayerHittedTime);
-                    await UniTask.Yield(HittedCTK.Token);
-                }
-            }
-        }
-
-        async UniTask PlayerHittedByMagic() {
-            CreateHittedCTK();
-            float startTime = Time.time;
-            float passTime = startTime;
-            Color toColor;
-            Color fromColor;
-            for (int i = 0; i < 4; i++) {
-                if (i % 2 == 1) {
-                    toColor = Color.blue;
-                    fromColor = Color.white;
-                } else {
-                    toColor = Color.white;
-                    fromColor = Color.blue;
-                }
-                while (passTime - startTime < PlayerHittedTime) {
-                    passTime += Time.deltaTime;
-                    PlayerPic.color = Color.Lerp(fromColor, toColor, (passTime - startTime) / PlayerHittedTime);
-                    await UniTask.Yield(HittedCTK.Token);
-                }
-            }
-        }
-
         void CreateHittedCTK() {
             if (HittedCTK != null) {
                 HittedCTK.Cancel();
@@ -211,16 +165,12 @@ namespace Gladiators.TrainCave {
         }
 
         public void PlayerHitted(AttackObj obj) {
-            //可以針對近來的Obj做不同種類的演出與傷害判定
-            if (obj.DefednType == TrainCaveShield.ShieldType.Magic) {
-                PlayerHittedByMagic().Forget();
-            } else if (obj.DefednType == TrainCaveShield.ShieldType.Physics) {
-                PlayerHittedByPhysics().Forget();
-            }
             //TODO:之後角色應該會獨立成一個通用物件 這段就需要改寫
             var dmgNum = dmgPrefab.Spawn(PlayerTrans.position + dmgPopupOffset, HittedReduceHP);
             dmgNum.transform.localScale = Vector3.one * dmgNumScal;
             TrainCaveUI.Instance.OnHit(HittedReduceHP);
+            //針對進來的Obj做不同種類的演出與傷害判定
+            TrainCaveUI.Instance.PlayerHittedAni(obj.DefednType);
         }
 
         void ShowShield(bool show, MouseButton button) {
