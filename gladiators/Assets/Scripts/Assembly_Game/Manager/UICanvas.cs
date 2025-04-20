@@ -2,7 +2,7 @@ using UnityEngine;
 namespace Scoz.Func {
     public class UICanvas : MonoBehaviour {
         public static UICanvas Instance { get; private set; }
-        Canvas MyCanvas;
+        public Canvas MyCanvas;
         public void Init() {
             Instance = this;
             MyCanvas = GetComponent<Canvas>();

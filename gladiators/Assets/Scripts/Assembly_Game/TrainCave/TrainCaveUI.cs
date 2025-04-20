@@ -3,25 +3,34 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.UI;
 using Gladiators.Battle;
+using Cysharp.Threading.Tasks;
+using System.Threading;
 
 namespace Gladiators.TrainCave {
     public class TrainCaveUI : BaseUI {
 
-        [SerializeField] MyText TimeText;
         [SerializeField] MyText MagicPoint;
         [SerializeField] MyText PhysicsPoint;
 
         [SerializeField] GameObject GameOverObj;
 
+        [SerializeField] TrainCaveShield PhysicsShield;
+        [SerializeField] TrainCaveShield MagicShield;
+
         [SerializeField] BattleGladiatorInfo CharInfo;
+        [SerializeField] SpriteRenderer HeroRenderer;
+        [SerializeField] TrainTimeObj TimeObj;
+
+        public Transform AttackObjTrans;
+
+        [Tooltip("受擊閃爍演出時間")][SerializeField] float PlayerHittedTime;
 
         [HeaderAttribute("==============AddressableAssets==============")]
         [SerializeField] AssetReference TrainCaveSceneAsset;
 
-
-
         public static TrainCaveUI Instance { get; private set; }
 
+        CancellationTokenSource HittedCTK;
 
         // Start is called before the first frame update
         void Start() {
@@ -31,7 +40,15 @@ namespace Gladiators.TrainCave {
 
         public override void Init() {
             base.Init();
+            InitShield();
             SpawnSceneManager();
+        }
+
+        void InitShield() {
+            PhysicsShield.InitShield(TrainCaveShield.ShieldType.Physics);
+            MagicShield.InitShield(TrainCaveShield.ShieldType.Magic);
+            PhysicsShield.gameObject.SetActive(false);
+            MagicShield.gameObject.SetActive(false);
         }
 
         void SpawnSceneManager() {
@@ -68,10 +85,15 @@ namespace Gladiators.TrainCave {
          2.物理防禦分數
         5.盾牌操作方式 >> 用壓住的方式操作
         */
-
-        public void SetGameTime(int _time) {
-            TimeText.text = _time.ToString();
-        }
+        
+        /* 2025.3 TODOLIST:
+        1.套入介面圖 >> 目前大部分都已經套完 但攻擊按鈕還沒套 因為建議改成非按鈕形式 否則會誤導玩家
+        v2.時間(封裝成通用物件)
+        3.血條
+        4.鍵盤按鍵功能/滑鼠功能
+         1.物理盾牌
+         2.魔法盾牌 
+        */
 
         public void SetPhysicsScore(int _score) {
             PhysicsPoint.text = string.Format("PHY: {0}", _score);
@@ -102,6 +124,64 @@ namespace Gladiators.TrainCave {
 
         public bool HeroIsDead() {
             return CharInfo.HeroIsDead();
+        }
+
+        public void ShowShield(TrainCaveShield.ShieldType _type, bool show) {
+            switch (_type) {
+                case TrainCaveShield.ShieldType.Physics:
+                    if (!MagicShield.gameObject.activeSelf)
+                        PhysicsShield.ShowShield(show);
+                    break;
+                case TrainCaveShield.ShieldType.Magic:
+                    if (!PhysicsShield.gameObject.activeSelf)
+                        MagicShield.ShowShield(show);
+                    break;
+            }
+        }
+
+        public void PlayerHittedAni(TrainCaveShield.ShieldType type) {
+            PlayerHitted(type).Forget();
+        }
+
+        async UniTask PlayerHitted(TrainCaveShield.ShieldType type) {
+            CreateHittedCTK();
+            float startTime = Time.time;
+            float passTime = startTime;
+            Color changeColor;
+            if (type == TrainCaveShield.ShieldType.Magic) {
+                changeColor = Color.blue;
+            } else if (type == TrainCaveShield.ShieldType.Physics) {
+                changeColor = Color.red;
+            } else {
+                changeColor = Color.green;
+            }
+            Color toColor;
+            Color fromColor;
+            for (int i = 0; i < 4; i++) {
+                if (i % 2 == 1) {
+                    toColor = changeColor;
+                    fromColor = Color.white;
+                } else {
+                    toColor = Color.white;
+                    fromColor = changeColor;
+                }
+                while (passTime - startTime < PlayerHittedTime) {
+                    passTime += Time.deltaTime;
+                    HeroRenderer.color = Color.Lerp(fromColor, toColor, (passTime - startTime) / PlayerHittedTime);
+                    await UniTask.Yield(HittedCTK.Token);
+                }
+            }
+        }
+
+        void CreateHittedCTK() {
+            if (HittedCTK != null) {
+                HittedCTK.Cancel();
+            }
+            HittedCTK = new CancellationTokenSource();
+        }
+
+        public void SetPointerPos(float rate) {
+            TimeObj.SetPointerPos(rate);
         }
 
     }

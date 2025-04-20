@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using Codice.Client.BaseCommands;
 using Cysharp.Threading.Tasks;
+using Scoz.Func;
 using UnityEngine;
 
 namespace Gladiators.TrainCave {
@@ -59,6 +60,12 @@ namespace Gladiators.TrainCave {
             float x;
             float y;
             float shieldAngle;
+            Camera camera = Camera.main;
+            if (camera == null) {
+                //Camera main為null的時候直接去取用UICam
+                camera = UICam.Instance.MyCam;
+                Debug.LogWarningFormat("Main camera is null. Use UICam instance camera!");
+            }
 
             Debug.LogFormat("玩家初始位置: {0} 物件初始位置: {1}", trans_Char.position, transform.position);
 
@@ -68,7 +75,8 @@ namespace Gladiators.TrainCave {
                     continue;
                 }
                 // 取得滑鼠在世界座標中的位置
-                mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                mousePos = camera.ScreenToWorldPoint(Input.mousePosition);
+                    
                 // 計算角色到滑鼠的向量與弧度(Radians)
                 playerPos = trans_Char.position;
                 dir = mousePos - playerPos;

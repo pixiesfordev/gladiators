@@ -12,7 +12,6 @@ namespace Scoz.Func {
 
 
         //字典
-        public static Dictionary<ItemType, Dictionary<int, JsonBase>> ItemJsonDic = new Dictionary<ItemType, Dictionary<int, JsonBase>>();
         public static Dictionary<string, Dictionary<int, JsonBase>> IntKeyJsonDic = new Dictionary<string, Dictionary<int, JsonBase>>();
         public static Dictionary<string, Dictionary<string, JsonBase>> StrKeyJsonDic = new Dictionary<string, Dictionary<string, JsonBase>>();
 
@@ -183,38 +182,6 @@ namespace Scoz.Func {
                 return null;
             }
         }
-        /// <summary>
-        /// 取得IItemJsonData Dic
-        /// </summary>
-        public static Dictionary<int, IItemJsonData> GetIItemJsonDic(ItemType _itemType) {
-            if (ItemJsonDic.ContainsKey(_itemType)) {
-                return ItemJsonDic[_itemType].ToDictionary(a => a.Key, a => a.Value as IItemJsonData);
-            } else {
-                string log = string.Format("{0}表不存ItemJsonDic中", _itemType);
-                PopupUI.ShowClickCancel(log, null);
-                WriteLog.LogErrorFormat(log);
-                return null;
-            }
-        }
-        /// <summary>
-        /// 取得ItemJsonData
-        /// </summary>
-        public static IItemJsonData GetItemJsonData(ItemType _itemType, int _id) {
-            if (ItemJsonDic.ContainsKey(_itemType) && ItemJsonDic[_itemType].ContainsKey(_id)) {
-                IItemJsonData iItemJsonData = ItemJsonDic[_itemType][_id] as IItemJsonData;
-                if (iItemJsonData != null)
-                    return iItemJsonData;
-                string log = string.Format("{0}表的資料不為IItemJsonData", _itemType);
-                PopupUI.ShowClickCancel(log, null);
-                WriteLog.LogErrorFormat("{0}表的資料不為IItemJsonData", _itemType);
-                return null;
-            } else {
-                string log = string.Format("{0}表不存在ID:{1}的資料", _itemType, _id);
-                PopupUI.ShowClickCancel(log, null);
-                WriteLog.LogErrorFormat(log);
-                return null;
-            }
-        }
 
         /// <summary>
         /// 設定已int作為Key值得 JsonData Dictionary
@@ -224,13 +191,6 @@ namespace Scoz.Func {
             if (_dic != null && _dic.Values.Count > 0) {
                 //將JsonDataDic加到字典中
                 IntKeyJsonDic[_name] = _dic;
-                //如果是IItemType類的Json資料(會繼承IItemJsonData)也加到ItemJsonDic中
-                if (_dic.Values.First() is IItemJsonData) {
-                    ItemType itemType;
-                    if (MyEnum.TryParseEnum(_name, out itemType)) {
-                        ItemJsonDic[itemType] = _dic;
-                    }
-                }
             }
             //完成MyLoadingProgress進度，全部都載完就會回傳LoadJsonDataToDic傳入的Action
             MyLoadingProgress.FinishProgress(_name);

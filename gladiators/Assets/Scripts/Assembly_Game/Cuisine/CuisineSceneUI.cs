@@ -1,39 +1,141 @@
+using Cysharp.Threading.Tasks;
 using Gladiators.Battle;
+using Gladiators.Main;
+using GridFramework.Grids;
 using Scoz.Func;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.UI;
 namespace Gladiators.Cuisine {
-    public class CuisineSceneUI : BaseUI {
+    public class CuisineSceneUI : ItemSpawner_Remote<CuisineCardPrefab> {
         [HeaderAttribute("==============AddressableAssets==============")]
-        [SerializeField] AssetReference CuisineSceneAsset;
         [SerializeField] Image[] Img_Coutingdown;
-        [SerializeField] BattleGladiatorInfo CharInfo;
+        [SerializeField] int CardFlipBackMiliSecs;
+        [SerializeField] Animator StartCountingDownAni;
+        [SerializeField] int ChanceCount = 5; // 幾次翻牌機會
+        [SerializeField] Text Txt_RemainChance;
         public static CuisineSceneUI Instance { get; private set; }
+        //int curLeftTime;
+        public int StartCountDownSec { get; private set; }
+        CuisineGame myGame;
+        Dictionary<int, CuisineCardPrefab> cards = new Dictionary<int, CuisineCardPrefab>();
+        bool canFlip = false;
 
 
         private void Start() {
-            Init();
+            ShowCountingdown(false);
+            LoadItemAsset(Init);
+            List<JsonSkill> gainSkills = new List<JsonSkill>();
+            gainSkills.Add(GameDictionary.GetJsonData<JsonSkill>(1001));
+            gainSkills.Add(GameDictionary.GetJsonData<JsonSkill>(1002));
+            gainSkills.Add(GameDictionary.GetJsonData<JsonSkill>(1003));
+            List<JsonSkill> pSkills = new List<JsonSkill>();
+            pSkills.Add(GameDictionary.GetJsonData<JsonSkill>(1004));
+            pSkills.Add(GameDictionary.GetJsonData<JsonSkill>(1005));
+            pSkills.Add(GameDictionary.GetJsonData<JsonSkill>(1006));
+            pSkills.Add(GameDictionary.GetJsonData<JsonSkill>(1007));
+            pSkills.Add(GameDictionary.GetJsonData<JsonSkill>(1008));
+            GainSkillUI.Instance.ShowUI(gainSkills, pSkills);
         }
+
+
         public override void Init() {
             base.Init();
-            CharInfo.Init(1000, 800, 7);
-            spawnSceneManager();
+            StartGame();
+        }
+        public void StartGame() {
+            initGame();
+            StartCountingDownAni.gameObject.SetActive(true);
+            StartCountingDownAni.Play(0);
+            //// 開始倒數計時
+            //UniTask.Void(async () => {
+            //    curLeftTime = StartCountDownSec;
+            //    CuisineSceneUI.Instance.SetCountdownImg(curLeftTime);
+            //    while (curLeftTime > 0) {
+            //        if (!playing) break;
+            //        await UniTask.Delay(1000);
+            //        curLeftTime--;
+            //        CuisineSceneUI.Instance.SetCountdownImg(curLeftTime);
+            //    }
+            //    if (playing) endGame();
+            //});
+        }
+        /// <summary>
+        /// 動畫倒數完呼叫
+        /// </summary>
+        public void OnStartCountingDownEnd() {
+            SetCanFlip(true);
+            StartCountingDownAni.gameObject.SetActive(false);
+        }
+        void endGame() {
+            SetCanFlip(false);
+        }
+        void initGame() {
+            myGame = new CuisineGame(6, ChanceCount);
+            RefreshText();
+            cards.Clear();
+            var cardDatas = myGame.Cards.Values.ToList();
+            cardDatas.Shuffle();
+
+            if (!LoadItemFinished) {
+                WriteLog.LogError("ItemAsset尚未載入完成");
+                return;
+            }
+            InActiveAllItem();
+            if (cardDatas == null || cardDatas.Count == 0) {
+                WriteLog.LogError("傳入的_jsons為空或長度為0");
+                return;
+            }
+            for (int i = 0; i < cardDatas.Count; i++) {
+                if (i < ItemList.Count) {
+                    ItemList[i].Set(cardDatas[i], OnCardFlip);
+                    ItemList[i].IsActive = true;
+                    ItemList[i].gameObject.SetActive(true);
+
+                } else {
+                    var item = Spawn();
+                    item.Set(cardDatas[i], OnCardFlip);
+                }
+                cards.Add(cardDatas[i].Idx, ItemList[i]);
+            }
+        }
+        public void OnCardFlip(CusineCard _card) {
+            if (canFlip == false) return;
+            var (match, status) = myGame.FlipCard(_card.Idx);
+            RefreshText();
+            if (status == -1) return;
+            cards[_card.Idx].Refresh();
+            if (status == 1) {
+                SetCanFlip(false);
+                if (myGame.CurChanceCount > 0) { // 還有翻牌次數
+                    UniTask.Void(async () => {
+                        await UniTask.Delay(CardFlipBackMiliSecs);
+                        myGame.FlipBack();
+                        refreshCards();
+                        SetCanFlip(true);
+                    });
+                } else { // 翻牌次數用盡
+                    endGame();
+                }
+            }
+        }
+        void refreshCards() {
+            foreach (var card in cards.Values) {
+                card.Refresh();
+            }
+        }
+        public void SetCanFlip(bool _canFlip) {
+            canFlip = _canFlip;
         }
         public override void RefreshText() {
+            Txt_RemainChance.text = $"剩餘次數: {myGame.CurChanceCount}";
         }
         protected override void SetInstance() {
             Instance = this;
-        }
-        void spawnSceneManager() {
-            AddressablesLoader.GetPrefabByRef(CuisineSceneAsset, (battleManagerPrefab, handle) => {
-                GameObject go = Instantiate(battleManagerPrefab);
-                var manager = go.GetComponent<CuisineManager>();
-                manager.Init();
-            });
         }
 
         public void ShowCountingdown(bool _show) {
@@ -63,16 +165,7 @@ namespace Gladiators.Cuisine {
             });
         }
 
-        /// <summary>
-        /// Animator Event呼叫
-        /// </summary>
-        public void OnStartCountingDownEnd() {
-            CuisineManager.Instance.StartGame();
-        }
 
-        public void AddHP(int _value) {
-            CharInfo.AddHP(_value);
-        }
 
     }
 }

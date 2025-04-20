@@ -41,6 +41,7 @@ namespace Scoz.Func {
             InitInput();
             //InitScreenEffect();
             InitTipUI();
+            InitGainSkillUI();
 
         }
         void Start() {
@@ -531,6 +532,28 @@ namespace Scoz.Func {
                 Instance.OnUITransitionAssetLoadFinishedAC += () => { Instance.MyUITransition.CallTransition(_sprite, _text, _minWaitSec, _ac); };
                 Instance.InitUITransition();
             }
+        }
+
+        [HeaderAttribute("==============設定視窗==============")]
+
+        //進遊戲不先初始化，等到要用時才初始化UI
+        [SerializeField] Transform GainSkillUIParent;
+        [SerializeField] AssetReference GainSkillUIAsset;
+
+        void InitGainSkillUI() {
+            //初始化UI
+            AddressablesLoader.GetPrefabByRef(Instance.GainSkillUIAsset, (prefab, handle) => {
+                GameObject go = Instantiate(prefab);
+                go.transform.SetParent(Instance.GainSkillUIParent);
+                go.transform.localPosition = prefab.transform.localPosition;
+                go.transform.localScale = prefab.transform.localScale;
+                RectTransform rect = go.GetComponent<RectTransform>();
+                rect.offsetMin = Vector2.zero;//Left、Bottom
+                rect.offsetMax = Vector2.zero;//Right、Top
+                var ui = go.GetComponent<Gladiators.Main.GainSkillUI>();
+                ui.Init();
+                ui.SetActive(false);
+            }, () => { WriteLog.LogError("載入GameGainSkillUIAsset失敗"); });
         }
 
 

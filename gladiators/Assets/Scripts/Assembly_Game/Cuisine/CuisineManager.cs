@@ -16,7 +16,7 @@ namespace Gladiators.Cuisine {
         public static CuisineManager Instance;
         [SerializeField] Camera MyCam;
         [SerializeField] bool MobileControl;
-        [SerializeField] CuisineCardPrefab cardPrefab;
+        [SerializeField] CuisineCardPrefab_Backup cardPrefab;
         [SerializeField] Transform CardParent;
         [SerializeField] Vector2 RawColumn;
         [SerializeField] RectGrid rectGrid;
@@ -26,7 +26,7 @@ namespace Gladiators.Cuisine {
         int curLeftTime;
         public int StartCountDownSec { get; private set; }
         CuisineGame myGame;
-        Dictionary<int, CuisineCardPrefab> cards = new Dictionary<int, CuisineCardPrefab>();
+        Dictionary<int, CuisineCardPrefab_Backup> cards = new Dictionary<int, CuisineCardPrefab_Backup>();
         bool canFlip = false;
 
         public void Init() {
@@ -47,13 +47,13 @@ namespace Gladiators.Cuisine {
 
         void initGame() {
             SetCanFlip(true);
-            myGame = new CuisineGame(18);
+            myGame = new CuisineGame(6, 5);
             cards.Clear();
             var cardDatas = myGame.Cards.Values.ToList();
             cardDatas.Shuffle();
             for (int i = 0; i < cardDatas.Count; i++) {
                 var go = Instantiate(cardPrefab, CardParent);
-                var card = go.GetComponent<CuisineCardPrefab>();
+                var card = go.GetComponent<CuisineCardPrefab_Backup>();
                 card.Set(cardDatas[i], OnCardFlip);
                 cards.Add(cardDatas[i].Idx, card);
 
@@ -65,16 +65,6 @@ namespace Gladiators.Cuisine {
                 go.transform.position = worldPos;
             }
 
-        }
-        public void ResetGame() {
-            SetCanFlip(true);
-            myGame.ResetGame();
-            cards.Clear();
-            var cardDatas = new List<CusineCard>(myGame.Cards.Values);
-            cardDatas.Shuffle();
-            for (int i = 0; i < cardDatas.Count; i++) {
-                cards[i].Set(cardDatas[i], OnCardFlip);
-            }
         }
         public void OnCardFlip(CusineCard _card) {
             if (canFlip == false) return;
@@ -91,9 +81,19 @@ namespace Gladiators.Cuisine {
                     SetCanFlip(true);
                 });
             }
-
-
         }
+
+        public void ResetGame() {
+            SetCanFlip(true);
+            myGame.ResetGame();
+            cards.Clear();
+            var cardDatas = new List<CusineCard>(myGame.Cards.Values);
+            cardDatas.Shuffle();
+            for (int i = 0; i < cardDatas.Count; i++) {
+                cards[i].Set(cardDatas[i], OnCardFlip);
+            }
+        }
+
         void refreshCards() {
             foreach (var card in cards.Values) {
                 card.Refresh();
