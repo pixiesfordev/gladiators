@@ -5,60 +5,104 @@ using Gladiators.Main;
 using Scoz.Func;
 
 namespace Gladiators.Cuisine {
-    public class SkillCardPrefab : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler {
-        public Image skillIcon;
-        public Image highlightFrame; // 拖曳到可以替換範圍時，高亮用
-        public CanvasGroup canvasGroup; // 拖曳時改變透明度用
+    public class SkillCardPrefab : MonoBehaviour,
+        IBeginDragHandler, IDragHandler, IEndDragHandler {
 
-        public JsonSkill MyData;
+        [SerializeField] Image Img_SkillIcon;
+        [SerializeField] Image Img_HighlightFrame;
+        [SerializeField] Image Img_LockCover;
+        [SerializeField] CanvasGroup CG_CanvasGroup;
 
-        // 是否已被使用(拖曳過)的狀態
-        private bool isUsed = false;
+        public JsonSkill MyData { get; private set; }
+
+        bool isLockedOrHidden = false;
+
+        public enum CardState {
+            Normal,      // 一般
+            Dragging,    // 拖曳中（半透明、不可互動）
+            Lock,        // 鎖住（壓黑遮罩）
+            Hightlight,  // 高亮
+            Empty        // 隱藏
+        }
+
+        public CardState CurState = CardState.Normal;
+
+        void Awake() {
+            if (Img_HighlightFrame != null) Img_HighlightFrame.enabled = false;
+            if (Img_LockCover != null) Img_LockCover.enabled = false;
+        }
 
         public void Set(JsonSkill _data) {
             MyData = _data;
-            AddressablesLoader.GetSpriteAtlas("SpellIcon", atlas => {
-                skillIcon.sprite = atlas.GetSprite(MyData.ID.ToString());
+            AddressablesLoader.GetSpriteAtlas("SpellIcon", _atlas => {
+                Img_SkillIcon.sprite = _atlas.GetSprite(MyData.ID.ToString());
             });
-            highlightFrame.enabled = false;
+            SetState(CardState.Normal);
         }
 
-        public void OnBeginDrag(PointerEventData eventData) {
-            // 如果該技能卡已被用過，就不允許再拖
-            if (isUsed) {
-                eventData.pointerDrag = null; // 取消拖曳
+        public void SetUsed() {
+            SetState(CardState.Empty);
+        }
+
+        public void SetState(CardState _state) {
+            CurState = _state;
+            isLockedOrHidden = (_state == CardState.Lock || _state == CardState.Empty);
+
+            if (Img_HighlightFrame != null) Img_HighlightFrame.enabled = false;
+            if (Img_LockCover != null) Img_LockCover.enabled = false;
+
+            switch (_state) {
+                case CardState.Normal:
+                    gameObject.SetActive(true);
+                    CG_CanvasGroup.alpha = 1f;
+                    CG_CanvasGroup.blocksRaycasts = true;
+                    break;
+
+                case CardState.Dragging:
+                    gameObject.SetActive(true);
+                    CG_CanvasGroup.alpha = 0.5f;
+                    CG_CanvasGroup.blocksRaycasts = false;
+                    break;
+
+                case CardState.Lock:
+                    gameObject.SetActive(true);
+                    CG_CanvasGroup.alpha = 1f;
+                    CG_CanvasGroup.blocksRaycasts = false;
+                    if (Img_LockCover != null) Img_LockCover.enabled = true;
+                    break;
+
+                case CardState.Hightlight:
+                    gameObject.SetActive(true);
+                    CG_CanvasGroup.alpha = 1f;
+                    CG_CanvasGroup.blocksRaycasts = true;
+                    if (Img_HighlightFrame != null) Img_HighlightFrame.enabled = true;
+                    break;
+
+                case CardState.Empty:
+                    gameObject.SetActive(false);
+                    break;
+            }
+        }
+
+        public void OnBeginDrag(PointerEventData _eventData) {
+            if (isLockedOrHidden) {
+                _eventData.pointerDrag = null;
                 return;
             }
-
-            // 開始拖曳時，告知 GainSkillUI
-            GainSkillUI.Instance.OnSkillBeginDrag(this, eventData);
-
-            // 略微淡出(看起來有被選取拖曳感)
-            if (canvasGroup != null)
-                canvasGroup.alpha = 0.6f;
+            SetState(CardState.Dragging);
+            GainSkillUI.Instance.OnSkillBeginDrag(this, _eventData);
         }
 
-        public void OnDrag(PointerEventData eventData) {
-            if (isUsed) return;
-
-            // 拖曳過程，更新拖曳路徑效果
-            GainSkillUI.Instance.OnSkillDragging(this, eventData);
+        public void OnDrag(PointerEventData _eventData) {
+            if (isLockedOrHidden) return;
+            GainSkillUI.Instance.OnSkillDragging(this, _eventData);
         }
 
-        public void OnEndDrag(PointerEventData eventData) {
-            if (isUsed) return;
-
-            // 結束拖曳
-            GainSkillUI.Instance.OnSkillEndDrag(this, eventData);
-
-            // 還原顯示
-            if (canvasGroup != null)
-                canvasGroup.alpha = 1f;
-        }
-
-        public void SetUsed(bool used) {
-            isUsed = used;
+        public void OnEndDrag(PointerEventData _eventData) {
+            if (isLockedOrHidden) return;
+            GainSkillUI.Instance.OnSkillEndDrag(this, _eventData);
+            if (CurState != CardState.Empty)
+                SetState(CardState.Normal);
         }
     }
-
 }
