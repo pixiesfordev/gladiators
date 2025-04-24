@@ -550,7 +550,7 @@ namespace Scoz.Func {
                 RectTransform rect = go.GetComponent<RectTransform>();
                 rect.offsetMin = Vector2.zero;//Left、Bottom
                 rect.offsetMax = Vector2.zero;//Right、Top
-                var ui = go.GetComponent<Gladiators.Main.GainSkillUI>();
+                var ui = go.GetComponent<GainSkillUI>();
                 ui.Init();
                 ui.SetActive(false);
             }, () => { WriteLog.LogError("載入GameGainSkillUIAsset失敗"); });

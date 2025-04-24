@@ -275,7 +275,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -9, y: -5.49}
+  m_AnchoredPosition: {x: -8, y: -7.25}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &6755946632142445601
@@ -290,7 +290,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 105f49d931af540f28b2b20d46a8c641, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _spacing: {x: 3, y: 3, z: 3}
+  _spacing: {x: 3.5, y: 3, z: 3}
   _shearing:
     _yz: 0
     _zx: 0
@@ -532,7 +532,7 @@ GameObject:
   - component: {fileID: 211213885714234649}
   - component: {fileID: 4248754443062569749}
   m_Layer: 0
-  m_Name: CuisineManager
+  m_Name: CuisineManager_Deprecated
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
