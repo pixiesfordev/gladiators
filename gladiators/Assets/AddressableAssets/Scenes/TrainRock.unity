@@ -234,6 +234,11 @@ PrefabInstance:
       propertyPath: m_Cameras.Array.data[0]
       value: 
       objectReference: {fileID: 1669811456}
+    - target: {fileID: 3961033920457016671, guid: d1e7eab25f9ff7040b170d12544d6863,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -717,32 +722,32 @@ PrefabInstance:
     - target: {fileID: 3290809177677329935, guid: ae63e3d4ad27c5843bebac21cfcf5951,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 295.27255
+      value: 294.92307
       objectReference: {fileID: 0}
     - target: {fileID: 3290809177677329935, guid: ae63e3d4ad27c5843bebac21cfcf5951,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 295.27255
+      value: 294.92307
       objectReference: {fileID: 0}
     - target: {fileID: 3290809177677329935, guid: ae63e3d4ad27c5843bebac21cfcf5951,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 293.8308
+      value: 293.6786
       objectReference: {fileID: 0}
     - target: {fileID: 3290809177677329935, guid: ae63e3d4ad27c5843bebac21cfcf5951,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 266.52307
+      value: 266.2076
       objectReference: {fileID: 0}
     - target: {fileID: 3290893388352133355, guid: ae63e3d4ad27c5843bebac21cfcf5951,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 295.27255
+      value: 294.92307
       objectReference: {fileID: 0}
     - target: {fileID: 3290893388352133355, guid: ae63e3d4ad27c5843bebac21cfcf5951,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 295.27255
+      value: 294.92307
       objectReference: {fileID: 0}
     - target: {fileID: 3700283868487660183, guid: ae63e3d4ad27c5843bebac21cfcf5951,
         type: 3}
