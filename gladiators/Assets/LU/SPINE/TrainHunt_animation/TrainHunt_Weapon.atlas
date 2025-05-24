@@ -1,0 +1,7 @@
+TrainHunt_Weapon.png
+size:128,512
+filter:Linear,Linear
+pma:true
+scale:0.5
+Weapon 01
+bounds:2,2,90,326
