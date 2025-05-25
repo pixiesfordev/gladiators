@@ -4,4 +4,4 @@ filter:Linear,Linear
 pma:true
 scale:0.5
 Weapon 01
-bounds:2,2,90,326
+bounds:2,2,103,338
