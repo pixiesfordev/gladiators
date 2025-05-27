@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f1b3b4b945939a54ea0b23d3396115fb, type: 3}
-  m_Name: TrainHunt_Weapon_SkeletonData
+  m_Name: harm_FX_SkeletonData
   m_EditorClassIdentifier: 
   atlasAssets:
-  - {fileID: 11400000, guid: 915e13d3ec0e0fc47ac32e639a8413d5, type: 2}
+  - {fileID: 11400000, guid: 88c8003266e65bb4bbd1e6faed12e277, type: 2}
   scale: 0.01
-  skeletonJSON: {fileID: 4900000, guid: aded195365488e747a5bb4d88f90cbf0, type: 3}
+  skeletonJSON: {fileID: 4900000, guid: 5a6b04c8ca5f5864da760f9905d22559, type: 3}
   isUpgradingBlendModeMaterials: 0
   blendModeMaterials:
     requiresBlendModeMaterials: 0

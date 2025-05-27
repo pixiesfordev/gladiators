@@ -1,7 +1,14 @@
 TrainHunt_Weapon.png
-size:128,512
+size:512,512
 filter:Linear,Linear
 pma:true
 scale:0.5
 Weapon 01
 bounds:2,2,103,338
+rotate:90
+Weapon_02
+bounds:2,107,192,394
+Weapon_03
+bounds:196,144,197,357
+Weapon_04
+bounds:395,44,94,457

@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a6b194f808b1af6499c93410e504af42, type: 3}
-  m_Name: TrainHunt_Weapon_Atlas
+  m_Name: harm_FX_Atlas
   m_EditorClassIdentifier: 
   textureLoadingMode: 0
   onDemandTextureLoader: {fileID: 0}
-  atlasFile: {fileID: 4900000, guid: 67c43a38154adeb408d29075233627e0, type: 3}
+  atlasFile: {fileID: 4900000, guid: ae1040bccf8c55747b0ad492da3f94fd, type: 3}
   materials:
-  - {fileID: 2100000, guid: 06314c0546bf3d547a2233eb9a67bc81, type: 2}
+  - {fileID: 2100000, guid: bfb11034807d7c048863f31ca61d6192, type: 2}

@@ -1,0 +1,11 @@
+environment.png
+size:256,128
+filter:Linear,Linear
+pma:true
+scale:0.5
+Butterfly
+bounds:2,2,14,15
+LIGHT01
+bounds:2,19,74,79
+LIGHT02
+bounds:78,29,69,69
