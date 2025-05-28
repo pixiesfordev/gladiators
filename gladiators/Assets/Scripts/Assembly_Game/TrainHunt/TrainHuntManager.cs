@@ -9,7 +9,8 @@ using System;
 using DamageNumbersPro;
 
 namespace Gladiators.TrainHunt {
-    public class TrainHuntManager : MonoBehaviour {
+    public class TrainHuntManager : MonoBehaviour
+    {
         [SerializeField] Camera MyCam;
         TrainHuntHero MyHero;
         TrainHuntBoss MyBoss;
@@ -54,7 +55,8 @@ namespace Gladiators.TrainHunt {
         //2.完成遊戲計算邏輯
 
         // Start is called before the first frame update
-        void Start() {
+        void Start()
+        {
             MyBoss = TrainHuntSceneUI.Instance.MyBoss;
             MyHero = TrainHuntSceneUI.Instance.MyHero;
             //賦予Boss血量資料(測試用 之後應該由外部呼叫給值)
@@ -64,12 +66,14 @@ namespace Gladiators.TrainHunt {
             GameStart();
         }
 
-        public void Init() {
+        public void Init()
+        {
             Instance = this;
             setCam();//設定攝影機模式       
         }
 
-        void setCam() {
+        void setCam()
+        {
             //因為戰鬥場景的攝影機有分為場景與UI, 要把場景攝影機設定為Base, UI設定為Overlay, 並在BaseCamera中加入Camera stack
             UICam.Instance.SetRendererMode(CameraRenderType.Overlay);
             addCamStack(UICam.Instance.MyCam);
@@ -78,7 +82,8 @@ namespace Gladiators.TrainHunt {
         /// <summary>
         /// 將指定camera加入到MyCam的CameraStack中
         /// </summary>
-        void addCamStack(Camera _cam) {
+        void addCamStack(Camera _cam)
+        {
             if (_cam == null) return;
             var cameraData = MyCam.GetUniversalAdditionalCameraData();
             if (cameraData == null) return;
@@ -88,32 +93,37 @@ namespace Gladiators.TrainHunt {
         /// <summary>
         /// 遊戲開始
         /// </summary>
-        public void GameStart() {
+        public void GameStart()
+        {
             //決定打擊條相關參數與賦值給UI
             PickBarValue();
             //Boss開始朝玩家移動
             BossStartMove().Forget();
         }
 
-        void EndGame() {
+        void EndGame()
+        {
             TrainHuntSceneUI.Instance.EndGame();
         }
 
-        public void SetBossCharInfo(int maxHP, int bossID) {
+        public void SetBossCharInfo(int maxHP, int bossID)
+        {
             TrainHuntSceneUI.Instance.SetBossCharInfo(maxHP, bossID);
         }
 
         /// <summary>
         /// 挑選打擊條長度的值
         /// </summary>
-        public void PickBarValue() {
+        public void PickBarValue()
+        {
             PickBarValueFunc().Forget();
         }
 
         /// <summary>
         /// 挑選打擊條長度的值
         /// </summary>
-        async UniTaskVoid PickBarValueFunc() {
+        async UniTaskVoid PickBarValueFunc()
+        {
             await UniTask.Yield();
             BarYellowRange = UnityEngine.Random.Range(BarSetYellowMinRange, BarSetYellowMaxRange);
             BarOrangeRange = UnityEngine.Random.Range(BarSetOrangeMinRange, BarSetOrangeMaxRange);
@@ -128,8 +138,9 @@ namespace Gladiators.TrainHunt {
             TrainHuntSceneUI.Instance.BarMove();
         }
 
-        async UniTaskVoid BossStartMove() {
-            //TODO:需要根據移動距離調整Boss的旋轉角度
+        async UniTaskVoid BossStartMove()
+        {
+            //需要根據移動距離調整Boss的旋轉角度
             //配合PickBarValue延遲兩偵
             await UniTask.Yield();
             await UniTask.Yield();
@@ -142,7 +153,8 @@ namespace Gladiators.TrainHunt {
             //TODO:之後有空可以研究改用圓周公式的方式 目前是用內圈根外圈的概念去轉動
             //x-h = rcos();
             //y-k = rsin();
-            while (deltaTime < GameTime) {
+            while (deltaTime < GameTime)
+            {
                 passTime += Time.deltaTime;
                 deltaTime = passTime - startTime;
                 //更新剩餘時間 & 怪物位置
@@ -167,7 +179,8 @@ namespace Gladiators.TrainHunt {
         /// <summary>
         /// 玩家角色發動攻擊
         /// </summary>
-        public void PlayerAttack(TrainHuntSceneUI.HitArea area) {
+        public void PlayerAttack(TrainHuntSceneUI.HitArea area)
+        {
             //TODO:等新富確定攻擊演出方式後 修改此段邏輯
             TrainHuntSceneUI.Instance.PlayerAttack(GetHitHP(area));
         }
@@ -176,8 +189,10 @@ namespace Gladiators.TrainHunt {
         /// 取得打擊區域傷害數值
         /// </summary>
         /// <returns>對應區域傷害值</returns>
-        int GetHitHP(TrainHuntSceneUI.HitArea area) {
-            return area switch {
+        int GetHitHP(TrainHuntSceneUI.HitArea area)
+        {
+            return area switch
+            {
                 TrainHuntSceneUI.HitArea.Red => HitHPRed,
                 TrainHuntSceneUI.HitArea.Orange => HitHPOrange,
                 TrainHuntSceneUI.HitArea.Yellow => HitHPYellow,
@@ -185,20 +200,33 @@ namespace Gladiators.TrainHunt {
             };
         }
 
-        public void JumpHitHP(int reduceHP) {
+        public void JumpHitHP(int reduceHP)
+        {
             var dmgNum = dmgPrefab.Spawn(MyBoss.transform.position + dmgPopupOffset, reduceHP);
             dmgNum.transform.localScale = Vector3.one * dmgNumScal;
         }
 
-        public async UniTask BossHitted() {
+        public async UniTask BossHitted()
+        {
             MyBoss.Hitted();
             await UniTask.WaitForSeconds(0.15f);
             MyBoss.Move();
         }
 
-        public void SetPlayer(string heroID) {
+        public void SetPlayer(string heroID)
+        {
             //TODO:根據傳入ID設定英雄圖像
             MyHero.SetHero(heroID);
+        }
+
+        /// <summary>
+        /// 算出Boss已經移動的角度
+        /// </summary>
+        /// <returns>Boss已移動的角度</returns>
+        public float GetBossMovedAngle()
+        {
+            //Debug.LogErrorFormat("算移動Z角度: 起始角度: {0} 目前角度: {1}", BossStartAngle.z, MyBoss.transform.parent.localRotation.eulerAngles.z);
+            return Math.Abs(BossStartAngle.z - MyBoss.transform.parent.localRotation.eulerAngles.z);
         }
     }
 }
