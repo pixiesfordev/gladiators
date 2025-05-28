@@ -21,9 +21,10 @@ namespace Gladiators.TrainHunt {
         [SerializeField] RectTransform BarRed;
         [SerializeField] RectTransform BarPointer;
         [SerializeField] RectTransform BarBG;
-        [SerializeField] Transform MonsterPos;
-        [SerializeField] Image MonsterIcon;
+        [SerializeField] Transform BossPos;
+        [SerializeField] Image AlphaBossPic; //用來錨定Boss圖案位置 用來計算武器攻擊目的地
         [SerializeField] RectTransform Attack;
+        [SerializeField] SpineAnimationController HeroWeapon;
         [SerializeField] GameObject GameOverObj;
         [SerializeField] BattleGladiatorInfo BossCharInfo;
 
@@ -42,6 +43,8 @@ namespace Gladiators.TrainHunt {
         [HeaderAttribute("==============怪物位置區==============")]
         [Tooltip("攻擊物件移動時間")] [SerializeField] float AttackMoveDuration;
         [Tooltip("重置遊戲")][SerializeField] bool BReset = false;
+        [HeaderAttribute("==============攻擊參數區==============")]
+        [Tooltip("武器擊中演出秒數")][SerializeField] float AttackHitAniDuration;
 
         public static TrainHuntSceneUI Instance { get; private set; }
 
@@ -88,8 +91,7 @@ namespace Gladiators.TrainHunt {
             //初始化Manager
             Init();
 
-            //TODO:移除掉 目前新富還沒決定好攻擊要怎麼放 先保留
-            Attack.gameObject.SetActive(false);
+            //HeroWeapon.Init();
 
             GameOverObj.SetActive(false);
             BGObj.StartRotate();
@@ -222,14 +224,23 @@ namespace Gladiators.TrainHunt {
             BossCharInfo.AddHP(-reduceHP);
         }
 
-        async UniTask MoveAttack() {
-            Attack.transform.localPosition = AttackOriginPos;
-            Attack.gameObject.SetActive(true);
-            Vector3 targetPos = MonsterPos.localPosition;
-            targetPos.x = targetPos.x - Attack.sizeDelta.x / 2 - MonsterIcon.GetComponent<RectTransform>().sizeDelta.x / 2;
-            Attack.DOLocalMove(targetPos, AttackMoveDuration);
-            await UniTask.WaitForSeconds(AttackMoveDuration);
-            Attack.gameObject.SetActive(false);
+        async UniTask MoveAttack()
+        {
+            //TODO:修改此段邏輯
+            //1.起始角度與BossDirection的角度為反向關係 BossDirection每+一度 起始角度就要-1度
+            //2.最終角度固定為-50度(來自於TrainHuntManager的BossStartAngle)
+            string rotateName = "01_rotate"; //之後改外部傳入(根據打擊條位置改ID)
+            string hitName = "01_hit";
+            Vector3 startAngle = new Vector3(0f, 0f, 0f - TrainHuntManager.Instance.GetBossMovedAngle());
+            Vector3 endAngle = new Vector3(0f, 0f, -50f);
+            Attack.transform.localRotation = Quaternion.Euler(startAngle);
+            HeroWeapon.PlayAnimation(rotateName, true);
+            //Debug.LogErrorFormat("起始角度: {0} 最終角度: {1} 武器起始角度: {2}", startAngle, endAngle, Attack.transform.localRotation);
+            Attack.DOLocalRotate(endAngle, AttackMoveDuration);
+            await UniTask.WaitForSeconds(AttackMoveDuration - AttackHitAniDuration);
+            HeroWeapon.PlayAnimation(hitName, false);
+            await UniTask.WaitForSeconds(AttackHitAniDuration);
+            HeroWeapon.StopAnimation();
         }
 
         public void ClickReset() {
@@ -243,7 +254,6 @@ namespace Gladiators.TrainHunt {
         void ResetGame() {
             GameOverObj.SetActive(false);
             BossCharInfo.ResetHPBarToFull();
-            Attack.gameObject.SetActive(false);
             TrainHuntManager.Instance.GameStart();
             BGObj.BGFarStartMove();
         }
