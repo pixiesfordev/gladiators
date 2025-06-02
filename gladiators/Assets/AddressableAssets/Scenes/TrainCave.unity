@@ -334,7 +334,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1322834065
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -501,7 +501,7 @@ PrefabInstance:
     - target: {fileID: 6766052758241894310, guid: 52f730ba22fd94c4e9378c68147023a6,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8241741362372448159, guid: 52f730ba22fd94c4e9378c68147023a6,
         type: 3}
@@ -654,6 +654,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: TrainCaveSceneUI
+      objectReference: {fileID: 0}
+    - target: {fileID: 6642974540247322596, guid: 8c42d88131ed5d641bf2b051ee0eb577,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7418709197785271035, guid: 8c42d88131ed5d641bf2b051ee0eb577,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: 97
       objectReference: {fileID: 0}
     - target: {fileID: 8995896216855564960, guid: 8c42d88131ed5d641bf2b051ee0eb577,
         type: 3}

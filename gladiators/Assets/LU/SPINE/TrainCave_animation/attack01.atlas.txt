@@ -1,0 +1,17 @@
+attack01.png
+size:1024,128
+filter:Linear,Linear
+pma:true
+scale:0.5
+Wire
+bounds:2,2,168,54
+offsets:0,0,172,54
+Wire01
+bounds:557,75,116,44
+offsets:3,0,119,44
+attack
+bounds:323,44,232,75
+offsets:0,0,233,76
+attack01
+bounds:2,58,319,61
+offsets:0,1,356,63
