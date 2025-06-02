@@ -122,6 +122,33 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &28758247 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8779491890297437861, guid: 8c42d88131ed5d641bf2b051ee0eb577,
+    type: 3}
+  m_PrefabInstance: {fileID: 1713807914}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &28758249
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 28758247}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 13016a205d57c7040aaa7887c4f03209, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &40702598
 GameObject:
   m_ObjectHideFlags: 0
@@ -655,6 +682,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: TrainCaveSceneUI
       objectReference: {fileID: 0}
+    - target: {fileID: 3356655960834746518, guid: 8c42d88131ed5d641bf2b051ee0eb577,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 5647865084958892411, guid: 8c42d88131ed5d641bf2b051ee0eb577,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 7574804499052799686, guid: 8c42d88131ed5d641bf2b051ee0eb577,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 223
+      objectReference: {fileID: 0}
     - target: {fileID: 8995896216855564960, guid: 8c42d88131ed5d641bf2b051ee0eb577,
         type: 3}
       propertyPath: m_Pivot.x
@@ -758,7 +800,11 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8779491890297437861, guid: 8c42d88131ed5d641bf2b051ee0eb577,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 28758249}
   m_SourcePrefab: {fileID: 100100000, guid: 8c42d88131ed5d641bf2b051ee0eb577, type: 3}
 --- !u!224 &1713807915 stripped
 RectTransform:
