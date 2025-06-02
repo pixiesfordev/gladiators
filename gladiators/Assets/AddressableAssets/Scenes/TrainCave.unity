@@ -655,16 +655,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: TrainCaveSceneUI
       objectReference: {fileID: 0}
-    - target: {fileID: 6642974540247322596, guid: 8c42d88131ed5d641bf2b051ee0eb577,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7418709197785271035, guid: 8c42d88131ed5d641bf2b051ee0eb577,
-        type: 3}
-      propertyPath: m_SortingOrder
-      value: 97
-      objectReference: {fileID: 0}
     - target: {fileID: 8995896216855564960, guid: 8c42d88131ed5d641bf2b051ee0eb577,
         type: 3}
       propertyPath: m_Pivot.x
