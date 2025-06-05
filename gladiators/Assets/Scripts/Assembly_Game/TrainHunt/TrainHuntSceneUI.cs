@@ -11,6 +11,7 @@ using Gladiators.Battle;
 using UnityEditor.EditorTools;
 using UnityEngine.AddressableAssets;
 using DamageNumbersPro;
+using Unity.VisualScripting;
 
 namespace Gladiators.TrainHunt {
 
@@ -21,10 +22,9 @@ namespace Gladiators.TrainHunt {
         [SerializeField] RectTransform BarRed;
         [SerializeField] RectTransform BarPointer;
         [SerializeField] RectTransform BarBG;
-        [SerializeField] Transform BossPos;
-        [SerializeField] Image AlphaBossPic; //用來錨定Boss圖案位置 用來計算武器攻擊目的地
-        [SerializeField] RectTransform Attack;
-        [SerializeField] SpineAnimationController HeroWeapon;
+        [SerializeField] RectTransform WeaponsRT;
+        [SerializeField] RectTransform PossWeaponsRT;
+        [SerializeField] TrainHuntHeroWeapon WeaponPrefab;
         [SerializeField] GameObject GameOverObj;
         [SerializeField] BattleGladiatorInfo BossCharInfo;
 
@@ -35,15 +35,14 @@ namespace Gladiators.TrainHunt {
         public TrainHuntHero MyHero; //Hero物件
 
         [HeaderAttribute("==============TEST==============")]
+        [Tooltip("重置遊戲")][SerializeField] bool BReset = false;
         [HeaderAttribute("==============游標區==============")]
         [Tooltip("游標移動曲線")][SerializeField] AnimationCurve BarPointerCurve;
         [HeaderAttribute("==============AddressableAssets==============")]
         [SerializeField] AssetReference TrainHuntSceneAsset;
 
-        [HeaderAttribute("==============怪物位置區==============")]
-        [Tooltip("攻擊物件移動時間")] [SerializeField] float AttackMoveDuration;
-        [Tooltip("重置遊戲")][SerializeField] bool BReset = false;
         [HeaderAttribute("==============攻擊參數區==============")]
+        [Tooltip("攻擊物件移動時間")][SerializeField] float AttackMoveDuration;
         [Tooltip("武器擊中演出秒數")][SerializeField] float AttackHitAniDuration;
 
         public static TrainHuntSceneUI Instance { get; private set; }
@@ -59,7 +58,7 @@ namespace Gladiators.TrainHunt {
 
         bool stop = false;
 
-        Vector3 AttackOriginPos;
+        List<TrainHuntHeroWeapon> WeaponObjs = new List<TrainHuntHeroWeapon>();
 
         public enum HitArea : short
         {
@@ -70,13 +69,12 @@ namespace Gladiators.TrainHunt {
         }
 
         //TODO:
-        //v1.上下蓋兩條黑色背景長條(因為示意圖看起來是直接用黑色條去遮背景)
-        //v2.上方日夜條
-        //v3.套其他背景
-        //v4.搬移角色與Boss的邏輯到TrainHuntManager
-        //v5.搬移遊戲邏輯到TrainHuntManager
-        //v6.拆UICanvas(針對背景 要多拆出一個UICanvas 要被角色跟Boss蓋住的一個 要在前景的另一個)
-
+        //V1.測試改Parent 讓武器隨著Boss跳動
+        //V2.套入隨機插中位置功能 & 播放打中Boss的Spine演出
+        //V3.加入擊退功能 修改Boss移動邏輯
+        //V4.英雄套入動畫(美術已套入)
+        //V5.加上場景Spine
+ 
         // Start is called before the first frame update
         void Start()
         {
@@ -203,44 +201,65 @@ namespace Gladiators.TrainHunt {
             return HitArea.Gray;
         }
 
-        //TODO:等新富確定攻擊演出後 這裡要修改拔除
-        public void PlayerAttack(int reduceHP) {
-            PlayAttack(reduceHP).Forget();
+        public void PlayerAttack(int reduceHP, string weaponPrefix, bool HavePossAni, string hittedPrefix,
+            float bossBackAngle) {
+            PlayAttack(reduceHP, weaponPrefix, HavePossAni, hittedPrefix, bossBackAngle).Forget();
         }
 
-        async UniTaskVoid PlayAttack(int reduceHP) {
+        async UniTaskVoid PlayAttack(int reduceHP, string weaponPrefix, bool HavePossAni, string hittedPrefix,
+            float bossBackAngle) {
             Debug.LogFormat("打擊演出! 打擊HP:{0}", reduceHP);
+            TrainHuntHeroWeaponParameter para = new TrainHuntHeroWeaponParameter();
             //1.角色攻擊演出
-            await MoveAttack();
+            await MoveAttack(weaponPrefix, HavePossAni, para.HeroWeaponOffset, para.BossHittedSpinePos,
+                hittedPrefix, bossBackAngle);
             //2.怪物受擊演出(跳血量傷害與Boss受擊動畫)
             ReduceBossHP(reduceHP);
             TrainHuntManager.Instance.JumpHitHP(reduceHP);
-            await TrainHuntManager.Instance.BossHitted();
+            await TrainHuntManager.Instance.BossRecoveryFromHit();
             //3.攻擊演出後重新挑選長條 挑選完後長條重新開始跑
             TrainHuntManager.Instance.PickBarValue();
         }
 
-        public void ReduceBossHP(int reduceHP) {
+        public void ReduceBossHP(int reduceHP)
+        {
             BossCharInfo.AddHP(-reduceHP);
         }
 
-        async UniTask MoveAttack()
+        async UniTask MoveAttack(string weaponPrefix, bool HavePossAni, Vector3 heroWeaponOffset, 
+            Vector3 hittedSpinePos, string hittedSpineAniName, float bossBackAngle)
         {
-            //TODO:修改此段邏輯
-            //1.起始角度與BossDirection的角度為反向關係 BossDirection每+一度 起始角度就要-1度
-            //2.最終角度固定為-50度(來自於TrainHuntManager的BossStartAngle)
-            string rotateName = "01_rotate"; //之後改外部傳入(根據打擊條位置改ID)
-            string hitName = "01_hit";
+            //用程式碼產生Spine
+            TrainHuntHeroWeapon obj = Instantiate(WeaponPrefab, Vector3.zero, Quaternion.identity, WeaponsRT);
+            obj.Init("Weapon" + WeaponObjs.Count);
+            //添加進集合 遊戲重新開始或關閉時清空內部物件釋放資源
+            WeaponObjs.Add(obj);
+            //TODO:計算隨機插中Boss任意位置(需要測試看要怎麼做才能確保都能沿著Boss身體去做出偏移量)
+            //飛行
+            //註1.起始角度與BossDirection的角度為反向關係 BossDirection每+一度 起始角度就要-1度
+            //註2.最終角度固定為-50度(來自於TrainHuntManager的BossStartAngle 除上0.85是因為有縮放)
             Vector3 startAngle = new Vector3(0f, 0f, 0f - TrainHuntManager.Instance.GetBossMovedAngle());
-            Vector3 endAngle = new Vector3(0f, 0f, -50f);
-            Attack.transform.localRotation = Quaternion.Euler(startAngle);
-            HeroWeapon.PlayAnimation(rotateName, true);
-            //Debug.LogErrorFormat("起始角度: {0} 最終角度: {1} 武器起始角度: {2}", startAngle, endAngle, Attack.transform.localRotation);
-            Attack.DOLocalRotate(endAngle, AttackMoveDuration);
+            Vector3 endAngle = new Vector3(0f, 0f, -50f / 0.85f);
+            obj.transform.localRotation = Quaternion.Euler(startAngle);
+            obj.Move(weaponPrefix, heroWeaponOffset, AttackMoveDuration);
+            obj.transform.DOLocalRotate(endAngle, AttackMoveDuration);
+            //Debug.LogErrorFormat("起始角度: {0} 最終角度: {1} 武器起始角度: {2}",
+            //    startAngle, endAngle, obj.transform.localRotation);
             await UniTask.WaitForSeconds(AttackMoveDuration - AttackHitAniDuration);
-            HeroWeapon.PlayAnimation(hitName, false);
+            //插中
+            obj.Hit(weaponPrefix);
+            //播放Boss被擊中動畫(這個一定要在SetParent的禎之前 不然武器位置會因為Spine的跳動而亂飄)
+            TrainHuntManager.Instance.BossHittedAni(hittedSpinePos, hittedSpineAniName);
+            TrainHuntManager.Instance.BossHittedBack(bossBackAngle);
+            //播放被擊中Spine
             await UniTask.WaitForSeconds(AttackHitAniDuration);
-            HeroWeapon.StopAnimation();
+            //判斷是否有插住動畫
+            if (HavePossAni)
+                obj.Poss(weaponPrefix);
+            else
+                obj.Hide();
+            //改變武器的Parent(插在Boss身上)
+            obj.transform.SetParent(PossWeaponsRT, true);
         }
 
         public void ClickReset() {
@@ -251,11 +270,16 @@ namespace Gladiators.TrainHunt {
             GameOverObj.SetActive(true);
         }
 
-        void ResetGame() {
+        void ResetGame()
+        {
             GameOverObj.SetActive(false);
             BossCharInfo.ResetHPBarToFull();
             TrainHuntManager.Instance.GameStart();
             BGObj.BGFarStartMove();
+            //回收武器Spine物件
+            foreach (var obj in WeaponObjs)
+                Destroy(obj.gameObject);
+            WeaponObjs.Clear();
         }
     }
 

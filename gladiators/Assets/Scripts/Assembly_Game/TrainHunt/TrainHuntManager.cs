@@ -25,11 +25,17 @@ namespace Gladiators.TrainHunt {
         [Tooltip("怪物結束位置角度")][SerializeField] Vector3 BossEndAngle;
         [Tooltip("圓周半徑")][SerializeField] float RadiusSet = 1013f;
         [Tooltip("怪物血量")][SerializeField] int BossMaxHP;
+        [HeaderAttribute("==============打擊退後參數區==============")]
+        [Tooltip("灰色區每禎擊退角度量")][SerializeField] float BarGrayBossBackAngle = 0.03f;
+        [Tooltip("黃色區每禎擊退角度量")][SerializeField] float BarYellowBossBackAngle = 0.06f;
+        [Tooltip("橘色區每禎擊退角度量")][SerializeField] float BarOrangeBossBackAngle = 0.12f;
+        [Tooltip("紅色區每禎擊退角度量")][SerializeField] float BarRedBossBackAngle = 0.18f;
+        [Tooltip("擊退持續時間")][SerializeField] float BossHitBackDuration = 0.15f;
         [HeaderAttribute("==============打擊條區==============")]
         [Tooltip("黃色條數值最小值")][SerializeField] float BarSetYellowMinRange = 0.5f;
         [Tooltip("黃色條數值最大值")][SerializeField] float BarSetYellowMaxRange = 0.7f;
-        [Tooltip("紅色條數值最小值")][SerializeField] float BarSetOrangeMinRange = 0.3f;
-        [Tooltip("紅色條數值最大值")][SerializeField] float BarSetOrangeMaxRange = 0.45f;
+        [Tooltip("橘色條數值最小值")][SerializeField] float BarSetOrangeMinRange = 0.3f;
+        [Tooltip("橘色條數值最大值")][SerializeField] float BarSetOrangeMaxRange = 0.45f;
         [Tooltip("紅色條數值最小值")][SerializeField] float BarSetRedMinRange = 0.1f;
         [Tooltip("紅色條數值最大值")][SerializeField] float BarSetRedMaxRange = 0.25f;
         [Tooltip("游標移動曲線")][SerializeField] AnimationCurve BarPointerCurve;
@@ -50,9 +56,7 @@ namespace Gladiators.TrainHunt {
         int HitHPYellow = 10;
         int HitHPGray = 5;
 
-        //TODO:
-        //1.完成角色與Boss相關邏輯
-        //2.完成遊戲計算邏輯
+        float bossMoveAnglePerFrame = 0f; //Boss每禎移動的角度
 
         // Start is called before the first frame update
         void Start()
@@ -61,8 +65,6 @@ namespace Gladiators.TrainHunt {
             MyHero = TrainHuntSceneUI.Instance.MyHero;
             //賦予Boss血量資料(測試用 之後應該由外部呼叫給值)
             SetBossCharInfo(BossMaxHP, 7);
-            //TODO:新富還沒決定好攻擊要如何呈現 之後實現 先暫時用舊版攻擊方式
-            //Attack.gameObject.SetActive(false);
             GameStart();
         }
 
@@ -147,29 +149,38 @@ namespace Gladiators.TrainHunt {
             float startTime = Time.time;
             float passTime = startTime;
             float deltaTime = 0f;
-            Vector3 curBossPos = BossStartPos;
+            //Vector3 curBossPos = BossStartPos;
             Vector3 curAngle = BossStartAngle;
-            Debug.LogFormat("開始移動Boss! 開始時間:{0} 經過時間:{1} 目前位置:{2}", startTime, passTime, curBossPos);
+            //Debug.LogFormat("開始移動Boss! 開始時間:{0} 經過時間:{1} 目前位置:{2}", startTime, passTime, curBossPos);
             //TODO:之後有空可以研究改用圓周公式的方式 目前是用內圈根外圈的概念去轉動
             //x-h = rcos();
             //y-k = rsin();
+            //TODO:改變移動邏輯 改成算每禎數移動量 這個移動量可以隨時改變
+            //計算Boss每禎基礎移動量
+            CountBaseBossMovePerFrameAngle();
             while (deltaTime < GameTime)
             {
                 passTime += Time.deltaTime;
                 deltaTime = passTime - startTime;
                 //更新剩餘時間 & 怪物位置
+                //curAngle.z = Mathf.Lerp(BossStartAngle.z, BossEndAngle.z, deltaTime / GameTime);
+                curAngle.z += bossMoveAnglePerFrame;
+                TrainHuntSceneUI.Instance.SetPointerPos(deltaTime / GameTime);
+                MyBoss.transform.parent.localRotation = Quaternion.Euler(curAngle);
+
+                /*
+                //棄用的未完成的圓周公式算法 保留以做參考
                 //curBossPos.x = Mathf.Lerp(BossStartPos.x, BossEndPos.x, deltaTime / GameTime);
                 //curBossPos.y = Mathf.Lerp(BossStartPos.y, BossEndPos.y, deltaTime / GameTime);
-                curAngle.z = Mathf.Lerp(BossStartAngle.z, BossEndAngle.z, deltaTime / GameTime);
                 //curBossPos.x = RadiusSet * Mathf.Cos(curAngle.z * Mathf.Deg2Rad);
                 //curBossPos.y = RadiusSet * Mathf.Sin(curAngle.z * Mathf.Deg2Rad);
                 //Debug.LogWarningFormat("theta: {0} x: {1} y: {2} cos: {3} sin: {4}", 
                 //curAngle.z, curBossPos.x, curBossPos.y, 
                 //Mathf.Cos(curAngle.z * Mathf.Deg2Rad),
                 //Mathf.Sin(curAngle.z * Mathf.Deg2Rad));
-                TrainHuntSceneUI.Instance.SetPointerPos(deltaTime / GameTime);
-                //MyBoss.transform.localPosition = curBossPos;
-                MyBoss.transform.parent.localRotation = Quaternion.Euler(curAngle);
+                MyBoss.transform.localPosition = curBossPos;
+                */
+
                 await UniTask.Yield();
             }
             await UniTask.Yield();
@@ -177,12 +188,23 @@ namespace Gladiators.TrainHunt {
         }
 
         /// <summary>
+        /// 算出每禎的Boss基礎移動角度
+        /// </summary>
+        void CountBaseBossMovePerFrameAngle()
+        {
+            //基礎用每秒120禎來定 公式:總移動角度 / (每秒禎數 * 遊戲時間)
+            float totalFrameCount = 120f * GameTime;
+            bossMoveAnglePerFrame = -(BossStartAngle.z - BossEndAngle.z) / totalFrameCount;
+            //Debug.LogErrorFormat("Boss每禎移動角度: {0}", bossMoveAnglePerFrame);
+        }
+
+        /// <summary>
         /// 玩家角色發動攻擊
         /// </summary>
         public void PlayerAttack(TrainHuntSceneUI.HitArea area)
         {
-            //TODO:等新富確定攻擊演出方式後 修改此段邏輯
-            TrainHuntSceneUI.Instance.PlayerAttack(GetHitHP(area));
+            TrainHuntSceneUI.Instance.PlayerAttack(GetHitHP(area), GetWeaponPrefix(area),
+                CheckPossAniExist(area), GetBossHittedPrefix(area), GetBossHittedBackPerFrameAngle(area));
         }
 
         /// <summary>
@@ -200,16 +222,78 @@ namespace Gladiators.TrainHunt {
             };
         }
 
+        string GetWeaponPrefix(TrainHuntSceneUI.HitArea area)
+        {
+            return area switch
+            {
+                TrainHuntSceneUI.HitArea.Red => "01",
+                TrainHuntSceneUI.HitArea.Orange => "02",
+                TrainHuntSceneUI.HitArea.Yellow => "03",
+                _ => "04",
+            };
+        }
+
+        bool CheckPossAniExist(TrainHuntSceneUI.HitArea area)
+        {
+            return area switch
+            {
+                TrainHuntSceneUI.HitArea.Red => true,
+                TrainHuntSceneUI.HitArea.Orange => true,
+                TrainHuntSceneUI.HitArea.Yellow => true,
+                _ => false,
+            };
+        }
+
+        string GetBossHittedPrefix(TrainHuntSceneUI.HitArea area)
+        {
+            //TODO:等新富補演出後修改名稱
+            return area switch
+            {
+                TrainHuntSceneUI.HitArea.Red => "harm03",
+                TrainHuntSceneUI.HitArea.Orange => "harm03",
+                TrainHuntSceneUI.HitArea.Yellow => "harm02",
+                _ => "harm01",
+            };
+        }
+
+        float GetBossHittedBackPerFrameAngle(TrainHuntSceneUI.HitArea area)
+        {
+            return area switch
+            {
+                TrainHuntSceneUI.HitArea.Red => BarRedBossBackAngle,
+                TrainHuntSceneUI.HitArea.Orange => BarOrangeBossBackAngle,
+                TrainHuntSceneUI.HitArea.Yellow => BarYellowBossBackAngle,
+                _ => BarGrayBossBackAngle,
+            };
+        }
+
         public void JumpHitHP(int reduceHP)
         {
             var dmgNum = dmgPrefab.Spawn(MyBoss.transform.position + dmgPopupOffset, reduceHP);
             dmgNum.transform.localScale = Vector3.one * dmgNumScal;
         }
 
-        public async UniTask BossHitted()
+        public void BossHittedAni(Vector3 hittedSpinePos, string hittedSpineAniName)
         {
-            MyBoss.Hitted();
-            await UniTask.WaitForSeconds(0.15f);
+            MyBoss.Hitted(hittedSpinePos, hittedSpineAniName);
+        }
+
+        public void BossHittedBack(float bossBackAngle)
+        {
+            //Boss後退
+            bossMoveAnglePerFrame = -bossBackAngle;
+        }
+
+        /// <summary>
+        /// Boss從打擊中恢復(會等待設定的秒數)
+        /// </summary>
+        /// <returns></returns>
+        public async UniTask BossRecoveryFromHit()
+        {
+            await UniTask.WaitForSeconds(BossHitBackDuration);
+            //Boss恢復原本向前移動
+            CountBaseBossMovePerFrameAngle();
+            MyBoss.HittedOver();
             MyBoss.Move();
         }
 

@@ -14,13 +14,18 @@ public class SpineAnimationController : MonoBehaviour
 
     void Start()
     {
+        
+    }
+
+    public void Init()
+    {
         skeletonAnimation = GetComponent<SkeletonGraphic>();
         spineAnimationState = skeletonAnimation.AnimationState;
-        //Debug.LogError("初始化Spine");
     }
 
     public void PlayAnimation(string animName, bool loop)
     {
+        //Debug.LogErrorFormat("嘗試撥放Spine動畫: {0} 是否重複撥放: {1}", animName, loop);
         spineAnimationState.SetAnimation(0, animName, loop);
     }
 

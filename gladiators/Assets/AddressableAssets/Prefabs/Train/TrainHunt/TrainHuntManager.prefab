@@ -57,6 +57,11 @@ MonoBehaviour:
   BossEndAngle: {x: 0, y: 0, z: 30}
   RadiusSet: 1013
   BossMaxHP: 200
+  BarGrayBossBackAngle: 0.03
+  BarYellowBossBackAngle: 0.06
+  BarOrangeBossBackAngle: 0.12
+  BarRedBossBackAngle: 0.18
+  BossHitBackDuration: 0.15
   BarSetYellowMinRange: 0.5
   BarSetYellowMaxRange: 0.7
   BarSetOrangeMinRange: 0.3
