@@ -17,7 +17,7 @@ namespace Gladiators.TrainVigor {
         [SerializeField] float MaxAddRegenVigor;
         [SerializeField] float CharDiePosY; // 腳色Y軸低於多少算遊戲失敗
 
-        [SerializeField] bool MobileControl;
+        [SerializeField] public bool MobileControl;
         UltimateJoystick joyStick;
         bool playing = false;
         int curLeftTime;
@@ -113,7 +113,6 @@ namespace Gladiators.TrainVigor {
             Vector2 screenCenter = new Vector2(Screen.width * 0.5f, Screen.height * 0.5f);
             Vector2 mousePos = Input.mousePosition;
             Vector2 direction = mousePos - screenCenter;
-            direction *= 0.5f;
             direction = direction.normalized;
             Char.Move(direction);
         }

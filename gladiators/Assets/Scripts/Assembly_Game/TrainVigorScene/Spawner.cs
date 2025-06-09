@@ -12,7 +12,7 @@ namespace Gladiators.TrainVigor {
         [SerializeField] MinMaxF angleOffsetRange = new MinMaxF(0f, 30f);
         [SerializeField] MinMaxF selfRotation = new MinMaxF(30, 720f);
         [SerializeField] MinMaxF interval = new MinMaxF(1f, 4f);
-
+        [SerializeField] bool DontShoot = true;
         bool shooting = false;
 
         public void StartShoot() {
@@ -27,7 +27,7 @@ namespace Gladiators.TrainVigor {
         /// 射出隨機投射物
         /// </summary>
         async UniTask shoot() {
-            while (shooting) {
+            while (!DontShoot && shooting) {
                 // 設定位置
                 float angle = Random.Range(0f, Mathf.PI * 2f);
                 float spawnY = heightRange.GetRandInRange();
