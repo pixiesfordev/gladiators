@@ -1,5 +1,6 @@
 using Cysharp.Threading.Tasks;
 using Gladiators.Battle;
+using Gladiators.Hunt;
 using Scoz.Func;
 using System;
 using UnityEngine;
@@ -28,7 +29,7 @@ namespace Gladiators.TrainVigor {
             setCam();//設定攝影機模式
             setInit();
             setChar();
-
+            MySpawner.Init();
 #if !UNITY_EDITOR // 輸出版本要根據平台判斷操控方式
             if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer) MobileControl = true;
             else MobileControl = false;

@@ -486,7 +486,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spd: 10
-  MouseControllStrength: 0.5
+  MouseControllStrength: 0.7
   sphereCenter: {fileID: 0}
   cancelSlideStrength: 0.5
   dmgProjectileSpd: 10

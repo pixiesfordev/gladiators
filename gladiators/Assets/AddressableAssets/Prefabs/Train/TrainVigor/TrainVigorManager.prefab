@@ -436,7 +436,7 @@ MonoBehaviour:
   interval:
     X: 4
     Y: 8
-  DontShoot: 0
+  DontShoot: 1
 --- !u!1 &3467076733994645027
 GameObject:
   m_ObjectHideFlags: 0
@@ -601,11 +601,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   RndSpdRange:
-    X: 10
-    Y: 20
+    X: 20
+    Y: 80
   Interval:
     X: 0.5
     Y: 3
+  Ball1: {fileID: 2824912961505894546}
+  Ball2: {fileID: 1227003465906386382}
 --- !u!1 &5632616887824109423
 GameObject:
   m_ObjectHideFlags: 0
