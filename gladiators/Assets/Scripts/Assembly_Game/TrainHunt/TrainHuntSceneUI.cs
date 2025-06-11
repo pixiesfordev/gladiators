@@ -69,12 +69,14 @@ namespace Gladiators.TrainHunt {
         }
 
         //TODO:
-        //V1.測試改Parent 讓武器隨著Boss跳動
-        //V2.套入隨機插中位置功能 & 播放打中Boss的Spine演出
-        //V3.加入擊退功能 修改Boss移動邏輯
-        //V4.英雄套入動畫(美術已套入)
-        //V5.加上場景Spine
- 
+        /*
+        V1.Boss加速(剩十秒時)
+        V2.英雄轉向 背對Boss
+        V3.英雄會隨機在一定範圍內左右移動(營造出被追殺 拉近距離又拉遠的感覺)
+        4.傷害數字被怪物蓋住(要修正 要在怪物前)
+        5.套用新的HP血條
+        */
+
         // Start is called before the first frame update
         void Start()
         {

@@ -7,6 +7,7 @@ using Scoz.Func;
 using Cysharp.Threading.Tasks;
 using System;
 using DamageNumbersPro;
+using UnityEngine.Rendering;
 
 namespace Gladiators.TrainHunt {
     public class TrainHuntManager : MonoBehaviour
@@ -57,6 +58,8 @@ namespace Gladiators.TrainHunt {
         int HitHPGray = 5;
 
         float bossMoveAnglePerFrame = 0f; //Boss每禎移動的角度
+        bool bossMoveSpeedUp = false; //Boss是否加快移動速度
+        bool bossHitted = false; //Boss是否正在被攻擊
 
         // Start is called before the first frame update
         void Start()
@@ -97,6 +100,9 @@ namespace Gladiators.TrainHunt {
         /// </summary>
         public void GameStart()
         {
+            //重設Boss相關旗標
+            bossHitted = false;
+            bossMoveSpeedUp = false;
             //決定打擊條相關參數與賦值給UI
             PickBarValue();
             //Boss開始朝玩家移動
@@ -162,6 +168,12 @@ namespace Gladiators.TrainHunt {
             {
                 passTime += Time.deltaTime;
                 deltaTime = passTime - startTime;
+                //如果剩下10秒且Boss沒有被攻擊中 就主動讓Boss加速
+                if (!bossHitted && GameTime - deltaTime <= 10f)
+                {
+                    bossMoveSpeedUp = true;
+                    CountBaseBossMovePerFrameAngle();
+                }
                 //更新剩餘時間 & 怪物位置
                 //curAngle.z = Mathf.Lerp(BossStartAngle.z, BossEndAngle.z, deltaTime / GameTime);
                 curAngle.z += bossMoveAnglePerFrame;
@@ -180,7 +192,7 @@ namespace Gladiators.TrainHunt {
                 //Mathf.Sin(curAngle.z * Mathf.Deg2Rad));
                 MyBoss.transform.localPosition = curBossPos;
                 */
-
+                //TODO:改秒數為基礎 此外加上速度參數化
                 await UniTask.Yield();
             }
             await UniTask.Yield();
@@ -195,6 +207,7 @@ namespace Gladiators.TrainHunt {
             //基礎用每秒120禎來定 公式:總移動角度 / (每秒禎數 * 遊戲時間)
             float totalFrameCount = 120f * GameTime;
             bossMoveAnglePerFrame = -(BossStartAngle.z - BossEndAngle.z) / totalFrameCount;
+            if (bossMoveSpeedUp) bossMoveAnglePerFrame *= 2;
             //Debug.LogErrorFormat("Boss每禎移動角度: {0}", bossMoveAnglePerFrame);
         }
 
@@ -271,6 +284,10 @@ namespace Gladiators.TrainHunt {
         {
             var dmgNum = dmgPrefab.Spawn(MyBoss.transform.position + dmgPopupOffset, reduceHP);
             dmgNum.transform.localScale = Vector3.one * dmgNumScal;
+            //TODO:解決傷害數字看不到的問題
+            dmgNum.gameObject.layer = LayerMask.NameToLayer("UI");
+            var sg = dmgNum.GetComponent<SortingGroup>();
+            if (sg != null) sg.sortingLayerName = "UI";
         }
 
         public void BossHittedAni(Vector3 hittedSpinePos, string hittedSpineAniName)
@@ -282,6 +299,8 @@ namespace Gladiators.TrainHunt {
         {
             //Boss後退
             bossMoveAnglePerFrame = -bossBackAngle;
+            //設置旗標表示Boss正在被攻擊 避免加速運算出bug
+            bossHitted = true;
         }
 
         /// <summary>
@@ -291,6 +310,8 @@ namespace Gladiators.TrainHunt {
         public async UniTask BossRecoveryFromHit()
         {
             await UniTask.WaitForSeconds(BossHitBackDuration);
+            //Boss結束擊退演出 要設置回沒被攻擊狀態
+            bossHitted = false;
             //Boss恢復原本向前移動
             CountBaseBossMovePerFrameAngle();
             MyBoss.HittedOver();
