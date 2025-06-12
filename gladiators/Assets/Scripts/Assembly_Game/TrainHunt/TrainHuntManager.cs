@@ -284,8 +284,11 @@ namespace Gladiators.TrainHunt {
         {
             var dmgNum = dmgPrefab.Spawn(MyBoss.transform.position + dmgPopupOffset, reduceHP);
             dmgNum.transform.localScale = Vector3.one * dmgNumScal;
-            //TODO:解決傷害數字看不到的問題
+            //改變Layer 不然會看不到
             dmgNum.gameObject.layer = LayerMask.NameToLayer("UI");
+            var childs = dmgNum.GetComponentsInChildren<Transform>();
+            foreach (var tran in childs)
+                tran.gameObject.layer = LayerMask.NameToLayer("UI");
             var sg = dmgNum.GetComponent<SortingGroup>();
             if (sg != null) sg.sortingLayerName = "UI";
         }
