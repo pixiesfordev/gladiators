@@ -6,6 +6,7 @@ public class TrainHuntBoss : MonoBehaviour
 {
     [SerializeField] Animator aniConroller;
     [SerializeField] SpineAnimationController HittedSpine;
+    [SerializeField] TrainHuntBossHP BossHP;
 
     // Start is called before the first frame update
     void Start()
@@ -27,14 +28,33 @@ public class TrainHuntBoss : MonoBehaviour
 
     public void HittedOver()
     {
-        //TODO:等美術做出空白狀態 不然現在直接放會當掉
-        //HittedSpine.StopAnimation();
+        HittedSpine.PlayAnimation("harm04_off", false);
         HittedSpine.gameObject.SetActive(false);
     }
 
     public void Move()
     {
         aniConroller.Play("boss move", -1, 0f);
+    }
+
+    public void ResetHP()
+    {
+        BossHP.Reset();
+    }
+
+    public void InitHP(int maxHP, int curHP)
+    {
+        BossHP.InitHP(maxHP, curHP);
+    }
+
+    public void ReduceHP(int val)
+    {
+        BossHP.ReduceHP(val);
+    }
+
+    public void SetHPAngle(Vector3 angle)
+    {
+        BossHP.transform.localRotation = Quaternion.Euler(-angle);
     }
 
 }

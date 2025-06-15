@@ -117,6 +117,7 @@ namespace Gladiators.TrainHunt {
         public void SetBossCharInfo(int maxHP, int bossID)
         {
             TrainHuntSceneUI.Instance.SetBossCharInfo(maxHP, bossID);
+            TrainHuntSceneUI.Instance.HideBossCharInfo();
         }
 
         /// <summary>
@@ -179,6 +180,7 @@ namespace Gladiators.TrainHunt {
                 curAngle.z += bossMoveAnglePerFrame;
                 TrainHuntSceneUI.Instance.SetPointerPos(deltaTime / GameTime);
                 MyBoss.transform.parent.localRotation = Quaternion.Euler(curAngle);
+                MyBoss.SetHPAngle(curAngle); //修正BossHP角度以維持水平
 
                 /*
                 //棄用的未完成的圓周公式算法 保留以做參考

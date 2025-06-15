@@ -166,11 +166,20 @@ namespace Gladiators.TrainHunt {
             }
         }
 
-        public void SetBossCharInfo(int maxHP, int bossID) {
+        public void SetBossCharInfo(int maxHP, int bossID)
+        {
             BossCharInfo.Init(maxHP, maxHP, bossID);
+            BossCharInfo.HideHP();
+            MyBoss.InitHP(maxHP, maxHP);
         }
 
-        public void SetPointerPos(float rate) {
+        public void HideBossCharInfo()
+        {
+            BossCharInfo.gameObject.SetActive(false); //先隱藏Boss頭像資訊
+        }
+
+        public void SetPointerPos(float rate)
+        {
             TimeObj.SetPointerPos(rate);
         }
 
@@ -225,7 +234,8 @@ namespace Gladiators.TrainHunt {
 
         public void ReduceBossHP(int reduceHP)
         {
-            BossCharInfo.AddHP(-reduceHP);
+            //BossCharInfo.AddHP(-reduceHP);
+            MyBoss.ReduceHP(reduceHP);
         }
 
         async UniTask MoveAttack(string weaponPrefix, bool HavePossAni, Vector3 heroWeaponOffset, 
@@ -276,6 +286,7 @@ namespace Gladiators.TrainHunt {
         {
             GameOverObj.SetActive(false);
             BossCharInfo.ResetHPBarToFull();
+            MyBoss.ResetHP();
             TrainHuntManager.Instance.GameStart();
             BGObj.BGFarStartMove();
             //回收武器Spine物件

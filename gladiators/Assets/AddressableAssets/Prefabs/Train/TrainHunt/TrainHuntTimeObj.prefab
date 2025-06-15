@@ -234,7 +234,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6858361338594930526}
-  - component: {fileID: 4496487718402873785}
+  - component: {fileID: 4691077716577921518}
   m_Layer: 5
   m_Name: TrainHuntTimeObj
   m_TagString: Untagged
@@ -266,7 +266,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 469}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &4496487718402873785
+--- !u!114 &4691077716577921518
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -275,7 +275,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4389219124185144774}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 064703401509fa74292f790392e86cc8, type: 3}
+  m_Script: {fileID: 11500000, guid: 88ce7d3ff7b928b428f8b537796f2646, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Pointer: {fileID: 6356789063793177848}
