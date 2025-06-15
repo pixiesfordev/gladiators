@@ -3,18 +3,14 @@ using Scoz.Func;
 using UnityEngine.UI;
 using Cysharp.Threading.Tasks;
 using static Gladiators.Main.AllocatedRoom;
+using Codice.Client.Common;
 
 namespace Gladiators.Main {
     public class StartSceneUI : BaseUI {
         [SerializeField] Toggle TermsOfUseToggle;
         [SerializeField] Text VersionText;
-        [SerializeField] GameObject GuestLoginBtn;//登入按鈕
-        [SerializeField] GameObject ThirdpartBtns;//三方登入按鈕
-        [SerializeField] GameObject AppleLoginGO;//蘋果登入
-        [SerializeField] GameObject LogutoutGO;//登出
-        [SerializeField] GameObject DeleteACGO;//刪除帳戶(蘋果要求)
-        [SerializeField] GameObject BackToLobbyGO;//返回大廳按鈕
-        [SerializeField] RectTransform QuestReportButton; // 問題回報的按鍵
+        [SerializeField] Button Btn_Continue, Btn_Logout, Btn_DeleteAC;
+        [SerializeField] Button Btn_GuestLogin, Btn_GoogleLogin, Btn_AppleLogin;
 
         /// <summary>
         /// 是否第一次執行遊戲，第一次執行遊戲後會自動進大廳，之後透過從大廳的設定中點回到主介面就不會又自動進大廳了
@@ -23,12 +19,10 @@ namespace Gladiators.Main {
 
         public static StartSceneUI Instance { get; private set; }
 
-        public enum Condition {
-            HideAll,//隱藏所有按鈕
-            NotLogin,//還沒登入就顯示登入按鈕
-            OfflineMode,//離線模式
-            BackFromLobby_ShowLogoutBtn,//從大廳返回主介面 且 已經是登入狀態，會顯示登出按鈕與返回大廳按鈕
-            BackFromLobby_ShowLoginBtn,//從大廳返回主介面 且 已經是登入狀態，會顯示登出按鈕與返回大廳按鈕
+        public enum SignInState {
+            DontHavePlayerID, // 沒有本地帳號紀錄
+            GotPlayerID, // 本地有帳號紀錄但還沒登入
+            LoginedIn,// 已登入
         }
         protected override void SetInstance() {
             Instance = this;
@@ -43,73 +37,106 @@ namespace Gladiators.Main {
             Init();
             // Apple登入要打開
 #if UNITY_IOS
-            AppleLoginGO.SetActive(true);
+            Btn_AppleLogin.gameObject.SetActive(true);
 #else
-            AppleLoginGO.SetActive(false);
+            Btn_AppleLogin.gameObject.SetActive(false);
 #endif
-            ShowUI(Condition.HideAll);
-            Signin().Forget();
+            var state = getState();
+            showInfo();//顯示資訊
+            showBtnsByState(false, state);
+
+            UniTask.Void(async () => {
+                // 取得遊戲狀態
+                var (_, successGetGameState) = await getGameState();
+                if (successGetGameState == false) {
+                    WriteLog.LogError("getGameState失敗");
+                    return;
+                }
+
+                if (state == SignInState.GotPlayerID) {
+                    // 登入
+                    var (_, successSignin) = await signin();
+                    if (successSignin == false) {
+                        WriteLog.LogError("signin失敗");
+                        return;
+                    }
+                    showInfo();//顯示資訊
+                    await connectToLobby(); // 開始連線大廳
+                }
+#if UNITY_EDITOR
+                showBtnsByState(true, state);
+#else
+            goLobby(); 
+#endif
+
+            });
         }
 
-        async UniTask Signin() {
-            APIManager.Init(); // 初始化 APIManager
-            GameManager.Instance.SetTime(await APIManager.GetServerTime());
-            showInfo();//顯示資訊
-            if (!string.IsNullOrEmpty(GamePlayer.Instance.PlayerID) && !string.IsNullOrEmpty(GamePlayer.Instance.MyAuthType) && !string.IsNullOrEmpty(GamePlayer.Instance.DeviceUID)) {
-                string authData = "";
-                AuthType authType;
-                if (!MyEnum.TryParseEnum(GamePlayer.Instance.MyAuthType, out authType)) return;
-                switch (authType) {
-                    case AuthType.GUEST:
-                        authData = GamePlayer.Instance.DeviceUID;
-                        break;
-                }
-                var dbPlayer = await APIManager.Signin(
-                    GamePlayer.Instance.PlayerID,
-                    GamePlayer.Instance.MyAuthType,
-                    authData,
-                    Application.platform.ToString(),
-                    GamePlayer.Instance.DeviceUID);
-                GamePlayer.Instance.SigninSetPlayerData(dbPlayer, false);
-                await onSignin();
+        SignInState getState() {
+            SignInState state = SignInState.DontHavePlayerID;
+            WriteLog.Log($"PlayerID: {GamePlayer.Instance.PlayerID}");
+            if (string.IsNullOrEmpty(GamePlayer.Instance.PlayerID)) {
+                state = SignInState.DontHavePlayerID;
             }
-            AuthChek();
+            if (!string.IsNullOrEmpty(GamePlayer.Instance.PlayerID)) {
+                if (GamePlayer.Instance.GetDBData<DBPlayer>() == null) state = SignInState.GotPlayerID;
+                else state = SignInState.LoginedIn;
+            }
+            return state;
+        }
+
+        async UniTask<(DBPlayer, bool)> signin() {
+            if (string.IsNullOrEmpty(GamePlayer.Instance.PlayerID) &&
+                string.IsNullOrEmpty(GamePlayer.Instance.MyAuthType) &&
+                string.IsNullOrEmpty(GamePlayer.Instance.DeviceUID)) {
+                WriteLog.LogError($"signin傳入資料錯誤: PlayerID: {GamePlayer.Instance.PlayerID}  MyAuthType: {GamePlayer.Instance.MyAuthType}   DeviceUID: {GamePlayer.Instance.DeviceUID}");
+                return (null, false);
+            }
+
+            string authData = "";
+            AuthType authType;
+            if (!MyEnum.TryParseEnum(GamePlayer.Instance.MyAuthType, out authType))
+                return (null, false);
+
+            switch (authType) {
+                case AuthType.GUEST:
+                    authData = GamePlayer.Instance.DeviceUID;
+                    break;
+            }
+
+            var (dbPlayer, result) = await APIManager.Signin(
+                GamePlayer.Instance.PlayerID,
+                GamePlayer.Instance.MyAuthType,
+                authData,
+                Application.platform.ToString(),
+                GamePlayer.Instance.DeviceUID);
+
+            if (!result) {
+                WriteLog.LogError("APIManager.Signin失敗");
+                return (null, false);
+            }
+
+            GamePlayer.Instance.SigninSetPlayerData(dbPlayer, false);
+            return (dbPlayer, true);
         }
 
         /// <summary>
-        /// 登入狀態確認
-        /// 1. (還沒登入)打開UI介面，讓玩家選擇登入方式
-        /// 2. (已登入且第一次開遊戲)開始取同步Realm上的資料，都取完後就開始載Addressable資源包，載完後進入大廳場景(在編輯器模式中，為了測試不會直接進大廳)
-        /// 3. (已登入且是從大廳退回主介面)打開UI介面，讓玩家選擇回大廳,登出還是移除帳戶(Apple限定)
+        /// 取得遊戲狀態並寫入 GamePlayer
         /// </summary>
-        void AuthChek() {
-            PopupUI.HideLoading();
-
-            var dbPlayer = GamePlayer.Instance.GetDBData<DBPlayer>();
-            if (dbPlayer == null) {
-                WriteLog.LogColor("尚無玩家資料，進入註冊介面", WriteLog.LogType.Player);
-                ShowUI(Condition.NotLogin);
-            } else {//已經玩家資料就開始遊戲
-
-                //是否第一次執行遊戲，第一次執行遊戲後會自動進大廳，之後透過從大廳的設定中點回到主介面就不會又自動進大廳了
-                if (FirstTimeLaunchGame) {
-                    //如果是Dev版本不直接轉場景(Dev版以外會直接進Lobby)
-#if Dev
-                    ShowUI(StartSceneUI.Condition.BackFromLobby_ShowLogoutBtn);
-#else
-                    GoLobby();//進入下一個場景
-#endif
-                } else {//如果是從大廳點設定回到主介面跑這裡，顯示登出按鈕與返回大廳按鈕
-                    ShowUI(StartSceneUI.Condition.BackFromLobby_ShowLogoutBtn);
-                }
-
+        async UniTask<(DBGameState, bool)> getGameState() {
+            var (dbGameState, result) = await APIManager.GameState();
+            if (!result) {
+                WriteLog.LogError("APIManager.GameState失敗");
+                return (null, false);
             }
+
+            GamePlayer.Instance.SetDBData(dbGameState);
+            return (dbGameState, true);
         }
 
 
-
-        public void GoLobby() {
-            ShowUI(Condition.HideAll);
+        public void goLobby() {
+            showBtnsByState(false, SignInState.LoginedIn);
             //繞過正式流程
             FirstTimeLaunchGame = false;
             PopupUI.InitSceneTransitionProgress(0);
@@ -129,38 +156,34 @@ namespace Gladiators.Main {
         }
 
 
-
-        public void ShowUI(Condition _condition) {
-            SetActive(true);
-            switch (_condition) {
-                case Condition.OfflineMode:
-                    ShowLoginUI(false);
+        void showBtnsByState(bool _show, SignInState _state) {
+            if (_show == false) {
+                Btn_Continue.gameObject.SetActive(false);
+                Btn_DeleteAC.gameObject.SetActive(false);
+                Btn_GuestLogin.gameObject.SetActive(false);
+                Btn_AppleLogin.gameObject.SetActive(false);
+                Btn_GoogleLogin.gameObject.SetActive(false);
+                Btn_Logout.gameObject.SetActive(false);
+                return;
+            }
+            switch (_state) {
+                case SignInState.DontHavePlayerID:
+                    Btn_Continue.gameObject.SetActive(false);
+                    Btn_DeleteAC.gameObject.SetActive(false);
+                    Btn_GuestLogin.gameObject.SetActive(true);
+                    Btn_AppleLogin.gameObject.SetActive(true);
+                    Btn_GoogleLogin.gameObject.SetActive(true);
+                    Btn_Logout.gameObject.SetActive(false);
                     break;
-                case Condition.HideAll:
-                    SetActive(false);
-                    break;
-                case Condition.NotLogin:
-                    ShowLoginUI(true);
-                    break;
-                case Condition.BackFromLobby_ShowLogoutBtn:
-                    ShowLoginUI(false);
-                    break;
-                case Condition.BackFromLobby_ShowLoginBtn:
-                    ShowLoginUI(true);
+                case SignInState.LoginedIn:
+                    Btn_Continue.gameObject.SetActive(true);
+                    Btn_DeleteAC.gameObject.SetActive(true);
+                    Btn_GuestLogin.gameObject.SetActive(false);
+                    Btn_AppleLogin.gameObject.SetActive(false);
+                    Btn_GoogleLogin.gameObject.SetActive(false);
+                    Btn_Logout.gameObject.SetActive(true);
                     break;
             }
-        }
-
-        /// <summary>
-        /// true:顯示登入按鈕並隱藏登出按鈕
-        /// false:顯示登出按鈕並隱藏登入按鈕
-        /// </summary>
-        void ShowLoginUI(bool _show) {
-            GuestLoginBtn.SetActive(_show);
-            ThirdpartBtns.SetActive(_show);
-            BackToLobbyGO.SetActive(!_show);
-            LogutoutGO.SetActive(!_show);
-            DeleteACGO.SetActive(!_show);
         }
         /// <summary>
         /// 1. (玩家尚未登入) 顯示版本
@@ -170,7 +193,7 @@ namespace Gladiators.Main {
             string playerID = "尚未登入";
             var dbPlayer = GamePlayer.Instance.GetDBData<DBPlayer>();
             if (dbPlayer != null) playerID = dbPlayer.ID;
-            VersionText.text = $"版本: {Application.version} 玩家: {playerID}";
+            VersionText.text = $"版本: {GameManager.GameFullVersion} 玩家: {playerID}";
         }
         /// <summary>
         /// 登入按鈕按下
@@ -200,36 +223,22 @@ namespace Gladiators.Main {
             string deviceUID = DeviceManager.GenerateDeviceUID();
             switch (_authType) {
                 case AuthType.GUEST:
-                    var dbPlayer = await APIManager.Signup(_authType.ToString(), deviceUID, Application.platform.ToString(), deviceUID);
+                    var (dbPlayer, result) = await APIManager.Signup(_authType.ToString(), deviceUID, Application.platform.ToString(), deviceUID);
+                    if (result == false) {
+                        WriteLog.LogError("GUEST登入失敗");
+                        return;
+                    }
                     GamePlayer.Instance.SigninSetPlayerData(dbPlayer, true);
-
                     break;
                 default:
                     WriteLog.LogError($"尚未實作此AuthType: {_authType}");
                     return;
             }
-
-            await onSignin();
-        }
-        async UniTask onSignin() {
-            showInfo();//顯示資訊
-            var dbGameState = await APIManager.GameState();
-            GamePlayer.Instance.SetDBData(dbGameState);
-
-            await connectToLobby(); // 開始連線大廳
-
-            //如果是編輯器不直接轉場景(正式機才會直接進Lobby)
-#if UNITY_EDITOR
-            ShowUI(StartSceneUI.Condition.BackFromLobby_ShowLogoutBtn);
-#else
-            GoLobby();//進入下一個場景
-#endif
-
         }
         async UniTask connectToLobby() {
-            var dbGameState = await APIManager.GameState();
+            var state = GamePlayer.Instance.GetDBData<DBGameState>();
             string serverName = "Lobby";
-            await GameConnector.NewConnector(serverName, dbGameState.LobbyIP, dbGameState.LobbyPort, () => {
+            await GameConnector.NewConnector(serverName, state.LobbyIP, state.LobbyPort, () => {
                 var connector = GameConnector.GetConnector(serverName);
                 if (connector != null) {
                     AllocatedLobby.Instance.SetLobby(connector);

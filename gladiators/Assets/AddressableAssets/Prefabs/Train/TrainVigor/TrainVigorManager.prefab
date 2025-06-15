@@ -370,6 +370,7 @@ MonoBehaviour:
   MyPlatform: {fileID: 4473281851931163658}
   MySpawner: {fileID: 4692514594770948327}
   StartCountDownSec: 30
+  LeftSecsToLevel2: 20
   MaxAddRegenVigor: 0.2
   CharDiePosY: -10
   MobileControl: 0
@@ -601,13 +602,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   RndSpdRange:
-    X: 20
-    Y: 80
+  - X: 20
+    Y: 50
+  - X: 40
+    Y: 100
   Interval:
     X: 0.5
     Y: 3
   Ball1: {fileID: 2824912961505894546}
   Ball2: {fileID: 1227003465906386382}
+  Char: {fileID: 8706111493248042114}
+  MaxForce: 20
 --- !u!1 &5632616887824109423
 GameObject:
   m_ObjectHideFlags: 0
@@ -830,13 +835,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8433548689804470034}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.4165188, y: 0, z: 0, w: 0.9091271}
+  m_LocalRotation: {x: 0, y: 0, z: 0.082199454, w: 0.99661595}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1.178784, y: 1.178784, z: 1.178784}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7133016740790308551}
-  m_LocalEulerAnglesHint: {x: 49.23, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 9.43}
 --- !u!33 &3249706150070226176
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -1010,6 +1015,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 543769600268874432}
     m_Modifications:
+    - target: {fileID: 918644443235601543, guid: 821897bfe13b56b419c2d0d8bfdf54d9,
+        type: 3}
+      propertyPath: spd
+      value: 12
+      objectReference: {fileID: 0}
     - target: {fileID: 918644443235601543, guid: 821897bfe13b56b419c2d0d8bfdf54d9,
         type: 3}
       propertyPath: sphereCenter

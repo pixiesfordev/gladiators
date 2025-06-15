@@ -51,6 +51,17 @@ namespace Scoz.Func {
 #endif
             }
         }
+        /// <summary>
+        /// 取得遊戲的完整版號 E.X. 1.2.3中 1.2是主程式版本3是Bundle版本
+        /// 主程式版本是包主程式跟NewBuild前自己填
+        /// Bundle版本是NewBuild時會重置回1，之後UpdatePreviousBuild會自動加版號
+        /// </summary>
+        public static string GameFullVersion {
+            get {
+                var fullVersion = Application.version + "." + BundleVersion.VERSION;
+                return fullVersion;
+            }
+        }
 
         DateTimeOffset LastServerTime;
         DateTimeOffset LastClientTime;
@@ -109,7 +120,7 @@ namespace Scoz.Func {
             Screen.sleepTimeout = SleepTimeout.NeverSleep;// 防止螢幕自動休眠
 #if PLATFORM_STANDALONE
 #else // 非 PLATFORM_STANDALONE 降解析度
-            Screen.SetResolution(1170, 540,true);
+            Screen.SetResolution(1170, 540, true);
 #endif
 
             DontDestroyOnLoad(gameObject);
@@ -150,8 +161,6 @@ namespace Scoz.Func {
             //初始化Lobby房間與遊戲房間(這是跟server溝通的中間管理者)
             AllocatedLobby.Init();
             AllocatedRoom.Init();
-
-
             // 建立AddressableManage並開始載包
             StartDownloadAddressable();
         }
@@ -206,6 +215,7 @@ namespace Scoz.Func {
 
                 GamePlayer.Instance.LoadLocoData();
                 GameDictionary.LoadJsonDataToDic(() => { //載入Bundle的json資料
+                    APIManager.Init(); // 初始化 APIManager
                     AddressablesLoader.GetPrefabByRef(UICamAsset, (sceneUIPrefab, handle) => {//載入UICam
                         var camGo = Instantiate(sceneUIPrefab);
                         camGo.GetComponent<UICam>().Init();
