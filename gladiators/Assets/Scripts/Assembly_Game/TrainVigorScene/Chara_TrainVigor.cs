@@ -69,5 +69,9 @@ namespace Gladiators.TrainVigor {
             dmgNum.transform.localScale = Vector3.one * dmgNumScal;
             TrainVigorSceneUI.Instance.AddHP(-dmg);
         }
+
+        public void AddForceToChar(Vector3 _force) {
+            rigid.AddForce(_force);
+        }
     }
 }

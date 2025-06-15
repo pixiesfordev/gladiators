@@ -1,8 +1,10 @@
 using Cysharp.Threading.Tasks;
 using Gladiators.Battle;
 using Gladiators.Hunt;
+using Gladiators.Main;
 using Scoz.Func;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
@@ -14,7 +16,8 @@ namespace Gladiators.TrainVigor {
         [SerializeField] Chara_TrainVigor Char;
         [SerializeField] Platform MyPlatform;
         [SerializeField] Spawner MySpawner;
-        [SerializeField] int StartCountDownSec;
+        [SerializeField] int StartCountDownSec; // 遊戲時間
+        [SerializeField] int LeftSecsToLevel2; // 剩餘幾秒時進入Level2的冰球旋轉
         [SerializeField] float MaxAddRegenVigor;
         [SerializeField] float CharDiePosY; // 腳色Y軸低於多少算遊戲失敗
 
@@ -76,12 +79,14 @@ namespace Gladiators.TrainVigor {
             StartGame();
         }
         public void StartGame() {
+            MyPlatform.SetLevel(0);
             playing = true;
             MyPlatform.ResetPlatform();
             Char.ResetChar();
             MyPlatform.StartRotate();
             MySpawner.StartShoot();
             Char.SetKinematic(false);
+            bool startLV2 = false;
             // 開始倒數計時
             UniTask.Void(async () => {
                 curLeftTime = StartCountDownSec;
@@ -91,6 +96,10 @@ namespace Gladiators.TrainVigor {
                     await UniTask.Delay(1000);
                     curLeftTime--;
                     TrainVigorSceneUI.Instance.SetCountdownImg(curLeftTime);
+                    if (!startLV2 && curLeftTime < LeftSecsToLevel2) {
+                        startLV2 = true;
+                        MyPlatform.SetLevel(1);
+                    }
                 }
                 if (playing) endGame();
             });
@@ -101,7 +110,22 @@ namespace Gladiators.TrainVigor {
             MySpawner.StopShoot();
             float addVigorGen = MaxAddRegenVigor * ((float)(StartCountDownSec - curLeftTime) / (float)StartCountDownSec);
             addVigorGen = MyMath.Round(addVigorGen, 2);
-            PopupUI.ShowAttributeUI($"體力回復增加{addVigorGen}/s", restartGame);
+
+
+            List<IProps> props = new List<IProps>();
+            IProps prop = new Props_Attribute() {
+                Type = PropsType.Attribute,
+                Name = $"體力回復增加{addVigorGen}/s",
+                SpriteName = "10203",
+            };
+            IProps prop2 = new Props_Attribute() {
+                Type = PropsType.Attribute,
+                Name = $"力量增加{addVigorGen}/s",
+                SpriteName = "10201",
+            };
+            props.Add(prop);
+            props.Add(prop2);
+            GainPropsUI.Instance.ShowUI(props, restartGame);
         }
         void controlChar_Joystick() {
             if (playing == false || Char == null || joyStick == null) return;

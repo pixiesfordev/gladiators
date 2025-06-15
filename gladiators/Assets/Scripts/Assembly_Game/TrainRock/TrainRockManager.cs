@@ -16,21 +16,21 @@ using UnityEngine.UI;
 public class TrainRockManager : MonoBehaviour {
     public static TrainRockManager Instance;
 
-    public GameObject rockPrefab; // Ê¯î^µÄ Prefab
-    public LineRenderer trajectoryLine; // ÓÃì¶ï@Ê¾’Îï¾€µÄ LineRenderer
-    public int trajectoryResolution = 10; // ’Îï¾€µÄ¹üc”µ
-    public float maxThrowForce = 20f; // ×î´óÍ¶”SÁ¦¶È
-    public float dragSensitivity = 10f; // ÍÏÒ·ì`Ãô¶È
-    public float initialVerticalSpeed = 10f; //’Îï¾€ÏòÉÏ¸ß
-    public Image leftLimitArea; // ×ó²àÏÞÖÆÇøÓò
-    public Image rightLimitArea; // ÓÒ²àÏÞÖÆÇøÓò
+    public GameObject rockPrefab; // å’èž¹è…” Prefab
+    public LineRenderer trajectoryLine; // èššé»ºéžžå°¨?æ˜œ?è…” LineRenderer
+    public int trajectoryResolution = 10; // ?æ˜œ?è…”?î…îœ’
+    public float maxThrowForce = 20f; // éƒ”æ¹®èŠ˜î›’è–¯åƒ…
+    public float dragSensitivity = 10f; // è¿çé¦žé—åƒ…
+    public float initialVerticalSpeed = 10f; //?æ˜œ?ç ƒå¥»è©¢
+    public Image leftLimitArea; // é…˜è€œç™¹ç§¶ïž¥éƒ–
+    public Image rightLimitArea; // è¡µè€œç™¹ç§¶ïž¥éƒ–
 
     [SerializeField] Camera MyCam;
     public Camera RockCam => MyCam;
 
-    private Vector3 dragStartPos; // ÍÏÒ·Æðüc
-    private Vector3 dragEndPos; // ÍÏÒ·½Küc
-    private bool isDragging = false; // ÊÇ·ñÕýÔÚÍÏÒ·
+    private Vector3 dragStartPos; // è¿çïœ€î…
+    private Vector3 dragEndPos; // è¿ççšºî…
+    private bool isDragging = false; // å²†ç˜æ·å©“è¿ç
 
     void Start() {
         trajectoryLine.enabled = false;
@@ -44,7 +44,7 @@ public class TrainRockManager : MonoBehaviour {
     }
 
     void setCam() {
-        //Òòžé‘ðôYˆö¾°µÄ”zÓ°™CÓÐ·Öžéˆö¾°ÅcUI, Òª°Ñˆö¾°”zÓ°™CÔO¶¨žéBase, UIÔO¶¨žéOverlay, KÔÚBaseCameraÖÐ¼ÓÈëCamera stack
+        //ç§ªîµ¨î•¶æ«®ïŽ—åŠ“è…”î›¹èŒî§“è¡„ç…¦îµ¨ïŽ—åŠ“é·‚UI, çŒåƒïŽ—åŠ“î›¹èŒî§“åžéš…îµ¨Base, UIåžéš…îµ¨Overlay, î»ƒå©“BaseCameraç¬¢æ¨“ï µCamera stack
         UICam.Instance.SetRendererMode(CameraRenderType.Overlay);
         addCamStack(UICam.Instance.MyCam);
     }
@@ -70,7 +70,7 @@ public class TrainRockManager : MonoBehaviour {
                 isDragging = true;
                 dragStartPos = GetWorldPointFromStartMouse(touchPosition);
             } else {
-                Debug.Log("³¬³öˆDÆ¬¹ ‡ú~");
+                Debug.Log("é–‰å ¤ïŒ‡ïš¼?ï‹¾~");
             }
         } else if (Input.GetMouseButton(0) && isDragging) {
             Vector3 touchPosition = Input.mousePosition;
@@ -163,7 +163,7 @@ public class TrainRockManager : MonoBehaviour {
     }
     public void StartGame(int StartSec) {
         playing = true;
-        // é_Ê¼µ¹”µÓ‹•r
+        // å¶±å®Žçµ¦îœ’?îžŽ
         UniTask.Void(async () => {
             curLeftTime = StartSec;
             TrainRockSceneUI.Instance.SetCountdownImg(curLeftTime);
@@ -171,7 +171,7 @@ public class TrainRockManager : MonoBehaviour {
                 if (!playing) break;
                 await UniTask.Delay(1000);
                 curLeftTime--;
-                if (TrainRockSceneUI.Instance.CheckHP() <= 0) { 
+                if (TrainRockSceneUI.Instance.CheckHP() <= 0) {
                     endGame();
                     break;
                 }
@@ -182,7 +182,7 @@ public class TrainRockManager : MonoBehaviour {
     }
     void endGame() {
         playing = false;
-        PopupUI.ShowAttributeUI($"×î´óÑªÁ¿Ôö¼Ó{allAddHP}£¬Ä¿Ç°×î´óÑªÁ¿žé{TrainRockSceneUI.Instance.CheckMaxHP()}/s", restartGame);
+        //PopupUI.ShowAttributeUI($"éƒ”æ¹®æ‚›è¬›å´æ¨“{allAddHP}ã„›é†´ïéƒ”æ¹®æ‚›è¬›îµ¨{TrainRockSceneUI.Instance.CheckMaxHP()}/s", restartGame);
     }
 
     [SerializeField] Character characterPrefab;

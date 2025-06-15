@@ -39,7 +39,7 @@ namespace Gladiators.Cuisine {
             pSkills.Add(GameDictionary.GetJsonData<JsonSkill>(1006));
             pSkills.Add(GameDictionary.GetJsonData<JsonSkill>(1007));
             pSkills.Add(GameDictionary.GetJsonData<JsonSkill>(1008));
-            GainSkillUI.Instance.ShowUI(gainSkills, pSkills,1);
+            //GainSkillUI.Instance.ShowUI(gainSkills, pSkills,1);
         }
 
 

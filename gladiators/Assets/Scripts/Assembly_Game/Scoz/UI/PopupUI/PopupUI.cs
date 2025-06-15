@@ -170,29 +170,13 @@ namespace Scoz.Func {
         }
 
 
-        [HeaderAttribute("==============屬性上升彈窗==============")]
+        [HeaderAttribute("==============獲得道具彈窗==============")]
         [SerializeField]
-        GameObject AttributeUIGo = null;
-        [SerializeField]
-        Text AttributeUIText = null;
-        Action AttributeAction = null;
+        GainPropsUI MyGainPropsUI = null;
 
         void InitAttribueUI() {
-            AttributeUIGo.SetActive(false);
-        }
-
-        public static void ShowAttributeUI(string _text, Action _clickCancelAction) {
-            if (!Instance)
-                return;
-            Instance.AttributeUIGo.SetActive(true);
-            Instance.AttributeUIText.text = _text;
-            Instance.AttributeAction = _clickCancelAction;
-        }
-        public void OnClickAttributeUI() {
-            if (!Instance)
-                return;
-            Instance.AttributeUIGo.SetActive(false);
-            AttributeAction?.Invoke();
+            MyGainPropsUI.SetActive(false);
+            MyGainPropsUI.Init();
         }
 
 

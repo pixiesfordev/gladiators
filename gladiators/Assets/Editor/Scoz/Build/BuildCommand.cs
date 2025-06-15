@@ -12,53 +12,34 @@ using Unity.EditorCoroutines.Editor;
 namespace Scoz.Editor {
     public class BuildCommand {
 
-        private static string[] BuildScenes = { "Assets/Scenes/StartScene.unity", "Assets/Scenes/LobbyScene.unity", "Assets/Scenes/AdventrueScene.unity" };
+        private static string[] BuildScenes = { "Assets/Scenes/MainScene.unity" };
         private static string ANDROID_MANIFEST_PATH = "Assets/Plugins/Android/AndroidManifest.xml";
         static object owner = new System.Object();
 
-        private static IEnumerator BuildAssetBundleAsync(EnvVersion _version, Action callback) {
+        private static void BuildAssetBundleAsync(EnvVersion _version, Action callback) {
 
-            SwitchVersion.RunSwitchVersion(_version, result => {
-                if (!result) {
-                    Debug.LogError("RunSwitchVersion Failed.");
-                    callback?.Invoke();
-                    return;
-                } else {
-                    Debug.Log("Start Build Bundle EnvVersion: " + _version);
-                    AddressableAssetSettings.BuildPlayerContent(out AddressablesPlayerBuildResult buildResult);
-                    if (!string.IsNullOrEmpty(buildResult.Error)) {
-                        Debug.LogError("Build Bundle Error.");
-                        callback?.Invoke();
-                    }
-                    callback?.Invoke();
-                }
-
-            });
-            yield return null;
+            SwitchVersion.RunSwitchVersion(_version, "");
+            Debug.Log("Start Build Bundle EnvVersion: " + _version);
+            AddressableAssetSettings.BuildPlayerContent(out AddressablesPlayerBuildResult buildResult);
+            if (!string.IsNullOrEmpty(buildResult.Error)) {
+                Debug.LogError("Build Bundle Error.");
+                callback?.Invoke();
+            }
+            callback?.Invoke();
         }
 
-        private static IEnumerator UpdateAssetBundleAsync(EnvVersion _version, Action callback) {
-            SwitchVersion.RunSwitchVersion(_version, result => {
-
-                Debug.Log("Switch EnvVersion Success: " + result);
-                if (!result) {
-                    Debug.LogError("RunSwitchVersion Failed.");
-                    callback?.Invoke();
-                    return;
-                } else {
-                    Debug.Log("Start Build Bundle");
-                    var path = ContentUpdateScript.GetContentStateDataPath(false);
-                    if (!string.IsNullOrEmpty(path)) {
-                        Debug.Log("Update Bundle at path : " + path);
-                        ContentUpdateScript.BuildContentUpdate(AddressableAssetSettingsDefaultObject.Settings, path);
-                        callback?.Invoke();
-                    } else {
-                        Debug.LogError("ContentUpdateScript path is null.");
-                        callback?.Invoke();
-                    }
-                }
-            });
-            yield return null;
+        private static void UpdateAssetBundleAsync(EnvVersion _version, Action callback) {
+            SwitchVersion.RunSwitchVersion(_version, "");
+            Debug.Log("Start Build Bundle");
+            var path = ContentUpdateScript.GetContentStateDataPath(false);
+            if (!string.IsNullOrEmpty(path)) {
+                Debug.Log("Update Bundle at path : " + path);
+                ContentUpdateScript.BuildContentUpdate(AddressableAssetSettingsDefaultObject.Settings, path);
+                callback?.Invoke();
+            } else {
+                Debug.LogError("ContentUpdateScript path is null.");
+                callback?.Invoke();
+            }
 
         }
 
@@ -108,20 +89,8 @@ namespace Scoz.Editor {
                 return;
             }
             PlayerSettings.bundleVersion = version;
-            EditorCoroutine editorCoroutine = EditorCoroutineUtility.StartCoroutine(BuildAssetBundleAsync(envVersion, Close), owner);
+            BuildAssetBundleAsync(envVersion, Close);
         }
-        //        [MenuItem("Scoz/ForTest/BuildBundleWithArg_Test")]
-        //        public static void BuildBundleWithArg_Test() {
-        //            EnvVersion envVersion = EnvVersion.Dev;
-        //#if Dev
-        //            envVersion = EnvVersion.Dev;
-        //#elif Test
-        //               envVersion=EnvVersion.Test;
-        //#elif Release
-        //            envVersion = EnvVersion.Release;
-        //#endif
-        //            EditorCoroutine editorCoroutine = EditorCoroutineUtility.StartCoroutine(BuildAssetBundleAsync(envVersion, Close), owner);
-        //        }
 
         public static void UpdateBundleWithArg() {
             EditorSceneManager.OpenScene($"Assets/Scenes/" + MyScene.StartScene.ToString() + ".unity");
@@ -149,20 +118,8 @@ namespace Scoz.Editor {
                 return;
             }
             PlayerSettings.bundleVersion = version;
-            EditorCoroutine editorCoroutine = EditorCoroutineUtility.StartCoroutine(UpdateAssetBundleAsync(envVersion, Close), owner);
+            UpdateAssetBundleAsync(envVersion, Close);
         }
-        //        [MenuItem("Scoz/ForTest/UpdateBundleWithArg_Test")]
-        //        public static void UpdateBundleWithArg_Test() {
-        //            EnvVersion envVersion = EnvVersion.Dev;
-        //#if Dev
-        //            envVersion = EnvVersion.Dev;
-        //#elif Test
-        //               envVersion=EnvVersion.Test;
-        //#elif Release
-        //            envVersion = EnvVersion.Release;
-        //#endif
-        //            EditorCoroutine editorCoroutine = EditorCoroutineUtility.StartCoroutine(UpdateAssetBundleAsync(envVersion, null), owner);
-        //        }
         public static void BuildAPK() {
             string[] args = System.Environment.GetCommandLineArgs();
             EnvVersion envVersion = EnvVersion.Dev;
@@ -249,22 +206,6 @@ namespace Scoz.Editor {
             EditorCoroutineUtility.StartCoroutine(BuildAabAsync(envVersion, outputFileName, Close), owner);
         }
 
-        //[MenuItem("Scoz/ForTest/BuildAAB_Test")]
-        //public static void BuildAAB_Test() {
-        //    string[] args = System.Environment.GetCommandLineArgs();
-        //    EnvVersion envVersion = EnvVersion.Dev;
-        //    string version = "1.1.1";
-        //    string versionCode = "1";
-        //    string keyaliasPass = "amongus";
-        //    string keystorePass = "amongus";
-        //    string outputFileName = "../../TheDoor.aab";
-        //    Debug.LogFormat("輸出AAB位置: {0}", outputFileName);
-        //    PlayerSettings.bundleVersion = version;
-        //    PlayerSettings.Android.bundleVersionCode = int.Parse(versionCode);
-        //    PlayerSettings.keyaliasPass = keyaliasPass;
-        //    PlayerSettings.keystorePass = keystorePass;
-        //    EditorCoroutineUtility.StartCoroutine(BuildAabAsync(envVersion, outputFileName, null), owner);
-        //}
         private static void Close() {
             EditorApplication.Exit(0);
         }
@@ -279,18 +220,9 @@ namespace Scoz.Editor {
             PlayerSettings.Android.useAPKExpansionFiles = false;
             ModifyAndroidManifest.ModifyDebuggable(ANDROID_MANIFEST_PATH, true);
             //切換環境
-            SwitchVersion.RunSwitchVersion(envVersion, result => {
-
-                if (!result) {
-                    Debug.LogError("RunSwitchVersion Failed.");
-                    callback?.Invoke();
-                    return;
-                } else {
-                    BuildPipeline.BuildPlayer(BuildScenes, outputFileName, BuildTarget.Android, BuildOptions.None);
-                    callback?.Invoke();
-                }
-
-            });
+            SwitchVersion.RunSwitchVersion(envVersion, "");
+            BuildPipeline.BuildPlayer(BuildScenes, outputFileName, BuildTarget.Android, BuildOptions.None);
+            callback?.Invoke();
             yield return null;
         }
 
@@ -304,17 +236,9 @@ namespace Scoz.Editor {
             ModifyAndroidManifest.ModifyDebuggable(ANDROID_MANIFEST_PATH, false);
 
 
-            SwitchVersion.RunSwitchVersion(_envVersion, result => {
-
-                if (!result) {
-                    Debug.LogError("RunSwitchVersion Failed.");
-                    callback?.Invoke();
-                    return;
-                } else {
-                    BuildPipeline.BuildPlayer(BuildScenes, outputFileName, BuildTarget.Android, BuildOptions.None);
-                    callback?.Invoke();
-                }
-            });
+            SwitchVersion.RunSwitchVersion(_envVersion, "");
+            BuildPipeline.BuildPlayer(BuildScenes, outputFileName, BuildTarget.Android, BuildOptions.None);
+            callback?.Invoke();
             yield return null;
 
 
@@ -358,39 +282,11 @@ namespace Scoz.Editor {
                 Debug.LogError("BuildXcode發生錯誤: " + _e);
             }
         }
-        //        [MenuItem("Scoz/ForTest/BuildXcode_Test")]
-        //        public static void BuildXcode_Test() {
-        //            EnvVersion envVersion = EnvVersion.Dev;
-        //#if Dev
-        //            envVersion = EnvVersion.Dev;
-        //#elif Test
-        //               envVersion=EnvVersion.Test;
-        //#elif Release
-        //            envVersion = EnvVersion.Release;
-        //#endif
-        //            string outputFileName = "../../xcode_build";
-        //            Debug.LogFormat("輸出Xcode Project位置: {0}", outputFileName);
-        //            try {
-        //                EditorCoroutineUtility.StartCoroutine(BuildXcodeAsync(envVersion, outputFileName, null), owner);
-        //            } catch (Exception _e) {
-        //                Debug.LogError("BuildXcode發生錯誤: " + _e);
-        //            }
-        //        }
         private static IEnumerator BuildXcodeAsync(EnvVersion evnVersion, string outputFileName, Action callback) {
-            SwitchVersion.RunSwitchVersion(evnVersion, result => {
-
-                if (!result) {
-                    Debug.LogError("RunSwitchVersion Failed.");
-                    callback?.Invoke();
-                    return;
-                } else {
-                    Debug.Log("Start BuildXcodeAsync");
-                    BuildPipeline.BuildPlayer(BuildScenes, outputFileName, BuildTarget.iOS, BuildOptions.AcceptExternalModificationsToPlayer);
-
-                    callback?.Invoke();
-                }
-
-            });
+            SwitchVersion.RunSwitchVersion(evnVersion, "");
+            Debug.Log("Start BuildXcodeAsync");
+            BuildPipeline.BuildPlayer(BuildScenes, outputFileName, BuildTarget.iOS, BuildOptions.AcceptExternalModificationsToPlayer);
+            callback?.Invoke();
             yield return null;
         }
     }
