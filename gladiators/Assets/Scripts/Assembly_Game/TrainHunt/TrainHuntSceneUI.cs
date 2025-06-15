@@ -169,7 +169,6 @@ namespace Gladiators.TrainHunt {
         public void SetBossCharInfo(int maxHP, int bossID)
         {
             BossCharInfo.Init(maxHP, maxHP, bossID);
-            BossCharInfo.HideHP();
             MyBoss.InitHP(maxHP, maxHP);
         }
 
