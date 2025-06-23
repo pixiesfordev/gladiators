@@ -19,11 +19,6 @@ namespace Gladiators.Main {
 
         public static StartSceneUI Instance { get; private set; }
 
-        public enum SignInState {
-            DontHavePlayerID, // 沒有本地帳號紀錄
-            GotPlayerID, // 本地有帳號紀錄但還沒登入
-            LoginedIn,// 已登入
-        }
         protected override void SetInstance() {
             Instance = this;
         }
@@ -33,7 +28,7 @@ namespace Gladiators.Main {
         public override void RefreshText() {
         }
 
-        private void Start() {
+        private async void Start() {
             Init();
             // Apple登入要打開
 #if UNITY_IOS
@@ -41,30 +36,34 @@ namespace Gladiators.Main {
 #else
             Btn_AppleLogin.gameObject.SetActive(false);
 #endif
-            var state = getState();
-            showInfo();//顯示資訊
-            showBtnsByState(false, state);
 
             UniTask.Void(async () => {
+                showInfo();//顯示資訊
+                showBtnsByState(false);
                 // 取得遊戲狀態
-                var (_, successGetGameState) = await getGameState();
+                var (_, successGetGameState) = await GamePlayer.Instance.UpdateGameState();
                 if (successGetGameState == false) {
                     WriteLog.LogError("getGameState失敗");
                     return;
                 }
 
-                if (state == SignInState.GotPlayerID) {
+                if (GamePlayer.Instance.CurSignInState == GamePlayer.SignInState.GotPlayerID) {
                     // 登入
-                    var (_, successSignin) = await signin();
+                    var (_, successSignin) = await GamePlayer.Instance.Signin();
                     if (successSignin == false) {
                         WriteLog.LogError("signin失敗");
                         return;
                     }
                     showInfo();//顯示資訊
-                    await connectToLobby(); // 開始連線大廳
+                    bool successConnectToLobby = await GamePlayer.Instance.ConnectToLobby(); // 開始連線大廳
+                    if (successConnectToLobby == false) {
+                        WriteLog.LogError("successConnectToLobby失敗");
+                        return;
+                    }
                 }
+
 #if UNITY_EDITOR
-                showBtnsByState(true, state);
+                showBtnsByState(true);
 #else
             goLobby(); 
 #endif
@@ -72,91 +71,12 @@ namespace Gladiators.Main {
             });
         }
 
-        SignInState getState() {
-            SignInState state = SignInState.DontHavePlayerID;
-            WriteLog.Log($"PlayerID: {GamePlayer.Instance.PlayerID}");
-            if (string.IsNullOrEmpty(GamePlayer.Instance.PlayerID)) {
-                state = SignInState.DontHavePlayerID;
-            }
-            if (!string.IsNullOrEmpty(GamePlayer.Instance.PlayerID)) {
-                if (GamePlayer.Instance.GetDBData<DBPlayer>() == null) state = SignInState.GotPlayerID;
-                else state = SignInState.LoginedIn;
-            }
-            return state;
-        }
-
-        async UniTask<(DBPlayer, bool)> signin() {
-            if (string.IsNullOrEmpty(GamePlayer.Instance.PlayerID) &&
-                string.IsNullOrEmpty(GamePlayer.Instance.MyAuthType) &&
-                string.IsNullOrEmpty(GamePlayer.Instance.DeviceUID)) {
-                WriteLog.LogError($"signin傳入資料錯誤: PlayerID: {GamePlayer.Instance.PlayerID}  MyAuthType: {GamePlayer.Instance.MyAuthType}   DeviceUID: {GamePlayer.Instance.DeviceUID}");
-                return (null, false);
-            }
-
-            string authData = "";
-            AuthType authType;
-            if (!MyEnum.TryParseEnum(GamePlayer.Instance.MyAuthType, out authType))
-                return (null, false);
-
-            switch (authType) {
-                case AuthType.GUEST:
-                    authData = GamePlayer.Instance.DeviceUID;
-                    break;
-            }
-
-            var (dbPlayer, result) = await APIManager.Signin(
-                GamePlayer.Instance.PlayerID,
-                GamePlayer.Instance.MyAuthType,
-                authData,
-                Application.platform.ToString(),
-                GamePlayer.Instance.DeviceUID);
-
-            if (!result) {
-                WriteLog.LogError("APIManager.Signin失敗");
-                return (null, false);
-            }
-
-            GamePlayer.Instance.SigninSetPlayerData(dbPlayer, false);
-            return (dbPlayer, true);
-        }
-
-        /// <summary>
-        /// 取得遊戲狀態並寫入 GamePlayer
-        /// </summary>
-        async UniTask<(DBGameState, bool)> getGameState() {
-            var (dbGameState, result) = await APIManager.GameState();
-            if (!result) {
-                WriteLog.LogError("APIManager.GameState失敗");
-                return (null, false);
-            }
-
-            GamePlayer.Instance.SetDBData(dbGameState);
-            return (dbGameState, true);
-        }
 
 
-        public void goLobby() {
-            showBtnsByState(false, SignInState.LoginedIn);
-            //繞過正式流程
-            FirstTimeLaunchGame = false;
-            PopupUI.InitSceneTransitionProgress(0);
-            PopupUI.CallSceneTransition(MyScene.BattleSimulationScene);
-            return;
-
-            /// 根據是否能進行遊戲來執行各種狀態
-            /// 1. 判斷玩家版本，若版本低於最低遊戲版本則會跳強制更新
-            /// 2. 判斷玩家版本，若版本低於目前遊戲版本則會跳更新建議
-            /// 3. 判斷Maintain是否為true，若為true則不在MaintainExemptPlayerUIDs中的玩家都會跳維護中
-            /// 4. 判斷該玩家是否被Ban，不是才能進遊戲
-            GameStateManager.Instance.CheckCanPlayGame(() => {
-                FirstTimeLaunchGame = false;
-                PopupUI.InitSceneTransitionProgress(0, "LobbyUILoaded");
-                PopupUI.CallSceneTransition(MyScene.LobbyScene);
-            });
-        }
 
 
-        void showBtnsByState(bool _show, SignInState _state) {
+
+        void showBtnsByState(bool _show) {
             if (_show == false) {
                 Btn_Continue.gameObject.SetActive(false);
                 Btn_DeleteAC.gameObject.SetActive(false);
@@ -166,8 +86,8 @@ namespace Gladiators.Main {
                 Btn_Logout.gameObject.SetActive(false);
                 return;
             }
-            switch (_state) {
-                case SignInState.DontHavePlayerID:
+            switch (GamePlayer.Instance.CurSignInState) {
+                case GamePlayer.SignInState.DontHavePlayerID:
                     Btn_Continue.gameObject.SetActive(false);
                     Btn_DeleteAC.gameObject.SetActive(false);
                     Btn_GuestLogin.gameObject.SetActive(true);
@@ -175,7 +95,7 @@ namespace Gladiators.Main {
                     Btn_GoogleLogin.gameObject.SetActive(true);
                     Btn_Logout.gameObject.SetActive(false);
                     break;
-                case SignInState.LoginedIn:
+                case GamePlayer.SignInState.LoginedIn:
                     Btn_Continue.gameObject.SetActive(true);
                     Btn_DeleteAC.gameObject.SetActive(true);
                     Btn_GuestLogin.gameObject.SetActive(false);
@@ -235,40 +155,42 @@ namespace Gladiators.Main {
                     return;
             }
         }
-        async UniTask connectToLobby() {
-            var state = GamePlayer.Instance.GetDBData<DBGameState>();
-            string serverName = "Lobby";
-            await GameConnector.NewConnector(serverName, state.LobbyIP, state.LobbyPort, () => {
-                var connector = GameConnector.GetConnector(serverName);
-                if (connector != null) {
-                    AllocatedLobby.Instance.SetLobby(connector);
-                    AllocatedLobby.Instance.Auth();
-                }
-            }, AllocatedLobby.Instance.LeaveRoom);
-        }
 
-        /// <summary>
-        /// 登出帳戶，按下後會登出並顯示回需要登入狀態
-        /// </summary>
-        public void Logout() {
-            //PopupUI.ShowConfirmCancel(StringData.GetUIString("LogoutAccountCheck"), GameSettingData.GetInt(GameSetting.LogoutCowndownSecs), () => {
-            //    StartCoroutine(FirebaseManager.Logout(() => {//登出
-            //        ShowUI(Condietion.BackFromLobby_ShowLoginBtn);
-            //    }));
-            //}, null);
+        public void OnContinueClick() {
+            goLobby();
         }
-        /// <summary>
-        /// 移除帳戶，按下後會解除所有平台綁定並登出並顯示回需要登入狀態
-        /// </summary>
-        public void DeleteAccount() {
-            PopupUI.ShowConfirmCancel(JsonString.GetUIString("DeleteAccountCheck"), JsonGameSetting.GetInt(GameSetting.LogoutCowndownSecs), () => {
-                UnlinkAllPlatfromsAndLogout();
-            }, null);
+        public void goLobby() {
+            showBtnsByState(false);
+            //繞過正式流程
+            FirstTimeLaunchGame = false;
+            PopupUI.InitSceneTransitionProgress(0);
+            PopupUI.CallSceneTransition(MyScene.LobbyScene);
+            return;
+
+            /// 根據是否能進行遊戲來執行各種狀態
+            /// 1. 判斷玩家版本，若版本低於最低遊戲版本則會跳強制更新
+            /// 2. 判斷玩家版本，若版本低於目前遊戲版本則會跳更新建議
+            /// 3. 判斷Maintain是否為true，若為true則不在MaintainExemptPlayerUIDs中的玩家都會跳維護中
+            /// 4. 判斷該玩家是否被Ban，不是才能進遊戲
+            GameStateManager.Instance.CheckCanPlayGame(() => {
+                FirstTimeLaunchGame = false;
+                PopupUI.InitSceneTransitionProgress(0, "LobbyUILoaded");
+                PopupUI.CallSceneTransition(MyScene.LobbyScene);
+            });
+        }
+        public void OnLogoutClick() {
+        }
+        void logout() {
+        }
+        public void OnDeleteACClick() {
+        }
+        void deleteAC() {
+            //UnlinkAllPlatfromsAndLogout
         }
         /// <summary>
         /// 遞迴解綁所有平台並登出帳戶
         /// </summary>
-        void UnlinkAllPlatfromsAndLogout() {
+        void unlinkAllPlatfromsAndLogout() {
             //if (FirebaseManager.IsLinkingAnyThirdPart) {
             //    if (FirebaseManager.IsLinkingThrdPart(ThirdPartLink.Facebook)) {//還沒綁定就進行綁定
             //        PopupUI.ShowLoading(StringData.GetUIString("UnLinkingFB"));
@@ -303,7 +225,7 @@ namespace Gladiators.Main {
             //    }));
             //}
         }
-        void FBAuth() {
+        void fbAuth() {
             //PopupUI.ShowLoading(string.Format("Loading"));
             //FirebaseManager.SignInWithFacebook(result => {
             //    PopupUI.HideLoading();
@@ -315,7 +237,7 @@ namespace Gladiators.Main {
             //});
         }
 
-        void AppleAuth() {
+        void appleAuth() {
             //PopupUI.ShowLoading(string.Format("Loading"));
             //FirebaseManager.SignInWithApple(result => {
             //    PopupUI.HideLoading();
@@ -326,7 +248,7 @@ namespace Gladiators.Main {
             //    }
             //});
         }
-        void GoogleAuth() {
+        void googleAuth() {
             //PopupUI.ShowLoading(string.Format("Loading"));
             //FirebaseManager.SignInWithGoogle(result => {
             //    PopupUI.HideLoading();
@@ -343,7 +265,7 @@ namespace Gladiators.Main {
         /// <summary>
         /// 三方登入驗證完成跑這裡
         /// </summary>
-        void OnThirdPartAuthFinished(AuthType _authType) {
+        void onThirdPartAuthFinished(AuthType _authType) {
             // 通知分析註冊完成事件
             GameManager.Instance.OnAuthFinished(_authType);
         }
@@ -352,7 +274,7 @@ namespace Gladiators.Main {
         /// <summary>
         /// 使用者條款
         /// </summary>
-        public void OnTermsOfUseClick() {
+        void onTermsOfUseClick() {
             //PopupUI.ShowLoading(StringData.GetUIString("Loading"));
             //FirebaseManager.GetDataByDocID(ColEnum.GameSetting, "BackendURL", (col, dic) => {
             //    PopupUI.HideLoading();
@@ -368,7 +290,7 @@ namespace Gladiators.Main {
         /// <summary>
         /// 隱私權條款
         /// </summary>
-        public void OnProtectionPolicyClick() {
+        public void onProtectionPolicyClick() {
             //PopupUI.ShowLoading(StringData.GetUIString("Loading"));
             //FirebaseManager.GetDataByDocID(ColEnum.GameSetting, "BackendURL", (col, dic) => {
             //    PopupUI.HideLoading();
@@ -383,24 +305,6 @@ namespace Gladiators.Main {
 
         public void OnClearBundleClick() {
             AddressableManage.Instance.ReDownload();
-        }
-
-        public void OnQuestReportButtonClick() {
-
-            //PopupUI.ShowLoading(StringData.GetUIString("Loading"));
-            //string version = Application.version;
-            //FirebaseManager.GetDataByDocID(ColEnum.GameSetting, "BackendURL", (col, dic) => {
-            //    PopupUI.HideLoading();
-            //    string backendAddress = dic[BackendURLType.BackendAddress.ToString()].ToString();
-            //    string customerServiceURL = dic[BackendURLType.CustomerServiceURL.ToString()].ToString();
-            //    string uid = FirebaseManager.MyUser?.UserId ?? "";
-            //    string addUserURL = string.Format(customerServiceURL, version, uid);
-            //    string showURL = string.Concat(backendAddress, addUserURL);
-            //    WriteLog.Log($"[OnQuestReportButtonClick] showURL = {showURL}, version={version}, uid={uid}");
-            //    Rect rect = new Rect(0, 0, Screen.width, Screen.height);
-            //    WebViewManager.Inst.ShowWebview(showURL, rect);
-            //});
-
         }
     }
 }

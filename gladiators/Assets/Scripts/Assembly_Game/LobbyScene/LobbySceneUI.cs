@@ -4,27 +4,19 @@ using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Gladiators.Socket;
+using Gladiators.Battle;
 
 namespace Gladiators.Main {
 
     public class LobbySceneUI : BaseUI {
-
-        public enum LobbyUIs {
-            Lobby,//預設介面
-            Map,//地圖介面
-            Hero,//英雄介面
-        }
-        public Dictionary<LobbyUIs, BaseUI> UIs = new Dictionary<LobbyUIs, BaseUI>();
-        public LobbyUIs CurUI { get; private set; } = LobbyUIs.Lobby;
-        public BaseUI LastPopupUI { get; private set; }//紀錄上次的彈出介面(切介面時要關閉上次的彈出介面)
-
-        static bool FirstEnterLobby = true;//第一次進入大廳後會設定回false 用來判斷是否第一次進入大廳而做判斷
-
+        [SerializeField] LobbyManager Prefab_LobbyManager;
+        [SerializeField] CurrencyUI MyCurrencyUI;
+        [SerializeField] RouletteController MyRouletteController;
 
         public static LobbySceneUI Instance { get; private set; }
 
+        DBPlayer myDBPlayer;
 
-        //進遊戲不先初始化，等到要用時才初始化的UI放這裡
 
         private void Start() {
             Init();
@@ -37,44 +29,53 @@ namespace Gladiators.Main {
 
         public override void Init() {
             base.Init();
+            UniTask.Void(async () => {
+                if (await setDBPlayer() == false) {
+                    WriteLog.LogError("玩家尚未登入");
+                    return;
+                }
+                spawnLobbyManager();
+                updateCurrencyUI();
+                MyRouletteController.Init();
+                MyRouletteController.SetRoulette(LobbyManager.Instance.MyRoulette);
+            });
 
-            var dbPlayer = GamePlayer.Instance.GetDBData<DBPlayer>();
-            if (dbPlayer == null) {//尚無登入帳戶
-                PopupUI.ShowLoading("玩家尚未登入 要先登入才能從Lobby開始遊戲");
-                WriteLog.LogError("玩家尚未登入Realm 要先登入Realm才能從Lobby開始遊戲");
-                return;
-            }
-
-            SwitchUI(LobbyUIs.Lobby);
         }
 
-        void CloseUIExcept(LobbyUIs _exceptUI) {
-            foreach (var key in UIs.Keys) {
-                UIs[key].SetActive(key == _exceptUI);
+        async UniTask<bool> setDBPlayer() {
+            if (GamePlayer.Instance.CurSignInState == GamePlayer.SignInState.DontHavePlayerID) return false;
+            if (GamePlayer.Instance.CurSignInState == GamePlayer.SignInState.LoginedIn) return true;
+
+#if UNITY_EDITOR
+            // 取得遊戲狀態
+            var (_, successGetGameState) = await GamePlayer.Instance.UpdateGameState();
+            if (successGetGameState == false) {
+                WriteLog.LogError("getGameState失敗");
+                return false;
             }
+            // 登入
+            var (_, successSignin) = await GamePlayer.Instance.Signin();
+            if (successSignin == false) {
+                WriteLog.LogError("signin失敗");
+                return false;
+            }
+            myDBPlayer = GamePlayer.Instance.GetDBData<DBPlayer>();
+            await GamePlayer.Instance.ConnectToLobby(); // 開始連線大廳
+#else
+            return false;
+#endif
+            return true;
         }
 
-        public void SwitchUI(LobbyUIs _ui, Action _cb = null) {
-
-            if (LastPopupUI != null)
-                LastPopupUI.SetActive(false);//關閉彈出介面
-
-            CloseUIExcept(_ui);//打開目標UI關閉其他UI
-
-            switch (_ui) {
-                case LobbyUIs.Lobby://本來在其他介面時，可以傳入Lobby來關閉彈出介面並顯示回預設介面
-                    _cb?.Invoke();
-                    LastPopupUI = null;
-                    break;
-                case LobbyUIs.Map:
-                    _cb?.Invoke();
-                    //LastPopupUI = MyMapUI;
-                    break;
-                case LobbyUIs.Hero:
-                    //LastPopupUI = MyHeroUI;
-                    break;
-            }
+        void updateCurrencyUI() {
+            MyCurrencyUI.SetImg(myDBPlayer.Gold);
         }
+
+        void spawnLobbyManager() {
+            var go = Instantiate(Prefab_LobbyManager);
+            go.GetComponent<LobbyManager>().Init();
+        }
+
 
     }
 }

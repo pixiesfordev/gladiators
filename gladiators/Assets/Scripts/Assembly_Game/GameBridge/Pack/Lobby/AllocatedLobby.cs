@@ -57,7 +57,7 @@ namespace Gladiators.Main {
         /// <summary>
         /// 清空配對房間(AllocatedRoom)資訊
         /// </summary>
-        public void clearRoom() {
+        void clear() {
             stopPingLoop();
             connector.Disconnect();
             WriteLog.LogColorFormat("清空大廳(AllocatedLobby)資訊: {0}", WriteLog.LogType.Debug, DebugUtils.ObjToStr(Instance));
@@ -123,6 +123,7 @@ namespace Gladiators.Main {
                             handleAuth(authPacket);
                             break;
                         case SocketContent.LobbyCMD_TCP.PING_TOCLIENT:
+                            //WriteLog.LogColor($"收到PING_TOCLIENT: {_msg}", WriteLog.LogType.Connection);
                             var pingPacket = LitJson.JsonMapper.ToObject<SocketCMD<PING_TOCLIENT>>(_msg);
                             handlerPing(pingPacket);
                             break;
@@ -213,9 +214,9 @@ namespace Gladiators.Main {
             var cmd = new SocketCMD<AUTH>(new AUTH(dbPlayer.ConnToken));
             connector.Send(cmd);
         }
-        public void LeaveRoom() {
+        public void Leave() {
             WriteLog.LogColor($"呼叫離開 Lobby Server", WriteLog.LogType.Connection);
-            clearRoom();
+            clear();
         }
         /// <summary>
         /// 開始配對

@@ -24,6 +24,7 @@ namespace Gladiators.Main {
         public override void LoadLocoData() {
             base.LoadLocoData();
             LoadAllDataFromLoco();
+            updateSignInState();
         }
 
         /// <summary>

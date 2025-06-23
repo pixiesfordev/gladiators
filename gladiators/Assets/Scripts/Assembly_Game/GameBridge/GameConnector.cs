@@ -16,34 +16,55 @@ namespace Gladiators.Main {
         static Dictionary<string, GameConnector> tcpClients = new Dictionary<string, GameConnector>();
         static HashSet<string> connectings = new HashSet<string>();
 
-        public static async UniTask NewConnector(string _name, string _ip, int _port, Action _onConnectedAc, Action _onDisconnectedAc) {
+        public static async UniTask<bool> NewConnector(
+            string _name,
+            string _ip,
+            int _port,
+            Action _onConnectedAc,
+            Action _onDisconnectedAc) {
             WriteLog.LogColor($"建立 {_name} 連線 Ip: {_ip} Port: {_port}", WriteLog.LogType.Connection);
-            var connector = new GameConnector();
+
+            // 名稱已存在
             if (tcpClients.ContainsKey(_name)) {
                 WriteLog.LogError($"嘗試連線已連線中的Server({_name})");
-                return;
+                return false;
             }
+
+            // 已在連線中
             if (connectings.Contains(_name)) {
                 WriteLog.LogError($"嘗試連線，目前正在連線中的Server({_name})，可能是重複呼叫了");
-                return;
+                return false;
             }
+
             connectings.Add(_name); // 加入連線中的Server清單，在連線成功/失敗之後才會移除，否則會判斷為錯誤呼叫了重複的連線
-            connector.Name = _name;
-            connector.tcpClient = new TcpClientManager();
+
+            var connector = new GameConnector {
+                Name = _name,
+                tcpClient = new TcpClientManager()
+            };
             connector.tcpClient.OnConnected = () => connector.onConnectedToMatchGame(connector);
             connector.tcpClient.OnDisconnected = () => connector.onDisconnectedToMatchGame(connector);
             connector.tcpClient.OnPacketReceived += connector.receive;
+
             if (_onConnectedAc != null) connector.onConnectedActions += _onConnectedAc;
             if (_onDisconnectedAc != null) connector.onDisconnectedActions += _onDisconnectedAc;
-            // 連線到伺服器
+
             try {
+                // 連線到伺服器
                 await connector.tcpClient.ConnectAsync(_ip, _port);
+                // 連線成功時
+                return true;
             } catch (Exception ex) {
                 WriteLog.LogError($"連線到伺服器 {_name} 時失敗: {ex.Message}");
+                // 如有需要也可以把 tcpClient 設為 null
                 connector.tcpClient = null;
-                return;
+                return false;
+            } finally {
+                // 不論成功或失敗，都移除「連線中」狀態
+                connectings.Remove(_name);
             }
         }
+
         public void RegisterOnPacketReceived(Action<string> _ac) {
             if (!tcpClient.IsConnected) {
                 WriteLog.LogError($" RegisterOnPacketReceived 失敗，因為尚未連線到伺服器 {Name}");

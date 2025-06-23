@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
 using Scoz.Func;
+using UnityEngine;
 
 
 namespace Gladiators.Main {
@@ -97,6 +98,8 @@ namespace Gladiators.Main {
             [JsonProperty("data")]
             public DBPlayer MyDBPlayer;
         }
+
+
 
         public static async UniTask<(DBPlayer, bool)> Signin(string _playerID, string _authType, string _authData, string _deviceType, string _deviceUID) {
             string url = domain + "/game/signin";
