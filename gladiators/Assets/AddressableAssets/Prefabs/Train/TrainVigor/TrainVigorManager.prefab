@@ -154,8 +154,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1319819644794970777}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.49123785, y: 0.000000016323005, z: -0.0000000061915366, w: 0.87102556}
-  m_LocalPosition: {x: 0.94, y: 51.5, z: -32.3}
+  m_LocalRotation: {x: 0.32286406, y: 0.42915988, z: -0.16759063, w: 0.826737}
+  m_LocalPosition: {x: -6.1566043, y: 5.8654923, z: -4.0909033}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -194,7 +194,7 @@ Camera:
     height: 1
   near clip plane: 0.1
   far clip plane: 5000
-  field of view: 22
+  field of view: 50
   orthographic: 0
   orthographic size: 10
   m_Depth: -1
@@ -757,6 +757,11 @@ MonoBehaviour:
   LeftSecsToLevel2: 20
   MaxAddRegenVigor: 0.2
   CharDiePosY: -10
+  SpineAnis_Hand:
+  - {fileID: 7557554540501661661}
+  - {fileID: 3406261052632025093}
+  - {fileID: 3634512977650409910}
+  - {fileID: 691855949382889074}
   MobileControl: 0
 --- !u!1 &3310195231849763662
 GameObject:

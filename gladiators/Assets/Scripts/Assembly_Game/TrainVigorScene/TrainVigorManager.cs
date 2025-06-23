@@ -3,8 +3,10 @@ using Gladiators.Battle;
 using Gladiators.Hunt;
 using Gladiators.Main;
 using Scoz.Func;
+using Spine.Unity;
 using System;
 using System.Collections.Generic;
+using Unity.Entities.UniversalDelegates;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
@@ -20,6 +22,7 @@ namespace Gladiators.TrainVigor {
         [SerializeField] int LeftSecsToLevel2; // 剩餘幾秒時進入Level2的冰球旋轉
         [SerializeField] float MaxAddRegenVigor;
         [SerializeField] float CharDiePosY; // 腳色Y軸低於多少算遊戲失敗
+        [SerializeField] SkeletonAnimation[] SpineAnis_Hand; // 轉球的手(Spine檔案)
 
         [SerializeField] public bool MobileControl;
         UltimateJoystick joyStick;
@@ -29,6 +32,8 @@ namespace Gladiators.TrainVigor {
 
         public void Init() {
             Instance = this;
+            playing = false;
+            playHands(false);
             setCam();//設定攝影機模式
             setInit();
             setChar();
@@ -78,9 +83,16 @@ namespace Gladiators.TrainVigor {
             TrainVigorSceneUI.Instance.ShowCountingdown(false);
             StartGame();
         }
+        void playHands(bool _play) {
+            for (int i = 0; i < SpineAnis_Hand.Length; i++) {
+                if (_play) SpineAnis_Hand[i].state.TimeScale = 1f;
+                else SpineAnis_Hand[i].state.TimeScale = 0f;
+            }
+        }
         public void StartGame() {
             MyPlatform.SetLevel(0);
             playing = true;
+            playHands(true);
             MyPlatform.ResetPlatform();
             Char.ResetChar();
             MyPlatform.StartRotate();
@@ -106,6 +118,7 @@ namespace Gladiators.TrainVigor {
         }
         void endGame() {
             playing = false;
+            playHands(false);
             MyPlatform.StopRotate();
             MySpawner.StopShoot();
             float addVigorGen = MaxAddRegenVigor * ((float)(StartCountDownSec - curLeftTime) / (float)StartCountDownSec);
