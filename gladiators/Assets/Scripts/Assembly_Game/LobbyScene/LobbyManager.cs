@@ -19,14 +19,15 @@ namespace Gladiators.Main {
             setCam();//設定攝影機模式
         }
         void setTestTotems() {
-            MyTotemPole.SetTotems(new List<Totem>() { Totem.Battle, Totem.Destiny, Totem.Camp });
+            var totmes = new List<Totem>() { Totem.Trial, Totem.Camp, Totem.Battle, Totem.Destiny, Totem.Trial, Totem.Battle, Totem.Boss };
+            MyTotemPole.SetTotems(totmes);
             var totemSymbols = new Dictionary<int, Totem> {
                 [0] = Totem.Battle,
                 [1] = Totem.Destiny,
-                [2] = Totem.Trial,
-                [3] = Totem.Camp,
-                [4] = Totem.Destiny,
-                [5] = Totem.Camp
+                [2] = Totem.Camp,
+                [3] = Totem.Trial,
+                [4] = Totem.Battle,
+                [5] = Totem.Battle,
             };
             MySymbolSpawner.SetTotems(totemSymbols);
         }
@@ -45,5 +46,9 @@ namespace Gladiators.Main {
             cameraData.cameraStack.Add(_cam);
         }
 
+        public void PutNextTotemOnRoulette(int _idx) {
+            var totme = MyTotemPole.TakeAwayNextTotem();
+            MySymbolSpawner.ChangeToken(_idx, totme);
+        }
     }
 }

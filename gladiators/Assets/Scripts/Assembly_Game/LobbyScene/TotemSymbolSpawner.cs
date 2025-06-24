@@ -23,7 +23,8 @@ namespace Gladiators.Main {
             }
         }
         public void ChangeToken(int _idx, Totem _totem) {
-            Destroy(Totems[_idx]);
+            WriteLog.Log(Totems[_idx]);
+            Destroy(Totems[_idx].gameObject);
             var dir = getTotemDir(_idx);
             var pos = getTotemPos(dir);
             Quaternion quaternion = Quaternion.LookRotation(-dir, Vector3.up);

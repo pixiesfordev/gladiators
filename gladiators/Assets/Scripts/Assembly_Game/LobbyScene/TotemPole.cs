@@ -1,4 +1,3 @@
-using Cysharp.Threading.Tasks;
 using Scoz.Func;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,22 +8,27 @@ namespace Gladiators.Main {
         Trial,
         Destiny,
         Camp,
+        Boss,
     }
     public class TotemPole : MonoBehaviour {
         [SerializeField] GameObject[] Prefab_Totem;
         [SerializeField] Transform TotemParent;
-        [SerializeField] Transform DefaultTotme;
-        [SerializeField] float TotemHeight; // 一個圖騰的高度
-        [SerializeField] Vector3 DropPos; // 新圖騰掉落位置
-        [SerializeField] float DefaultTotmeMoveDuration; // 初始圖騰向下移動速度
+        [SerializeField] Vector3 Pos_TotemPole; // 圖騰柱底部位置，圖騰產生位置是基於這個位置
+        [SerializeField] float TotemHeight; // 圖騰高度
+        [SerializeField] float DropHeight; // 掉落額外高度
 
         List<TotemPrefab> Totems = new List<TotemPrefab>();
-        Vector3 defaultTotmePos;
 
-        public void Init() {
-            defaultTotmePos = DefaultTotme.localPosition;
+        /// <summary>
+        /// 新圖騰產生位置是基於圖騰柱底部+圖騰高度*目前圖騰數量+掉落額外高度
+        /// </summary>
+        Vector3 nextTotemPos {
+            get {
+                float addTotemHeight = TotemHeight * Totems.Count + DropHeight;
+                Vector3 pos = new Vector3(Pos_TotemPole.x, Pos_TotemPole.y + addTotemHeight, Pos_TotemPole.z);
+                return pos;
+            }
         }
-
 
         GameObject getTotemPrefab(Totem _totme) {
             if ((int)_totme >= Prefab_Totem.Length) {
@@ -48,13 +52,19 @@ namespace Gladiators.Main {
                 WriteLog.LogError("AddTotem 失敗");
                 return;
             }
-            var newTotemGO = Instantiate<GameObject>(prefab, DropPos, Quaternion.identity, TotemParent);
+            var newTotemGO = Instantiate<GameObject>(prefab, nextTotemPos, Quaternion.identity, TotemParent);
             var totem = newTotemGO.GetComponent<TotemPrefab>();
             Totems.Add(totem);
-            //moveDefaultTotem(Totems.Count);
         }
-        //UniTask moveDefaultTotem(int _pos) {
-        //    // 將 DefaultTotme Y軸從 defaultTotmePos-(_pos-1)*TotemHeight 移動到 defaultTotmePos-(_pos)*TotemHeight 的位置 並在DefaultTotmeMoveDuration秒數內完成移動
-        //}
+
+        /// <summary>
+        /// 取得下一個圖騰並移除
+        /// </summary>
+        public Totem TakeAwayNextTotem() {
+            var totem = Totems[0].TotemType;
+            Destroy(Totems[0].gameObject);
+            Totems.RemoveAt(0);
+            return totem;
+        }
     }
 }

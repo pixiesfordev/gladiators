@@ -306,6 +306,7 @@ MonoBehaviour:
   - {fileID: 6619179076643979580, guid: 19577c849e6f6d4418f235e0225b5cbf, type: 3}
   - {fileID: 504085541547682666, guid: b44f17779d6d1da499ccef5f561db652, type: 3}
   - {fileID: 2463047281116058327, guid: c97962d3062dc7f47bfc85a01e8764c7, type: 3}
+  - {fileID: 6619179076643979580, guid: 6f489d43dc6fc834ca4352b654659c1b, type: 3}
   Trans_Parent: {fileID: 6379373594611667383}
   Radius: 2.5
   StartAngle: 190
@@ -358,10 +359,11 @@ MonoBehaviour:
   - {fileID: 6619179076643979580, guid: 75e3f957d97f4da4f96e1b31aee801d5, type: 3}
   - {fileID: 504085541547682666, guid: cffcf94c1c4d40a4185b1b8a79f639f8, type: 3}
   - {fileID: 2463047281116058327, guid: 2995a9f6280bbe14bbc30bad8da3eed1, type: 3}
+  - {fileID: 4038130655195863299, guid: 30373164d9dfda74c825ae2e885ee3d9, type: 3}
   TotemParent: {fileID: 5896043132217224323}
   Pos_TotemPole: {x: 0, y: 0, z: 0}
   TotemHeight: 1
-  DropHeight: 0.5
+  DropHeight: 3
 --- !u!1 &3304480409000168319
 GameObject:
   m_ObjectHideFlags: 0
@@ -819,6 +821,7 @@ MonoBehaviour:
   waitBeforeSnap: 0.3
   snapDuration: 0.3
   snapEase: 27
+  segmentDegree: 60
 --- !u!64 &4085396824758241559
 MeshCollider:
   m_ObjectHideFlags: 0

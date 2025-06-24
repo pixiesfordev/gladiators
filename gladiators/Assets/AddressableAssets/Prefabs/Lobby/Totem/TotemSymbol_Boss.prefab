@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 8532153837768122}
   - component: {fileID: 7326939118713663527}
   - component: {fileID: 8594221246169123711}
-  - component: {fileID: 978270543415979102}
+  - component: {fileID: -379019225750439939}
   m_Layer: 9
-  m_Name: TotemSumbol_Trial
+  m_Name: TotemSymbol_Boss
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -62,7 +62,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 763624c3df384a4499a00ed6eceb7800, type: 2}
+  - {fileID: 2100000, guid: d11b8b38b2c28ad48bcb61914650ddf3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -84,7 +84,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &978270543415979102
+--- !u!114 &-379019225750439939
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -93,7 +93,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6619179076643979580}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ff8e5b4c46c66f144aac7151c500b2c1, type: 3}
+  m_Script: {fileID: 11500000, guid: 9a66b23fe24e5544d80d5f086534153f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TotemType: 1
+  TotemType: 4

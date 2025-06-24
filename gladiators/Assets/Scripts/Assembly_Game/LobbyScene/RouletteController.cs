@@ -1,3 +1,5 @@
+using Scoz.Func;
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -42,7 +44,7 @@ namespace Gladiators.Main {
                         _startTime = Time.time;
                     }
                 } else if (t.phase == TouchPhase.Ended && _validStart) {
-                    TrySpin(t.position, Time.time - _startTime);
+                    TrySpin(t.position, Time.time - _startTime, onEndSpin);
                     _validStart = false;
                 }
             }
@@ -55,12 +57,12 @@ namespace Gladiators.Main {
                     _startTime = Time.time;
                 }
             } else if (Input.GetMouseButtonUp(0) && _validStart) {
-                TrySpin((Vector2)Input.mousePosition, Time.time - _startTime);
+                TrySpin((Vector2)Input.mousePosition, Time.time - _startTime, onEndSpin);
                 _validStart = false;
             }
         }
 
-        private void TrySpin(Vector2 endPos, float deltaTime) {
+        private void TrySpin(Vector2 endPos, float deltaTime, Action<int> _ac) {
             Vector2 delta = endPos - _startPos;
             float dist = delta.magnitude;
             if (dist < minDragDistance || deltaTime <= 0f) return;
@@ -78,8 +80,13 @@ namespace Gladiators.Main {
 
             if (roulette != null) {
                 roulette.Init();
-                roulette.StartSpin(-angVel);
+                roulette.StartSpin(-angVel, _ac);
             }
+        }
+
+        void onEndSpin(int _idx) {
+            WriteLog.Log($"旋轉結果 _idx: {_idx}");
+            LobbyManager.Instance.PutNextTotemOnRoulette(_idx);
         }
     }
 }

@@ -39,7 +39,6 @@ namespace Gladiators.Main {
                 MyRouletteController.Init();
                 MyRouletteController.SetRoulette(LobbyManager.Instance.MyRoulette);
             });
-
         }
 
         async UniTask<bool> setDBPlayer() {
@@ -75,7 +74,6 @@ namespace Gladiators.Main {
             var go = Instantiate(Prefab_LobbyManager);
             go.GetComponent<LobbyManager>().Init();
         }
-
 
     }
 }

@@ -3,6 +3,7 @@ using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using System;
 using System.Threading;
+using Scoz.Func;
 
 namespace Gladiators.Main {
     public class Roulette : MonoBehaviour {
@@ -21,6 +22,8 @@ namespace Gladiators.Main {
         public float snapDuration = 0.3f;
         [Tooltip("彈回曲線")]
         public Ease snapEase = Ease.OutBack;
+        [Tooltip("一個圖騰佔用角度(要能整除360)")]
+        public float segmentDegree = 60f;
 
         // 內部狀態
         private bool _isSpinning;
@@ -28,9 +31,14 @@ namespace Gladiators.Main {
         private float _accumulatedY;         // 累計角度，可超過360
         private CancellationTokenSource _cts;
 
+        Action<int> AC_ResultIdx;
+
         public void Init() {
             _cts?.Cancel();
             _cts = new CancellationTokenSource();
+            if (360 % segmentDegree != 0) {
+                WriteLog.LogError($"segmentDegree 設定錯誤{segmentDegree} 要能整除360");
+            }
 
             _accumulatedY = transform.eulerAngles.y;
             _angularVelocity = 0f;
@@ -39,7 +47,7 @@ namespace Gladiators.Main {
             transform.DOKill();
         }
 
-        public void StartSpin(float initialAngularVelocity) {
+        public void StartSpin(float initialAngularVelocity, Action<int> _ac) {
             _cts?.Cancel();
             transform.DOKill();
             _isSpinning = false;
@@ -47,6 +55,7 @@ namespace Gladiators.Main {
             _cts = new CancellationTokenSource();
             _angularVelocity = initialAngularVelocity;
             _isSpinning = true;
+            AC_ResultIdx = _ac;
         }
 
         private async void Update() {
@@ -85,8 +94,8 @@ namespace Gladiators.Main {
                     return;
                 }
 
-                // 6. 計算最接近 60° 倍數
-                float snapAngle = Mathf.Round(_accumulatedY / 60f) * 60f;
+                // 6. 計算最接近 segmentDegree 度數的倍數
+                float snapAngle = Mathf.Round(_accumulatedY / segmentDegree) * segmentDegree;
                 float delta = snapAngle - _accumulatedY;
 
                 // 7. 彈回卡位 Tween
@@ -101,6 +110,13 @@ namespace Gladiators.Main {
                 try {
                     await tcs.Task.AttachExternalCancellation(token);
                     _accumulatedY = snapAngle;
+
+                    // 8. 計算並回傳所在區段的 index（絕對對應盤面，不計圈數）
+                    //    把 _accumulatedY 限制到 [0,360) 範圍
+                    float norm = (_accumulatedY % 360f + 360f) % 360f;
+                    //    分段：0~(segmentDegree) → idx=0，(segmentDegree)~2*segmentDegree → idx=1…
+                    int resultIdx = Mathf.FloorToInt(norm / segmentDegree);
+                    AC_ResultIdx?.Invoke(resultIdx);
                 } catch (OperationCanceledException) {
                     // 新的 StartSpin 或 StopSpin 取消
                 }

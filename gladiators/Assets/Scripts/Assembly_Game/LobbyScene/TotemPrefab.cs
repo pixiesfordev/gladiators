@@ -4,6 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 namespace Gladiators.Main {
     public class TotemPrefab : MonoBehaviour {
-        [SerializeField] Totem TotemType;
+        [SerializeField] public Totem TotemType;
     }
 }
