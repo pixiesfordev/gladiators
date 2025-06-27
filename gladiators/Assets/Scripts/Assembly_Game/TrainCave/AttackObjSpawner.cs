@@ -7,10 +7,15 @@ using UnityEngine;
 namespace Gladiators.TrainCave {
     public class AttackObjSpawner : MonoBehaviour {
         [SerializeField] AttackObj projectilePrefab;  // 子彈預置物
+        [SerializeField] AttackMagicObj magicProjectile;
+        [SerializeField] AttackPhysicsObj physicsProjectile;
+        
         [SerializeField] Transform Trans_Target;       // 目標 (玩家) Transform
-        [SerializeField] float spawnRadius = 8f;       // 生成子彈時，距離目標的半徑
         [SerializeField] MinMaxF spawnInterval;        // 幾秒生成一次子彈 (隨機範圍)
         [SerializeField] float speed = 10f;            // 子彈速度
+
+        [Tooltip("只產生物理攻擊")][SerializeField] bool OnlyPhy;
+        [Tooltip("只產生魔法攻擊")][SerializeField] bool OnlyMag;
 
         bool shooting = false;
 
@@ -35,27 +40,52 @@ namespace Gladiators.TrainCave {
             }
         }
 
+        //TODO:修改產生邏輯 魔法類攻擊要特別處理 要把產生邏輯直接寫在繼承AttackObj的Class底下的物件
+
         /// <summary>
         /// 生成一顆子彈並射向目標 (2D 用)
         /// </summary>
         void spawnProjectile() {
             float angle = Random.Range(0f, Mathf.PI);
 
+            //挑選子彈種類 之後看遊戲有幾種子彈值就取多少
+            int rand = Random.Range(0, 2);
+            //int rand = 2;
+            if (OnlyPhy) rand = 1;
+            else if (OnlyMag) rand = 2;
+            
+            float spawnRadius;
+            switch (rand)
+            {
+                case 1:
+                    spawnRadius = physicsProjectile.SpawnRadius;
+                    break;
+                default:
+                    spawnRadius = magicProjectile.SpawnRadius;
+                    break;
+            }
+
             //決定子彈的起始位置
             Vector2 spawnPos2D = (Vector2)Trans_Target.position + new Vector2(
                 Mathf.Cos(angle),
                 Mathf.Sin(angle)
             ) * spawnRadius;
-            Vector3 spawnPos3D = new Vector3(spawnPos2D.x, spawnPos2D.y, 0f);
-            
+            Vector3 spawnPos3D = (Vector3)spawnPos2D;
+
             //產生子彈物件
-            //AttackObj bullet = Instantiate(projectilePrefab, spawnPos3D, Quaternion.identity);
-            AttackObj bullet = Instantiate(projectilePrefab, spawnPos3D, Quaternion.identity, TrainCaveUI.Instance.AttackObjTrans);
-            
-            
-            //挑選子彈種類 之後看遊戲有幾種子彈值就取多少
-            int rand = Random.Range(0, 2);
-            bullet.Init(rand == 1 ? TrainCaveShield.ShieldType.Physics : TrainCaveShield.ShieldType.Magic);
+            AttackObj bullet;
+            switch (rand)
+            {
+                case 1:
+                    bullet = Instantiate(physicsProjectile, spawnPos3D, Quaternion.identity, TrainCaveUI.Instance.AttackObjTrans);
+                    break;
+                default:
+                    bullet = Instantiate(magicProjectile, spawnPos3D, Quaternion.identity, TrainCaveUI.Instance.AttackObjTrans);
+                    break;
+            }
+            //AttackObj bullet = Instantiate(projectilePrefab, spawnPos3D, Quaternion.identity, TrainCaveUI.Instance.AttackObjTrans);
+
+            bullet.Init();
 
             Vector2 dir = (Vector2)Trans_Target.position - spawnPos2D;
 

@@ -79,8 +79,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   projectilePrefab: {fileID: 1702096644680818957, guid: 47d83b10b2b473a4b8d804d41a048e15,
     type: 3}
+  magicProjectile: {fileID: 456976465513091606, guid: 5377c2345a15784468c1fb0fe8e5afd6,
+    type: 3}
+  physicsProjectile: {fileID: 2171886854314005391, guid: 7c7877b151def5842bfb53409d64cad0,
+    type: 3}
   Trans_Target: {fileID: 7667674739893298733}
-  spawnRadius: 20
   spawnInterval:
     X: 1
     Y: 3

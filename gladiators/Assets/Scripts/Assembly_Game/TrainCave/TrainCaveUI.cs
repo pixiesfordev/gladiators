@@ -67,9 +67,8 @@ namespace Gladiators.TrainCave {
             Instance = this;
         }
 
-        //TODO:
         /*
-        1.Joystick套件(之後補 先寫PC版滑鼠控制)
+        1.Joystick套件
          1.方向移動(角色要判斷方向跟著轉向)
          2.方向移動盾牌(盾牌要跟著搖桿動 只判斷方向) >> 孟璋已幫我完成 感謝
         2.攻擊邏輯設計 >> 孟璋已幫我完成攻擊物產生邏輯 感恩

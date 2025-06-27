@@ -1140,7 +1140,7 @@ MonoBehaviour:
   MagicShield: {fileID: 1220786745251538092}
   CharInfo: {fileID: 8863544077452503328}
   HeroRenderer: {fileID: 2502235942008923528}
-  TimeObj: {fileID: 783011395912451331}
+  TimeObj: {fileID: 7200702979737946969}
   AttackObjTrans: {fileID: 5939170532690452903}
   PlayerHittedTime: 0.5
   TrainCaveSceneAsset:
@@ -3828,9 +3828,9 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f350450b5cb2d85419f0036be4c79306, type: 3}
---- !u!114 &783011395912451331 stripped
+--- !u!114 &7200702979737946969 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4800780925113127286, guid: f350450b5cb2d85419f0036be4c79306,
+  m_CorrespondingSourceObject: {fileID: 3146913681854930732, guid: f350450b5cb2d85419f0036be4c79306,
     type: 3}
   m_PrefabInstance: {fileID: 5206755350478787701}
   m_PrefabAsset: {fileID: 0}

@@ -68,15 +68,6 @@ namespace Gladiators.TrainHunt {
             Red = 3,
         }
 
-        //TODO:
-        /*
-        V1.Boss加速(剩十秒時)
-        V2.英雄轉向 背對Boss
-        V3.英雄會隨機在一定範圍內左右移動(營造出被追殺 拉近距離又拉遠的感覺)
-        4.傷害數字被怪物蓋住(要修正 要在怪物前)
-        5.套用新的HP血條
-        */
-
         // Start is called before the first frame update
         void Start()
         {

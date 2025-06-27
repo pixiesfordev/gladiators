@@ -28,11 +28,6 @@ public class TrainHuntBossHP : MonoBehaviour
     Color normalHPColor = new Color(218f/255f, 242f/255f, 41f/225f); //普通血量顏色
     Color deadlyHPColor = new Color(242f/255f, 41f/225f, 41f/225f); //瀕死血量顏色
 
-    //TODO:
-    //1.角度修正
-    //2.套入計算邏輯
-    //3.測試
-
     // Start is called before the first frame update
     void Start()
     {

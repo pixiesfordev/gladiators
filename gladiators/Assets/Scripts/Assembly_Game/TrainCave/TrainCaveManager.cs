@@ -165,7 +165,7 @@ namespace Gladiators.TrainCave {
             dmgNum.transform.localScale = Vector3.one * dmgNumScal;
             TrainCaveUI.Instance.OnHit(HittedReduceHP);
             //針對進來的Obj做不同種類的演出與傷害判定
-            TrainCaveUI.Instance.PlayerHittedAni(obj.DefednType);
+            TrainCaveUI.Instance.PlayerHittedAni(obj.DefendType);
         }
 
         void ShowShield(bool show, MouseButton button) {
