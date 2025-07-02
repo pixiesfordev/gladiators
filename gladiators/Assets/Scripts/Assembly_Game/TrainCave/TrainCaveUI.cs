@@ -19,6 +19,7 @@ namespace Gladiators.TrainCave {
 
         [SerializeField] BattleGladiatorInfo CharInfo;
         [SerializeField] SpriteRenderer HeroRenderer;
+        [SerializeField] Animator HeroAniController;
         [SerializeField] TrainTimeObj TimeObj;
 
         public Transform AttackObjTrans;
@@ -38,10 +39,12 @@ namespace Gladiators.TrainCave {
             ResetGame();
         }
 
-        public override void Init() {
+        public override void Init()
+        {
             base.Init();
             InitShield();
             SpawnSceneManager();
+            HeroAniController.Play("Idle", -1, 0f);
         }
 
         void InitShield() {
@@ -84,7 +87,7 @@ namespace Gladiators.TrainCave {
          2.物理防禦分數
         5.盾牌操作方式 >> 用壓住的方式操作
         */
-        
+
         /* 2025.3 TODOLIST:
         1.套入介面圖 >> 目前大部分都已經套完 但攻擊按鈕還沒套 因為建議改成非按鈕形式 否則會誤導玩家
         v2.時間(封裝成通用物件)
@@ -94,7 +97,12 @@ namespace Gladiators.TrainCave {
          2.魔法盾牌 
         */
 
-        public void SetPhysicsScore(int _score) {
+        //TODO:
+        //1.魔法攻擊固定指朝左/右 不要轉角度(boss_b)
+        //2.英雄不要跳動 被打到要撥放被攻擊到的動畫
+
+        public void SetPhysicsScore(int _score)
+        {
             PhysicsPoint.text = string.Format("PHY: {0}", _score);
         }
         public void SetMagicScore(int _score) {
@@ -142,8 +150,15 @@ namespace Gladiators.TrainCave {
             PlayerHitted(type).Forget();
         }
 
-        async UniTask PlayerHitted(TrainCaveShield.ShieldType type) {
+        async UniTask PlayerHitted(TrainCaveShield.ShieldType type)
+        {
             CreateHittedCTK();
+            //英雄被打到撥放受傷害的動畫
+            HeroAniController.Play("shake", -1, 0f);
+            await UniTask.WaitForSeconds(0.21f, cancellationToken: HittedCTK.Token);
+            //打完恢復普通狀態
+            HeroAniController.Play("Idle", -1, 0f);
+            /*
             float startTime = Time.time;
             float passTime = startTime;
             Color changeColor;
@@ -170,6 +185,7 @@ namespace Gladiators.TrainCave {
                     await UniTask.Yield(HittedCTK.Token);
                 }
             }
+            */
         }
 
         void CreateHittedCTK() {

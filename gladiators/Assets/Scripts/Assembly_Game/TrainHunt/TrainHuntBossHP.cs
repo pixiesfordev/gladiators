@@ -8,6 +8,7 @@ using Unity.Mathematics;
 
 public class TrainHuntBossHP : MonoBehaviour
 {
+    //TODO:改通用物件(改名跟改位置就好)
     [SerializeField] Image CurrentHP;
     [SerializeField] Image GrayHP;
 

@@ -57,6 +57,8 @@ public class AttackPhysicsObj : AttackObj
 
     public override void SetSpeed(Vector2 speed)
     {
+        //TODO:修改攻擊方式 得用Spine撥出筆拉長的部分 所以SetSpeed只針對碰撞的透明方塊物件去做速度 但要配合筆拉長的速度
+        //看看有沒有指定Spine撥放速度的Func可以用
         base.SetSpeed(speed);
     }
 }

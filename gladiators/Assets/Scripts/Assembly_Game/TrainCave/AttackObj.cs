@@ -44,25 +44,7 @@ namespace Gladiators.TrainCave {
         protected virtual void OnTriggerEnter2D(Collider2D coll) {
             //Debug.Log ("-------开始碰撞------------");
             //Debug.Log(coll.gameObject.name);
-            var shield = coll.gameObject.GetComponent<TrainCaveShield>();
-            if (shield != null) {
-                if (shield.DefendType == DefendType) {
-                    if (DefendType == TrainCaveShield.ShieldType.Magic)
-                        TrainCaveManager.Instance.AddMagicScore();
-                    else if (DefendType == TrainCaveShield.ShieldType.Physics)
-                        TrainCaveManager.Instance.AddPhysicsScore();
-                } else {
-                    TrainCaveManager.Instance.PlayerHitted(this);
-                }
-            } else {
-                TrainCaveManager.Instance.PlayerHitted(this);
-            }
-            Destroy(gameObject);
-            /*測試用 物件碰撞後停止其速度
-            Rigidbody2D rb2D = GetComponent<Rigidbody2D>();
-            if (rb2D != null)
-                rb2D.velocity = Vector2.zero;
-            */
+            //TODO:播放打擊到物體的Spine特效
         }
 
         protected virtual void OnTriggerStay2D(Collider2D coll) {

@@ -23,7 +23,7 @@ public class AttackMagicObj : AttackObj
         SmallBossSpine.Init();
         FireUpSpine.Init();
         FireBallSpine.Init();
-        //TODO:調整Boss的角度(轉回0度)
+        //TODO:調整Boss的角度(固定只朝向左/右)
         base.Init();
     }
 

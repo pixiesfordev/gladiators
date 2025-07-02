@@ -4,6 +4,7 @@ using System.Threading;
 using Codice.Client.BaseCommands;
 using Cysharp.Threading.Tasks;
 using Scoz.Func;
+using Unity.Entities.UniversalDelegates;
 using UnityEngine;
 
 namespace Gladiators.TrainCave {
@@ -17,6 +18,7 @@ namespace Gladiators.TrainCave {
         [SerializeField] bool bTest = false;
 
         CancellationTokenSource eventCTK;
+        bool towardLeft = false;
 
         public enum ShieldType
         {
@@ -54,6 +56,7 @@ namespace Gladiators.TrainCave {
             Vector2 offsetPos;
             Vector2 shieldPos;
             Vector2 tempPos;
+            Vector3 tempScale = transform.localScale;
 
             float radians;
             float test;
@@ -61,6 +64,7 @@ namespace Gladiators.TrainCave {
             float y;
             float shieldAngle;
             Camera camera = Camera.main;
+            
             if (camera == null) {
                 //Camera main為null的時候直接去取用UICam
                 camera = UICam.Instance.MyCam;
@@ -109,6 +113,20 @@ namespace Gladiators.TrainCave {
                 // 讓盾牌朝外旋轉(角色與滑鼠的相對方向)，將弧度轉角度
                 shieldAngle = radians * Mathf.Rad2Deg;
                 transform.rotation = Quaternion.Euler(0f, 0f, shieldAngle);
+
+                // 盾牌轉向判斷
+                if (towardLeft && transform.position.x > 0f)
+                {
+                    transform.localScale = new Vector3(tempScale.x, tempScale.y, tempScale.z);
+                    towardLeft = false;
+                }
+                else if (!towardLeft && transform.position.x < 0f)
+                {
+                    transform.localScale = new Vector3(tempScale.x, -tempScale.y, tempScale.z);
+                    towardLeft = true;
+                }
+
+                // 英雄轉向判斷
                 await UniTask.Yield(eventCTK.Token);
             }
         }
