@@ -114,19 +114,20 @@ namespace Gladiators.TrainCave {
                 shieldAngle = radians * Mathf.Rad2Deg;
                 transform.rotation = Quaternion.Euler(0f, 0f, shieldAngle);
 
-                // 盾牌轉向判斷
+                // 盾牌轉向判斷 & 英雄轉向判斷
                 if (towardLeft && transform.position.x > 0f)
                 {
                     transform.localScale = new Vector3(tempScale.x, tempScale.y, tempScale.z);
                     towardLeft = false;
+                    TrainCaveUI.Instance.SetHeroDirection(towardLeft);
                 }
                 else if (!towardLeft && transform.position.x < 0f)
                 {
                     transform.localScale = new Vector3(tempScale.x, -tempScale.y, tempScale.z);
                     towardLeft = true;
+                    TrainCaveUI.Instance.SetHeroDirection(towardLeft);
                 }
 
-                // 英雄轉向判斷
                 await UniTask.Yield(eventCTK.Token);
             }
         }

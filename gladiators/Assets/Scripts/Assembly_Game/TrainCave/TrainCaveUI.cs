@@ -7,7 +7,8 @@ using Cysharp.Threading.Tasks;
 using System.Threading;
 
 namespace Gladiators.TrainCave {
-    public class TrainCaveUI : BaseUI {
+    public class TrainCaveUI : BaseUI
+    {
 
         [SerializeField] MyText MagicPoint;
         [SerializeField] MyText PhysicsPoint;
@@ -33,8 +34,11 @@ namespace Gladiators.TrainCave {
 
         CancellationTokenSource HittedCTK;
 
+        Vector3 leftDir = new Vector3(-1f, 1f, 1f);
+
         // Start is called before the first frame update
-        void Start() {
+        void Start()
+        {
             Init();
             ResetGame();
         }
@@ -47,26 +51,31 @@ namespace Gladiators.TrainCave {
             HeroAniController.Play("Idle", -1, 0f);
         }
 
-        void InitShield() {
+        void InitShield()
+        {
             PhysicsShield.InitShield(TrainCaveShield.ShieldType.Physics);
             MagicShield.InitShield(TrainCaveShield.ShieldType.Magic);
             PhysicsShield.gameObject.SetActive(false);
             MagicShield.gameObject.SetActive(false);
         }
 
-        void SpawnSceneManager() {
-            AddressablesLoader.GetPrefabByRef(TrainCaveSceneAsset, (battleManagerPrefab, handle) => {
+        void SpawnSceneManager()
+        {
+            AddressablesLoader.GetPrefabByRef(TrainCaveSceneAsset, (battleManagerPrefab, handle) =>
+            {
                 GameObject go = Instantiate(battleManagerPrefab);
                 var manager = go.GetComponent<TrainCaveManager>();
                 manager.Init();
             });
         }
 
-        public override void RefreshText() {
+        public override void RefreshText()
+        {
 
         }
 
-        protected override void SetInstance() {
+        protected override void SetInstance()
+        {
             Instance = this;
         }
 
@@ -105,36 +114,44 @@ namespace Gladiators.TrainCave {
         {
             PhysicsPoint.text = string.Format("PHY: {0}", _score);
         }
-        public void SetMagicScore(int _score) {
+        public void SetMagicScore(int _score)
+        {
             MagicPoint.text = string.Format("MAG: {0}", _score);
         }
 
-        public void ShowGameOverObj(bool _active) {
+        public void ShowGameOverObj(bool _active)
+        {
             GameOverObj.SetActive(_active);
         }
 
-        public void OnResetClick() {
+        public void OnResetClick()
+        {
             TrainCaveManager.Instance.ResetGame();
             CharInfo.ResetHPBarToFull();
         }
 
-        public void ResetGame() {
+        public void ResetGame()
+        {
             PhysicsPoint.text = string.Format("PHY: {0}", 0);
             MagicPoint.text = string.Format("MAG: {0}", 0);
             GameOverObj.SetActive(false);
             CharInfo.Init(1000, 1000, 7);
         }
 
-        public void OnHit(int _dmg) {
+        public void OnHit(int _dmg)
+        {
             CharInfo.AddHP(_dmg);
         }
 
-        public bool HeroIsDead() {
+        public bool HeroIsDead()
+        {
             return CharInfo.HeroIsDead();
         }
 
-        public void ShowShield(TrainCaveShield.ShieldType _type, bool show) {
-            switch (_type) {
+        public void ShowShield(TrainCaveShield.ShieldType _type, bool show)
+        {
+            switch (_type)
+            {
                 case TrainCaveShield.ShieldType.Physics:
                     if (!MagicShield.gameObject.activeSelf)
                         PhysicsShield.ShowShield(show);
@@ -146,7 +163,8 @@ namespace Gladiators.TrainCave {
             }
         }
 
-        public void PlayerHittedAni(TrainCaveShield.ShieldType type) {
+        public void PlayerHittedAni(TrainCaveShield.ShieldType type)
+        {
             PlayerHitted(type).Forget();
         }
 
@@ -188,15 +206,23 @@ namespace Gladiators.TrainCave {
             */
         }
 
-        void CreateHittedCTK() {
-            if (HittedCTK != null) {
+        void CreateHittedCTK()
+        {
+            if (HittedCTK != null)
+            {
                 HittedCTK.Cancel();
             }
             HittedCTK = new CancellationTokenSource();
         }
 
-        public void SetPointerPos(float rate) {
+        public void SetPointerPos(float rate)
+        {
             TimeObj.SetPointerPos(rate);
+        }
+
+        public void SetHeroDirection(bool towardLeft)
+        {
+            HeroAniController.gameObject.transform.localScale = towardLeft ? leftDir : Vector3.one;
         }
 
     }
