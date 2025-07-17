@@ -18,10 +18,11 @@ namespace Gladiators.TrainCave {
         [SerializeField] TrainCaveShield PhysicsShield;
         [SerializeField] TrainCaveShield MagicShield;
 
-        [SerializeField] BattleGladiatorInfo CharInfo;
+        [SerializeField] TrainHPObj PlayerHP;
         [SerializeField] SpriteRenderer HeroRenderer;
         [SerializeField] Animator HeroAniController;
         [SerializeField] TrainTimeObj TimeObj;
+        [SerializeField] RectTransform HittedSpineParent; //放置碰撞Spine的RT
 
         public Transform AttackObjTrans;
 
@@ -127,7 +128,7 @@ namespace Gladiators.TrainCave {
         public void OnResetClick()
         {
             TrainCaveManager.Instance.ResetGame();
-            CharInfo.ResetHPBarToFull();
+            PlayerHP.Reset();
         }
 
         public void ResetGame()
@@ -135,17 +136,17 @@ namespace Gladiators.TrainCave {
             PhysicsPoint.text = string.Format("PHY: {0}", 0);
             MagicPoint.text = string.Format("MAG: {0}", 0);
             GameOverObj.SetActive(false);
-            CharInfo.Init(1000, 1000, 7);
+            PlayerHP.InitHP(1000, 1000);
         }
 
         public void OnHit(int _dmg)
         {
-            CharInfo.AddHP(_dmg);
+            PlayerHP.ReduceHP(_dmg);
         }
 
         public bool HeroIsDead()
         {
-            return CharInfo.HeroIsDead();
+            return PlayerHP.HeroISDead();
         }
 
         public void ShowShield(TrainCaveShield.ShieldType _type, bool show)
@@ -223,6 +224,11 @@ namespace Gladiators.TrainCave {
         public void SetHeroDirection(bool towardLeft)
         {
             HeroAniController.gameObject.transform.localScale = towardLeft ? leftDir : Vector3.one;
+        }
+
+        public void GenerateHitSpine(Vector3 pos)
+        {
+            //TODO:產生碰撞特效
         }
 
     }

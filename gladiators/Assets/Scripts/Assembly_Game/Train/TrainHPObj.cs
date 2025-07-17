@@ -6,9 +6,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using Unity.Mathematics;
 
-public class TrainHuntBossHP : MonoBehaviour
+public class TrainHPObj : MonoBehaviour
 {
-    //TODO:改通用物件(改名跟改位置就好)
     [SerializeField] Image CurrentHP;
     [SerializeField] Image GrayHP;
 
@@ -26,8 +25,8 @@ public class TrainHuntBossHP : MonoBehaviour
 
     CancellationTokenSource CurrentCTS; //用來中斷目前的血條演出
 
-    Color normalHPColor = new Color(218f/255f, 242f/255f, 41f/225f); //普通血量顏色
-    Color deadlyHPColor = new Color(242f/255f, 41f/225f, 41f/225f); //瀕死血量顏色
+    Color normalHPColor = new Color(218f / 255f, 242f / 255f, 41f / 225f); //普通血量顏色
+    Color deadlyHPColor = new Color(242f / 255f, 41f / 225f, 41f / 225f); //瀕死血量顏色
 
     // Start is called before the first frame update
     void Start()
@@ -145,4 +144,8 @@ public class TrainHuntBossHP : MonoBehaviour
         CurrentHP.color = isDeadly ? deadlyHPColor : normalHPColor;
     }
 
+    public bool HeroISDead()
+    {
+        return CurHP <= 0;
+    }
 }

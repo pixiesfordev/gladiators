@@ -52,6 +52,7 @@ public class AttackPhysicsObj : AttackObj
             TrainCaveManager.Instance.AddPhysicsScore();
         else
             TrainCaveManager.Instance.PlayerHitted(this);
+        base.OnTriggerEnter2D(coll);
         Destroy(gameObject);
     }
 

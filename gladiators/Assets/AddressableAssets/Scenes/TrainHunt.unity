@@ -338,6 +338,36 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1853163432}
     m_Modifications:
+    - target: {fileID: 2780587150814179570, guid: 38b2d1bfd65083844a258900334fec17,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2780587150814179570, guid: 38b2d1bfd65083844a258900334fec17,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2780587150814179570, guid: 38b2d1bfd65083844a258900334fec17,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2780587150814179570, guid: 38b2d1bfd65083844a258900334fec17,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2780587150814179570, guid: 38b2d1bfd65083844a258900334fec17,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2780587150814179570, guid: 38b2d1bfd65083844a258900334fec17,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6191673837178302285, guid: 38b2d1bfd65083844a258900334fec17,
         type: 3}
       propertyPath: m_Pivot.x
@@ -442,6 +472,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: TrainHuntSceneUI
+      objectReference: {fileID: 0}
+    - target: {fileID: 8859095616413120859, guid: 38b2d1bfd65083844a258900334fec17,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8859095616413120859, guid: 38b2d1bfd65083844a258900334fec17,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

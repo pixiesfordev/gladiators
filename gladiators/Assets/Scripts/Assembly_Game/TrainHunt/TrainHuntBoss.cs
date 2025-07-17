@@ -6,7 +6,7 @@ public class TrainHuntBoss : MonoBehaviour
 {
     [SerializeField] Animator aniConroller;
     [SerializeField] SpineAnimationController HittedSpine;
-    [SerializeField] TrainHuntBossHP BossHP;
+    [SerializeField] TrainHPObj BossHP;
 
     // Start is called before the first frame update
     void Start()

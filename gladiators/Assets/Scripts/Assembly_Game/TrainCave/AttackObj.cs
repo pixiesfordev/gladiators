@@ -17,18 +17,30 @@ namespace Gladiators.TrainCave {
 
         /*TODO:
         改攻擊演出方式 >> 
-        1.魔法類為憑空淡入小Boss圖案後 噴火射向玩家角色 
-        2.物理類圖案快速戳過去(已實現) 戳到任何物體後就退回去(未實現)
+        1.魔法類為憑空淡入小Boss圖案後 噴火射向玩家角色(已實現) 
+        2.物理類圖案快速戳過去 戳到任何物體後就退回去
+
+        By 新富
+        1.人物比例大概是這樣
+        2.下面的血量UI 和旁邊的按鈕
+        3.筆打到頓攻擊特效
+        4.筆拉長的動畫
+        5.頓的那個圓圈要剛好可以包圍腳色的路徑 (盾牌也是左右反轉)
         */
 
+
         //TODO:細節項目
-        //1.AttackObj重構 要先建一個上層Class 定義共用的基本方法跟碰撞運算演出等邏輯
-        //2.建立兩個Class分別繼承物理攻擊跟魔法攻擊 改寫演出相關與產生邏輯
-        //3.做兩個Prefab 一個是物理攻擊的 一個是魔法攻擊的
-        //4.實現魔法攻擊細節
-        // 1.建立三個Spine物件(事先放好) 分成怪物 點火 火焰
-        // 2.移動火焰物件以及改角度 要朝向玩家飛行(還要放一個透明空白圖塞Colider)
-        // 3.火焰碰撞後的特效演出
+        //V1.血量UI跟旁邊盾牌UI
+        // 1.血量物件通用化(修改狩獵季節的Boss血條物件)
+        // 2.盾牌UI >> 提示作用(等討論結果)
+        //2.播放被攻擊到的特效
+        // 1.物件產生在另外一個GameObject下(固定位置) 不過位置得是發生碰撞的位置
+        // 2.撥放完後移除回收物件(用UniTask去控制 不需要中斷點)
+        //3.修改物理攻擊演出方式
+        // 1.播放Spine動畫 筆看起來是直接伸長(動畫名是GO)
+        // 2.攻擊到角色或盾牌後要縮退(動畫名是Recycle)
+        // 3.藍色根紅色的筆隨機挑選
+        //4.修正魔法攻擊Boss角度 固定只朝向左/右
 
         // Start is called before the first frame update
         protected virtual void Start() { }
@@ -41,10 +53,13 @@ namespace Gladiators.TrainCave {
             Collider2D.size = AttackImg.rectTransform.sizeDelta - ColiderOffset;
         }
 
-        protected virtual void OnTriggerEnter2D(Collider2D coll) {
+        protected virtual void OnTriggerEnter2D(Collider2D coll)
+        {
             //Debug.Log ("-------开始碰撞------------");
             //Debug.Log(coll.gameObject.name);
-            //TODO:播放打擊到物體的Spine特效
+            
+            //播放打擊到物體的Spine特效
+            TrainCaveUI.Instance.GenerateHitSpine(transform.position);
         }
 
         protected virtual void OnTriggerStay2D(Collider2D coll) {

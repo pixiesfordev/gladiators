@@ -19,7 +19,10 @@ namespace Gladiators.TrainCave {
 
         bool shooting = false;
 
-        private void Start() {
+        //TODO:修改發射邏輯 實現真的重新開始遊戲可以避免重複呼叫產生子彈的Task
+
+        private void Start()
+        {
             //StartShoot();
         }
 
@@ -39,8 +42,6 @@ namespace Gladiators.TrainCave {
                 await UniTask.WaitForSeconds(waitTime);
             }
         }
-
-        //TODO:修改產生邏輯 魔法類攻擊要特別處理 要把產生邏輯直接寫在繼承AttackObj的Class底下的物件
 
         /// <summary>
         /// 生成一顆子彈並射向目標 (2D 用)
