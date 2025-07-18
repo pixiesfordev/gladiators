@@ -34,7 +34,7 @@ namespace Gladiators.TrainCave {
         // 1.血量物件通用化(修改狩獵季節的Boss血條物件)
         // 2.盾牌UI >> 提示作用(等討論結果)
         //2.播放被攻擊到的特效
-        // 1.物件產生在另外一個GameObject下(固定位置) 不過位置得是發生碰撞的位置
+        // 1.物件產生在另外一個GameObject下(固定位置) 不過位置得是發生碰撞的位置 >> 魔法攻擊位置不夠精準 還得調整
         // 2.撥放完後移除回收物件(用UniTask去控制 不需要中斷點)
         //3.修改物理攻擊演出方式
         // 1.播放Spine動畫 筆看起來是直接伸長(動畫名是GO)
@@ -57,9 +57,6 @@ namespace Gladiators.TrainCave {
         {
             //Debug.Log ("-------开始碰撞------------");
             //Debug.Log(coll.gameObject.name);
-            
-            //播放打擊到物體的Spine特效
-            TrainCaveUI.Instance.GenerateHitSpine(transform.position);
         }
 
         protected virtual void OnTriggerStay2D(Collider2D coll) {

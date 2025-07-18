@@ -52,7 +52,8 @@ public class AttackPhysicsObj : AttackObj
             TrainCaveManager.Instance.AddPhysicsScore();
         else
             TrainCaveManager.Instance.PlayerHitted(this);
-        base.OnTriggerEnter2D(coll);
+        //播放打擊到物體的Spine特效
+        TrainCaveUI.Instance.GenerateHitSpine(transform.position, transform.rotation);
         Destroy(gameObject);
     }
 

@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using Gladiators.Battle;
 using Cysharp.Threading.Tasks;
 using System.Threading;
+using Cysharp.Threading.Tasks.CompilerServices;
 
 namespace Gladiators.TrainCave {
     public class TrainCaveUI : BaseUI
@@ -23,6 +24,7 @@ namespace Gladiators.TrainCave {
         [SerializeField] Animator HeroAniController;
         [SerializeField] TrainTimeObj TimeObj;
         [SerializeField] RectTransform HittedSpineParent; //放置碰撞Spine的RT
+        [SerializeField] SpineAnimationController HitSpineController;
 
         public Transform AttackObjTrans;
 
@@ -226,9 +228,21 @@ namespace Gladiators.TrainCave {
             HeroAniController.gameObject.transform.localScale = towardLeft ? leftDir : Vector3.one;
         }
 
-        public void GenerateHitSpine(Vector3 pos)
+        public void GenerateHitSpine(Vector3 pos, Quaternion angle)
         {
-            //TODO:產生碰撞特效
+            //產生碰撞特效
+            SpineAnimationController hittedSpine = Instantiate(HitSpineController, pos, angle, HittedSpineParent);
+            hittedSpine.Init();
+            //Debug.LogErrorFormat("位置: {0}, 角度: {1}, 物件: {2}", pos, angle, name);
+            hittedSpine.PlayAnimation("FX01", false);
+            DestroyHitSpine(hittedSpine.gameObject).Forget();
+        }
+
+        async UniTaskVoid DestroyHitSpine(GameObject obj)
+        {
+            //撥放完後自動摧毀
+            await UniTask.WaitForSeconds(0.38f);
+            Destroy(obj);
         }
 
     }

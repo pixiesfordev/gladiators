@@ -34,7 +34,8 @@ public class AttackMagicObj : AttackObj
             TrainCaveManager.Instance.AddMagicScore();
         else
             TrainCaveManager.Instance.PlayerHitted(this);
-        base.OnTriggerEnter2D(coll);
+        //播放打擊到物體的Spine特效
+        TrainCaveUI.Instance.GenerateHitSpine(FireBallSpine.transform.position, FireBallSpine.transform.rotation);
         Destroy(gameObject);
         //測試用 物件碰撞後停止其速度
         /*

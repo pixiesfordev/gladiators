@@ -605,7 +605,9 @@ MonoBehaviour:
   HeroRenderer: {fileID: 2502235942008923528}
   HeroAniController: {fileID: 6123580479850400600}
   TimeObj: {fileID: 7200702979737946969}
-  HittedSpineParent: {fileID: 0}
+  HittedSpineParent: {fileID: 2673141556199828771}
+  HitSpineController: {fileID: 2836501794222694234, guid: cb9fe576154d5e442900b48a521d631a,
+    type: 3}
   AttackObjTrans: {fileID: 5939170532690452903}
   PlayerHittedTime: 0.5
   TrainCaveSceneAsset:
@@ -1741,6 +1743,7 @@ RectTransform:
   - {fileID: 6483999686735139699}
   - {fileID: 2394835632305228781}
   - {fileID: 6680981279558472746}
+  - {fileID: 2673141556199828771}
   - {fileID: 7172483110663311781}
   - {fileID: 9068503819510943209}
   - {fileID: 4120302448164045074}
@@ -1898,6 +1901,41 @@ RectTransform:
   - {fileID: 902931914123106275}
   - {fileID: 5717637517847436094}
   m_Father: {fileID: 8995896216855564960}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &7711096645533278293
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2673141556199828771}
+  m_Layer: 5
+  m_Name: HittedSpineParent
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &2673141556199828771
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7711096645533278293}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7926057714088111584}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
