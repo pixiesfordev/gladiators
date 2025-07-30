@@ -186,6 +186,7 @@ namespace Gladiators.TrainCave {
             MagicScore++;
             TrainCaveUI.Instance.SetMagicScore(MagicScore);
         }
+        
     }
 }
 
