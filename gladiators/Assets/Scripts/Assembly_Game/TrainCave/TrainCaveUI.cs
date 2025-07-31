@@ -235,7 +235,7 @@ namespace Gladiators.TrainCave {
             hittedSpine.Init();
             //Debug.LogErrorFormat("位置: {0}, 角度: {1}, 物件: {2}", pos, angle, name);
             hittedSpine.PlayAnimation("FX01", false);
-            //DestroyHitSpine(hittedSpine.gameObject).Forget();
+            DestroyHitSpine(hittedSpine.gameObject).Forget();
         }
 
         async UniTaskVoid DestroyHitSpine(GameObject obj)

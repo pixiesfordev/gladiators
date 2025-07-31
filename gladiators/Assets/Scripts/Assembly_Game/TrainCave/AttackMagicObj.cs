@@ -32,10 +32,23 @@ public class AttackMagicObj : AttackObj
         var anotherAtkObj = coll.gameObject.GetComponent<AttackObj>();
         var shield = coll.gameObject.GetComponent<TrainCaveShield>();
         if (shield != null && shield.DefendType == TrainCaveShield.ShieldType.Magic)
-            TrainCaveManager.Instance.AddMagicScore();
-        else if (anotherAtkObj == null)
         {
+            //撞到盾牌
+            TrainCaveManager.Instance.AddMagicScore();
+            HitTarget = true;
+        }
+        else if (anotherAtkObj == null && shield == null)
+        {
+            //撞到玩家角色
             TrainCaveManager.Instance.PlayerHitted(this);
+            HitTarget = true;
+        }
+
+        Debug.LogErrorFormat("魔法攻擊撞到物件: {0}", coll.name);
+
+        //有效碰撞
+        if (HitTarget)
+        {
             //播放打擊到物體的Spine特效
             TrainCaveUI.Instance.GenerateHitSpine(FireBallSpine.transform.position, FireBallSpine.transform.rotation);
             Destroy(gameObject);
@@ -45,7 +58,7 @@ public class AttackMagicObj : AttackObj
             if (rb2D != null)
                 rb2D.velocity = Vector2.zero;
             */
-        }  
+        }
     }
 
     public override void SetSpeed(Vector2 speed)

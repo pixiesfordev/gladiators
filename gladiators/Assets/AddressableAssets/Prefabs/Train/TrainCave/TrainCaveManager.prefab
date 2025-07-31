@@ -88,7 +88,7 @@ MonoBehaviour:
     X: 1
     Y: 3
   speed: 10
-  OnlyPhy: 1
+  OnlyPhy: 0
   OnlyMag: 0
 --- !u!1 &2909772629819486125
 GameObject:

@@ -1,5 +1,40 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &8592522977213600268
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2106211766099198872}
+  m_Layer: 0
+  m_Name: HitSpinePos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &2106211766099198872
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8592522977213600268}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4732575161808162648}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 390, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &9162739385785321830
 GameObject:
   m_ObjectHideFlags: 0
@@ -26,13 +61,13 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9162739385785321830}
-  m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8551826533510976442}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 360, y: 40}
@@ -198,6 +233,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 6245044821989055578}
+    - targetCorrespondingSourceObject: {fileID: 3409405228219581844, guid: 47d83b10b2b473a4b8d804d41a048e15,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2106211766099198872}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 4642160005617299698, guid: 47d83b10b2b473a4b8d804d41a048e15,
         type: 3}
@@ -231,6 +270,13 @@ MonoBehaviour:
   AttackImg: {fileID: 5518236346209165927}
   Collider2D: {fileID: 1318182622420976460}
   AtkSpine: {fileID: 5023185090890646347}
+  HitSpinePos: {fileID: 2106211766099198872}
+--- !u!224 &4732575161808162648 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 3409405228219581844, guid: 47d83b10b2b473a4b8d804d41a048e15,
+    type: 3}
+  m_PrefabInstance: {fileID: 7997794755885583052}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &5518236346209165927 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2479628847154768043, guid: 47d83b10b2b473a4b8d804d41a048e15,

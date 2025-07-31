@@ -73,15 +73,19 @@ namespace Gladiators.TrainCave {
             ) * spawnRadius;
             Vector3 spawnPos3D = (Vector3)spawnPos2D;
 
+            float realSpeed = 0f;
+
             //產生子彈物件
             AttackObj bullet;
             switch (rand)
             {
                 case 1:
                     bullet = Instantiate(physicsProjectile, spawnPos3D, Quaternion.identity, TrainCaveUI.Instance.AttackObjTrans);
+                    realSpeed = speed / 2; //經過測試發現物理攻擊速度太快 需要減速
                     break;
                 default:
                     bullet = Instantiate(magicProjectile, spawnPos3D, Quaternion.identity, TrainCaveUI.Instance.AttackObjTrans);
+                    realSpeed = speed;
                     break;
             }
             //AttackObj bullet = Instantiate(projectilePrefab, spawnPos3D, Quaternion.identity, TrainCaveUI.Instance.AttackObjTrans);
@@ -95,7 +99,7 @@ namespace Gladiators.TrainCave {
             bullet.transform.rotation = Quaternion.Euler(0f, 0f, rotZ);
 
             //給予子彈加速度
-            bullet.SetSpeed(dir.normalized * speed);
+            bullet.SetSpeed(dir.normalized * realSpeed);
         }
     }
 }

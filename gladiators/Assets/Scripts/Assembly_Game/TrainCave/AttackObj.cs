@@ -16,6 +16,8 @@ namespace Gladiators.TrainCave {
 
         protected Vector2 ColiderOffset = new Vector2(10f, 10f);
 
+        protected bool HitTarget = false;
+
         /*TODO:
         改攻擊演出方式 >> 
         1.魔法類為憑空淡入小Boss圖案後 噴火射向玩家角色(已實現) 
