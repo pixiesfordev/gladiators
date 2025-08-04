@@ -81,7 +81,7 @@ namespace Gladiators.TrainCave {
             {
                 case 1:
                     bullet = Instantiate(physicsProjectile, spawnPos3D, Quaternion.identity, TrainCaveUI.Instance.AttackObjTrans);
-                    realSpeed = speed / 2; //經過測試發現物理攻擊速度太快 需要減速
+                    realSpeed = speed / 4; //經過測試發現物理攻擊速度太快 需要減速
                     break;
                 default:
                     bullet = Instantiate(magicProjectile, spawnPos3D, Quaternion.identity, TrainCaveUI.Instance.AttackObjTrans);

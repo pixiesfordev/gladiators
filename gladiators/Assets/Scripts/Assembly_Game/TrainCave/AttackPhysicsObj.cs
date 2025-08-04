@@ -61,6 +61,8 @@ public class AttackPhysicsObj : AttackObj
 
     protected override void OnTriggerEnter2D(Collider2D coll)
     {
+        //這裡要先強制HitTarget為False 經過測試發現似乎記憶體沒有清乾淨 預設會變成True
+        HitTarget = false;
         //TODO:之後改用孟璋說的比較不吃效能的方法來做 用碰撞器太吃效能
         var anotherAtkObj = coll.gameObject.GetComponent<AttackObj>();
         var shield = coll.gameObject.GetComponent<TrainCaveShield>();
@@ -69,12 +71,14 @@ public class AttackPhysicsObj : AttackObj
             //撞到盾牌
             TrainCaveManager.Instance.AddPhysicsScore();
             HitTarget = true;
+            //Debug.LogErrorFormat("撞到盾牌");
         }
         else if (anotherAtkObj == null && shield == null)
         {
             //撞到玩家角色
             TrainCaveManager.Instance.PlayerHitted(this);
             HitTarget = true;
+            //Debug.LogErrorFormat("另一個攻擊物件不存在: {0} 盾牌不存在: {1}", anotherAtkObj == null, shield == null);
         }
 
         //有效碰撞
@@ -85,12 +89,20 @@ public class AttackPhysicsObj : AttackObj
             TrainCaveUI.Instance.GenerateHitSpine(HitSpinePos.position, Quaternion.Euler(angle));
             //Debug.LogErrorFormat("花了多少時間碰撞到物體: {0}", Time.time - FlyingTimeRecord);
             //Debug.LogErrorFormat("碰撞位置: {0}", coll.ClosestPoint(transform.position));
-
+            //Debug.LogErrorFormat("碰撞物體: {0}", coll.name);
             //物件碰撞後往回彈
+            
             Rigidbody2D rb2D = GetComponent<Rigidbody2D>();
             if (rb2D != null)
                 rb2D.velocity = -rb2D.velocity;
 
+            /*
+            //測試用 停止物體 為了觀察為什麼會被蓋住
+            Rigidbody2D rb2D = GetComponent<Rigidbody2D>();
+            if (rb2D != null)
+                rb2D.velocity = Vector2.zero;
+            */
+            
             //播放攻擊彈回演出後銷毀物件
             AttackRollBack();
         }
@@ -101,7 +113,7 @@ public class AttackPhysicsObj : AttackObj
         string spinePrefix = PicRandSeed > 0 ? "ATTACK01_Recycle" : "ATTACK_Recycle";
         float waitSec = PicRandSeed > 0 ? 0.65f : 0.45f;
         AtkSpine.PlayAnimation(spinePrefix, false);
-        Invoke(nameof(RecycleObj), waitSec * 2);
+        Invoke(nameof(RecycleObj), waitSec * 4);
     }
 
     void RecycleObj()
