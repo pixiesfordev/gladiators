@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6b194f808b1af6499c93410e504af42, type: 3}
+  m_Name: UI_HORE_01_Atlas
+  m_EditorClassIdentifier: 
+  textureLoadingMode: 0
+  onDemandTextureLoader: {fileID: 0}
+  atlasFile: {fileID: 4900000, guid: d8c1663b3b9ffee488dfaab408e9d860, type: 3}
+  materials:
+  - {fileID: 2100000, guid: ae64b478b6ef58a4cbbb26327d2b015c, type: 2}
+  - {fileID: 2100000, guid: 6028f450418774d4aaa8fcb1e10a4d8f, type: 2}
+  - {fileID: 2100000, guid: 3e1b70374640cf2439204edfdec3bbfc, type: 2}
+  - {fileID: 2100000, guid: 8decd76ca23cc984db3052eabe524e21, type: 2}
+  - {fileID: 2100000, guid: 48d1514f98d1bcc4ebab7720270ccae8, type: 2}
+  - {fileID: 2100000, guid: a0af56e5fb55d774f8a0d1de8feeac98, type: 2}

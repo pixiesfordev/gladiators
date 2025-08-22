@@ -1,0 +1,11 @@
+UI_HORE_SART.png
+size:128,64
+filter:Linear,Linear
+pma:true
+scale:0.5
+star_01
+bounds:2,2,50,50
+offsets:3,2,55,54
+star_02
+bounds:54,2,50,50
+offsets:3,2,55,54

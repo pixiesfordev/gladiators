@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1b3b4b945939a54ea0b23d3396115fb, type: 3}
+  m_Name: UI_HORE_02_SkeletonData
+  m_EditorClassIdentifier: 
+  atlasAssets:
+  - {fileID: 11400000, guid: 9c6ff31e6af98fc43907e1e4ef985c43, type: 2}
+  scale: 0.01
+  skeletonJSON: {fileID: 4900000, guid: 159b2419e85b0114c9092434d6013cdc, type: 3}
+  isUpgradingBlendModeMaterials: 0
+  blendModeMaterials:
+    requiresBlendModeMaterials: 0
+    applyAdditiveMaterial: 1
+    additiveMaterials:
+    - pageName: UI_HORE_02_10.png
+      material: {fileID: 2100000, guid: 73eac8958a2efd340b7fce6167904c22, type: 2}
+    - pageName: UI_HORE_02.png
+      material: {fileID: 2100000, guid: 47ef5d03a20f69341b6080540419615a, type: 2}
+    - pageName: UI_HORE_02_2.png
+      material: {fileID: 2100000, guid: 63ff915f6918e064fb8d25f265bcf79f, type: 2}
+    - pageName: UI_HORE_02_4.png
+      material: {fileID: 2100000, guid: cf2c32bae4d4b5945a4e52189731e0e2, type: 2}
+    - pageName: UI_HORE_02_5.png
+      material: {fileID: 2100000, guid: e979184d43072994d8265f84c396b0e4, type: 2}
+    - pageName: UI_HORE_02_6.png
+      material: {fileID: 2100000, guid: 40ea67aec1b43cc41a9813bcd96bc52d, type: 2}
+    - pageName: UI_HORE_02_12.png
+      material: {fileID: 2100000, guid: 18dcf3c9b23bdbd4b8942ea9b58b4239, type: 2}
+    - pageName: UI_HORE_02_11.png
+      material: {fileID: 2100000, guid: e82a1dee5bb44134cb0d63d0ec4556a8, type: 2}
+    - pageName: UI_HORE_02_3.png
+      material: {fileID: 2100000, guid: 911fa309fc5c90a4096d9a2ec0703ca4, type: 2}
+    - pageName: UI_HORE_02_7.png
+      material: {fileID: 2100000, guid: 9546ca804c4f96e43b6d3437c336baa1, type: 2}
+    - pageName: UI_HORE_02_9.png
+      material: {fileID: 2100000, guid: 7d02db67f8a4a3044b35808272eb43b3, type: 2}
+    - pageName: UI_HORE_02_8.png
+      material: {fileID: 2100000, guid: b3072be53bc388d44a2083de67bc8733, type: 2}
+    multiplyMaterials: []
+    screenMaterials: []
+  skeletonDataModifiers: []
+  fromAnimation: []
+  toAnimation: []
+  duration: []
+  defaultMix: 0.2
+  controller: {fileID: 0}

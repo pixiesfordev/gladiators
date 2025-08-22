@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1b3b4b945939a54ea0b23d3396115fb, type: 3}
+  m_Name: Settlement_SkeletonData
+  m_EditorClassIdentifier: 
+  atlasAssets:
+  - {fileID: 11400000, guid: 46c0a328dd80371449c91e8ff901db4e, type: 2}
+  scale: 0.01
+  skeletonJSON: {fileID: 4900000, guid: e416ff4859ad0b14a94f9eed33347fa7, type: 3}
+  isUpgradingBlendModeMaterials: 0
+  blendModeMaterials:
+    requiresBlendModeMaterials: 1
+    applyAdditiveMaterial: 1
+    additiveMaterials: []
+    multiplyMaterials: []
+    screenMaterials:
+    - pageName: Settlement.png
+      material: {fileID: 2100000, guid: 546ff70f68398c3438aad1292fee5019, type: 2}
+    - pageName: Settlement_3.png
+      material: {fileID: 2100000, guid: 7c294a63655d55b4c8b870dfc1376176, type: 2}
+    - pageName: Settlement_2.png
+      material: {fileID: 2100000, guid: d45bc950321b72041bf2f50ea992c3c5, type: 2}
+    - pageName: Settlement_4.png
+      material: {fileID: 2100000, guid: 5d26ecf779756fd47a442ce0e36cda68, type: 2}
+  skeletonDataModifiers: []
+  fromAnimation: []
+  toAnimation: []
+  duration: []
+  defaultMix: 0.2
+  controller: {fileID: 0}

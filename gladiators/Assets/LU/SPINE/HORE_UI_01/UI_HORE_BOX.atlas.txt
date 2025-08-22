@@ -1,0 +1,11 @@
+UI_HORE_BOX.png
+size:512,256
+filter:Linear,Linear
+pma:true
+scale:0.5
+BOX
+bounds:168,11,156,152
+offsets:0,15,169,168
+BOX_LIGHT
+bounds:2,2,164,161
+offsets:2,2,168,165
