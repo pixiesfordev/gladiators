@@ -23,30 +23,56 @@ public class AttackMagicObj : AttackObj
         SmallBossSpine.Init();
         FireUpSpine.Init();
         FireBallSpine.Init();
-        //TODO:調整Boss的角度(固定只朝向左/右)
         base.Init();
     }
 
     protected override void OnTriggerEnter2D(Collider2D coll)
     {
+        var anotherAtkObj = coll.gameObject.GetComponent<AttackObj>();
         var shield = coll.gameObject.GetComponent<TrainCaveShield>();
         if (shield != null && shield.DefendType == TrainCaveShield.ShieldType.Magic)
+        {
+            //撞到盾牌
             TrainCaveManager.Instance.AddMagicScore();
-        else
+            HitTarget = true;
+        }
+        else if (anotherAtkObj == null && shield == null)
+        {
+            //撞到玩家角色
             TrainCaveManager.Instance.PlayerHitted(this);
-        //播放打擊到物體的Spine特效
-        TrainCaveUI.Instance.GenerateHitSpine(FireBallSpine.transform.position, FireBallSpine.transform.rotation);
-        Destroy(gameObject);
-        //測試用 物件碰撞後停止其速度
-        /*
-        Rigidbody2D rb2D = GetComponent<Rigidbody2D>();
-        if (rb2D != null)
-            rb2D.velocity = Vector2.zero;
-        */
+            HitTarget = true;
+        }
+
+        //Debug.LogErrorFormat("魔法攻擊撞到物件: {0}", coll.name);
+
+        //有效碰撞
+        if (HitTarget)
+        {
+            //播放打擊到物體的Spine特效
+            TrainCaveUI.Instance.GenerateHitSpine(FireBallSpine.transform.position, FireBallSpine.transform.rotation);
+            Destroy(gameObject);
+            
+            //測試用 物件碰撞後停止其速度
+            Rigidbody2D rb2D = GetComponent<Rigidbody2D>();
+            if (rb2D != null)
+                rb2D.velocity = Vector2.zero;
+            
+        }
     }
 
     public override void SetSpeed(Vector2 speed)
     {
+        //調整Boss的角度(固定只朝向左/右)
+        //當物件角度小於等於-90度 >> 設定為0度(固定朝右)
+        //當物件大於-90度 >> 設定為180度(固定朝左)
+        Quaternion smallBossTargetAngle = transform.eulerAngles.z >= 270f ?
+            Quaternion.Euler(Vector3.zero) :
+            Quaternion.Euler(Vector3.back * 180f);
+        SmallBossSpine.transform.rotation = smallBossTargetAngle;
+
+        //Debug.LogErrorFormat("角度: {0} 修正角度: {1} 是否大於270度: {2}",
+        //    transform.eulerAngles, SmallBossSpine.transform.eulerAngles, transform.eulerAngles.z >= 270f);
+
         SmallBossSpine.PlayAnimation("boss_b", false);
         FireUpSpine.PlayAnimation("fire_up", false);
         MoveFireBall(speed).Forget();

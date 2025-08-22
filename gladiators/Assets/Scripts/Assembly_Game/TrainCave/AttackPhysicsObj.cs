@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using Gladiators.Main;
 using Gladiators.TrainCave;
 using Scoz.Func;
@@ -8,6 +10,13 @@ using UnityEngine;
 public class AttackPhysicsObj : AttackObj
 {
     public float SpawnRadius { get; private set; } = 8f; // 生成子彈時，距離目標的半徑
+
+    [SerializeField] SpineAnimationController AtkSpine;
+    [SerializeField] Transform HitSpinePos;
+
+    int PicRandSeed = 0;
+    float FlyingTimeRecord = 0f; //測試用 用來記錄飛行所需時間 方便之後調整撥放速度
+
     // Start is called before the first frame update
     protected override void Start() { }
 
@@ -17,17 +26,14 @@ public class AttackPhysicsObj : AttackObj
     public override void Init()
     {
         DefendType = TrainCaveShield.ShieldType.Physics;
+        AtkSpine.Init();
+        PickPic();
+        Collider2D.size = AttackImg.rectTransform.sizeDelta - ColiderOffset;
+        AtkSpine.SetTimeScale(0.5f);
+        /*
         string imgSourceName = "attack01";
         AttackImg.gameObject.SetActive(true);
         AttackImg.transform.localScale = Vector3.one + Vector3.left + Vector3.left;
-        /*
-        else if (DefendType == TrainCaveShield.ShieldType.Magic)
-        {
-            imgSourceName = "attack";
-            AttackImg.transform.localScale = Vector3.one;
-        }
-        */
-        AttackImg.gameObject.SetActive(true);
         AssetGet.GetSpriteFromAtlas("TrainCaveUI", imgSourceName, (sprite) =>
         {
             if (sprite != null)
@@ -42,25 +48,82 @@ public class AttackPhysicsObj : AttackObj
             }
         });
         AttackImg.SetNativeSize();
-        base.Init();
+        */
+    }
+
+    void PickPic()
+    {
+        PicRandSeed = Random.Range(0, 2);
+        string spinePrefix = PicRandSeed > 0 ? "ATTACK01_go" : "ATTACK_go";
+        AtkSpine.PlayAnimation(spinePrefix, false);
+        //AtkSpine.SetTimeScale(0.5f);
     }
 
     protected override void OnTriggerEnter2D(Collider2D coll)
     {
+        //這裡要先強制HitTarget為False 經過測試發現似乎記憶體沒有清乾淨 預設會變成True
+        HitTarget = false;
+        //TODO:之後改用孟璋說的比較不吃效能的方法來做 用碰撞器太吃效能
+        var anotherAtkObj = coll.gameObject.GetComponent<AttackObj>();
         var shield = coll.gameObject.GetComponent<TrainCaveShield>();
         if (shield != null && shield.DefendType == TrainCaveShield.ShieldType.Physics)
+        {
+            //撞到盾牌
             TrainCaveManager.Instance.AddPhysicsScore();
-        else
+            HitTarget = true;
+            //Debug.LogErrorFormat("撞到盾牌");
+        }
+        else if (anotherAtkObj == null && shield == null)
+        {
+            //撞到玩家角色
             TrainCaveManager.Instance.PlayerHitted(this);
-        //播放打擊到物體的Spine特效
-        TrainCaveUI.Instance.GenerateHitSpine(transform.position, transform.rotation);
+            HitTarget = true;
+            //Debug.LogErrorFormat("另一個攻擊物件不存在: {0} 盾牌不存在: {1}", anotherAtkObj == null, shield == null);
+        }
+
+        //有效碰撞
+        if (HitTarget)
+        {
+            //播放打擊到物體的Spine特效
+            Vector3 angle = transform.localEulerAngles + (Vector3.forward * 90f); //修正碰撞Spine角度
+            TrainCaveUI.Instance.GenerateHitSpine(HitSpinePos.position, Quaternion.Euler(angle));
+            //Debug.LogErrorFormat("花了多少時間碰撞到物體: {0}", Time.time - FlyingTimeRecord);
+            //Debug.LogErrorFormat("碰撞位置: {0}", coll.ClosestPoint(transform.position));
+            //Debug.LogErrorFormat("碰撞物體: {0}", coll.name);
+            //物件碰撞後往回彈
+            
+            Rigidbody2D rb2D = GetComponent<Rigidbody2D>();
+            if (rb2D != null)
+                rb2D.velocity = -rb2D.velocity;
+
+            /*
+            //測試用 停止物體 為了觀察為什麼會被蓋住
+            Rigidbody2D rb2D = GetComponent<Rigidbody2D>();
+            if (rb2D != null)
+                rb2D.velocity = Vector2.zero;
+            */
+            
+            //播放攻擊彈回演出後銷毀物件
+            AttackRollBack();
+        }
+    }
+
+    void AttackRollBack()
+    {
+        string spinePrefix = PicRandSeed > 0 ? "ATTACK01_Recycle" : "ATTACK_Recycle";
+        float waitSec = PicRandSeed > 0 ? 0.65f : 0.45f;
+        AtkSpine.PlayAnimation(spinePrefix, false);
+        Invoke(nameof(RecycleObj), waitSec * 4);
+    }
+
+    void RecycleObj()
+    {
         Destroy(gameObject);
     }
 
     public override void SetSpeed(Vector2 speed)
     {
-        //TODO:修改攻擊方式 得用Spine撥出筆拉長的部分 所以SetSpeed只針對碰撞的透明方塊物件去做速度 但要配合筆拉長的速度
-        //看看有沒有指定Spine撥放速度的Func可以用
         base.SetSpeed(speed);
+        FlyingTimeRecord = Time.time;
     }
 }

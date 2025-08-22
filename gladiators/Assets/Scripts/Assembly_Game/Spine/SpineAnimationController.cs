@@ -7,14 +7,14 @@ using Spine.Unity;
 public class SpineAnimationController : MonoBehaviour
 {
 
-    [SpineAnimation] [SerializeField] string animationName;
+    [SpineAnimation][SerializeField] string animationName;
 
     SkeletonGraphic skeletonAnimation;
     [SerializeField] Spine.AnimationState spineAnimationState;
 
     void Start()
     {
-        
+
     }
 
     public void Init()
@@ -32,6 +32,11 @@ public class SpineAnimationController : MonoBehaviour
     public void StopAnimation()
     {
         spineAnimationState.SetEmptyAnimation(0, 0.5f);
+    }
+
+    public void SetTimeScale(float timeScale)
+    {
+        skeletonAnimation.timeScale = timeScale;
     }
 
 }
