@@ -459,6 +459,35 @@ MonoBehaviour:
   dmgPopupOffset: {x: 0, y: 4, z: 3}
   dmgNumScal: 3
   HittedReduceHP: 100
+  StartGameZoomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  StartGameZoomFromUIRatio: 0.6
+  StartGameZoomDuration: 0.5
+  WaitSecBeforeGameZoom: 7
+  bTestGameZoom: 0
+  bTestGame: 1
 --- !u!1 &6039230607488349183
 GameObject:
   m_ObjectHideFlags: 0

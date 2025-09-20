@@ -25,6 +25,7 @@ namespace Gladiators.TrainCave {
         [SerializeField] TrainTimeObj TimeObj;
         [SerializeField] RectTransform HittedSpineParent; //放置碰撞Spine的RT
         [SerializeField] SpineAnimationController HitSpineController;
+        [SerializeField] SpineAnimationController TheaterSpineController;
 
         public Transform AttackObjTrans;
 
@@ -38,6 +39,8 @@ namespace Gladiators.TrainCave {
         CancellationTokenSource HittedCTK;
 
         Vector3 leftDir = new Vector3(-1f, 1f, 1f);
+
+        bool IsTheaterInited = false;
 
         // Start is called before the first frame update
         void Start()
@@ -129,8 +132,9 @@ namespace Gladiators.TrainCave {
 
         public void OnResetClick()
         {
-            TrainCaveManager.Instance.ResetGame();
+            TrainCaveManager.Instance.StartGameAnimation();
             PlayerHP.Reset();
+            GameOverObj.SetActive(false);
         }
 
         public void ResetGame()
@@ -243,6 +247,19 @@ namespace Gladiators.TrainCave {
             //撥放完後自動摧毀
             await UniTask.WaitForSeconds(0.38f);
             Destroy(obj);
+        }
+
+        public void StartGameAnimation(Vector3 targetScale)
+        {
+            transform.localScale = targetScale;
+            TheaterSpineController.transform.parent.transform.localScale =
+                new Vector3(1f / targetScale.x, 1f / targetScale.y, 1f);
+            if (!IsTheaterInited)
+            {
+                IsTheaterInited = true;
+                TheaterSpineController.Init();
+            }
+            TheaterSpineController.PlayAnimation("theater_UP", false);
         }
 
     }
