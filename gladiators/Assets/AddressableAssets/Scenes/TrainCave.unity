@@ -263,6 +263,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: TrainCaveSceneUI
       objectReference: {fileID: 0}
+    - target: {fileID: 4267781785132295896, guid: 8c42d88131ed5d641bf2b051ee0eb577,
+        type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 7015635752198253381, guid: 8c42d88131ed5d641bf2b051ee0eb577,
         type: 3}
       propertyPath: m_Mesh

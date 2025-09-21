@@ -9,8 +9,10 @@ public class SpineAnimationController : MonoBehaviour
 
     [SpineAnimation][SerializeField] string animationName;
 
-    SkeletonGraphic skeletonAnimation;
+    SkeletonGraphic _skeletonGraphic;
+    SkeletonAnimation _skeletonAnimation;
     [SerializeField] Spine.AnimationState spineAnimationState;
+    [SerializeField] bool Is3D = false;
 
     void Start()
     {
@@ -19,8 +21,16 @@ public class SpineAnimationController : MonoBehaviour
 
     public void Init()
     {
-        skeletonAnimation = GetComponent<SkeletonGraphic>();
-        spineAnimationState = skeletonAnimation.AnimationState;
+        if (!Is3D)
+        {
+            _skeletonGraphic = GetComponent<SkeletonGraphic>();
+            spineAnimationState = _skeletonGraphic.AnimationState;
+        }
+        else
+        {
+            _skeletonAnimation = GetComponent<SkeletonAnimation>();
+            spineAnimationState = _skeletonAnimation.AnimationState;
+        }  
     }
 
     public void PlayAnimation(string animName, bool loop)
@@ -36,7 +46,7 @@ public class SpineAnimationController : MonoBehaviour
 
     public void SetTimeScale(float timeScale)
     {
-        skeletonAnimation.timeScale = timeScale;
+        _skeletonGraphic.timeScale = timeScale;
     }
 
 }
