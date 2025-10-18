@@ -463,29 +463,29 @@ MonoBehaviour:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 1
-      outSlope: 1
-      tangentMode: 34
+      time: -0.14520645
+      value: 0.0024719238
+      inSlope: 1.2799252
+      outSlope: 1.2799252
+      tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0
+      outWeight: 0.32468882
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 1
-      outSlope: 1
-      tangentMode: 34
+      inSlope: 0.34828645
+      outSlope: 0.34828645
+      tangentMode: 0
       weightedMode: 0
-      inWeight: 0
+      inWeight: 0.0446058
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  StartGameZoomFromUIRatio: 0.6
-  StartGameZoomDuration: 0.5
-  WaitSecBeforeGameZoom: 7
+  StartGameZoomFromUIRatio: 0.85
+  StartGameZoomDuration: 0.6
+  WaitSecBeforeGameZoom: 6.5
   bTestGameZoom: 0
   bTestGame: 1
 --- !u!1 &6039230607488349183

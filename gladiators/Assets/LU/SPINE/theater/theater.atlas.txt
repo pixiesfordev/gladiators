@@ -68,8 +68,7 @@ rotate:90
 theater/ocean_0004
 bounds:2,67,2025,143
 white_layer
-bounds:2758,1355,173,121
-offsets:1,0,174,122
+bounds:2758,1354,174,122
 
 theater_2.png
 size:2048,2048

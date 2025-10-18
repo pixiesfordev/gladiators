@@ -263,6 +263,72 @@ PrefabInstance:
       propertyPath: m_Name
       value: TrainCaveSceneUI
       objectReference: {fileID: 0}
+    - target: {fileID: 3099843087822932364, guid: 8c42d88131ed5d641bf2b051ee0eb577,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: e5a3e825119d3b24fa7659a9c751e91c, type: 2}
+    - target: {fileID: 3099843087822932364, guid: 8c42d88131ed5d641bf2b051ee0eb577,
+        type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 481339d96f1c60b459163e964132b3d9, type: 2}
+    - target: {fileID: 3099843087822932364, guid: 8c42d88131ed5d641bf2b051ee0eb577,
+        type: 3}
+      propertyPath: m_Materials.Array.data[2]
+      value: 
+      objectReference: {fileID: 2100000, guid: e5a3e825119d3b24fa7659a9c751e91c, type: 2}
+    - target: {fileID: 3099843087822932364, guid: 8c42d88131ed5d641bf2b051ee0eb577,
+        type: 3}
+      propertyPath: m_Materials.Array.data[3]
+      value: 
+      objectReference: {fileID: 2100000, guid: a0d3ac168e7ee8b46b13b50aa56f0bf7, type: 2}
+    - target: {fileID: 3099843087822932364, guid: 8c42d88131ed5d641bf2b051ee0eb577,
+        type: 3}
+      propertyPath: m_Materials.Array.data[4]
+      value: 
+      objectReference: {fileID: 2100000, guid: 9d1a2aab18773254d992cc788c44b091, type: 2}
+    - target: {fileID: 3099843087822932364, guid: 8c42d88131ed5d641bf2b051ee0eb577,
+        type: 3}
+      propertyPath: m_Materials.Array.data[5]
+      value: 
+      objectReference: {fileID: 2100000, guid: e5a3e825119d3b24fa7659a9c751e91c, type: 2}
+    - target: {fileID: 3099843087822932364, guid: 8c42d88131ed5d641bf2b051ee0eb577,
+        type: 3}
+      propertyPath: m_Materials.Array.data[6]
+      value: 
+      objectReference: {fileID: 2100000, guid: 481339d96f1c60b459163e964132b3d9, type: 2}
+    - target: {fileID: 3099843087822932364, guid: 8c42d88131ed5d641bf2b051ee0eb577,
+        type: 3}
+      propertyPath: m_Materials.Array.data[7]
+      value: 
+      objectReference: {fileID: 2100000, guid: e5a3e825119d3b24fa7659a9c751e91c, type: 2}
+    - target: {fileID: 3099843087822932364, guid: 8c42d88131ed5d641bf2b051ee0eb577,
+        type: 3}
+      propertyPath: m_Materials.Array.data[8]
+      value: 
+      objectReference: {fileID: 2100000, guid: 481339d96f1c60b459163e964132b3d9, type: 2}
+    - target: {fileID: 3099843087822932364, guid: 8c42d88131ed5d641bf2b051ee0eb577,
+        type: 3}
+      propertyPath: m_Materials.Array.data[9]
+      value: 
+      objectReference: {fileID: 2100000, guid: e5a3e825119d3b24fa7659a9c751e91c, type: 2}
+    - target: {fileID: 3099843087822932364, guid: 8c42d88131ed5d641bf2b051ee0eb577,
+        type: 3}
+      propertyPath: m_Materials.Array.data[10]
+      value: 
+      objectReference: {fileID: 2100000, guid: 481339d96f1c60b459163e964132b3d9, type: 2}
+    - target: {fileID: 3099843087822932364, guid: 8c42d88131ed5d641bf2b051ee0eb577,
+        type: 3}
+      propertyPath: m_Materials.Array.data[11]
+      value: 
+      objectReference: {fileID: 2100000, guid: e5a3e825119d3b24fa7659a9c751e91c, type: 2}
+    - target: {fileID: 3987105759238831108, guid: 8c42d88131ed5d641bf2b051ee0eb577,
+        type: 3}
+      propertyPath: skeletonDataAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 5e4ab94f3f1e75743af9e0fccbd8c2dc,
+        type: 2}
     - target: {fileID: 4267781785132295896, guid: 8c42d88131ed5d641bf2b051ee0eb577,
         type: 3}
       propertyPath: m_Mesh
