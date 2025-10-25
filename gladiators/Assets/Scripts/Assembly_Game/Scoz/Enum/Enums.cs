@@ -1,6 +1,7 @@
 namespace Scoz.Func {
 
-    public enum MyScene {
+    public enum MyScene
+    {
         StartScene,//開始場景
         LobbyScene,//大廳場景
         BattleScene,//戰場場景
@@ -8,9 +9,10 @@ namespace Scoz.Func {
         //這裡有追加Scene，若是正式版需要Build的話，BuildCommand.cs中的BuildScenes清單也要一併追加，Jenkins自動包檔才會包到
         TrainVigor,//(動態載入，不會加到BuildSetting中)體力訓練場景
         TrainRock,
-        TrainCave,
-        TrainHunt,
+        TrainCave,//渡影洞窟場景
+        TrainHunt,//狩獵季節場景
         Cuisine,
+        SelectTrainGame,//選擇訓練小遊戲場景
     }
     public enum EnvVersion {
         Dev,//開發版(內部開發使用)

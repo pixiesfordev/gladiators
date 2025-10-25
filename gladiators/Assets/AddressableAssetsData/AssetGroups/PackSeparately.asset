@@ -141,6 +141,11 @@ MonoBehaviour:
     m_SerializedLabels:
     - Dll
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c6df89be6e43dee47aa7b15da8fe839c
+    m_Address: Assets/AddressableAssets/Prefabs/Train/SelectTrainGame/SelectTrainSceneUI.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: cd6918c1b1583f14c8af48772481c892
     m_Address: Assets/AddressableAssets/Prefabs/Train/Cuisine/CuisineSceneUI.prefab
     m_ReadOnly: 0
